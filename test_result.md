@@ -107,27 +107,33 @@ user_problem_statement: "Build a financial planning application (Zapiio) similar
 backend:
   - task: "Assets API - CRUD operations"
     implemented: true
-    working: "NA"
+    working: true
     file: "backend/routes/assets.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Backend API already existed from Phase 1. Endpoints: GET /api/assets/types, GET /api/assets/portfolio/{id}, POST /api/assets, GET /api/assets/{id}, PUT /api/assets/{id}, DELETE /api/assets/{id}"
+      - working: true
+        agent: "testing"
+        comment: "✅ ALL ASSETS API TESTS PASSED (8/8): GET /assets/types (9 asset types), GET /assets/portfolio/{id} (empty & with data), POST /assets (created Test Superannuation Fund), GET /assets/{id} (retrieved specific asset), PUT /assets/{id} (updated current_value 150k→160k), DELETE /assets/{id} (successful deletion). All CRUD operations working correctly with proper data validation and UUID generation."
 
   - task: "Liabilities API - CRUD operations"
     implemented: true
-    working: "NA"
+    working: true
     file: "backend/routes/liabilities.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Backend API already existed from Phase 1. Endpoints: GET /api/liabilities/types, GET /api/liabilities/portfolio/{id}, POST /api/liabilities, GET /api/liabilities/{id}, PUT /api/liabilities/{id}, DELETE /api/liabilities/{id}"
+      - working: true
+        agent: "testing"
+        comment: "✅ ALL LIABILITIES API TESTS PASSED (8/8): GET /liabilities/types (7 liability types), GET /liabilities/portfolio/{id} (empty & with data), POST /liabilities (created Car Loan), GET /liabilities/{id} (retrieved specific liability), PUT /liabilities/{id} (updated current_balance 28k→27k), DELETE /liabilities/{id} (successful deletion). All CRUD operations working correctly with proper data validation and UUID generation."
 
 frontend:
   - task: "Assets Page - List, Add, Edit, Delete assets"
