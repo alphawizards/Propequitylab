@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -17,9 +17,52 @@ import {
 import { cn } from '../../lib/utils';
 import { usePortfolio } from '../../context/PortfolioContext';
 
+// NavItem component moved outside Sidebar to prevent infinite recursion
+const NavItem = ({ item, isChild = false, location }) => {
+  const isActive = location.pathname === item.href || 
+    (item.children && item.children.some(child => location.pathname === child.href));
+  const hasChildren = item.children && item.children.length > 0;
+  const [isOpen, setIsOpen] = useState(isActive);
+
+  return (
+    <div>
+      <NavLink
+        to={hasChildren ? '#' : item.href}
+        onClick={(e) => {
+          if (hasChildren) {
+            e.preventDefault();
+            setIsOpen(!isOpen);
+          }
+        }}
+        className={cn(
+          'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all',
+          isChild ? 'ml-6' : '',
+          isActive && !hasChildren
+            ? 'bg-lime-400/20 text-lime-700'
+            : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+        )}
+      >
+        <item.icon className={cn('w-5 h-5', isActive && !hasChildren ? 'text-lime-600' : '')} />
+        <span className="flex-1">{item.title}</span>
+        {hasChildren && (
+          <ChevronDown className={cn('w-4 h-4 transition-transform', isOpen ? 'rotate-180' : '')} />
+        )}
+      </NavLink>
+      
+      {hasChildren && isOpen && (
+        <div className="mt-1 space-y-1">
+          {item.children.map((child) => (
+            <NavItem key={child.href} item={child} isChild location={location} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const Sidebar = () => {
   const location = useLocation();
-  const { currentPortfolio, portfolios } = usePortfolio();
+  const { currentPortfolio } = usePortfolio();
 
   const navItems = [
     {
@@ -55,48 +98,6 @@ const Sidebar = () => {
     { title: 'Settings', icon: Settings, href: '/settings' },
     { title: 'Help Center', icon: HelpCircle, href: '/help' },
   ];
-
-  const NavItem = ({ item, isChild = false }) => {
-    const isActive = location.pathname === item.href || 
-      (item.children && item.children.some(child => location.pathname === child.href));
-    const hasChildren = item.children && item.children.length > 0;
-    const [isOpen, setIsOpen] = React.useState(isActive);
-
-    return (
-      <div>
-        <NavLink
-          to={hasChildren ? '#' : item.href}
-          onClick={(e) => {
-            if (hasChildren) {
-              e.preventDefault();
-              setIsOpen(!isOpen);
-            }
-          }}
-          className={cn(
-            'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all',
-            isChild ? 'ml-6' : '',
-            isActive && !hasChildren
-              ? 'bg-lime-400/20 text-lime-700'
-              : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-          )}
-        >
-          <item.icon className={cn('w-5 h-5', isActive && !hasChildren ? 'text-lime-600' : '')} />
-          <span className="flex-1">{item.title}</span>
-          {hasChildren && (
-            <ChevronDown className={cn('w-4 h-4 transition-transform', isOpen ? 'rotate-180' : '')} />
-          )}
-        </NavLink>
-        
-        {hasChildren && isOpen && (
-          <div className="mt-1 space-y-1">
-            {item.children.map((child) => (
-              <NavItem key={child.href} item={child} isChild />
-            ))}
-          </div>
-        )}
-      </div>
-    );
-  };
 
   return (
     <aside className="w-64 bg-white border-r border-gray-200 flex flex-col h-screen fixed left-0 top-0">
@@ -134,7 +135,7 @@ const Sidebar = () => {
       {/* Navigation */}
       <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
         {navItems.map((item) => (
-          <NavItem key={item.href} item={item} />
+          <NavItem key={item.href} item={item} location={location} />
         ))}
         
         {/* New Plan Button */}
