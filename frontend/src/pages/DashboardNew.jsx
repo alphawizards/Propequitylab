@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { usePortfolio } from '../context/PortfolioContext';
 import { useUser } from '../context/UserContext';
 import api from '../services/api';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
+import { NetWorthChart, AssetAllocationChart, CashflowChart } from '../components/charts';
 import {
   Home,
   TrendingUp,
@@ -15,6 +17,8 @@ import {
   Plus,
   ArrowUpRight,
   ArrowDownRight,
+  RefreshCw,
+  Camera,
 } from 'lucide-react';
 
 const formatCurrency = (value) => {
