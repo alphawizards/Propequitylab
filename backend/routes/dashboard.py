@@ -86,16 +86,16 @@ async def get_dashboard_summary(portfolio_id: Optional[str] = None):
     
     liability_breakdown = LiabilityBreakdown(
         property_loans=property_loans,
-        car_loans=sum(l.get('current_balance', 0) for l in liabilities if l.get('type') == 'car_loan'),
-        credit_cards=sum(l.get('current_balance', 0) for l in liabilities if l.get('type') == 'credit_card'),
-        hecs=sum(l.get('current_balance', 0) for l in liabilities if l.get('type') == 'hecs'),
-        personal_loans=sum(l.get('current_balance', 0) for l in liabilities if l.get('type') == 'personal_loan'),
-        other=sum(l.get('current_balance', 0) for l in liabilities if l.get('type') == 'other')
+        car_loans=sum(item.get('current_balance', 0) for item in liabilities if item.get('type') == 'car_loan'),
+        credit_cards=sum(item.get('current_balance', 0) for item in liabilities if item.get('type') == 'credit_card'),
+        hecs=sum(item.get('current_balance', 0) for item in liabilities if item.get('type') == 'hecs'),
+        personal_loans=sum(item.get('current_balance', 0) for item in liabilities if item.get('type') == 'personal_loan'),
+        other=sum(item.get('current_balance', 0) for item in liabilities if item.get('type') == 'other')
     )
     
     # Calculate totals
     total_assets = property_value + sum(a.get('current_value', 0) for a in assets)
-    total_liabilities = property_loans + sum(l.get('current_balance', 0) for l in liabilities)
+    total_liabilities = property_loans + sum(item.get('current_balance', 0) for item in liabilities)
     net_worth = total_assets - total_liabilities
     
     # Calculate monthly income/expenses
