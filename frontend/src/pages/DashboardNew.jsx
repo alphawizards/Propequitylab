@@ -56,24 +56,58 @@ const StatCard = ({ title, value, icon: Icon, color, trend, trendValue }) => (
 );
 
 const DashboardNew = () => {
+  const navigate = useNavigate();
   const { currentPortfolio, createPortfolio, summary } = usePortfolio();
   const { user, onboardingStatus } = useUser();
   const [dashboardData, setDashboardData] = useState(null);
+  const [netWorthHistory, setNetWorthHistory] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [historyLoading, setHistoryLoading] = useState(true);
+  const [snapshotLoading, setSnapshotLoading] = useState(false);
+
+  const fetchDashboardData = async () => {
+    try {
+      const data = await api.getDashboardSummary(currentPortfolio?.id);
+      setDashboardData(data);
+    } catch (error) {
+      console.error('Failed to fetch dashboard data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchNetWorthHistory = async () => {
+    try {
+      const history = await api.getNetWorthHistory(currentPortfolio?.id, 12);
+      setNetWorthHistory(history);
+    } catch (error) {
+      console.error('Failed to fetch net worth history:', error);
+    } finally {
+      setHistoryLoading(false);
+    }
+  };
+
+  const handleCreateSnapshot = async () => {
+    if (!currentPortfolio?.id) return;
+    setSnapshotLoading(true);
+    try {
+      await api.createSnapshot(currentPortfolio.id);
+      await fetchNetWorthHistory();
+    } catch (error) {
+      console.error('Failed to create snapshot:', error);
+    } finally {
+      setSnapshotLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        const data = await api.getDashboardSummary(currentPortfolio?.id);
-        setDashboardData(data);
-      } catch (error) {
-        console.error('Failed to fetch dashboard data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDashboardData();
+    if (currentPortfolio?.id) {
+      fetchDashboardData();
+      fetchNetWorthHistory();
+    } else {
+      setLoading(false);
+      setHistoryLoading(false);
+    }
   }, [currentPortfolio?.id]);
 
   // Show create portfolio prompt if no portfolio exists
