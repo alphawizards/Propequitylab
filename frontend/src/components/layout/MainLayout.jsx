@@ -1,12 +1,17 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
+import Sidebar from './Sidebar';
+import Header from './Header';
 
 function MainLayout() {
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="p-6">
-        <h1>Zapiio - Loading...</h1>
-        <Outlet />
+      <Sidebar />
+      <div className="ml-64">
+        <Header title="Dashboard" />
+        <main className="p-6">
+          <Outlet />
+        </main>
       </div>
     </div>
   );
