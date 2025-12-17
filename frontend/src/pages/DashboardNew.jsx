@@ -293,7 +293,7 @@ const DashboardNew = () => {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold">Welcome back, {user?.name?.split(' ')[0]}!</h2>
-              <p className="text-gray-300 mt-1">Here's your financial snapshot</p>
+              <p className="text-gray-300 mt-1">Here is your financial snapshot</p>
             </div>
             <div className="text-right">
               <p className="text-sm text-gray-400">Net Worth</p>
