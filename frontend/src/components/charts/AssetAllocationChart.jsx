@@ -50,7 +50,8 @@ const CustomTooltip = ({ active, payload }) => {
   );
 };
 
-const CustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+// Custom label component defined outside to avoid recreation
+const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
   if (percent < 0.05) return null; // Don't show labels for small slices
   
   const RADIAN = Math.PI / 180;
