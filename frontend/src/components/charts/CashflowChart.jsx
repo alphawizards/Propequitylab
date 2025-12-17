@@ -38,13 +38,16 @@ const CashflowChart = ({ income = 0, expenses = 0, loading = false }) => {
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const currentMonth = new Date().getMonth();
   
-  // Generate last 6 months of data (simulated for now)
+  // Generate last 6 months of data (using consistent variations)
   const chartData = Array.from({ length: 6 }, (_, i) => {
     const monthIndex = (currentMonth - 5 + i + 12) % 12;
+    // Use deterministic variations based on month index
+    const incomeVariation = 0.95 + (monthIndex % 3) * 0.025;
+    const expenseVariation = 0.9 + (monthIndex % 4) * 0.05;
     return {
       month: months[monthIndex],
-      income: income * (0.95 + Math.random() * 0.1), // Small variation
-      expenses: expenses * (0.9 + Math.random() * 0.2),
+      income: income * incomeVariation,
+      expenses: expenses * expenseVariation,
     };
   });
 
