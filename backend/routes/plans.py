@@ -1,12 +1,47 @@
 from fastapi import APIRouter, HTTPException
-from typing import List
+from typing import List, Optional
 from datetime import datetime, timezone
+from pydantic import BaseModel
+import math
 
 from models.plan import Plan, PlanCreate, PlanUpdate, PLAN_TYPES
 from utils.database import db
 from utils.dev_user import DEV_USER_ID
 
 router = APIRouter(prefix="/plans", tags=["plans"])
+
+
+class ProjectionInput(BaseModel):
+    current_net_worth: float = 0
+    annual_savings: float = 0
+    expected_return: float = 7.0  # percent
+    inflation_rate: float = 2.5  # percent
+    withdrawal_rate: float = 4.0  # percent
+    current_age: int = 35
+    retirement_age: int = 55
+    life_expectancy: int = 95
+    target_net_worth: Optional[float] = None
+
+
+class ProjectionYear(BaseModel):
+    year: int
+    age: int
+    net_worth: float
+    annual_savings: float
+    investment_returns: float
+    withdrawals: float
+    phase: str  # accumulation, retirement
+
+
+class ProjectionResult(BaseModel):
+    years_to_fire: Optional[int]
+    fire_age: Optional[int]
+    fire_year: Optional[int]
+    fire_number: float
+    success_probability: float
+    projections: List[ProjectionYear]
+    final_net_worth: float
+    total_withdrawals: float
 
 
 @router.get("/types")
