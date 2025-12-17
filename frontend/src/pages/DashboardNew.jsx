@@ -256,8 +256,47 @@ const DashboardNew = () => {
         </Card>
       </div>
 
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Net Worth Over Time Chart */}
+        <div className="lg:col-span-2">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900">Financial History</h3>
+            <Button
+              onClick={handleCreateSnapshot}
+              disabled={snapshotLoading || !currentPortfolio?.id}
+              variant="outline"
+              size="sm"
+              className="hover:bg-lime-50 hover:border-lime-400"
+              data-testid="create-snapshot-btn"
+            >
+              {snapshotLoading ? (
+                <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
+                <Camera className="w-4 h-4 mr-2" />
+              )}
+              Take Snapshot
+            </Button>
+          </div>
+          <NetWorthChart data={netWorthHistory} loading={historyLoading} />
+        </div>
+
+        {/* Asset Allocation Pie Chart */}
+        <AssetAllocationChart 
+          breakdown={data.asset_breakdown} 
+          loading={loading} 
+        />
+
+        {/* Cashflow Chart */}
+        <CashflowChart 
+          income={data.monthly_income} 
+          expenses={data.monthly_expenses}
+          loading={loading}
+        />
+      </div>
+
       {/* Quick Actions */}
-      <Card>
+      <Card data-testid="quick-actions-card">
         <CardHeader>
           <CardTitle>Quick Actions</CardTitle>
         </CardHeader>
@@ -273,6 +312,8 @@ const DashboardNew = () => {
                 key={action.label}
                 variant="outline"
                 className="h-auto py-4 flex flex-col items-center gap-2 hover:bg-lime-50 hover:border-lime-400"
+                onClick={() => navigate(action.href)}
+                data-testid={`quick-action-${action.label.toLowerCase().replace(/\s/g, '-')}`}
               >
                 <action.icon className="w-6 h-6 text-gray-600" />
                 <span className="text-sm font-medium">{action.label}</span>
