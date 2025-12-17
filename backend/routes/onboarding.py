@@ -82,9 +82,6 @@ async def complete_onboarding():
         }}
     )
     
-    if result.matched_count == 0:
-        raise HTTPException(status_code=404, detail="User not found")
-    
     return {"message": "Onboarding completed successfully"}
 
 
