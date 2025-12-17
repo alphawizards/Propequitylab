@@ -287,6 +287,9 @@ const DashboardNew = () => {
 
   return (
     <div className="space-y-6" data-testid="dashboard-page">
+      {/* Debug indicator - remove after verification */}
+      <div className="bg-lime-500 text-white p-2 text-center font-bold rounded">PHASE 5 CHARTS ENABLED v2</div>
+      
       {/* Welcome Banner */}
       <Card className="bg-gradient-to-r from-gray-900 to-gray-800 text-white border-0" data-testid="welcome-banner">
         <CardContent className="p-6">
