@@ -135,7 +135,7 @@ async def get_portfolio_summary(portfolio_id: str):
     property_equity = property_value - property_debt
     
     other_assets = sum(a.get('current_value', 0) for a in assets)
-    other_liabilities = sum(l.get('current_balance', 0) for l in liabilities)
+    other_liabilities = sum(item.get('current_balance', 0) for item in liabilities)
     
     total_assets = property_value + other_assets
     total_liabilities = property_debt + other_liabilities
