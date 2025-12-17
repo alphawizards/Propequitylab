@@ -131,7 +131,7 @@ const AssetAllocationChart = ({ breakdown = {}, loading = false }) => {
               cx="50%"
               cy="50%"
               labelLine={false}
-              label={CustomLabel}
+              label={renderCustomLabel}
               outerRadius={120}
               innerRadius={60}
               fill="#8884d8"
