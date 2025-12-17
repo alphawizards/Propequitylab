@@ -88,6 +88,11 @@ const api = {
   getPlan: (id) => apiClient.get(`/plans/${id}`),
   updatePlan: (id, data) => apiClient.put(`/plans/${id}`, data),
   deletePlan: (id) => apiClient.delete(`/plans/${id}`),
+  
+  // Projections
+  calculateProjection: (data) => apiClient.post('/plans/project', data),
+  getPlanProjections: (planId, portfolioId) => 
+    apiClient.get(`/plans/${planId}/projections`, { params: { portfolio_id: portfolioId } }),
 };
 
 export default api;
