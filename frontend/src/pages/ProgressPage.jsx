@@ -109,7 +109,14 @@ const ProgressPage = () => {
 
   // Calculate growth metrics
   const calculateGrowth = () => {
-    if (netWorthHistory.length < 2) return { amount: 0, percent: 0, period: 'month' };
+    if (!netWorthHistory || netWorthHistory.length < 2) {
+      return { 
+        monthlyChange: 0, 
+        monthlyPercent: 0, 
+        totalChange: 0, 
+        totalPercent: 0 
+      };
+    }
     
     const latest = netWorthHistory[netWorthHistory.length - 1]?.net_worth || 0;
     const previous = netWorthHistory[netWorthHistory.length - 2]?.net_worth || 0;
