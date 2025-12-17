@@ -1,0 +1,157 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Mail, Lock } from 'lucide-react';
+
+const Login = ({ onLogin }) => {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (email && password) {
+      onLogin({ email, name: email.split('@')[0] });
+      navigate('/dashboard');
+    } else {
+      setError('Please enter email and password');
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex">
+      {/* Left Side - Dark with Welcome */}
+      <div className="hidden lg:flex lg:w-1/2 bg-[#1a1f36] relative overflow-hidden">
+        {/* Diagonal Lines */}
+        <div className="absolute inset-0">
+          <svg className="w-full h-full" viewBox="0 0 600 800" preserveAspectRatio="none">
+            <line x1="0" y1="400" x2="300" y2="800" stroke="#2a3152" strokeWidth="100" />
+            <line x1="100" y1="0" x2="400" y2="400" stroke="#2a3152" strokeWidth="80" />
+            <line x1="400" y1="600" x2="600" y2="800" stroke="#BFFF00" strokeWidth="60" />
+          </svg>
+        </div>
+        
+        <div className="relative z-10 p-12 flex flex-col h-full">
+          {/* Logo */}
+          <div className="flex items-center gap-3 mb-20">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 8L20 20L8 32" stroke="#BFFF00" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M32 8L20 20L32 32" stroke="#BFFF00" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <span className="text-white text-xl font-semibold">Zapiio</span>
+          </div>
+          
+          {/* Welcome Text */}
+          <div className="flex-1 flex flex-col justify-center">
+            <h1 className="text-5xl font-light text-lime-400 italic mb-2">Hello,</h1>
+            <h2 className="text-5xl font-bold text-white">Welcome!</h2>
+          </div>
+          
+          {/* Signup Options */}
+          <div className="space-y-4">
+            <p className="text-white font-semibold">Not a Member?</p>
+            <p className="text-lime-400 text-sm">Sign up to get started with Zapiio</p>
+            
+            <div className="space-y-3 mt-6">
+              <div className="border border-teal-500 rounded-lg p-4 flex items-center justify-between bg-[#1a1f36]/50 backdrop-blur">
+                <div>
+                  <p className="text-lime-400 font-bold text-sm">PROFESSIONALS</p>
+                  <p className="text-gray-400 text-sm">Help clients plan, track, and invest with clarity.</p>
+                </div>
+                <Button className="bg-lime-400 text-gray-900 hover:bg-lime-500 font-semibold">
+                  JOIN NOW
+                </Button>
+              </div>
+              
+              <div className="border border-teal-500 rounded-lg p-4 flex items-center justify-between bg-[#1a1f36]/50 backdrop-blur">
+                <div>
+                  <p className="text-lime-400 font-bold text-sm">PRIVATE INVESTORS</p>
+                  <p className="text-gray-400 text-sm">Manage your property portfolio and plan your next move.</p>
+                </div>
+                <Button className="bg-lime-400 text-gray-900 hover:bg-lime-500 font-semibold">
+                  JOIN NOW
+                </Button>
+              </div>
+            </div>
+          </div>
+          
+          {/* Bottom Logo */}
+          <div className="mt-8">
+            <svg width="48" height="48" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="20" cy="20" r="18" stroke="#BFFF00" strokeWidth="2" />
+              <path d="M12 12L20 20L12 28" stroke="#BFFF00" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M28 12L20 20L28 28" stroke="#BFFF00" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      
+      {/* Right Side - Login Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
+        <div className="w-full max-w-md">
+          <h2 className="text-2xl font-bold text-gray-900 text-center mb-8">
+            Login to your Account
+          </h2>
+          
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-gray-100 rounded-md flex items-center justify-center">
+                  <Mail className="w-4 h-4 text-gray-400" />
+                </div>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="pl-14 h-12 bg-gray-50 border-gray-200"
+                  placeholder="Enter your email"
+                />
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-gray-100 rounded-md flex items-center justify-center">
+                  <Lock className="w-4 h-4 text-gray-400" />
+                </div>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="pl-14 h-12 bg-lime-50 border-lime-200"
+                  placeholder="Enter your password"
+                />
+              </div>
+            </div>
+            
+            <div className="text-right">
+              <button type="button" className="text-sm text-gray-500 hover:text-gray-700">
+                Forgot password?
+              </button>
+            </div>
+            
+            {error && (
+              <p className="text-red-500 text-sm text-center">{error}</p>
+            )}
+            
+            <Button
+              type="submit"
+              className="w-full h-12 bg-gray-900 text-white hover:bg-gray-800 rounded-lg"
+            >
+              Sign In
+            </Button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Login;
