@@ -1,0 +1,9 @@
+from .portfolios import router as portfolios_router
+from .properties import router as properties_router
+from .income import router as income_router
+from .expenses import router as expenses_router
+from .assets import router as assets_router
+from .liabilities import router as liabilities_router
+from .plans import router as plans_router
+from .onboarding import router as onboarding_router
+from .dashboard import router as dashboard_router
