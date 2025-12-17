@@ -5,7 +5,7 @@ import Header from './Header';
 
 const MainLayout = ({ title = 'Dashboard', subtitle }) => {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       {/* Sidebar */}
       <Sidebar />
       
