@@ -5,6 +5,7 @@ import { UserProvider, useUser } from './context/UserContext';
 import { PortfolioProvider } from './context/PortfolioContext';
 import MainLayout from './components/layout/MainLayout';
 import DashboardNew from './pages/DashboardNew';
+import PropertiesPage from './pages/PropertiesPage';
 import OnboardingWizard from './components/onboarding/OnboardingWizard';
 import { Toaster } from './components/ui/toaster';
 
