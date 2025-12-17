@@ -6,6 +6,8 @@ import { PortfolioProvider } from './context/PortfolioContext';
 import MainLayout from './components/layout/MainLayout';
 import DashboardNew from './pages/DashboardNew';
 import PropertiesPage from './pages/PropertiesPage';
+import AssetsPage from './pages/AssetsPage';
+import LiabilitiesPage from './pages/LiabilitiesPage';
 import OnboardingWizard from './components/onboarding/OnboardingWizard';
 import { Toaster } from './components/ui/toaster';
 
