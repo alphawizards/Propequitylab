@@ -60,7 +60,7 @@ function AppRoutes() {
           <Route path="/finances" element={<PlaceholderPage title="Current Finances" />} />
           <Route path="/finances/income" element={<PlaceholderPage title="Income Sources" />} />
           <Route path="/finances/spending" element={<PlaceholderPage title="Spending" />} />
-          <Route path="/finances/properties" element={<PlaceholderPage title="Properties" />} />
+          <Route path="/finances/properties" element={<PropertiesPage />} />
           <Route path="/finances/assets" element={<PlaceholderPage title="Assets" />} />
           <Route path="/finances/liabilities" element={<PlaceholderPage title="Liabilities" />} />
           
