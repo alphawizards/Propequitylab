@@ -73,7 +73,7 @@ async def save_onboarding_step(step: int, data: OnboardingStepData):
 @router.post("/complete")
 async def complete_onboarding():
     """Mark onboarding as completed"""
-    result = await db.users.update_one(
+    await db.users.update_one(
         {"id": DEV_USER_ID},
         {"$set": {
             "onboarding_completed": True,
@@ -91,7 +91,7 @@ async def complete_onboarding():
 @router.post("/skip")
 async def skip_onboarding():
     """Skip onboarding and go directly to dashboard"""
-    result = await db.users.update_one(
+    await db.users.update_one(
         {"id": DEV_USER_ID},
         {"$set": {
             "onboarding_completed": True,
