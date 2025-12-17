@@ -226,7 +226,7 @@ const ProgressPage = () => {
               <div>
                 <p className="text-sm text-gray-500">FIRE Progress</p>
                 <p className="text-xl font-bold text-orange-600">
-                  {projectionData?.years_to_fire !== null 
+                  {projectionData && projectionData.years_to_fire !== null 
                     ? `${projectionData.years_to_fire} yrs` 
                     : 'Calculating...'}
                 </p>
