@@ -69,7 +69,7 @@ function AppRoutes() {
           <Route path="/finances/liabilities" element={<LiabilitiesPage />} />
           
           {/* Progress */}
-          <Route path="/progress" element={<PlaceholderPage title="Progress Tracking" />} />
+          <Route path="/progress" element={<ProgressPage />} />
           
           {/* Plans */}
           <Route path="/plans" element={<PlansPage />} />
