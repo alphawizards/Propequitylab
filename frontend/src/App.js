@@ -86,14 +86,16 @@ function AppRoutes() {
 
 function App() {
   return (
-    <UserProvider>
-      <PortfolioProvider>
-        <div className="App">
-          <AppRoutes />
-          <Toaster />
-        </div>
-      </PortfolioProvider>
-    </UserProvider>
+    <ThemeProvider>
+      <UserProvider>
+        <PortfolioProvider>
+          <div className="App">
+            <AppRoutes />
+            <Toaster />
+          </div>
+        </PortfolioProvider>
+      </UserProvider>
+    </ThemeProvider>
   );
 }
 
