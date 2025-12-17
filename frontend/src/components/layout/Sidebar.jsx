@@ -99,30 +99,30 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className="w-64 bg-white border-r border-gray-200 flex flex-col h-screen fixed left-0 top-0">
+    <aside className="w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex flex-col h-screen fixed left-0 top-0">
       {/* Logo */}
-      <div className="p-4 border-b border-gray-100">
+      <div className="p-4 border-b border-gray-100 dark:border-gray-800">
         <div className="flex items-center gap-2">
           <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M8 8L20 20L8 32" stroke="#BFFF00" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
             <path d="M32 8L20 20L32 32" stroke="#1a1f36" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-          <span className="text-xl font-bold text-gray-900">Zapiio</span>
+          <span className="text-xl font-bold text-gray-900 dark:text-white">Zapiio</span>
         </div>
       </div>
 
       {/* Portfolio Selector */}
-      <div className="p-4 border-b border-gray-100">
-        <button className="w-full flex items-center justify-between px-3 py-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+      <div className="p-4 border-b border-gray-100 dark:border-gray-800">
+        <button className="w-full flex items-center justify-between px-3 py-2 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-lime-400 flex items-center justify-center">
               <Home className="w-4 h-4 text-gray-900" />
             </div>
             <div className="text-left">
-              <p className="text-sm font-medium text-gray-900">
+              <p className="text-sm font-medium text-gray-900 dark:text-white">
                 {currentPortfolio?.name || 'No Portfolio'}
               </p>
-              <p className="text-xs text-gray-500 capitalize">
+              <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">
                 {currentPortfolio?.type || 'Create one'}
               </p>
             </div>
@@ -138,19 +138,19 @@ const Sidebar = () => {
         ))}
         
         {/* New Plan Button */}
-        <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-lime-700 hover:bg-lime-50 transition-colors mt-4">
+        <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-lime-700 dark:text-lime-400 hover:bg-lime-50 dark:hover:bg-lime-900/30 transition-colors mt-4">
           <Plus className="w-5 h-5" />
           <span>New Plan</span>
         </button>
       </nav>
 
       {/* Bottom Navigation */}
-      <div className="p-4 border-t border-gray-100 space-y-1">
+      <div className="p-4 border-t border-gray-100 dark:border-gray-800 space-y-1">
         {bottomItems.map((item) => (
           <NavLink
             key={item.href}
             to={item.href}
-            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors"
           >
             <item.icon className="w-5 h-5" />
             <span>{item.title}</span>
@@ -158,9 +158,9 @@ const Sidebar = () => {
         ))}
         
         {/* Dev Mode Indicator */}
-        <div className="mt-4 px-3 py-2 bg-amber-50 rounded-lg">
-          <p className="text-xs font-medium text-amber-700">Dev Mode</p>
-          <p className="text-xs text-amber-600">Auth disabled</p>
+        <div className="mt-4 px-3 py-2 bg-amber-50 dark:bg-amber-900/30 rounded-lg">
+          <p className="text-xs font-medium text-amber-700 dark:text-amber-400">Dev Mode</p>
+          <p className="text-xs text-amber-600 dark:text-amber-500">Auth disabled</p>
         </div>
       </div>
     </aside>
