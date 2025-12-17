@@ -76,11 +76,11 @@ const Sidebar = () => {
             'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all',
             isChild ? 'ml-6' : '',
             isActive && !hasChildren
-              ? 'bg-lime-400/20 text-lime-700'
-              : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+              ? 'bg-lime-400/20 text-lime-700 dark:text-lime-400'
+              : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white'
           )}
         >
-          <item.icon className={cn('w-5 h-5', isActive && !hasChildren ? 'text-lime-600' : '')} />
+          <item.icon className={cn('w-5 h-5', isActive && !hasChildren ? 'text-lime-600 dark:text-lime-400' : '')} />
           <span className="flex-1">{item.title}</span>
           {hasChildren && (
             <ChevronDown className={cn('w-4 h-4 transition-transform', isOpen ? 'rotate-180' : '')} />
