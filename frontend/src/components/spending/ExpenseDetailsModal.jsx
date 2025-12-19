@@ -150,16 +150,16 @@ const ExpenseDetailsModal = ({ open, onOpenChange, expense }) => {
                   <Calendar className="w-4 h-4 text-gray-500" />
                   <span className="text-sm text-gray-500">Frequency</span>
                 </div>
-                <p className="text-lg font-semibold capitalize">{expense.frequency}</p>
+                <p className="text-lg font-semibold capitalize dark:text-white">{expense.frequency}</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <Receipt className="w-4 h-4 text-gray-500" />
-                  <span className="text-sm text-gray-500">Tax Deductible</span>
+                  <Receipt className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                  <span className="text-sm text-gray-500 dark:text-gray-400">Tax Deductible</span>
                 </div>
-                <p className="text-lg font-semibold">{expense.is_tax_deductible ? 'Yes' : 'No'}</p>
+                <p className="text-lg font-semibold dark:text-white">{expense.is_tax_deductible ? 'Yes' : 'No'}</p>
               </CardContent>
             </Card>
           </div>
