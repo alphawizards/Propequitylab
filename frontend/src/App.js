@@ -64,9 +64,9 @@ function AppRoutes() {
           <Route path="/dashboard" element={<DashboardNew />} />
           
           {/* Finances routes */}
-          <Route path="/finances" element={<PlaceholderPage title="Current Finances" />} />
-          <Route path="/finances/income" element={<PlaceholderPage title="Income Sources" />} />
-          <Route path="/finances/spending" element={<PlaceholderPage title="Spending" />} />
+          <Route path="/finances" element={<Navigate to="/finances/income" replace />} />
+          <Route path="/finances/income" element={<IncomePage />} />
+          <Route path="/finances/spending" element={<SpendingPage />} />
           <Route path="/finances/properties" element={<PropertiesPage />} />
           <Route path="/finances/assets" element={<AssetsPage />} />
           <Route path="/finances/liabilities" element={<LiabilitiesPage />} />
