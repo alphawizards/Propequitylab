@@ -47,15 +47,17 @@ const EXPENSE_CATEGORIES = [
 
 const SpendingPage = () => {
   const { currentPortfolio } = usePortfolio();
+  const { toast } = useToast();
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
   const [showFormModal, setShowFormModal] = useState(false);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState(null);
 
-  const fetchExpenses = async () => {
+  const fetchExpenses = useCallback(async () => {
     if (!currentPortfolio?.id) return;
     setLoading(true);
     try {
@@ -63,16 +65,22 @@ const SpendingPage = () => {
       setExpenses(data);
     } catch (error) {
       console.error('Failed to fetch expenses:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to load expenses. Please try again.',
+        variant: 'destructive',
+      });
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPortfolio?.id, toast]);
 
   useEffect(() => {
     fetchExpenses();
-  }, [currentPortfolio?.id]);
+  }, [fetchExpenses]);
 
   const handleCreate = async (data) => {
+    setSaving(true);
     try {
       await api.createExpense({
         ...data,
@@ -80,19 +88,42 @@ const SpendingPage = () => {
       });
       await fetchExpenses();
       setShowFormModal(false);
+      toast({
+        title: 'Success',
+        description: 'Expense added successfully.',
+      });
     } catch (error) {
       console.error('Failed to create expense:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to add expense. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setSaving(false);
     }
   };
 
   const handleUpdate = async (data) => {
+    setSaving(true);
     try {
       await api.updateExpense(selectedExpense.id, data);
       await fetchExpenses();
       setShowFormModal(false);
       setSelectedExpense(null);
+      toast({
+        title: 'Success',
+        description: 'Expense updated successfully.',
+      });
     } catch (error) {
       console.error('Failed to update expense:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to update expense. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -101,8 +132,17 @@ const SpendingPage = () => {
     try {
       await api.deleteExpense(id);
       await fetchExpenses();
+      toast({
+        title: 'Success',
+        description: 'Expense deleted successfully.',
+      });
     } catch (error) {
       console.error('Failed to delete expense:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to delete expense. Please try again.',
+        variant: 'destructive',
+      });
     }
   };
 
