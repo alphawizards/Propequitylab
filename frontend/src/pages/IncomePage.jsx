@@ -32,8 +32,10 @@ const formatCurrency = (value) => {
 
 const IncomePage = () => {
   const { currentPortfolio } = usePortfolio();
+  const { toast } = useToast();
   const [incomeSources, setIncomeSources] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
   const [filterOwner, setFilterOwner] = useState('all');
@@ -41,7 +43,7 @@ const IncomePage = () => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedIncome, setSelectedIncome] = useState(null);
 
-  const fetchIncomeSources = async () => {
+  const fetchIncomeSources = useCallback(async () => {
     if (!currentPortfolio?.id) return;
     setLoading(true);
     try {
@@ -49,16 +51,22 @@ const IncomePage = () => {
       setIncomeSources(data);
     } catch (error) {
       console.error('Failed to fetch income sources:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to load income sources. Please try again.',
+        variant: 'destructive',
+      });
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPortfolio?.id, toast]);
 
   useEffect(() => {
     fetchIncomeSources();
-  }, [currentPortfolio?.id]);
+  }, [fetchIncomeSources]);
 
   const handleCreate = async (data) => {
+    setSaving(true);
     try {
       await api.createIncomeSource({
         ...data,
@@ -66,19 +74,42 @@ const IncomePage = () => {
       });
       await fetchIncomeSources();
       setShowFormModal(false);
+      toast({
+        title: 'Success',
+        description: 'Income source added successfully.',
+      });
     } catch (error) {
       console.error('Failed to create income source:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to add income source. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setSaving(false);
     }
   };
 
   const handleUpdate = async (data) => {
+    setSaving(true);
     try {
       await api.updateIncomeSource(selectedIncome.id, data);
       await fetchIncomeSources();
       setShowFormModal(false);
       setSelectedIncome(null);
+      toast({
+        title: 'Success',
+        description: 'Income source updated successfully.',
+      });
     } catch (error) {
       console.error('Failed to update income source:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to update income source. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -87,8 +118,17 @@ const IncomePage = () => {
     try {
       await api.deleteIncomeSource(id);
       await fetchIncomeSources();
+      toast({
+        title: 'Success',
+        description: 'Income source deleted successfully.',
+      });
     } catch (error) {
       console.error('Failed to delete income source:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to delete income source. Please try again.',
+        variant: 'destructive',
+      });
     }
   };
 
