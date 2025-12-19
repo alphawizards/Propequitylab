@@ -100,34 +100,34 @@ const IncomeDetailsModal = ({ open, onOpenChange, income }) => {
                   <User className="w-4 h-4 text-gray-500" />
                   <span className="text-sm text-gray-500">Owner</span>
                 </div>
-                <p className="text-lg font-semibold capitalize">{income.owner}</p>
+                <p className="text-lg font-semibold capitalize dark:text-white">{income.owner}</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <Calendar className="w-4 h-4 text-gray-500" />
-                  <span className="text-sm text-gray-500">Frequency</span>
+                  <Calendar className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                  <span className="text-sm text-gray-500 dark:text-gray-400">Frequency</span>
                 </div>
-                <p className="text-lg font-semibold capitalize">{income.frequency}</p>
+                <p className="text-lg font-semibold capitalize dark:text-white">{income.frequency}</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <DollarSign className="w-4 h-4 text-gray-500" />
-                  <span className="text-sm text-gray-500">Taxable</span>
+                  <DollarSign className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                  <span className="text-sm text-gray-500 dark:text-gray-400">Taxable</span>
                 </div>
-                <p className="text-lg font-semibold">{income.is_taxable ? 'Yes' : 'No'}</p>
+                <p className="text-lg font-semibold dark:text-white">{income.is_taxable ? 'Yes' : 'No'}</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <Calendar className="w-4 h-4 text-gray-500" />
-                  <span className="text-sm text-gray-500">Until Age</span>
+                  <Calendar className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                  <span className="text-sm text-gray-500 dark:text-gray-400">Until Age</span>
                 </div>
-                <p className="text-lg font-semibold">{income.end_age || 'Ongoing'}</p>
+                <p className="text-lg font-semibold dark:text-white">{income.end_age || 'Ongoing'}</p>
               </CardContent>
             </Card>
           </div>
