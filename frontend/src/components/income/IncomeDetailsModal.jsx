@@ -73,19 +73,19 @@ const IncomeDetailsModal = ({ open, onOpenChange, income }) => {
 
         <div className="space-y-6">
           {/* Current Income Overview */}
-          <Card className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
+          <Card className="bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-700 dark:to-emerald-700 text-white">
             <CardContent className="p-6">
               <div className="grid grid-cols-3 gap-6 text-center">
                 <div>
-                  <p className="text-green-100 text-sm">Annual</p>
+                  <p className="text-green-100 dark:text-green-200 text-sm">Annual</p>
                   <p className="text-3xl font-bold">{formatCurrency(annualAmount)}</p>
                 </div>
                 <div>
-                  <p className="text-green-100 text-sm">Monthly</p>
+                  <p className="text-green-100 dark:text-green-200 text-sm">Monthly</p>
                   <p className="text-3xl font-bold">{formatCurrency(monthlyAmount)}</p>
                 </div>
                 <div>
-                  <p className="text-green-100 text-sm">Growth Rate</p>
+                  <p className="text-green-100 dark:text-green-200 text-sm">Growth Rate</p>
                   <p className="text-3xl font-bold">+{income.growth_rate}%</p>
                 </div>
               </div>
