@@ -90,19 +90,19 @@ const ExpenseDetailsModal = ({ open, onOpenChange, expense }) => {
 
         <div className="space-y-6">
           {/* Current Expense Overview */}
-          <Card className="bg-gradient-to-r from-red-500 to-orange-500 text-white">
+          <Card className="bg-gradient-to-r from-red-600 to-orange-600 dark:from-red-700 dark:to-orange-700 text-white">
             <CardContent className="p-6">
               <div className="grid grid-cols-3 gap-6 text-center">
                 <div>
-                  <p className="text-red-100 text-sm">Annual</p>
+                  <p className="text-red-100 dark:text-red-200 text-sm">Annual</p>
                   <p className="text-3xl font-bold">{formatCurrency(annualAmount)}</p>
                 </div>
                 <div>
-                  <p className="text-red-100 text-sm">Monthly</p>
+                  <p className="text-red-100 dark:text-red-200 text-sm">Monthly</p>
                   <p className="text-3xl font-bold">{formatCurrency(monthlyAmount)}</p>
                 </div>
                 <div>
-                  <p className="text-red-100 text-sm">Inflation</p>
+                  <p className="text-red-100 dark:text-red-200 text-sm">Inflation</p>
                   <p className="text-3xl font-bold">+{expense.inflation_rate}%</p>
                 </div>
               </div>
