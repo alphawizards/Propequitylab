@@ -14,6 +14,7 @@ import ProgressPage from './pages/ProgressPage';
 import IncomePage from './pages/IncomePage';
 import SpendingPage from './pages/SpendingPage';
 import SuperCalculatorPage from './pages/tools/SuperCalculatorPage';
+import PropertyCalculatorPage from './pages/tools/PropertyCalculatorPage';
 import OnboardingWizard from './components/onboarding/OnboardingWizard';
 import { Toaster } from './components/ui/toaster';
 
@@ -80,6 +81,7 @@ function AppRoutes() {
 
           {/* Tools */}
           <Route path="/tools/super-calculator" element={<SuperCalculatorPage />} />
+          <Route path="/tools/property-calculator" element={<PropertyCalculatorPage />} />
           
           {/* Settings & Help */}
           <Route path="/settings" element={<PlaceholderPage title="Settings" />} />

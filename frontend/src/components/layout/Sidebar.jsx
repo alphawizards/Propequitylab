@@ -9,6 +9,7 @@ import {
   DollarSign,
   CreditCard,
   PiggyBank,
+  Calculator,
   Settings,
   HelpCircle,
   ChevronDown,
@@ -48,6 +49,15 @@ const Sidebar = () => {
       title: 'Plans',
       icon: Target,
       href: '/plans',
+    },
+    {
+      title: 'Tools',
+      icon: Calculator,
+      href: '/tools',
+      children: [
+        { title: 'Super Projector', href: '/tools/super-calculator', icon: TrendingUp },
+        { title: 'Property Equity', href: '/tools/property-calculator', icon: Home },
+      ]
     },
   ];
 

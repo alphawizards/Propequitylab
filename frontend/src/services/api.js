@@ -73,6 +73,7 @@ const api = {
   updateAsset: (id, data) => apiClient.put(`/assets/${id}`, data),
   deleteAsset: (id) => apiClient.delete(`/assets/${id}`),
   calculateSuperProjection: (data) => apiClient.post('/assets/project-super', data),
+  calculatePropertyProjection: (data) => apiClient.post('/properties/project-equity', data),
 
   // Liabilities
   getLiabilityTypes: () => apiClient.get('/liabilities/types'),

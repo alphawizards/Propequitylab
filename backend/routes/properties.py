@@ -2,11 +2,35 @@ from fastapi import APIRouter, HTTPException
 from typing import List
 from datetime import datetime, timezone
 
+from pydantic import BaseModel
 from models.property import Property, PropertyCreate, PropertyUpdate
 from utils.database import db
 from utils.dev_user import DEV_USER_ID
 
 router = APIRouter(prefix="/properties", tags=["properties"])
+
+
+class PropertyProjectionRequest(BaseModel):
+    current_value: float
+    loan_balance: float
+    interest_rate: float
+    loan_term_years: int
+    capital_growth_rate: float
+    repayment_type: str = "principal_interest" # or interest_only
+    years: int = 30
+
+
+class YearlyPropertyProjection(BaseModel):
+    year: int
+    property_value: float
+    loan_balance: float
+    equity: float
+
+
+class PropertyProjectionResponse(BaseModel):
+    projections: List[YearlyPropertyProjection]
+    final_value: float
+    final_equity: float
 
 
 @router.get("/portfolio/{portfolio_id}", response_model=List[Property])
@@ -110,3 +134,58 @@ async def delete_property(property_id: str):
         raise HTTPException(status_code=404, detail="Property not found")
     
     return {"message": "Property deleted successfully"}
+
+
+@router.post("/project-equity", response_model=PropertyProjectionResponse)
+async def project_property_equity(data: PropertyProjectionRequest):
+    """Calculate property equity projection"""
+
+    projections = []
+
+    current_value = data.current_value
+    loan_balance = data.loan_balance
+
+    # Simple loan amortization
+    # This is a simplification. Real loans are complex.
+    # Monthly rate
+    r = data.interest_rate / 100 / 12
+    n = data.loan_term_years * 12
+
+    # Calculate monthly payment
+    if data.repayment_type == "interest_only":
+        monthly_payment = loan_balance * r
+    else:
+        # P&I formula: M = P [ i(1 + i)^n ] / [ (1 + i)^n – 1]
+        if r > 0:
+            monthly_payment = loan_balance * (r * (1 + r)**n) / ((1 + r)**n - 1)
+        else:
+            monthly_payment = loan_balance / n
+
+    for year in range(1, data.years + 1):
+        # Apply capital growth
+        current_value *= (1 + data.capital_growth_rate / 100)
+
+        # Apply loan repayments (12 months)
+        for _ in range(12):
+            if loan_balance > 0:
+                interest = loan_balance * r
+                principal = monthly_payment - interest
+                if data.repayment_type == "interest_only":
+                    principal = 0 # Interest only means principal doesn't reduce (unless offset, ignoring for now)
+
+                loan_balance -= principal
+                if loan_balance < 0:
+                    loan_balance = 0
+
+        projections.append(YearlyPropertyProjection(
+            year=datetime.now().year + year,
+            property_value=round(current_value, 2),
+            loan_balance=round(loan_balance, 2),
+            equity=round(current_value - loan_balance, 2)
+        ))
+
+    return PropertyProjectionResponse(
+        projections=projections,
+        final_value=round(current_value, 2),
+        final_equity=round(current_value - loan_balance, 2)
+    )
