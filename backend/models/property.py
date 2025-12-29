@@ -96,8 +96,13 @@ class PropertyCreate(BaseModel):
     bedrooms: int = 3
     bathrooms: int = 2
     car_spaces: int = 1
+    land_size: float = 0
+    building_size: float = 0
+    year_built: Optional[int] = None
     purchase_price: float
     purchase_date: str
+    stamp_duty: float = 0
+    purchase_costs: float = 0
     current_value: Optional[float] = None
     loan_details: Optional[LoanDetails] = None
     rental_details: Optional[RentalDetails] = None
@@ -114,7 +119,12 @@ class PropertyUpdate(BaseModel):
     bedrooms: Optional[int] = None
     bathrooms: Optional[int] = None
     car_spaces: Optional[int] = None
+    land_size: Optional[float] = None
+    building_size: Optional[float] = None
+    year_built: Optional[int] = None
     current_value: Optional[float] = None
+    stamp_duty: Optional[float] = None
+    purchase_costs: Optional[float] = None
     loan_details: Optional[LoanDetails] = None
     rental_details: Optional[RentalDetails] = None
     expenses: Optional[PropertyExpenses] = None
