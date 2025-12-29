@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional, Dict
 from datetime import datetime, timezone
+import asyncio
 
 from models.net_worth import NetWorthSnapshot, AssetBreakdown, LiabilityBreakdown
 from utils.database import db
@@ -42,30 +43,16 @@ async def get_dashboard_summary(portfolio_id: Optional[str] = None):
     
     portfolio_id = portfolio['id']
     
-    # Get properties
-    properties = await db.properties.find(
-        {"portfolio_id": portfolio_id}
-    ).to_list(1000)
-    
-    # Get other assets
-    assets = await db.assets.find(
-        {"portfolio_id": portfolio_id, "is_active": True}
-    ).to_list(1000)
-    
-    # Get liabilities
-    liabilities = await db.liabilities.find(
-        {"portfolio_id": portfolio_id, "is_active": True}
-    ).to_list(1000)
-    
-    # Get income
-    income_sources = await db.income_sources.find(
-        {"portfolio_id": portfolio_id, "is_active": True}
-    ).to_list(1000)
-    
-    # Get expenses
-    expenses = await db.expenses.find(
-        {"portfolio_id": portfolio_id, "is_active": True}
-    ).to_list(1000)
+    # Fetch all data in parallel
+    results = await asyncio.gather(
+        db.properties.find({"portfolio_id": portfolio_id}).to_list(1000),
+        db.assets.find({"portfolio_id": portfolio_id, "is_active": True}).to_list(1000),
+        db.liabilities.find({"portfolio_id": portfolio_id, "is_active": True}).to_list(1000),
+        db.income_sources.find({"portfolio_id": portfolio_id, "is_active": True}).to_list(1000),
+        db.expenses.find({"portfolio_id": portfolio_id, "is_active": True}).to_list(1000)
+    )
+
+    properties, assets, liabilities, income_sources, expenses = results
     
     # Calculate asset breakdown
     property_value = sum(p.get('current_value', 0) for p in properties)
