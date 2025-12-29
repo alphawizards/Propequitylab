@@ -13,6 +13,7 @@ import PlansPage from './pages/PlansPage';
 import ProgressPage from './pages/ProgressPage';
 import IncomePage from './pages/IncomePage';
 import SpendingPage from './pages/SpendingPage';
+import SuperCalculatorPage from './pages/tools/SuperCalculatorPage';
 import OnboardingWizard from './components/onboarding/OnboardingWizard';
 import { Toaster } from './components/ui/toaster';
 
@@ -76,6 +77,9 @@ function AppRoutes() {
           
           {/* Plans */}
           <Route path="/plans" element={<PlansPage />} />
+
+          {/* Tools */}
+          <Route path="/tools/super-calculator" element={<SuperCalculatorPage />} />
           
           {/* Settings & Help */}
           <Route path="/settings" element={<PlaceholderPage title="Settings" />} />

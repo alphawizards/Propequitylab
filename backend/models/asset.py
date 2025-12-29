@@ -7,7 +7,14 @@ import uuid
 class ContributionSchedule(BaseModel):
     amount: float = 0
     frequency: str = "monthly"  # weekly, fortnightly, monthly, annual
-    employer_contribution: float = 0  # for super
+
+    # Super specific
+    contribution_type: str = "fixed"  # fixed, percentage
+    income_gross: float = 0  # if percentage, base this on
+    employer_contribution: float = 0  # fixed amount
+    employer_contribution_rate: float = 0  # percentage (e.g., 11.5)
+    personal_contribution_rate: float = 0  # percentage salary sacrifice
+
     growth_rate: float = 3.0  # annual increase in contributions
 
 
