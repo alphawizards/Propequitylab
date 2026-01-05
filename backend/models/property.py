@@ -1,92 +1,130 @@
-from pydantic import BaseModel, Field, ConfigDict
-from typing import Optional, Dict
-from datetime import datetime, timezone
-import uuid
+"""
+Property Model - SQLModel (PostgreSQL)
+Refactored from Pydantic/MongoDB to SQLModel/PostgreSQL
+⚠️ CRITICAL: All currency fields use DECIMAL(19, 4) for financial precision
+"""
+
+from sqlmodel import SQLModel, Field, Column
+from sqlalchemy import DECIMAL, JSON
+from typing import Optional
+from datetime import datetime, date
+from decimal import Decimal
+from enum import Enum
 
 
-class LoanDetails(BaseModel):
-    amount: float = 0
-    interest_rate: float = 6.25
+class PropertyType(str, Enum):
+    """Property type enumeration"""
+    HOUSE = "house"
+    APARTMENT = "apartment"
+    TOWNHOUSE = "townhouse"
+    UNIT = "unit"
+    VILLA = "villa"
+    LAND = "land"
+
+
+class LoanType(str, Enum):
+    """Loan type enumeration"""
+    INTEREST_ONLY = "interest_only"
+    PRINCIPAL_INTEREST = "principal_interest"
+
+
+class Property(SQLModel, table=True):
+    """
+    Property table - real estate property entity
+    ⚠️ CRITICAL: All currency fields use DECIMAL(19, 4) for precision
+    """
+    __tablename__ = "properties"
+    
+    # Primary Key
+    id: str = Field(primary_key=True, max_length=50)
+    
+    # Foreign Keys
+    user_id: str = Field(foreign_key="users.id", index=True, max_length=50)
+    portfolio_id: str = Field(foreign_key="portfolios.id", index=True, max_length=50)
+    
+    # Address
+    address: str = Field(max_length=500)
+    suburb: str = Field(max_length=255)
+    state: str = Field(max_length=50)
+    postcode: str = Field(max_length=20)
+    
+    # Property Details
+    property_type: str = Field(default="house", max_length=50)
+    bedrooms: int = Field(default=3)
+    bathrooms: int = Field(default=2)
+    car_spaces: int = Field(default=1)
+    land_size: Decimal = Field(default=Decimal("0.00"), sa_column=Column(DECIMAL(10, 2)))  # sqm
+    building_size: Decimal = Field(default=Decimal("0.00"), sa_column=Column(DECIMAL(10, 2)))  # sqm
+    year_built: Optional[int] = Field(default=None)
+    
+    # Purchase Details (DECIMAL for precision)
+    purchase_price: Decimal = Field(sa_column=Column(DECIMAL(19, 4)))
+    purchase_date: date
+    stamp_duty: Decimal = Field(default=Decimal("0.0000"), sa_column=Column(DECIMAL(19, 4)))
+    purchase_costs: Decimal = Field(default=Decimal("0.0000"), sa_column=Column(DECIMAL(19, 4)))
+    
+    # Current Valuation (DECIMAL for precision)
+    current_value: Decimal = Field(sa_column=Column(DECIMAL(19, 4)))
+    last_valuation_date: Optional[date] = Field(default=None)
+    
+    # Loan Details (stored as JSON with DECIMAL values)
+    loan_details: Optional[dict] = Field(default=None, sa_column=Column(JSON))
+    
+    # Rental Details (stored as JSON with DECIMAL values)
+    rental_details: Optional[dict] = Field(default=None, sa_column=Column(JSON))
+    
+    # Expenses (stored as JSON with DECIMAL values)
+    expenses: Optional[dict] = Field(default=None, sa_column=Column(JSON))
+    
+    # Growth Assumptions (stored as JSON)
+    growth_assumptions: Optional[dict] = Field(default=None, sa_column=Column(JSON))
+    
+    # Metadata
+    notes: str = Field(default="", max_length=2000)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+# Pydantic models for API requests/responses
+
+class LoanDetails(SQLModel):
+    """Loan details schema"""
+    amount: Decimal = Decimal("0.0000")
+    interest_rate: Decimal = Decimal("6.25")  # percentage
     loan_type: str = "interest_only"  # interest_only, principal_interest
     loan_term: int = 30  # years
     lender: str = ""
-    offset_balance: float = 0
+    offset_balance: Decimal = Decimal("0.0000")
 
 
-class RentalDetails(BaseModel):
-    income: float = 0
+class RentalDetails(SQLModel):
+    """Rental details schema"""
+    income: Decimal = Decimal("0.0000")
     frequency: str = "weekly"  # weekly, fortnightly, monthly
-    vacancy_rate: float = 2.0  # percentage
+    vacancy_rate: Decimal = Decimal("2.0")  # percentage
     is_rented: bool = True
 
 
-class PropertyExpenses(BaseModel):
-    strata: float = 0
-    council_rates: float = 0
-    water_rates: float = 0
-    insurance: float = 0
-    maintenance: float = 0
-    property_management: float = 0
-    land_tax: float = 0
-    other: float = 0
+class PropertyExpenses(SQLModel):
+    """Property expenses schema (annual)"""
+    strata: Decimal = Decimal("0.0000")
+    council_rates: Decimal = Decimal("0.0000")
+    water_rates: Decimal = Decimal("0.0000")
+    insurance: Decimal = Decimal("0.0000")
+    maintenance: Decimal = Decimal("0.0000")
+    property_management: Decimal = Decimal("0.0000")
+    land_tax: Decimal = Decimal("0.0000")
+    other: Decimal = Decimal("0.0000")
 
 
-class GrowthAssumptions(BaseModel):
-    capital_growth_rate: float = 5.0
-    rental_growth_rate: float = 3.0
+class GrowthAssumptions(SQLModel):
+    """Growth assumptions schema"""
+    capital_growth_rate: Decimal = Decimal("5.0")  # percentage
+    rental_growth_rate: Decimal = Decimal("3.0")  # percentage
 
 
-class Property(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    user_id: str  # REQUIRED for future auth
-    portfolio_id: str
-    
-    # Address
-    address: str
-    suburb: str
-    state: str
-    postcode: str
-    
-    # Property details
-    property_type: str = "house"  # house, apartment, townhouse, unit, villa, land
-    bedrooms: int = 3
-    bathrooms: int = 2
-    car_spaces: int = 1
-    land_size: float = 0  # sqm
-    building_size: float = 0  # sqm
-    year_built: Optional[int] = None
-    
-    # Purchase details
-    purchase_price: float
-    purchase_date: str  # ISO date string
-    stamp_duty: float = 0
-    purchase_costs: float = 0  # legal, inspection, etc.
-    
-    # Current valuation
-    current_value: float
-    last_valuation_date: Optional[str] = None
-    
-    # Loan
-    loan_details: LoanDetails = Field(default_factory=LoanDetails)
-    
-    # Rental
-    rental_details: RentalDetails = Field(default_factory=RentalDetails)
-    
-    # Expenses (annual)
-    expenses: PropertyExpenses = Field(default_factory=PropertyExpenses)
-    
-    # Growth assumptions
-    growth_assumptions: GrowthAssumptions = Field(default_factory=GrowthAssumptions)
-    
-    # Metadata
-    notes: str = ""
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-
-
-class PropertyCreate(BaseModel):
+class PropertyCreate(SQLModel):
+    """Property creation request"""
     portfolio_id: str
     address: str
     suburb: str
@@ -96,21 +134,22 @@ class PropertyCreate(BaseModel):
     bedrooms: int = 3
     bathrooms: int = 2
     car_spaces: int = 1
-    land_size: float = 0
-    building_size: float = 0
+    land_size: Decimal = Decimal("0.00")
+    building_size: Decimal = Decimal("0.00")
     year_built: Optional[int] = None
-    purchase_price: float
-    purchase_date: str
-    stamp_duty: float = 0
-    purchase_costs: float = 0
-    current_value: Optional[float] = None
+    purchase_price: Decimal
+    purchase_date: str  # Will be converted to date
+    stamp_duty: Decimal = Decimal("0.0000")
+    purchase_costs: Decimal = Decimal("0.0000")
+    current_value: Optional[Decimal] = None
     loan_details: Optional[LoanDetails] = None
     rental_details: Optional[RentalDetails] = None
     expenses: Optional[PropertyExpenses] = None
     growth_assumptions: Optional[GrowthAssumptions] = None
 
 
-class PropertyUpdate(BaseModel):
+class PropertyUpdate(SQLModel):
+    """Property update request"""
     address: Optional[str] = None
     suburb: Optional[str] = None
     state: Optional[str] = None
@@ -119,14 +158,45 @@ class PropertyUpdate(BaseModel):
     bedrooms: Optional[int] = None
     bathrooms: Optional[int] = None
     car_spaces: Optional[int] = None
-    land_size: Optional[float] = None
-    building_size: Optional[float] = None
+    land_size: Optional[Decimal] = None
+    building_size: Optional[Decimal] = None
     year_built: Optional[int] = None
-    current_value: Optional[float] = None
-    stamp_duty: Optional[float] = None
-    purchase_costs: Optional[float] = None
+    current_value: Optional[Decimal] = None
+    stamp_duty: Optional[Decimal] = None
+    purchase_costs: Optional[Decimal] = None
     loan_details: Optional[LoanDetails] = None
     rental_details: Optional[RentalDetails] = None
     expenses: Optional[PropertyExpenses] = None
     growth_assumptions: Optional[GrowthAssumptions] = None
     notes: Optional[str] = None
+
+
+class PropertyResponse(SQLModel):
+    """Property response"""
+    id: str
+    user_id: str
+    portfolio_id: str
+    address: str
+    suburb: str
+    state: str
+    postcode: str
+    property_type: str
+    bedrooms: int
+    bathrooms: int
+    car_spaces: int
+    land_size: Decimal
+    building_size: Decimal
+    year_built: Optional[int]
+    purchase_price: Decimal
+    purchase_date: date
+    stamp_duty: Decimal
+    purchase_costs: Decimal
+    current_value: Decimal
+    last_valuation_date: Optional[date]
+    loan_details: Optional[dict]
+    rental_details: Optional[dict]
+    expenses: Optional[dict]
+    growth_assumptions: Optional[dict]
+    notes: str
+    created_at: datetime
+    updated_at: datetime

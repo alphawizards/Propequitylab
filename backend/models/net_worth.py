@@ -1,73 +1,114 @@
-from pydantic import BaseModel, Field, ConfigDict
-from typing import Optional, Dict
-from datetime import datetime, timezone
-import uuid
+"""
+Net Worth Snapshot Model - SQLModel (PostgreSQL)
+Refactored from Pydantic/MongoDB to SQLModel/PostgreSQL
+⚠️ CRITICAL: All currency fields use DECIMAL(19, 4) for financial precision
+"""
+
+from sqlmodel import SQLModel, Field, Column
+from sqlalchemy import DECIMAL, JSON
+from typing import Optional
+from datetime import datetime, date
+from decimal import Decimal
 
 
-class AssetBreakdown(BaseModel):
-    properties: float = 0
-    super: float = 0
-    shares: float = 0
-    etf: float = 0
-    crypto: float = 0
-    cash: float = 0
-    bonds: float = 0
-    other: float = 0
-
-
-class LiabilityBreakdown(BaseModel):
-    property_loans: float = 0
-    car_loans: float = 0
-    credit_cards: float = 0
-    hecs: float = 0
-    personal_loans: float = 0
-    other: float = 0
-
-
-class NetWorthSnapshot(BaseModel):
-    model_config = ConfigDict(extra="ignore")
+class NetWorthSnapshot(SQLModel, table=True):
+    """
+    Net worth snapshot table - historical net worth tracking
+    ⚠️ CRITICAL: All currency fields use DECIMAL(19, 4) for precision
+    """
+    __tablename__ = "net_worth_snapshots"
     
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    user_id: str  # REQUIRED for future auth
-    portfolio_id: str
+    # Primary Key
+    id: str = Field(primary_key=True, max_length=50)
     
-    # Snapshot date
-    date: str  # ISO date string (YYYY-MM-DD)
+    # Foreign Keys
+    user_id: str = Field(foreign_key="users.id", index=True, max_length=50)
+    portfolio_id: str = Field(foreign_key="portfolios.id", index=True, max_length=50)
     
-    # Totals
-    total_assets: float = 0
-    total_liabilities: float = 0
-    net_worth: float = 0
+    # Snapshot Date
+    date: date = Field(index=True)
     
-    # Breakdowns
-    asset_breakdown: AssetBreakdown = Field(default_factory=AssetBreakdown)
-    liability_breakdown: LiabilityBreakdown = Field(default_factory=LiabilityBreakdown)
+    # Totals (DECIMAL for precision)
+    total_assets: Decimal = Field(default=Decimal("0.0000"), sa_column=Column(DECIMAL(19, 4)))
+    total_liabilities: Decimal = Field(default=Decimal("0.0000"), sa_column=Column(DECIMAL(19, 4)))
+    net_worth: Decimal = Field(default=Decimal("0.0000"), sa_column=Column(DECIMAL(19, 4)))
     
-    # Income/Expense snapshot
-    monthly_income: float = 0
-    monthly_expenses: float = 0
-    monthly_cashflow: float = 0
-    savings_rate: float = 0  # percentage
+    # Breakdowns (stored as JSON with DECIMAL values)
+    asset_breakdown: Optional[dict] = Field(default=None, sa_column=Column(JSON))
+    liability_breakdown: Optional[dict] = Field(default=None, sa_column=Column(JSON))
     
-    # Property specific
-    property_equity: float = 0
-    property_ltv: float = 0  # Loan to Value ratio
+    # Income/Expense snapshot (DECIMAL for precision)
+    monthly_income: Decimal = Field(default=Decimal("0.0000"), sa_column=Column(DECIMAL(19, 4)))
+    monthly_expenses: Decimal = Field(default=Decimal("0.0000"), sa_column=Column(DECIMAL(19, 4)))
+    monthly_cashflow: Decimal = Field(default=Decimal("0.0000"), sa_column=Column(DECIMAL(19, 4)))
+    savings_rate: Decimal = Field(default=Decimal("0.00"), sa_column=Column(DECIMAL(5, 2)))  # percentage
     
-    # Change from previous
-    change_from_previous: float = 0
-    change_percentage: float = 0
+    # Property specific (DECIMAL for precision)
+    property_equity: Decimal = Field(default=Decimal("0.0000"), sa_column=Column(DECIMAL(19, 4)))
+    property_ltv: Decimal = Field(default=Decimal("0.00"), sa_column=Column(DECIMAL(5, 2)))  # Loan to Value ratio
+    
+    # Change from previous (DECIMAL for precision)
+    change_from_previous: Decimal = Field(default=Decimal("0.0000"), sa_column=Column(DECIMAL(19, 4)))
+    change_percentage: Decimal = Field(default=Decimal("0.00"), sa_column=Column(DECIMAL(5, 2)))  # percentage
     
     # Metadata
-    is_manual: bool = False  # true if manually entered vs calculated
-    notes: str = ""
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    is_manual: bool = Field(default=False)  # true if manually entered vs calculated
+    notes: str = Field(default="", max_length=2000)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
 
 
-# This model is typically auto-generated, not manually created
-# But we provide a create model for manual snapshots
-class NetWorthSnapshotCreate(BaseModel):
+# Pydantic models for API requests/responses
+
+class AssetBreakdown(SQLModel):
+    """Asset breakdown schema"""
+    properties: Decimal = Decimal("0.0000")
+    super: Decimal = Decimal("0.0000")
+    shares: Decimal = Decimal("0.0000")
+    etf: Decimal = Decimal("0.0000")
+    crypto: Decimal = Decimal("0.0000")
+    cash: Decimal = Decimal("0.0000")
+    bonds: Decimal = Decimal("0.0000")
+    other: Decimal = Decimal("0.0000")
+
+
+class LiabilityBreakdown(SQLModel):
+    """Liability breakdown schema"""
+    property_loans: Decimal = Decimal("0.0000")
+    car_loans: Decimal = Decimal("0.0000")
+    credit_cards: Decimal = Decimal("0.0000")
+    hecs: Decimal = Decimal("0.0000")
+    personal_loans: Decimal = Decimal("0.0000")
+    other: Decimal = Decimal("0.0000")
+
+
+class NetWorthSnapshotCreate(SQLModel):
+    """Net worth snapshot creation request"""
     portfolio_id: str
-    date: str
-    total_assets: Optional[float] = None
-    total_liabilities: Optional[float] = None
+    date: str  # Will be converted to date
+    total_assets: Optional[Decimal] = None
+    total_liabilities: Optional[Decimal] = None
     notes: str = ""
+
+
+class NetWorthSnapshotResponse(SQLModel):
+    """Net worth snapshot response"""
+    id: str
+    user_id: str
+    portfolio_id: str
+    date: date
+    total_assets: Decimal
+    total_liabilities: Decimal
+    net_worth: Decimal
+    asset_breakdown: Optional[dict]
+    liability_breakdown: Optional[dict]
+    monthly_income: Decimal
+    monthly_expenses: Decimal
+    monthly_cashflow: Decimal
+    savings_rate: Decimal
+    property_equity: Decimal
+    property_ltv: Decimal
+    change_from_previous: Decimal
+    change_percentage: Decimal
+    is_manual: bool
+    notes: str
+    created_at: datetime
