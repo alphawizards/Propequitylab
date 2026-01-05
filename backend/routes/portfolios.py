@@ -13,7 +13,7 @@ import logging
 from models.portfolio import Portfolio, PortfolioCreate, PortfolioUpdate, PortfolioSummary
 from models.user import User
 from models.property import Property
-from models.income import Income
+from models.income import IncomeSource
 from models.expense import Expense
 from models.asset import Asset
 from models.liability import Liability
@@ -168,7 +168,7 @@ async def delete_portfolio(
         session.delete(prop)
     
     # Income
-    income_stmt = select(Income).where(Income.portfolio_id == portfolio_id)
+    income_stmt = select(IncomeSource).where(IncomeSource.portfolio_id == portfolio_id)
     incomes = session.exec(income_stmt).all()
     for income in incomes:
         session.delete(income)
@@ -251,7 +251,7 @@ async def get_portfolio_summary(
     total_liabilities = sum(liability.current_balance or Decimal(0) for liability in liabilities)
     
     # Calculate totals for income
-    income_stmt = select(Income).where(Income.portfolio_id == portfolio_id)
+    income_stmt = select(IncomeSource).where(IncomeSource.portfolio_id == portfolio_id)
     incomes = session.exec(income_stmt).all()
     total_income = sum(income.amount or Decimal(0) for income in incomes)
     
