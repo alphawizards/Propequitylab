@@ -11,6 +11,7 @@ ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
 # Import routes
+from routes.auth import router as auth_router
 from routes.portfolios import router as portfolios_router
 from routes.properties import router as properties_router
 from routes.income import router as income_router
@@ -88,6 +89,7 @@ async def health_check():
 
 
 # Include all route modules
+api_router.include_router(auth_router)
 api_router.include_router(onboarding_router)
 api_router.include_router(dashboard_router)
 api_router.include_router(portfolios_router)

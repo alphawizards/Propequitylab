@@ -1,10 +1,14 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { UserProvider, useUser } from './context/UserContext';
 import { PortfolioProvider } from './context/PortfolioContext';
 import { ThemeProvider } from './context/ThemeContext';
+import ProtectedRoute from './components/ProtectedRoute';
 import MainLayout from './components/layout/MainLayout';
+import Login from './pages/Login';
+import Register from './pages/Register';
 import DashboardNew from './pages/DashboardNew';
 import PropertiesPage from './pages/PropertiesPage';
 import AssetsPage from './pages/AssetsPage';
@@ -26,9 +30,12 @@ const PlaceholderPage = ({ title }) => (
   </div>
 );
 
-// Root redirect component that checks onboarding status
+// Root redirect component that checks authentication and onboarding status
 const RootRedirect = () => {
-  const { onboardingStatus, loading } = useUser();
+  const { isAuthenticated, loading: authLoading } = useAuth();
+  const { onboardingStatus, loading: userLoading } = useUser();
+  
+  const loading = authLoading || userLoading;
   
   if (loading) {
     return (
@@ -39,6 +46,11 @@ const RootRedirect = () => {
         </div>
       </div>
     );
+  }
+  
+  // Redirect to login if not authenticated
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
   }
   
   // Redirect to onboarding if not completed
@@ -53,14 +65,26 @@ function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Root redirect based on onboarding status */}
+        {/* Public routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        
+        {/* Root redirect based on auth and onboarding status */}
         <Route path="/" element={<RootRedirect />} />
         
-        {/* Onboarding wizard */}
-        <Route path="/onboarding" element={<OnboardingWizard />} />
+        {/* Protected routes */}
+        <Route path="/onboarding" element={
+          <ProtectedRoute>
+            <OnboardingWizard />
+          </ProtectedRoute>
+        } />
         
-        {/* Main app routes with sidebar layout */}
-        <Route element={<MainLayout />}>
+        {/* Main app routes with sidebar layout - all protected */}
+        <Route element={
+          <ProtectedRoute>
+            <MainLayout />
+          </ProtectedRoute>
+        }>
           <Route path="/dashboard" element={<DashboardNew />} />
           
           {/* Finances routes */}
@@ -89,14 +113,16 @@ function AppRoutes() {
 function App() {
   return (
     <ThemeProvider>
-      <UserProvider>
-        <PortfolioProvider>
-          <div className="App">
-            <AppRoutes />
-            <Toaster />
-          </div>
-        </PortfolioProvider>
-      </UserProvider>
+      <AuthProvider>
+        <UserProvider>
+          <PortfolioProvider>
+            <div className="App">
+              <AppRoutes />
+              <Toaster />
+            </div>
+          </PortfolioProvider>
+        </UserProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }
