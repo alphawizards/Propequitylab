@@ -1,14 +1,30 @@
-from fastapi import APIRouter, HTTPException
+"""
+Plan Routes - SQL-Based with Authentication & Data Isolation
+⚠️ CRITICAL: All queries include .where(Plan.user_id == current_user.id) for data isolation
+"""
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlmodel import Session, select
 from typing import List, Optional
-from datetime import datetime, timezone
+from datetime import datetime
+from decimal import Decimal
 from pydantic import BaseModel
-import math
+import logging
+import uuid
 
 from models.plan import Plan, PlanCreate, PlanUpdate, PLAN_TYPES
-from utils.database import db
-from utils.dev_user import DEV_USER_ID
+from models.portfolio import Portfolio
+from models.property import Property
+from models.asset import Asset
+from models.liability import Liability
+from models.income import IncomeSource
+from models.expense import Expense
+from models.user import User
+from utils.database_sql import get_session
+from utils.auth import get_current_user
 
-router = APIRouter(prefix="/plans", tags=["plans"])
+logger = logging.getLogger(__name__)
+router = APIRouter(prefix="/api/plans", tags=["plans"])
 
 
 class ProjectionInput(BaseModel):
@@ -46,25 +62,77 @@ class ProjectionResult(BaseModel):
 
 @router.get("/types")
 async def get_plan_types():
-    """Get list of plan types"""
+    """Get list of plan types (static data, no auth required)"""
     return {"types": PLAN_TYPES}
 
 
 @router.get("/portfolio/{portfolio_id}", response_model=List[Plan])
-async def get_portfolio_plans(portfolio_id: str):
-    """Get all plans for a portfolio"""
-    plans = await db.plans.find(
-        {"portfolio_id": portfolio_id, "user_id": DEV_USER_ID},
-        {"_id": 0}
-    ).to_list(100)
+async def get_portfolio_plans(
+    portfolio_id: str,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    """
+    Get all plans for a portfolio
+    
+    ⚠️ Data Isolation: Only returns plans owned by current_user
+    """
+    # Verify portfolio exists and user has access
+    portfolio_stmt = select(Portfolio).where(
+        Portfolio.id == portfolio_id,
+        Portfolio.user_id == current_user.id
+    )
+    portfolio = session.exec(portfolio_stmt).first()
+    
+    if not portfolio:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Portfolio not found or you don't have access"
+        )
+    
+    # Get plans with data isolation
+    statement = select(Plan).where(
+        Plan.portfolio_id == portfolio_id,
+        Plan.user_id == current_user.id  # CRITICAL: Data isolation filter
+    )
+    plans = session.exec(statement).all()
+    
     return plans
 
 
-@router.post("", response_model=Plan)
-async def create_plan(data: PlanCreate):
-    """Create a new plan"""
+@router.post("", response_model=Plan, status_code=status.HTTP_201_CREATED)
+async def create_plan(
+    data: PlanCreate,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    """
+    Create a new plan
+    
+    ⚠️ Data Isolation: Plan automatically assigned to current_user
+    """
+    # Verify portfolio exists and user has access
+    portfolio_stmt = select(Portfolio).where(
+        Portfolio.id == data.portfolio_id,
+        Portfolio.user_id == current_user.id
+    )
+    portfolio = session.exec(portfolio_stmt).first()
+    
+    if not portfolio:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Portfolio not found or you don't have access"
+        )
+    
+    # Handle modifications JSON field
+    modifications_data = None
+    if data.modifications:
+        modifications_data = [m.model_dump() if hasattr(m, 'model_dump') else m for m in data.modifications]
+    
+    # Create plan with user_id from authenticated user
     plan = Plan(
-        user_id=DEV_USER_ID,
+        id=str(uuid.uuid4()),
+        user_id=current_user.id,  # CRITICAL: Set from authenticated user
         portfolio_id=data.portfolio_id,
         name=data.name,
         description=data.description,
@@ -72,74 +140,131 @@ async def create_plan(data: PlanCreate):
         retirement_age=data.retirement_age,
         target_equity=data.target_equity,
         target_passive_income=data.target_passive_income,
-        modifications=data.modifications
+        modifications=modifications_data,
+        created_at=datetime.utcnow(),
+        updated_at=datetime.utcnow()
     )
     
-    doc = plan.model_dump()
-    doc['created_at'] = doc['created_at'].isoformat()
-    doc['updated_at'] = doc['updated_at'].isoformat()
-    if doc['last_calculated']:
-        doc['last_calculated'] = doc['last_calculated'].isoformat()
+    # CORRECT WRITE FLOW: add -> commit -> refresh
+    session.add(plan)
+    session.commit()
+    session.refresh(plan)
     
-    await db.plans.insert_one(doc)
+    logger.info(f"Plan created: {plan.id} for user: {current_user.id}")
     return plan
 
 
 @router.get("/{plan_id}", response_model=Plan)
-async def get_plan(plan_id: str):
-    """Get a specific plan"""
-    plan = await db.plans.find_one(
-        {"id": plan_id, "user_id": DEV_USER_ID},
-        {"_id": 0}
+async def get_plan(
+    plan_id: str,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    """
+    Get a specific plan
+    
+    ⚠️ Data Isolation: Only returns plan if owned by current_user
+    """
+    statement = select(Plan).where(
+        Plan.id == plan_id,
+        Plan.user_id == current_user.id  # CRITICAL: Data isolation filter
     )
+    plan = session.exec(statement).first()
+    
     if not plan:
-        raise HTTPException(status_code=404, detail="Plan not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Plan not found or you don't have access"
+        )
+    
     return plan
 
 
 @router.put("/{plan_id}", response_model=Plan)
-async def update_plan(plan_id: str, data: PlanUpdate):
-    """Update a plan"""
-    update_data = {k: v for k, v in data.model_dump().items() if v is not None}
+async def update_plan(
+    plan_id: str,
+    data: PlanUpdate,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    """
+    Update a plan
     
-    # Handle nested objects
-    if 'withdrawal_strategy' in update_data:
+    ⚠️ Data Isolation: Only updates plan if owned by current_user
+    """
+    # Get plan with data isolation check
+    statement = select(Plan).where(
+        Plan.id == plan_id,
+        Plan.user_id == current_user.id  # CRITICAL: Data isolation filter
+    )
+    plan = session.exec(statement).first()
+    
+    if not plan:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Plan not found or you don't have access"
+        )
+    
+    # Update fields (only those provided)
+    update_data = data.model_dump(exclude_unset=True)
+    
+    # Handle nested JSON objects
+    if 'withdrawal_strategy' in update_data and update_data['withdrawal_strategy']:
         update_data['withdrawal_strategy'] = update_data['withdrawal_strategy'].model_dump() if hasattr(update_data['withdrawal_strategy'], 'model_dump') else update_data['withdrawal_strategy']
-    if 'social_security' in update_data:
+    if 'social_security' in update_data and update_data['social_security']:
         update_data['social_security'] = update_data['social_security'].model_dump() if hasattr(update_data['social_security'], 'model_dump') else update_data['social_security']
-    if 'modifications' in update_data:
+    if 'modifications' in update_data and update_data['modifications']:
         update_data['modifications'] = [m.model_dump() if hasattr(m, 'model_dump') else m for m in update_data['modifications']]
     
-    update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
+    for key, value in update_data.items():
+        setattr(plan, key, value)
     
-    result = await db.plans.update_one(
-        {"id": plan_id, "user_id": DEV_USER_ID},
-        {"$set": update_data}
-    )
+    plan.updated_at = datetime.utcnow()
     
-    if result.matched_count == 0:
-        raise HTTPException(status_code=404, detail="Plan not found")
+    # CORRECT WRITE FLOW: add -> commit -> refresh
+    session.add(plan)
+    session.commit()
+    session.refresh(plan)
     
-    plan = await db.plans.find_one({"id": plan_id}, {"_id": 0})
+    logger.info(f"Plan updated: {plan_id} by user: {current_user.id}")
     return plan
 
 
 @router.delete("/{plan_id}")
-async def delete_plan(plan_id: str):
-    """Delete a plan"""
-    result = await db.plans.delete_one(
-        {"id": plan_id, "user_id": DEV_USER_ID}
+async def delete_plan(
+    plan_id: str,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    """
+    Delete a plan
+    
+    ⚠️ Data Isolation: Only deletes plan if owned by current_user
+    """
+    # Get plan with data isolation check
+    statement = select(Plan).where(
+        Plan.id == plan_id,
+        Plan.user_id == current_user.id  # CRITICAL: Data isolation filter
     )
+    plan = session.exec(statement).first()
     
-    if result.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="Plan not found")
+    if not plan:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Plan not found or you don't have access"
+        )
     
+    # Delete plan
+    session.delete(plan)
+    session.commit()
+    
+    logger.info(f"Plan deleted: {plan_id} by user: {current_user.id}")
     return {"message": "Plan deleted successfully"}
 
 
 @router.post("/project", response_model=ProjectionResult)
 async def calculate_projection(data: ProjectionInput):
-    """Calculate financial projections based on input parameters"""
+    """Calculate financial projections based on input parameters (pure calculation, no DB)"""
     current_year = datetime.now().year
     nominal_return = data.expected_return / 100
     inflation = data.inflation_rate / 100
@@ -228,38 +353,77 @@ async def calculate_projection(data: ProjectionInput):
 
 
 @router.get("/{plan_id}/projections")
-async def get_plan_projections(plan_id: str, portfolio_id: str):
-    """Get projections for a specific plan using portfolio data"""
-    # Get plan
-    plan = await db.plans.find_one(
-        {"id": plan_id, "user_id": DEV_USER_ID},
-        {"_id": 0}
+async def get_plan_projections(
+    plan_id: str,
+    portfolio_id: str,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    """
+    Get projections for a specific plan using portfolio data
+    
+    ⚠️ Data Isolation: Only calculates projections if plan/portfolio owned by current_user
+    """
+    # Get plan with data isolation
+    plan_stmt = select(Plan).where(
+        Plan.id == plan_id,
+        Plan.user_id == current_user.id
     )
+    plan = session.exec(plan_stmt).first()
+    
     if not plan:
-        raise HTTPException(status_code=404, detail="Plan not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Plan not found or you don't have access"
+        )
     
-    # Get portfolio summary data
-    properties = await db.properties.find({"portfolio_id": portfolio_id}).to_list(1000)
-    assets = await db.assets.find({"portfolio_id": portfolio_id, "is_active": True}).to_list(1000)
-    liabilities = await db.liabilities.find({"portfolio_id": portfolio_id, "is_active": True}).to_list(1000)
-    income_sources = await db.income_sources.find({"portfolio_id": portfolio_id, "is_active": True}).to_list(1000)
-    expenses = await db.expenses.find({"portfolio_id": portfolio_id, "is_active": True}).to_list(1000)
+    # Verify portfolio access
+    portfolio_stmt = select(Portfolio).where(
+        Portfolio.id == portfolio_id,
+        Portfolio.user_id == current_user.id
+    )
+    portfolio = session.exec(portfolio_stmt).first()
     
-    # Calculate totals
-    property_value = sum(p.get('current_value', 0) for p in properties)
-    property_loans = sum(p.get('loan_details', {}).get('amount', 0) for p in properties)
-    total_assets = property_value + sum(a.get('current_value', 0) for a in assets)
-    total_liabilities = property_loans + sum(l.get('current_balance', 0) for l in liabilities)
+    if not portfolio:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Portfolio not found or you don't have access"
+        )
     
-    net_worth = total_assets - total_liabilities
+    # Get portfolio data with data isolation
+    properties = session.exec(
+        select(Property).where(Property.portfolio_id == portfolio_id, Property.user_id == current_user.id)
+    ).all()
+    assets = session.exec(
+        select(Asset).where(Asset.portfolio_id == portfolio_id, Asset.user_id == current_user.id, Asset.is_active == True)
+    ).all()
+    liabilities = session.exec(
+        select(Liability).where(Liability.portfolio_id == portfolio_id, Liability.user_id == current_user.id, Liability.is_active == True)
+    ).all()
+    income_sources = session.exec(
+        select(IncomeSource).where(IncomeSource.portfolio_id == portfolio_id, IncomeSource.user_id == current_user.id, IncomeSource.is_active == True)
+    ).all()
+    expenses = session.exec(
+        select(Expense).where(Expense.portfolio_id == portfolio_id, Expense.user_id == current_user.id, Expense.is_active == True)
+    ).all()
+    
+    # Calculate totals using Python sum with Decimal
+    property_value = sum((p.current_value or Decimal(0)) for p in properties)
+    property_loans = sum((p.loan_amount or Decimal(0)) for p in properties if hasattr(p, 'loan_amount'))
+    total_assets = property_value + sum((a.current_value or Decimal(0)) for a in assets)
+    total_liabilities = property_loans + sum((l.current_balance or Decimal(0)) for l in liabilities)
+    
+    net_worth = float(total_assets - total_liabilities)
     
     # Calculate monthly/annual figures
     def to_monthly(amount, frequency):
+        if amount is None:
+            return 0
         multipliers = {'weekly': 4.33, 'fortnightly': 2.17, 'monthly': 1, 'annual': 1/12}
-        return amount * multipliers.get(frequency, 1)
+        return float(amount) * multipliers.get(frequency, 1)
     
-    monthly_income = sum(to_monthly(i.get('amount', 0), i.get('frequency', 'monthly')) for i in income_sources)
-    monthly_expenses = sum(to_monthly(e.get('amount', 0), e.get('frequency', 'monthly')) for e in expenses)
+    monthly_income = sum(to_monthly(i.amount, i.frequency) for i in income_sources)
+    monthly_expenses = sum(to_monthly(e.amount, e.frequency) for e in expenses)
     annual_savings = (monthly_income - monthly_expenses) * 12
     
     # Create projection input from plan settings
@@ -267,12 +431,12 @@ async def get_plan_projections(plan_id: str, portfolio_id: str):
         current_net_worth=net_worth,
         annual_savings=annual_savings,
         expected_return=7.0,  # Default
-        inflation_rate=plan.get('inflation_rate', 2.5),
-        withdrawal_rate=plan.get('target_withdrawal_rate', 4.0),
+        inflation_rate=float(plan.inflation_rate) if plan.inflation_rate else 2.5,
+        withdrawal_rate=float(plan.target_withdrawal_rate) if plan.target_withdrawal_rate else 4.0,
         current_age=35,  # Default - should come from user profile
-        retirement_age=plan.get('retirement_age', 55),
-        life_expectancy=plan.get('life_expectancy', 95),
-        target_net_worth=plan.get('target_equity', 0) if plan.get('target_equity', 0) > 0 else None
+        retirement_age=plan.retirement_age or 55,
+        life_expectancy=plan.life_expectancy or 95,
+        target_net_worth=float(plan.target_equity) if plan.target_equity and plan.target_equity > 0 else None
     )
     
     return await calculate_projection(projection_input)

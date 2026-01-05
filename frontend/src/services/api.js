@@ -1,36 +1,45 @@
+/**
+ * API Client - Axios with Token Refresh Interceptor
+ * Handles 401 Unauthorized errors with automatic token refresh and request retry queue
+ */
+
 import axios from 'axios';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
-const API_BASE = `${BACKEND_URL}/api`;
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
-const apiClient = axios.create({
-  baseURL: API_BASE,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-// Request queueing for refresh token race condition prevention
+// Token refresh state
 let isRefreshing = false;
-let failedRequestsQueue = [];
+let failedQueue = [];
 
-// Process queued requests after token refresh
+/**
+ * Process queued requests after token refresh
+ * @param {Error|null} error - Error if refresh failed
+ * @param {string|null} token - New token if refresh succeeded
+ */
 const processQueue = (error, token = null) => {
-  failedRequestsQueue.forEach(prom => {
+  failedQueue.forEach((prom) => {
     if (error) {
       prom.reject(error);
     } else {
       prom.resolve(token);
     }
   });
-  
-  failedRequestsQueue = [];
+  failedQueue = [];
 };
 
-// Add request interceptor to attach auth token
+// Create Axios instance
+const apiClient = axios.create({
+  baseURL: API_BASE_URL,
+  timeout: 30000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Request interceptor - Add auth token to requests
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('accessToken');
+    const token = localStorage.getItem('access_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -39,158 +48,154 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Add response interceptor for error handling and token refresh
+// Response interceptor - Handle 401 and token refresh
 apiClient.interceptors.response.use(
-  (response) => response.data,
+  (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // Handle 401 Unauthorized (token expired)
+    // If 401 and not a retry, attempt token refresh
     if (error.response?.status === 401 && !originalRequest._retry) {
+      // Don't retry auth endpoints
+      if (originalRequest.url?.includes('/auth/login') ||
+        originalRequest.url?.includes('/auth/register')) {
+        return Promise.reject(error);
+      }
+
+      // If already refreshing, queue this request
       if (isRefreshing) {
-        // If refresh is already in progress, queue this request
         return new Promise((resolve, reject) => {
-          failedRequestsQueue.push({ resolve, reject });
+          failedQueue.push({ resolve, reject });
         })
-          .then(token => {
+          .then((token) => {
             originalRequest.headers.Authorization = `Bearer ${token}`;
             return apiClient(originalRequest);
           })
-          .catch(err => Promise.reject(err));
+          .catch((err) => Promise.reject(err));
       }
 
+      // Start token refresh
       originalRequest._retry = true;
       isRefreshing = true;
 
       try {
-        const refreshToken = localStorage.getItem('refreshToken');
-        
+        const refreshToken = localStorage.getItem('refresh_token');
+
         if (!refreshToken) {
           throw new Error('No refresh token available');
         }
 
-        // Refresh the access token
-        const response = await axios.post(`${BACKEND_URL}/api/auth/refresh`, {
-          refresh_token: refreshToken
+        const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {
+          refresh_token: refreshToken,
         });
 
-        const newAccessToken = response.data.access_token;
-        localStorage.setItem('accessToken', newAccessToken);
+        const { access_token, refresh_token: newRefreshToken } = response.data;
 
-        // Update authorization header
-        apiClient.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`;
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        // Store new tokens
+        localStorage.setItem('access_token', access_token);
+        if (newRefreshToken) {
+          localStorage.setItem('refresh_token', newRefreshToken);
+        }
 
-        // Process queued requests
-        processQueue(null, newAccessToken);
+        // Update auth header for retry
+        originalRequest.headers.Authorization = `Bearer ${access_token}`;
+        apiClient.defaults.headers.common.Authorization = `Bearer ${access_token}`;
 
-        // Retry original request
+        // Process queued requests with new token
+        processQueue(null, access_token);
+
         return apiClient(originalRequest);
       } catch (refreshError) {
-        // Refresh failed, logout user
+        // Token refresh failed - clear tokens and redirect to login
         processQueue(refreshError, null);
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        
-        // Redirect to login
+
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+
+        // Redirect to login page
         window.location.href = '/login';
-        
+
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
       }
     }
 
-    console.error('API Error:', error.response?.data || error.message);
     return Promise.reject(error);
   }
 );
 
-const api = {
-  // Authentication
-  register: (data) => axios.post(`${BACKEND_URL}/api/auth/register`, data).then(res => res.data),
-  login: (email, password) => axios.post(`${BACKEND_URL}/api/auth/login`, { email, password }).then(res => res.data),
-  logout: () => apiClient.post('/auth/logout'),
-  refreshToken: (refreshToken) => axios.post(`${BACKEND_URL}/api/auth/refresh`, { refresh_token: refreshToken }).then(res => res.data),
-  getCurrentUser: () => apiClient.get('/auth/me'),
-  requestPasswordReset: (email) => axios.post(`${BACKEND_URL}/api/auth/request-password-reset`, { email }).then(res => res.data),
-  resetPassword: (resetToken, newPassword) => axios.post(`${BACKEND_URL}/api/auth/reset-password`, { reset_token: resetToken, new_password: newPassword }).then(res => res.data),
-  verifyEmail: (token) => axios.get(`${BACKEND_URL}/api/auth/verify-email`, { params: { token } }).then(res => res.data),
-  resendVerification: (email) => axios.post(`${BACKEND_URL}/api/auth/resend-verification`, { email }).then(res => res.data),
+// ============================================================================
+// Auth API Functions
+// ============================================================================
 
-  // Health
-  healthCheck: () => apiClient.get('/health'),
+/**
+ * Login user
+ * @param {string} email - User email
+ * @param {string} password - User password
+ * @returns {Promise<{access_token: string, refresh_token: string, user: object}>}
+ */
+export const login = async (email, password) => {
+  const response = await apiClient.post('/auth/login', { email, password });
+  const { access_token, refresh_token, user } = response.data;
 
-  // Onboarding
-  getOnboardingStatus: () => apiClient.get('/onboarding/status'),
-  saveOnboardingStep: (step, data) => apiClient.put(`/onboarding/step/${step}`, { step, data }),
-  completeOnboarding: () => apiClient.post('/onboarding/complete'),
-  skipOnboarding: () => apiClient.post('/onboarding/skip'),
-  resetOnboarding: () => apiClient.post('/onboarding/reset'),
+  // Store tokens
+  localStorage.setItem('access_token', access_token);
+  localStorage.setItem('refresh_token', refresh_token);
 
-  // Dashboard
-  getDashboardSummary: (portfolioId) => 
-    apiClient.get('/dashboard/summary', { params: { portfolio_id: portfolioId } }),
-  getNetWorthHistory: (portfolioId, limit = 12) => 
-    apiClient.get('/dashboard/net-worth-history', { params: { portfolio_id: portfolioId, limit } }),
-  createSnapshot: (portfolioId) => apiClient.post('/dashboard/snapshot', null, { params: { portfolio_id: portfolioId } }),
+  // Set default auth header
+  apiClient.defaults.headers.common.Authorization = `Bearer ${access_token}`;
 
-  // Portfolios
-  getPortfolios: () => apiClient.get('/portfolios'),
-  createPortfolio: (data) => apiClient.post('/portfolios', data),
-  getPortfolio: (id) => apiClient.get(`/portfolios/${id}`),
-  updatePortfolio: (id, data) => apiClient.put(`/portfolios/${id}`, data),
-  deletePortfolio: (id) => apiClient.delete(`/portfolios/${id}`),
-  getPortfolioSummary: (id) => apiClient.get(`/portfolios/${id}/summary`),
-
-  // Properties
-  getProperties: (portfolioId) => apiClient.get(`/properties/portfolio/${portfolioId}`),
-  createProperty: (data) => apiClient.post('/properties', data),
-  getProperty: (id) => apiClient.get(`/properties/${id}`),
-  updateProperty: (id, data) => apiClient.put(`/properties/${id}`, data),
-  deleteProperty: (id) => apiClient.delete(`/properties/${id}`),
-
-  // Income
-  getIncomeSources: (portfolioId) => apiClient.get(`/income/portfolio/${portfolioId}`),
-  createIncomeSource: (data) => apiClient.post('/income', data),
-  updateIncomeSource: (id, data) => apiClient.put(`/income/${id}`, data),
-  deleteIncomeSource: (id) => apiClient.delete(`/income/${id}`),
-
-  // Expenses
-  getExpenseCategories: () => apiClient.get('/expenses/categories'),
-  getExpenses: (portfolioId) => apiClient.get(`/expenses/portfolio/${portfolioId}`),
-  createExpense: (data) => apiClient.post('/expenses', data),
-  updateExpense: (id, data) => apiClient.put(`/expenses/${id}`, data),
-  deleteExpense: (id) => apiClient.delete(`/expenses/${id}`),
-
-  // Assets
-  getAssetTypes: () => apiClient.get('/assets/types'),
-  getAssets: (portfolioId) => apiClient.get(`/assets/portfolio/${portfolioId}`),
-  createAsset: (data) => apiClient.post('/assets', data),
-  getAsset: (id) => apiClient.get(`/assets/${id}`),
-  updateAsset: (id, data) => apiClient.put(`/assets/${id}`, data),
-  deleteAsset: (id) => apiClient.delete(`/assets/${id}`),
-
-  // Liabilities
-  getLiabilityTypes: () => apiClient.get('/liabilities/types'),
-  getLiabilities: (portfolioId) => apiClient.get(`/liabilities/portfolio/${portfolioId}`),
-  createLiability: (data) => apiClient.post('/liabilities', data),
-  getLiability: (id) => apiClient.get(`/liabilities/${id}`),
-  updateLiability: (id, data) => apiClient.put(`/liabilities/${id}`, data),
-  deleteLiability: (id) => apiClient.delete(`/liabilities/${id}`),
-
-  // Plans
-  getPlanTypes: () => apiClient.get('/plans/types'),
-  getPlans: (portfolioId) => apiClient.get(`/plans/portfolio/${portfolioId}`),
-  createPlan: (data) => apiClient.post('/plans', data),
-  getPlan: (id) => apiClient.get(`/plans/${id}`),
-  updatePlan: (id, data) => apiClient.put(`/plans/${id}`, data),
-  deletePlan: (id) => apiClient.delete(`/plans/${id}`),
-  
-  // Projections
-  calculateProjection: (data) => apiClient.post('/plans/project', data),
-  getPlanProjections: (planId, portfolioId) => 
-    apiClient.get(`/plans/${planId}/projections`, { params: { portfolio_id: portfolioId } }),
+  return response.data;
 };
 
-export default api;
+/**
+ * Register new user
+ * @param {object} userData - User registration data
+ * @returns {Promise<{access_token: string, refresh_token: string, user: object}>}
+ */
+export const register = async (userData) => {
+  const response = await apiClient.post('/auth/register', userData);
+  const { access_token, refresh_token } = response.data;
+
+  // Store tokens
+  localStorage.setItem('access_token', access_token);
+  localStorage.setItem('refresh_token', refresh_token);
+
+  // Set default auth header
+  apiClient.defaults.headers.common.Authorization = `Bearer ${access_token}`;
+
+  return response.data;
+};
+
+/**
+ * Logout user
+ * @returns {Promise<void>}
+ */
+export const logout = async () => {
+  try {
+    await apiClient.post('/auth/logout');
+  } catch (error) {
+    // Ignore logout errors - we'll clear tokens anyway
+    console.warn('Logout request failed:', error.message);
+  } finally {
+    // Clear tokens
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+
+    // Remove auth header
+    delete apiClient.defaults.headers.common.Authorization;
+  }
+};
+
+/**
+ * Get current user profile
+ * @returns {Promise<object>} User profile data
+ */
+export const getProfile = async () => {
+  const response = await apiClient.get('/auth/me');
+  return response.data;
+};
+
+// Default export
+export default apiClient;

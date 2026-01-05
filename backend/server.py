@@ -6,11 +6,10 @@ import logging
 from pathlib import Path
 from contextlib import asynccontextmanager
 
-# Load environment variables
-ROOT_DIR = Path(__file__).parent
-load_dotenv(ROOT_DIR / '.env')
+# Import New Utilities
+from utils.database_sql import create_db_and_tables
 
-# Import routes
+# Import Routes (SQLModel versions)
 from routes.auth import router as auth_router
 from routes.portfolios import router as portfolios_router
 from routes.properties import router as properties_router
@@ -22,9 +21,9 @@ from routes.plans import router as plans_router
 from routes.onboarding import router as onboarding_router
 from routes.dashboard import router as dashboard_router
 
-# Import utilities
-from utils.database_sql import engine, create_db_and_tables
-from utils.rate_limiter import cleanup_redis
+# Load environment variables
+ROOT_DIR = Path(__file__).parent
+load_dotenv(ROOT_DIR / '.env')
 
 # Configure logging
 logging.basicConfig(
@@ -33,50 +32,33 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan manager"""
-    # Startup
-    logger.info("Starting up Zapiio API (PostgreSQL/Neon)...")
+    logger.info("Starting up Zapiio API (Serverless Fintech Stack)...")
     
-    # Create database tables
+    # Initialize PostgreSQL Tables
     create_db_and_tables()
-    logger.info("✓ Database tables created/verified")
+    logger.info("✅ Database tables verified/created")
     
     yield
     
-    # Shutdown
     logger.info("Shutting down...")
-    await cleanup_redis()
-    engine.dispose()
-    logger.info("✓ Database connections closed")
 
-
-# Create the main app
 app = FastAPI(
     title="Zapiio API",
     description="Property Investment Portfolio Management Platform",
-    version="1.0.0",
+    version="2.0.0",
     lifespan=lifespan
 )
 
-# Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
-
-
-# Health check endpoint
-@api_router.get("/")
-async def root():
-    return {"message": "Zapiio API is running", "version": "1.0.0"}
-
 
 @api_router.get("/health")
 async def health_check():
-    return {"status": "healthy", "database": "PostgreSQL/Neon", "version": "2.0.0"}
+    return {"status": "healthy", "stack": "PostgreSQL + App Runner"}
 
-
-# Include all route modules
+# Include all routers
 api_router.include_router(auth_router)
 api_router.include_router(onboarding_router)
 api_router.include_router(dashboard_router)
@@ -88,10 +70,8 @@ api_router.include_router(assets_router)
 api_router.include_router(liabilities_router)
 api_router.include_router(plans_router)
 
-# Include the main router in the app
 app.include_router(api_router)
 
-# CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
