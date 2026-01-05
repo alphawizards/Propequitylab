@@ -1,29 +1,88 @@
-from fastapi import APIRouter, HTTPException
+"""
+Income Routes - SQL-Based with Authentication & Data Isolation
+⚠️ CRITICAL: All queries include .where(IncomeSource.user_id == current_user.id) for data isolation
+"""
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlmodel import Session, select
 from typing import List
-from datetime import datetime, timezone
+from datetime import datetime
+from decimal import Decimal
+import logging
+import uuid
 
 from models.income import IncomeSource, IncomeSourceCreate, IncomeSourceUpdate
-from utils.database import db
-from utils.dev_user import DEV_USER_ID
+from models.portfolio import Portfolio
+from models.user import User
+from utils.database_sql import get_session
+from utils.auth import get_current_user
 
-router = APIRouter(prefix="/income", tags=["income"])
+logger = logging.getLogger(__name__)
+router = APIRouter(prefix="/api/income", tags=["income"])
 
 
 @router.get("/portfolio/{portfolio_id}", response_model=List[IncomeSource])
-async def get_portfolio_income(portfolio_id: str):
-    """Get all income sources for a portfolio"""
-    sources = await db.income_sources.find(
-        {"portfolio_id": portfolio_id, "user_id": DEV_USER_ID},
-        {"_id": 0}
-    ).to_list(100)
+async def get_portfolio_income(
+    portfolio_id: str,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    """
+    Get all income sources for a portfolio
+    
+    ⚠️ Data Isolation: Only returns income sources owned by current_user
+    """
+    # Verify portfolio exists and user has access
+    portfolio_stmt = select(Portfolio).where(
+        Portfolio.id == portfolio_id,
+        Portfolio.user_id == current_user.id
+    )
+    portfolio = session.exec(portfolio_stmt).first()
+    
+    if not portfolio:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Portfolio not found or you don't have access"
+        )
+    
+    # Get income sources with data isolation
+    statement = select(IncomeSource).where(
+        IncomeSource.portfolio_id == portfolio_id,
+        IncomeSource.user_id == current_user.id  # CRITICAL: Data isolation filter
+    )
+    sources = session.exec(statement).all()
+    
     return sources
 
 
-@router.post("", response_model=IncomeSource)
-async def create_income_source(data: IncomeSourceCreate):
-    """Create a new income source"""
+@router.post("", response_model=IncomeSource, status_code=status.HTTP_201_CREATED)
+async def create_income_source(
+    data: IncomeSourceCreate,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    """
+    Create a new income source
+    
+    ⚠️ Data Isolation: Income source automatically assigned to current_user
+    """
+    # Verify portfolio exists and user has access
+    portfolio_stmt = select(Portfolio).where(
+        Portfolio.id == data.portfolio_id,
+        Portfolio.user_id == current_user.id
+    )
+    portfolio = session.exec(portfolio_stmt).first()
+    
+    if not portfolio:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Portfolio not found or you don't have access"
+        )
+    
+    # Create income source with user_id from authenticated user
     source = IncomeSource(
-        user_id=DEV_USER_ID,
+        id=str(uuid.uuid4()),
+        user_id=current_user.id,  # CRITICAL: Set from authenticated user
         portfolio_id=data.portfolio_id,
         name=data.name,
         type=data.type,
@@ -34,43 +93,114 @@ async def create_income_source(data: IncomeSourceCreate):
         start_date=data.start_date,
         end_date=data.end_date,
         end_age=data.end_age,
-        is_taxable=data.is_taxable
+        is_taxable=data.is_taxable,
+        created_at=datetime.utcnow(),
+        updated_at=datetime.utcnow()
     )
     
-    doc = source.model_dump()
-    doc['created_at'] = doc['created_at'].isoformat()
-    doc['updated_at'] = doc['updated_at'].isoformat()
+    # CORRECT WRITE FLOW: add -> commit -> refresh
+    session.add(source)
+    session.commit()
+    session.refresh(source)
     
-    await db.income_sources.insert_one(doc)
+    logger.info(f"Income source created: {source.id} for user: {current_user.id}")
+    return source
+
+
+@router.get("/{income_id}", response_model=IncomeSource)
+async def get_income_source(
+    income_id: str,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    """
+    Get a specific income source
+    
+    ⚠️ Data Isolation: Only returns income source if owned by current_user
+    """
+    statement = select(IncomeSource).where(
+        IncomeSource.id == income_id,
+        IncomeSource.user_id == current_user.id  # CRITICAL: Data isolation filter
+    )
+    source = session.exec(statement).first()
+    
+    if not source:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Income source not found or you don't have access"
+        )
+    
     return source
 
 
 @router.put("/{income_id}", response_model=IncomeSource)
-async def update_income_source(income_id: str, data: IncomeSourceUpdate):
-    """Update an income source"""
-    update_data = {k: v for k, v in data.model_dump().items() if v is not None}
-    update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
+async def update_income_source(
+    income_id: str,
+    data: IncomeSourceUpdate,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    """
+    Update an income source
     
-    result = await db.income_sources.update_one(
-        {"id": income_id, "user_id": DEV_USER_ID},
-        {"$set": update_data}
+    ⚠️ Data Isolation: Only updates income source if owned by current_user
+    """
+    # Get income source with data isolation check
+    statement = select(IncomeSource).where(
+        IncomeSource.id == income_id,
+        IncomeSource.user_id == current_user.id  # CRITICAL: Data isolation filter
     )
+    source = session.exec(statement).first()
     
-    if result.matched_count == 0:
-        raise HTTPException(status_code=404, detail="Income source not found")
+    if not source:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Income source not found or you don't have access"
+        )
     
-    source = await db.income_sources.find_one({"id": income_id}, {"_id": 0})
+    # Update fields (only those provided)
+    update_data = data.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(source, key, value)
+    
+    source.updated_at = datetime.utcnow()
+    
+    # CORRECT WRITE FLOW: add -> commit -> refresh
+    session.add(source)
+    session.commit()
+    session.refresh(source)
+    
+    logger.info(f"Income source updated: {income_id} by user: {current_user.id}")
     return source
 
 
 @router.delete("/{income_id}")
-async def delete_income_source(income_id: str):
-    """Delete an income source"""
-    result = await db.income_sources.delete_one(
-        {"id": income_id, "user_id": DEV_USER_ID}
+async def delete_income_source(
+    income_id: str,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    """
+    Delete an income source
+    
+    ⚠️ Data Isolation: Only deletes income source if owned by current_user
+    """
+    # Get income source with data isolation check
+    statement = select(IncomeSource).where(
+        IncomeSource.id == income_id,
+        IncomeSource.user_id == current_user.id  # CRITICAL: Data isolation filter
     )
+    source = session.exec(statement).first()
     
-    if result.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="Income source not found")
+    if not source:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Income source not found or you don't have access"
+        )
     
+    # Delete income source
+    session.delete(source)
+    session.commit()
+    
+    logger.info(f"Income source deleted: {income_id} by user: {current_user.id}")
     return {"message": "Income source deleted successfully"}
