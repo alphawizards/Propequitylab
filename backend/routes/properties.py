@@ -1,29 +1,85 @@
-from fastapi import APIRouter, HTTPException
+"""
+Property Routes - SQL-Based with Authentication & Data Isolation (GOLDEN MASTER)
+⚠️ CRITICAL: All queries include .where(Property.user_id == current_user.id) for data isolation
+"""
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlmodel import Session, select
 from typing import List
-from datetime import datetime, timezone
+from datetime import datetime
+import logging
 
 from models.property import Property, PropertyCreate, PropertyUpdate
-from utils.database import db
-from utils.dev_user import DEV_USER_ID
+from models.portfolio import Portfolio
+from models.user import User
+from utils.database_sql import get_session
+from utils.auth import get_current_user
 
-router = APIRouter(prefix="/properties", tags=["properties"])
+logger = logging.getLogger(__name__)
+router = APIRouter(prefix="/api/properties", tags=["properties"])
 
 
 @router.get("/portfolio/{portfolio_id}", response_model=List[Property])
-async def get_portfolio_properties(portfolio_id: str):
-    """Get all properties in a portfolio"""
-    properties = await db.properties.find(
-        {"portfolio_id": portfolio_id, "user_id": DEV_USER_ID},
-        {"_id": 0}
-    ).to_list(100)
+async def get_portfolio_properties(
+    portfolio_id: str,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    """
+    Get all properties in a portfolio
+    
+    ⚠️ Data Isolation: Only returns properties owned by current_user
+    """
+    # Verify portfolio exists and user has access
+    portfolio_stmt = select(Portfolio).where(
+        Portfolio.id == portfolio_id,
+        Portfolio.user_id == current_user.id
+    )
+    portfolio = session.exec(portfolio_stmt).first()
+    
+    if not portfolio:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Portfolio not found or you don't have access"
+        )
+    
+    # Get properties with data isolation
+    statement = select(Property).where(
+        Property.portfolio_id == portfolio_id,
+        Property.user_id == current_user.id  # CRITICAL: Data isolation filter
+    )
+    properties = session.exec(statement).all()
+    
     return properties
 
 
-@router.post("", response_model=Property)
-async def create_property(data: PropertyCreate):
-    """Create a new property"""
+@router.post("", response_model=Property, status_code=status.HTTP_201_CREATED)
+async def create_property(
+    data: PropertyCreate,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    """
+    Create a new property
+    
+    ⚠️ Data Isolation: Property automatically assigned to current_user
+    """
+    # Verify portfolio exists and user has access
+    portfolio_stmt = select(Portfolio).where(
+        Portfolio.id == data.portfolio_id,
+        Portfolio.user_id == current_user.id
+    )
+    portfolio = session.exec(portfolio_stmt).first()
+    
+    if not portfolio:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Portfolio not found or you don't have access"
+        )
+    
+    # Create property with user_id from authenticated user
     property_obj = Property(
-        user_id=DEV_USER_ID,
+        user_id=current_user.id,  # CRITICAL: Set from authenticated user
         portfolio_id=data.portfolio_id,
         address=data.address,
         suburb=data.suburb,
@@ -41,72 +97,117 @@ async def create_property(data: PropertyCreate):
         stamp_duty=data.stamp_duty,
         purchase_costs=data.purchase_costs,
         current_value=data.current_value or data.purchase_price,
-        loan_details=data.loan_details if data.loan_details else Property.model_fields['loan_details'].default_factory(),
-        rental_details=data.rental_details if data.rental_details else Property.model_fields['rental_details'].default_factory(),
-        expenses=data.expenses if data.expenses else Property.model_fields['expenses'].default_factory(),
-        growth_assumptions=data.growth_assumptions if data.growth_assumptions else Property.model_fields['growth_assumptions'].default_factory()
+        loan_details=data.loan_details if data.loan_details else {},
+        rental_details=data.rental_details if data.rental_details else {},
+        expenses=data.expenses if data.expenses else {},
+        growth_assumptions=data.growth_assumptions if data.growth_assumptions else {},
+        created_at=datetime.utcnow(),
+        updated_at=datetime.utcnow()
     )
     
-    doc = property_obj.model_dump()
-    doc['created_at'] = doc['created_at'].isoformat()
-    doc['updated_at'] = doc['updated_at'].isoformat()
+    # CORRECT WRITE FLOW: add -> commit -> refresh
+    session.add(property_obj)
+    session.commit()
+    session.refresh(property_obj)
     
-    await db.properties.insert_one(doc)
+    logger.info(f"Property created: {property_obj.id} for user: {current_user.id}")
     return property_obj
 
 
 @router.get("/{property_id}", response_model=Property)
-async def get_property(property_id: str):
-    """Get a specific property"""
-    prop = await db.properties.find_one(
-        {"id": property_id, "user_id": DEV_USER_ID},
-        {"_id": 0}
+async def get_property(
+    property_id: str,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    """
+    Get a specific property
+    
+    ⚠️ Data Isolation: Only returns property if owned by current_user
+    """
+    statement = select(Property).where(
+        Property.id == property_id,
+        Property.user_id == current_user.id  # CRITICAL: Data isolation filter
     )
-    if not prop:
-        raise HTTPException(status_code=404, detail="Property not found")
-    return prop
+    property_obj = session.exec(statement).first()
+    
+    if not property_obj:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Property not found or you don't have access"
+        )
+    
+    return property_obj
 
 
 @router.put("/{property_id}", response_model=Property)
-async def update_property(property_id: str, data: PropertyUpdate):
-    """Update a property"""
-    update_data = {k: v for k, v in data.model_dump().items() if v is not None}
+async def update_property(
+    property_id: str,
+    data: PropertyUpdate,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    """
+    Update a property
     
-    # Handle nested objects
-    if 'loan_details' in update_data:
-        update_data['loan_details'] = update_data['loan_details'].model_dump() if hasattr(update_data['loan_details'], 'model_dump') else update_data['loan_details']
-    if 'rental_details' in update_data:
-        update_data['rental_details'] = update_data['rental_details'].model_dump() if hasattr(update_data['rental_details'], 'model_dump') else update_data['rental_details']
-    if 'expenses' in update_data:
-        update_data['expenses'] = update_data['expenses'].model_dump() if hasattr(update_data['expenses'], 'model_dump') else update_data['expenses']
-    if 'growth_assumptions' in update_data:
-        update_data['growth_assumptions'] = update_data['growth_assumptions'].model_dump() if hasattr(update_data['growth_assumptions'], 'model_dump') else update_data['growth_assumptions']
-    
-    update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
-    
-    result = await db.properties.update_one(
-        {"id": property_id, "user_id": DEV_USER_ID},
-        {"$set": update_data}
+    ⚠️ Data Isolation: Only updates property if owned by current_user
+    """
+    # Get property with data isolation check
+    statement = select(Property).where(
+        Property.id == property_id,
+        Property.user_id == current_user.id  # CRITICAL: Data isolation filter
     )
+    property_obj = session.exec(statement).first()
     
-    if result.matched_count == 0:
-        raise HTTPException(status_code=404, detail="Property not found")
+    if not property_obj:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Property not found or you don't have access"
+        )
     
-    prop = await db.properties.find_one(
-        {"id": property_id},
-        {"_id": 0}
-    )
-    return prop
+    # Update fields (only those provided)
+    update_data = data.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(property_obj, key, value)
+    
+    property_obj.updated_at = datetime.utcnow()
+    
+    # CORRECT WRITE FLOW: add -> commit -> refresh
+    session.add(property_obj)
+    session.commit()
+    session.refresh(property_obj)
+    
+    logger.info(f"Property updated: {property_id} by user: {current_user.id}")
+    return property_obj
 
 
 @router.delete("/{property_id}")
-async def delete_property(property_id: str):
-    """Delete a property"""
-    result = await db.properties.delete_one(
-        {"id": property_id, "user_id": DEV_USER_ID}
+async def delete_property(
+    property_id: str,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    """
+    Delete a property
+    
+    ⚠️ Data Isolation: Only deletes property if owned by current_user
+    """
+    # Get property with data isolation check
+    statement = select(Property).where(
+        Property.id == property_id,
+        Property.user_id == current_user.id  # CRITICAL: Data isolation filter
     )
+    property_obj = session.exec(statement).first()
     
-    if result.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="Property not found")
+    if not property_obj:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Property not found or you don't have access"
+        )
     
+    # Delete property
+    session.delete(property_obj)
+    session.commit()
+    
+    logger.info(f"Property deleted: {property_id} by user: {current_user.id}")
     return {"message": "Property deleted successfully"}
