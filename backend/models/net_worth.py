@@ -7,7 +7,7 @@ Refactored from Pydantic/MongoDB to SQLModel/PostgreSQL
 from sqlmodel import SQLModel, Field, Column
 from sqlalchemy import DECIMAL, JSON
 from typing import Optional
-from datetime import datetime, date
+from datetime import datetime, date as DateType
 from decimal import Decimal
 
 
@@ -26,7 +26,7 @@ class NetWorthSnapshot(SQLModel, table=True):
     portfolio_id: str = Field(foreign_key="portfolios.id", index=True, max_length=50)
     
     # Snapshot Date
-    date: date = Field(index=True)
+    date: DateType = Field(index=True)
     
     # Totals (DECIMAL for precision)
     total_assets: Decimal = Field(default=Decimal("0.0000"), sa_column=Column(DECIMAL(19, 4)))
@@ -95,7 +95,7 @@ class NetWorthSnapshotResponse(SQLModel):
     id: str
     user_id: str
     portfolio_id: str
-    date: date
+    date: DateType
     total_assets: Decimal
     total_liabilities: Decimal
     net_worth: Decimal
