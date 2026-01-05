@@ -5,13 +5,14 @@ on:
     branches:
       - main
     paths:
-      - 'backend/**'
-      - '.github/workflows/deploy-backend.yml'
+      - "backend/**"
+      - "tests/**"
+      - ".github/workflows/deploy-backend.yml"
 
 env:
   AWS_REGION: ap-southeast-2
-  ECR_REPOSITORY: zapiio-backend
-  APP_RUNNER_SERVICE: zapiio-api
+  ECR_REPOSITORY: propequitylab-backend
+  APP_RUNNER_SERVICE: propequitylab-api
 
 jobs:
   # ============================================================================
@@ -20,7 +21,7 @@ jobs:
   test:
     name: Run Tests
     runs-on: ubuntu-latest
-    
+
     services:
       postgres:
         image: postgres:15
@@ -43,8 +44,8 @@ jobs:
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-          cache: 'pip'
+          python-version: "3.11"
+          cache: "pip"
 
       - name: Install dependencies
         working-directory: ./backend
@@ -60,7 +61,7 @@ jobs:
           JWT_SECRET: test-secret-key-for-ci
           JWT_ALGORITHM: HS256
         run: |
-          pytest tests/ -v --tb=short
+          pytest ../tests/ -v --tb=short
 
   # ============================================================================
   # Job 2: Build and Deploy
@@ -69,7 +70,7 @@ jobs:
     name: Build & Deploy to App Runner
     runs-on: ubuntu-latest
     needs: test
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
