@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
 const API_BASE = `${BACKEND_URL}/api`;
 
 const apiClient = axios.create({
@@ -10,16 +10,114 @@ const apiClient = axios.create({
   },
 });
 
-// Add response interceptor for error handling
+// Request queueing for refresh token race condition prevention
+let isRefreshing = false;
+let failedRequestsQueue = [];
+
+// Process queued requests after token refresh
+const processQueue = (error, token = null) => {
+  failedRequestsQueue.forEach(prom => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  
+  failedRequestsQueue = [];
+};
+
+// Add request interceptor to attach auth token
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Add response interceptor for error handling and token refresh
 apiClient.interceptors.response.use(
   (response) => response.data,
-  (error) => {
+  async (error) => {
+    const originalRequest = error.config;
+
+    // Handle 401 Unauthorized (token expired)
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      if (isRefreshing) {
+        // If refresh is already in progress, queue this request
+        return new Promise((resolve, reject) => {
+          failedRequestsQueue.push({ resolve, reject });
+        })
+          .then(token => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return apiClient(originalRequest);
+          })
+          .catch(err => Promise.reject(err));
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        const refreshToken = localStorage.getItem('refreshToken');
+        
+        if (!refreshToken) {
+          throw new Error('No refresh token available');
+        }
+
+        // Refresh the access token
+        const response = await axios.post(`${BACKEND_URL}/api/auth/refresh`, {
+          refresh_token: refreshToken
+        });
+
+        const newAccessToken = response.data.access_token;
+        localStorage.setItem('accessToken', newAccessToken);
+
+        // Update authorization header
+        apiClient.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`;
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+
+        // Process queued requests
+        processQueue(null, newAccessToken);
+
+        // Retry original request
+        return apiClient(originalRequest);
+      } catch (refreshError) {
+        // Refresh failed, logout user
+        processQueue(refreshError, null);
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        
+        // Redirect to login
+        window.location.href = '/login';
+        
+        return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
+      }
+    }
+
     console.error('API Error:', error.response?.data || error.message);
-    throw error;
+    return Promise.reject(error);
   }
 );
 
 const api = {
+  // Authentication
+  register: (data) => axios.post(`${BACKEND_URL}/api/auth/register`, data).then(res => res.data),
+  login: (email, password) => axios.post(`${BACKEND_URL}/api/auth/login`, { email, password }).then(res => res.data),
+  logout: () => apiClient.post('/auth/logout'),
+  refreshToken: (refreshToken) => axios.post(`${BACKEND_URL}/api/auth/refresh`, { refresh_token: refreshToken }).then(res => res.data),
+  getCurrentUser: () => apiClient.get('/auth/me'),
+  requestPasswordReset: (email) => axios.post(`${BACKEND_URL}/api/auth/request-password-reset`, { email }).then(res => res.data),
+  resetPassword: (resetToken, newPassword) => axios.post(`${BACKEND_URL}/api/auth/reset-password`, { reset_token: resetToken, new_password: newPassword }).then(res => res.data),
+  verifyEmail: (token) => axios.get(`${BACKEND_URL}/api/auth/verify-email`, { params: { token } }).then(res => res.data),
+  resendVerification: (email) => axios.post(`${BACKEND_URL}/api/auth/resend-verification`, { email }).then(res => res.data),
+
   // Health
   healthCheck: () => apiClient.get('/health'),
 

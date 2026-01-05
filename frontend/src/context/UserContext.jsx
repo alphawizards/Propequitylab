@@ -1,35 +1,33 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import api from '../services/api';
-
-// Dev Mode: Hardcoded user ID matching backend
-const DEV_USER_ID = 'dev-user-01';
-
-const defaultUser = {
-  id: DEV_USER_ID,
-  email: 'dev@zapiio.local',
-  name: 'Dev User',
-  date_of_birth: '1990-01-15',
-  planning_type: 'individual',
-  country: 'Australia',
-  state: 'NSW',
-  currency: 'AUD',
-  onboarding_completed: false,
-  onboarding_step: 0,
-};
+import { useAuth } from './AuthContext';
 
 const UserContext = createContext(null);
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(defaultUser);
+  const { user: authUser, isAuthenticated, loading: authLoading } = useAuth();
+  const [user, setUser] = useState(authUser);
   const [loading, setLoading] = useState(true);
   const [onboardingStatus, setOnboardingStatus] = useState({
     completed: false,
     currentStep: 0,
   });
 
-  // Fetch onboarding status on mount
+  // Update user when authUser changes
+  useEffect(() => {
+    if (authUser) {
+      setUser(authUser);
+    }
+  }, [authUser]);
+
+  // Fetch onboarding status when authenticated
   useEffect(() => {
     const fetchOnboardingStatus = async () => {
+      if (!isAuthenticated || authLoading) {
+        setLoading(false);
+        return;
+      }
+
       try {
         const response = await api.getOnboardingStatus();
         setOnboardingStatus({
@@ -47,7 +45,7 @@ export const UserProvider = ({ children }) => {
     };
 
     fetchOnboardingStatus();
-  }, []);
+  }, [isAuthenticated, authLoading]);
 
   const updateUser = (updates) => {
     setUser(prev => ({ ...prev, ...updates }));
@@ -85,14 +83,14 @@ export const UserProvider = ({ children }) => {
 
   const value = {
     user,
-    userId: DEV_USER_ID,
-    loading,
+    userId: user?.id,
+    loading: loading || authLoading,
     onboardingStatus,
     updateUser,
     completeOnboarding,
     skipOnboarding,
     resetOnboarding,
-    isDevMode: true,
+    isDevMode: false,
   };
 
   return (
