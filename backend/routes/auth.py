@@ -1,13 +1,17 @@
 """
-Authentication routes for Zapiio
+Authentication Routes - SQL-Based (PostgreSQL/Neon)
 Handles user registration, login, token refresh, password reset, and email verification
 """
 
+import uuid
+from datetime import datetime, timedelta
+from typing import Optional
+
 from fastapi import APIRouter, Depends, HTTPException, status, Request
+from sqlmodel import Session, select
 from pydantic import BaseModel, EmailStr
-from datetime import datetime, timedelta, timezone
-import secrets
-from utils.database import db
+
+from models.user import User
 from utils.auth import (
     hash_password,
     verify_password,
@@ -15,45 +19,35 @@ from utils.auth import (
     create_access_token,
     create_refresh_token,
     verify_token,
-    get_current_user
+    generate_verification_token,
+    generate_reset_token,
+    authenticate_user,
+    get_user_by_email,
+    get_user_by_id,
+    get_current_user,
+    create_token_response
 )
+from utils.database_sql import get_session
 from utils.rate_limiter import rate_limit_login, rate_limit_register, rate_limit_password_reset
-from utils.email import send_verification_email, send_password_reset_email, send_welcome_email
-
-router = APIRouter(prefix="/auth", tags=["Authentication"])
+from utils.email import send_verification_email, send_password_reset_email
 
 
-# Request/Response Models
-class UserRegister(BaseModel):
+router = APIRouter(prefix="/api/auth", tags=["Authentication"])
+
+
+# ============================================================================
+# REQUEST/RESPONSE MODELS
+# ============================================================================
+
+class RegisterRequest(BaseModel):
     email: EmailStr
     password: str
     name: str
-    planning_type: str = "individual"
-    country: str = "Australia"
-    state: str = "NSW"
-    currency: str = "AUD"
 
 
-class UserLogin(BaseModel):
+class LoginRequest(BaseModel):
     email: EmailStr
     password: str
-
-
-class TokenResponse(BaseModel):
-    access_token: str
-    refresh_token: str
-    token_type: str = "bearer"
-
-
-class UserResponse(BaseModel):
-    id: str
-    email: str
-    name: str
-    is_verified: bool
-    planning_type: str
-    country: str
-    state: str
-    currency: str
 
 
 class RefreshTokenRequest(BaseModel):
@@ -64,8 +58,8 @@ class PasswordResetRequest(BaseModel):
     email: EmailStr
 
 
-class PasswordReset(BaseModel):
-    reset_token: str
+class PasswordResetConfirm(BaseModel):
+    token: str
     new_password: str
 
 
@@ -73,218 +67,201 @@ class ResendVerificationRequest(BaseModel):
     email: EmailStr
 
 
-@router.post("/register", response_model=TokenResponse, status_code=status.HTTP_201_CREATED)
-async def register(user_data: UserRegister, request: Request):
-    """Register a new user"""
-    # Rate limiting
-    await rate_limit_register(request)
+# ============================================================================
+# AUTHENTICATION ENDPOINTS
+# ============================================================================
+
+@router.post("/register")
+async def register(
+    request: Request,
+    data: RegisterRequest,
+    session: Session = Depends(get_session),
+    _rate_limit: None = Depends(rate_limit_register)
+):
+    """
+    Register a new user
     
+    Rate limit: 3 requests per hour per IP
+    """
     # Validate password strength
-    is_valid, error_msg = validate_password_strength(user_data.password)
+    is_valid, error_message = validate_password_strength(data.password)
     if not is_valid:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error_msg)
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=error_message
+        )
     
     # Check if user already exists
-    existing_user = await db.users.find_one({"email": user_data.email})
+    existing_user = get_user_by_email(session, data.email)
     if existing_user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Email already registered"
         )
     
-    # Generate unique user ID
-    user_id = f"user-{secrets.token_urlsafe(16)}"
+    # Create new user
+    user_id = str(uuid.uuid4())
+    verification_token = generate_verification_token()
     
-    # Generate verification token
-    verification_token = secrets.token_urlsafe(32)
+    new_user = User(
+        id=user_id,
+        email=data.email,
+        password_hash=hash_password(data.password),
+        name=data.name,
+        is_verified=False,  # Require email verification
+        verification_token=verification_token,
+        created_at=datetime.utcnow(),
+        updated_at=datetime.utcnow()
+    )
     
-    # Create user document
-    user_doc = {
-        "id": user_id,
-        "email": user_data.email,
-        "password_hash": hash_password(user_data.password),
-        "name": user_data.name,
-        "planning_type": user_data.planning_type,
-        "country": user_data.country,
-        "state": user_data.state,
-        "currency": user_data.currency,
-        "is_verified": False,
-        "verification_token": verification_token,
-        "reset_token": None,
-        "reset_token_expires": None,
-        "created_at": datetime.now(timezone.utc),
-        "updated_at": datetime.now(timezone.utc)
-    }
-    
-    # Insert user into database
-    await db.users.insert_one(user_doc)
+    session.add(new_user)
+    session.commit()
+    session.refresh(new_user)
     
     # Send verification email
-    send_verification_email(user_data.email, user_data.name, verification_token)
+    try:
+        await send_verification_email(data.email, data.name, verification_token)
+    except Exception as e:
+        print(f"⚠️  Failed to send verification email: {e}")
+        # Don't fail registration if email fails
     
-    # Create tokens
-    access_token = create_access_token({"sub": user_id, "email": user_data.email})
-    refresh_token = create_refresh_token({"sub": user_id})
-    
-    return TokenResponse(
-        access_token=access_token,
-        refresh_token=refresh_token
-    )
+    return {
+        "message": "Registration successful. Please check your email to verify your account.",
+        "user": {
+            "id": new_user.id,
+            "email": new_user.email,
+            "name": new_user.name,
+            "is_verified": new_user.is_verified
+        }
+    }
 
 
-@router.post("/login", response_model=TokenResponse)
-async def login(credentials: UserLogin, request: Request):
-    """Login with email and password"""
-    # Rate limiting
-    await rate_limit_login(request)
+@router.post("/login")
+async def login(
+    request: Request,
+    data: LoginRequest,
+    session: Session = Depends(get_session),
+    _rate_limit: None = Depends(rate_limit_login)
+):
+    """
+    Login with email and password
     
-    # Find user
-    user = await db.users.find_one({"email": credentials.email})
-    if not user or not verify_password(credentials.password, user["password_hash"]):
+    Rate limit: 5 requests per 15 minutes per IP
+    """
+    # Authenticate user
+    user = authenticate_user(session, data.email, data.password)
+    
+    if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password"
         )
     
-    # Create tokens
-    access_token = create_access_token({"sub": user["id"], "email": user["email"]})
-    refresh_token = create_refresh_token({"sub": user["id"]})
-    
-    return TokenResponse(
-        access_token=access_token,
-        refresh_token=refresh_token
-    )
-
-
-@router.post("/refresh", response_model=TokenResponse)
-async def refresh_access_token(token_request: RefreshTokenRequest):
-    """Refresh access token using refresh token"""
-    try:
-        payload = verify_token(token_request.refresh_token, token_type="refresh")
-        user_id = payload.get("sub")
-        
-        # Get user from database
-        user = await db.users.find_one({"id": user_id})
-        if not user:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="User not found"
-            )
-        
-        # Create new access token
-        access_token = create_access_token({"sub": user["id"], "email": user["email"]})
-        
-        return TokenResponse(
-            access_token=access_token,
-            refresh_token=token_request.refresh_token
+    # Check if email is verified
+    if not user.is_verified:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Email not verified. Please check your email for the verification link."
         )
-    except HTTPException:
-        raise
-    except Exception:
+    
+    # Update last login
+    user.updated_at = datetime.utcnow()
+    session.add(user)
+    session.commit()
+    
+    # Create token response
+    return create_token_response(user)
+
+
+@router.post("/refresh")
+async def refresh_token(
+    data: RefreshTokenRequest,
+    session: Session = Depends(get_session)
+):
+    """
+    Refresh access token using refresh token
+    """
+    # Verify refresh token
+    payload = verify_token(data.refresh_token, token_type="refresh")
+    
+    if payload is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired refresh token"
+        )
+    
+    # Get user ID from token
+    user_id = payload.get("sub")
+    if not user_id:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid refresh token"
         )
+    
+    # Get user from database
+    user = get_user_by_id(session, user_id)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not found"
+        )
+    
+    # Create new access token
+    access_token = create_access_token(data={"sub": user.id, "email": user.email})
+    
+    return {
+        "access_token": access_token,
+        "token_type": "bearer"
+    }
 
 
-@router.get("/me", response_model=UserResponse)
-async def get_current_user_info(current_user: dict = Depends(get_current_user)):
-    """Get current user information"""
-    return UserResponse(
-        id=current_user["id"],
-        email=current_user["email"],
-        name=current_user["name"],
-        is_verified=current_user.get("is_verified", False),
-        planning_type=current_user.get("planning_type", "individual"),
-        country=current_user.get("country", "Australia"),
-        state=current_user.get("state", "NSW"),
-        currency=current_user.get("currency", "AUD")
-    )
+@router.get("/me")
+async def get_current_user_info(
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Get current authenticated user information
+    """
+    return {
+        "id": current_user.id,
+        "email": current_user.email,
+        "name": current_user.name,
+        "is_verified": current_user.is_verified,
+        "onboarding_completed": current_user.onboarding_completed,
+        "onboarding_step": current_user.onboarding_step,
+        "subscription_tier": current_user.subscription_tier,
+        "created_at": current_user.created_at
+    }
 
 
 @router.post("/logout")
-async def logout(current_user: dict = Depends(get_current_user)):
-    """Logout (client should delete tokens)"""
-    # In a production system, you might want to blacklist the token here
+async def logout(
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Logout (client should discard tokens)
+    
+    Note: With JWT, logout is handled client-side by discarding tokens.
+    For additional security, implement token blacklisting with Redis.
+    """
     return {"message": "Logged out successfully"}
 
 
-@router.post("/request-password-reset")
-async def request_password_reset(reset_request: PasswordResetRequest, request: Request):
-    """Request a password reset email"""
-    # Rate limiting
-    await rate_limit_password_reset(request)
-    
-    # Find user
-    user = await db.users.find_one({"email": reset_request.email})
-    
-    # Always return success to prevent email enumeration
-    if not user:
-        return {"message": "If the email exists, a password reset link has been sent"}
-    
-    # Generate reset token
-    reset_token = secrets.token_urlsafe(32)
-    reset_expires = datetime.now(timezone.utc) + timedelta(hours=1)
-    
-    # Update user with reset token
-    await db.users.update_one(
-        {"id": user["id"]},
-        {
-            "$set": {
-                "reset_token": reset_token,
-                "reset_token_expires": reset_expires,
-                "updated_at": datetime.now(timezone.utc)
-            }
-        }
-    )
-    
-    # Send password reset email
-    send_password_reset_email(user["email"], user["name"], reset_token)
-    
-    return {"message": "If the email exists, a password reset link has been sent"}
-
-
-@router.post("/reset-password")
-async def reset_password(reset_data: PasswordReset):
-    """Reset password using reset token"""
-    # Validate new password strength
-    is_valid, error_msg = validate_password_strength(reset_data.new_password)
-    if not is_valid:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error_msg)
-    
-    # Find user with valid reset token
-    user = await db.users.find_one({
-        "reset_token": reset_data.reset_token,
-        "reset_token_expires": {"$gt": datetime.now(timezone.utc)}
-    })
-    
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid or expired reset token"
-        )
-    
-    # Update password and clear reset token
-    await db.users.update_one(
-        {"id": user["id"]},
-        {
-            "$set": {
-                "password_hash": hash_password(reset_data.new_password),
-                "reset_token": None,
-                "reset_token_expires": None,
-                "updated_at": datetime.now(timezone.utc)
-            }
-        }
-    )
-    
-    return {"message": "Password reset successfully"}
-
+# ============================================================================
+# EMAIL VERIFICATION
+# ============================================================================
 
 @router.get("/verify-email")
-async def verify_email(token: str):
-    """Verify email address using verification token"""
-    # Find user with verification token
-    user = await db.users.find_one({"verification_token": token})
+async def verify_email(
+    token: str,
+    session: Session = Depends(get_session)
+):
+    """
+    Verify email address with token
+    """
+    # Find user by verification token
+    statement = select(User).where(User.verification_token == token)
+    user = session.exec(statement).first()
     
     if not user:
         raise HTTPException(
@@ -292,55 +269,142 @@ async def verify_email(token: str):
             detail="Invalid verification token"
         )
     
-    if user.get("is_verified"):
-        return {"message": "Email already verified"}
+    # Mark user as verified
+    user.is_verified = True
+    user.verification_token = None  # Clear token after use
+    user.updated_at = datetime.utcnow()
     
-    # Mark email as verified
-    await db.users.update_one(
-        {"id": user["id"]},
-        {
-            "$set": {
-                "is_verified": True,
-                "verification_token": None,
-                "updated_at": datetime.now(timezone.utc)
-            }
-        }
-    )
+    session.add(user)
+    session.commit()
     
-    # Send welcome email
-    send_welcome_email(user["email"], user["name"])
-    
-    return {"message": "Email verified successfully"}
+    return {
+        "message": "Email verified successfully. You can now log in."
+    }
 
 
 @router.post("/resend-verification")
-async def resend_verification(resend_request: ResendVerificationRequest):
-    """Resend verification email"""
-    # Find user
-    user = await db.users.find_one({"email": resend_request.email})
+async def resend_verification(
+    data: ResendVerificationRequest,
+    session: Session = Depends(get_session)
+):
+    """
+    Resend verification email
+    """
+    # Get user by email
+    user = get_user_by_email(session, data.email)
     
     if not user:
-        # Return success to prevent email enumeration
-        return {"message": "If the email exists and is unverified, a verification email has been sent"}
+        # Don't reveal if email exists
+        return {"message": "If the email exists, a verification link has been sent."}
     
-    if user.get("is_verified"):
-        return {"message": "Email already verified"}
+    if user.is_verified:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already verified"
+        )
     
     # Generate new verification token
-    verification_token = secrets.token_urlsafe(32)
+    verification_token = generate_verification_token()
+    user.verification_token = verification_token
+    user.updated_at = datetime.utcnow()
     
-    # Update user
-    await db.users.update_one(
-        {"id": user["id"]},
-        {
-            "$set": {
-                "verification_token": verification_token,
-                "updated_at": datetime.now(timezone.utc)
-            }
-        }
-    )
+    session.add(user)
+    session.commit()
     
     # Send verification email
-    send_verification_email(user["email"], user["name"], verification_token)
+    try:
+        await send_verification_email(user.email, user.name, verification_token)
+    except Exception as e:
+        print(f"⚠️  Failed to send verification email: {e}")
     
-    return {"message": "If the email exists and is unverified, a verification email has been sent"}
+    return {"message": "If the email exists, a verification link has been sent."}
+
+
+# ============================================================================
+# PASSWORD RESET
+# ============================================================================
+
+@router.post("/request-password-reset")
+async def request_password_reset(
+    request: Request,
+    data: PasswordResetRequest,
+    session: Session = Depends(get_session),
+    _rate_limit: None = Depends(rate_limit_password_reset)
+):
+    """
+    Request password reset email
+    
+    Rate limit: 3 requests per hour per IP
+    """
+    # Get user by email
+    user = get_user_by_email(session, data.email)
+    
+    if not user:
+        # Don't reveal if email exists (security best practice)
+        return {"message": "If the email exists, a password reset link has been sent."}
+    
+    # Generate reset token
+    reset_token = generate_reset_token()
+    reset_token_expires = datetime.utcnow() + timedelta(hours=1)  # Token expires in 1 hour
+    
+    user.reset_token = reset_token
+    user.reset_token_expires = reset_token_expires
+    user.updated_at = datetime.utcnow()
+    
+    session.add(user)
+    session.commit()
+    
+    # Send password reset email
+    try:
+        await send_password_reset_email(user.email, user.name, reset_token)
+    except Exception as e:
+        print(f"⚠️  Failed to send password reset email: {e}")
+    
+    return {"message": "If the email exists, a password reset link has been sent."}
+
+
+@router.post("/reset-password")
+async def reset_password(
+    data: PasswordResetConfirm,
+    session: Session = Depends(get_session)
+):
+    """
+    Reset password with token
+    """
+    # Validate new password strength
+    is_valid, error_message = validate_password_strength(data.new_password)
+    if not is_valid:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=error_message
+        )
+    
+    # Find user by reset token
+    statement = select(User).where(User.reset_token == data.token)
+    user = session.exec(statement).first()
+    
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired reset token"
+        )
+    
+    # Check if token is expired
+    if user.reset_token_expires and user.reset_token_expires < datetime.utcnow():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Reset token has expired. Please request a new one."
+        )
+    
+    # Update password
+    user.password_hash = hash_password(data.new_password)
+    user.reset_token = None  # Clear token after use
+    user.reset_token_expires = None
+    user.updated_at = datetime.utcnow()
+    
+    session.add(user)
+    session.commit()
+    
+    return {
+        "message": "Password reset successfully. You can now log in with your new password."
+    }
