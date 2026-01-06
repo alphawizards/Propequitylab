@@ -1,7 +1,7 @@
 
 import pytest
 
-def test_create_property(test_client, db):
+def test_create_property(client, db):
     data = {
         "portfolio_id": "p1",
         "address": "123 Street",
@@ -16,14 +16,14 @@ def test_create_property(test_client, db):
         "expenses": {"other": 0},
         "loan_details": {"amount": 300000, "interest_rate": 3.5}
     }
-    response = test_client.post("/api/properties", json=data)
+    response = client.post("/api/properties", json=data)
     if response.status_code != 200:
         print(response.json())
     assert response.status_code == 200
     assert response.json()["address"] == "123 Street"
     assert len(db.properties.data) == 1
 
-def test_get_properties(test_client, db):
+def test_get_properties(client, db):
     # Property response model requires all fields
     db.properties.data = [{
         "id": "prop1", "portfolio_id": "p1", "user_id": "dev-user-01",
@@ -32,12 +32,12 @@ def test_get_properties(test_client, db):
         "current_value": 500000,
         "property_type": "house"
     }]
-    response = test_client.get("/api/properties/portfolio/p1")
+    response = client.get("/api/properties/portfolio/p1")
     assert response.status_code == 200
     assert len(response.json()) == 1
     assert response.json()[0]["id"] == "prop1"
 
-def test_update_property(test_client, db):
+def test_update_property(client, db):
     # Important: db item must match the user_id query which is usually required by update endpoints
     # Check if update_property in backend requires user_id (usually yes)
     # The mock patch for dev user returns user_id "dev-user-01"
@@ -49,13 +49,13 @@ def test_update_property(test_client, db):
         "current_value": 500000,
         "property_type": "house"
     }]
-    response = test_client.put("/api/properties/prop1", json={"current_value": 550000})
+    response = client.put("/api/properties/prop1", json={"current_value": 550000})
     assert response.status_code == 200
     assert response.json()["current_value"] == 550000
     assert db.properties.data[0]["current_value"] == 550000
 
-def test_delete_property(test_client, db):
+def test_delete_property(client, db):
     db.properties.data = [{"id": "prop1", "portfolio_id": "p1", "user_id": "dev-user-01"}]
-    response = test_client.delete("/api/properties/prop1")
+    response = client.delete("/api/properties/prop1")
     assert response.status_code == 200
     assert len(db.properties.data) == 0
