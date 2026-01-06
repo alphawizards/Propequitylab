@@ -1,7 +1,7 @@
 
 import pytest
 
-def test_add_property_updates_portfolio_summary(test_client, db):
+def test_add_property_updates_portfolio_summary(client, db):
     # 1. Setup: Create a portfolio
     portfolio_id = "p1"
     db.portfolios.data = [{"id": portfolio_id, "user_id": "dev-user-01", "name": "Test Portfolio"}]
@@ -44,11 +44,11 @@ def test_add_property_updates_portfolio_summary(test_client, db):
         }
     }
 
-    response = test_client.post("/api/properties", json=property_payload)
+    response = client.post("/api/properties", json=property_payload)
     assert response.status_code == 200, f"Failed to create property: {response.text}"
 
     # 3. Check Portfolio Summary
-    response = test_client.get(f"/api/portfolios/{portfolio_id}/summary")
+    response = client.get(f"/api/portfolios/{portfolio_id}/summary")
     assert response.status_code == 200
     summary = response.json()
 
@@ -82,11 +82,11 @@ def test_add_property_updates_portfolio_summary(test_client, db):
         "expenses": {"other": 0}
     }
 
-    response = test_client.post("/api/properties", json=property_payload_2)
+    response = client.post("/api/properties", json=property_payload_2)
     assert response.status_code == 200
 
     # Check Summary again
-    response = test_client.get(f"/api/portfolios/{portfolio_id}/summary")
+    response = client.get(f"/api/portfolios/{portfolio_id}/summary")
     summary = response.json()
 
     assert summary["properties_count"] == 2
