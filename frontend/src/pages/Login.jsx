@@ -1,23 +1,38 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Mail, Lock } from 'lucide-react';
 
-const Login = ({ onLogin }) => {
+const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (email && password) {
-      onLogin({ email, name: email.split('@')[0] });
+    setError('');
+
+    if (!email || !password) {
+      setError('Please enter email and password');
+      return;
+    }
+
+    setLoading(true);
+    const result = await login(email, password);
+    setLoading(false);
+
+    if (result.success) {
+      // AuthContext handles user state
+      // Navigate to intended destination or dashboard
       navigate('/dashboard');
     } else {
-      setError('Please enter email and password');
+      setError(result.error);
     }
   };
 
@@ -143,9 +158,10 @@ const Login = ({ onLogin }) => {
             
             <Button
               type="submit"
-              className="w-full h-12 bg-gray-900 text-white hover:bg-gray-800 rounded-lg"
+              disabled={loading}
+              className="w-full h-12 bg-gray-900 text-white hover:bg-gray-800 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Sign In
+              {loading ? 'Signing In...' : 'Sign In'}
             </Button>
           </form>
         </div>

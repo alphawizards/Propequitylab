@@ -182,7 +182,8 @@ async def skip_onboarding(
     
     session.add(user)
     session.commit()
-    
+    session.refresh(user)
+
     logger.info(f"Onboarding skipped for user: {current_user.id}")
     return {"message": "Onboarding skipped"}
 
@@ -215,6 +216,7 @@ async def reset_onboarding(
     
     session.add(user)
     session.commit()
-    
+    session.refresh(user)
+
     logger.info(f"Onboarding reset for user: {current_user.id}")
     return {"message": "Onboarding reset successfully"}
