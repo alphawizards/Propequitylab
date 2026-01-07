@@ -1,0 +1,25 @@
+﻿pytest : \u26a0\ufe0f  DATABASE_URL not set. Using default PostgreSQL connection.
+At line:1 char:1
++ pytest tests/integration/test_properties.py -v -s 2>&1 | Out-File -En ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (\u26a0\ufe0f  D...SQL connection.:String)  
+   [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ImportError while loading conftest 'C:\Users\ckr_4\01 
+Projects\Propequitylab\Propequitylab\tests\conftest.py'.
+tests\conftest.py:30: in <module>
+    from backend.server import app
+backend\server.py:13: in <module>
+    from routes.auth import router as auth_router
+backend\routes\auth.py:31: in <module>
+    from utils.rate_limiter import rate_limit_login, rate_limit_register, 
+rate_limit_password_reset
+backend\utils\rate_limiter.py:40: in <module>
+    print("\u26a0\ufe0f  REDIS_URL not configured. Rate limiting using in-memory 
+fallback.")
+..\..\..\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py:19: in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   UnicodeEncodeError: 'charmap' codec can't encode characters in position 0-1: 
+character maps to <undefined>

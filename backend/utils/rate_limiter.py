@@ -37,7 +37,7 @@ if REDIS_URL and ENABLE_RATE_LIMITING:
         print("⚠️  Rate limiting will use in-memory fallback (not suitable for production)")
         redis_client = None
 else:
-    print("⚠️  REDIS_URL not configured. Rate limiting using in-memory fallback.")
+    print("WARNING: REDIS_URL not configured. Rate limiting using in-memory fallback.")
 
 
 # In-memory fallback for development (NOT suitable for production with multiple instances)

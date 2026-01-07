@@ -71,7 +71,7 @@ def test_user_fixture(session: Session) -> User:
         id=str(uuid.uuid4()),
         email="test@example.com",
         name="Test User",
-        hashed_password="$2b$12$test_hashed_password",  # Not a real hash, just for testing
+        password_hash="$2b$12$test_hashed_password",  # Not a real hash, just for testing
         is_active=True,
         is_verified=True,
         onboarding_completed=True,
