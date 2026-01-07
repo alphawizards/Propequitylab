@@ -1,12 +1,12 @@
 import React from 'react';
-import { Bell, Search, User, Sun, Moon } from 'lucide-react';
-import { useUser } from '../../context/UserContext';
+import { Bell, Search, User, Sun, Moon, LogOut } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 
 const Header = ({ title, subtitle }) => {
-  const { user } = useUser();
+  const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
   return (
@@ -30,9 +30,9 @@ const Header = ({ title, subtitle }) => {
         </div>
 
         {/* Theme Toggle */}
-        <Button 
-          variant="ghost" 
-          size="icon" 
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={toggleTheme}
           className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
           data-testid="theme-toggle-btn"
@@ -59,6 +59,15 @@ const Header = ({ title, subtitle }) => {
           <div className="w-10 h-10 rounded-full bg-lime-100 dark:bg-lime-900 flex items-center justify-center border-2 border-lime-400">
             <User className="w-5 h-5 text-lime-700 dark:text-lime-300" />
           </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={logout}
+            className="ml-2 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400"
+            title="Logout"
+          >
+            <LogOut className="w-5 h-5" />
+          </Button>
         </div>
       </div>
     </header>
