@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { UserProvider, useUser } from './context/UserContext';
 import { PortfolioProvider } from './context/PortfolioContext';
@@ -18,6 +19,7 @@ import ProgressPage from './pages/ProgressPage';
 import IncomePage from './pages/IncomePage';
 import SpendingPage from './pages/SpendingPage';
 import OnboardingWizard from './components/onboarding/OnboardingWizard';
+import { MortgageCalculatorPage } from './pages/calculators/MortgageCalculatorPage';
 import { Toaster } from './components/ui/toaster';
 
 // Placeholder pages - will be implemented in later phases
@@ -68,7 +70,10 @@ function AppRoutes() {
         {/* Public routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        
+
+        {/* Public Calculator Routes - NO AUTHENTICATION REQUIRED */}
+        <Route path="/calculators/mortgage" element={<MortgageCalculatorPage />} />
+
         {/* Root redirect based on auth and onboarding status */}
         <Route path="/" element={<RootRedirect />} />
         
@@ -112,18 +117,20 @@ function AppRoutes() {
 
 function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <UserProvider>
-          <PortfolioProvider>
-            <div className="App">
-              <AppRoutes />
-              <Toaster />
-            </div>
-          </PortfolioProvider>
-        </UserProvider>
-      </AuthProvider>
-    </ThemeProvider>
+    <HelmetProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <UserProvider>
+            <PortfolioProvider>
+              <div className="App">
+                <AppRoutes />
+                <Toaster />
+              </div>
+            </PortfolioProvider>
+          </UserProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </HelmetProvider>
   );
 }
 
