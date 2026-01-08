@@ -157,8 +157,9 @@ async def login(
             detail="Incorrect email or password"
         )
     
-    # Check if email is verified
-    if not user.is_verified:
+    # Check if email is verified (bypass for @propequitylab.com dev accounts)
+    is_dev_account = user.email.endswith('@propequitylab.com')
+    if not user.is_verified and not is_dev_account:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Email not verified. Please check your email for the verification link."
