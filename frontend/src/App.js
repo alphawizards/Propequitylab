@@ -20,6 +20,8 @@ import IncomePage from './pages/IncomePage';
 import SpendingPage from './pages/SpendingPage';
 import OnboardingWizard from './components/onboarding/OnboardingWizard';
 import { MortgageCalculatorPage } from './pages/calculators/MortgageCalculatorPage';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
 import { Toaster } from './components/ui/toaster';
 
 // Placeholder pages - will be implemented in later phases
@@ -73,6 +75,10 @@ function AppRoutes() {
 
         {/* Public Calculator Routes - NO AUTHENTICATION REQUIRED */}
         <Route path="/calculators/mortgage" element={<MortgageCalculatorPage />} />
+
+        {/* Legal Pages - Public */}
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-of-service" element={<TermsOfService />} />
 
         {/* Root redirect based on auth and onboarding status */}
         <Route path="/" element={<RootRedirect />} />

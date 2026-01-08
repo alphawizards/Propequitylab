@@ -1,6 +1,10 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, Request
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware.trustedhost import TrustedHostMiddleware
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 import os
 import logging
 from pathlib import Path
@@ -32,6 +36,14 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Initialize rate limiter
+limiter = Limiter(key_func=get_remote_address, default_limits=["100/minute"])
+
+# Get allowed origins from environment
+ALLOWED_ORIGINS = os.environ.get('CORS_ORIGINS', 'http://localhost:3000').split(',')
+ALLOWED_ORIGINS = [origin.strip() for origin in ALLOWED_ORIGINS]
+logger.info(f"CORS allowed origins: {ALLOWED_ORIGINS}")
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan manager"""
@@ -51,6 +63,10 @@ app = FastAPI(
     version="2.0.0",
     lifespan=lifespan
 )
+
+# Add rate limiter to app state
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 api_router = APIRouter(prefix="/api")
 
@@ -72,10 +88,47 @@ api_router.include_router(plans_router)
 
 app.include_router(api_router)
 
+# CORS Middleware - Locked down to production domains
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=ALLOWED_ORIGINS,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allow_headers=["Content-Type", "Authorization"],
 )
+
+# Security Headers Middleware
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    
+    # Strict-Transport-Security (HSTS)
+    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    
+    # Content-Security-Policy (CSP)
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self'; "
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
+        "style-src 'self' 'unsafe-inline'; "
+        "img-src 'self' data: https:; "
+        "font-src 'self' data:; "
+        "connect-src 'self' https://propequitylab.pages.dev; "
+        "frame-ancestors 'none';"
+    )
+    
+    # X-Frame-Options
+    response.headers["X-Frame-Options"] = "DENY"
+    
+    # X-Content-Type-Options
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    
+    # X-XSS-Protection
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    
+    # Referrer-Policy
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    
+    # Permissions-Policy
+    response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()"
+    
+    return response
