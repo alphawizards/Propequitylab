@@ -1,8 +1,9 @@
 # Next Steps Roadmap to Production Launch
 
-**Document Version:** 1.0
+**Document Version:** 1.1
 **Created:** 2026-01-07
-**Current Progress:** 71% Complete (2/6 Production Phases Done)
+**Last Updated:** 2026-01-09
+**Current Progress:** 75% Complete (3/6 Production Phases Done)
 
 ---
 
@@ -12,41 +13,48 @@
 |-------|--------|-------|
 | 9A: Authentication | ✅ Complete | Backend + Frontend integrated |
 | 9B: Security/Data Isolation | ✅ Complete | All routes secured |
-| 9C: Production Infrastructure | 🔴 Not Started | **NEXT PRIORITY** |
+| 9C: Email Service | ✅ Complete | Resend configured & deployed |
+| 9C: Security Hardening | 🔴 In Progress | **NEXT PRIORITY** |
 | 9D: User Onboarding Improvements | 🔴 Not Started | Post-deployment |
 | 9E: Monitoring & Analytics | 🔴 Not Started | Post-deployment |
 | 9F: Legal & Compliance | 🔴 Not Started | Before public launch |
 
 ---
 
-## 📋 Immediate Actions (Today)
+## 📋 Immediate Actions (Next)
 
-### Step 0: Local Testing (30 min)
-Before any deployment, verify the app works locally.
+### ✅ COMPLETED: Email Service Configuration
 
-```powershell
-# Terminal 1: Backend
-cd backend
-uvicorn server:app --reload --port 8000
+**Status:** ✅ **COMPLETE** (2026-01-09)
 
-# Terminal 2: Frontend
-cd frontend
-npm start
-```
+- ✅ Resend API key configured in AWS App Runner
+- ✅ Email verification flow operational
+- ✅ Password reset emails ready
+- ✅ GitHub Actions workflow updated
+- ✅ Documentation created
 
-**Test Checklist:**
-- [ ] Register a new user at `/register`
-- [ ] Verify email (check backend logs for token if email not configured)
-- [ ] Login at `/login`
-- [ ] Navigate to Dashboard - should load user data
-- [ ] Refresh page - should stay logged in
-- [ ] Click Logout button - should redirect to login
+**See:** `/docs/PHASE_9C_EMAIL_COMPLETION_REPORT.md` for details
 
 ---
 
-## 🚀 Phase 9C: Production Infrastructure (Priority #1)
+### Step 1: Test Email Verification in Production (15 min)
 
-This is the **critical path** to getting your website live.
+**Test Checklist:**
+- [ ] Go to `https://propequitylab.pages.dev/register`
+- [ ] Register with a real email address
+- [ ] Check inbox for verification email (within 1-2 min)
+- [ ] Click "Verify Email Address" button
+- [ ] Login at `/login`
+- [ ] Navigate to Dashboard - should load user data
+- [ ] Refresh page - should stay logged in
+
+**See:** `/docs/EMAIL_TESTING_CHECKLIST.md` for comprehensive testing
+
+---
+
+## 🚀 Phase 9C: Security Hardening (Priority #1)
+
+With email service complete, the next priority is security hardening before public launch.
 
 ### Step 1: Database Setup (PostgreSQL/Neon) ✅ Already Done
 Your backend is already configured for Neon PostgreSQL. Verify:

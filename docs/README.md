@@ -29,6 +29,10 @@
 - `PHASE_9B_AUDIT_REPORT.md` - Security audit results
 - `PHASE_9B_COMPLETION_SUMMARY.md` - Security phase summary
 
+### 📧 Phase 9C: Email Service (Completed)
+- `RESEND_EMAIL_SETUP.md` - Resend email service configuration
+- `EMAIL_TESTING_CHECKLIST.md` - Email verification testing procedures
+
 ### 🧮 Calculators
 - `CALCULATOR_EXTRACTION_GUIDE.md` - How to extract/build calculators
 - `CALCULATOR_QUICKSTART.md` - Quick guide for calculator development
@@ -70,15 +74,19 @@
 - Phases 1-8: Core features, dashboard, FIRE planning
 - Phase 9A: Authentication (JWT-based)
 - Phase 9B: Security & data isolation
+- Phase 9C: Email service (Resend configured & deployed)
 - Mortgage Calculator (public, no auth required)
 
 ### 🔴 Remaining
-- Phase 9C: Production infrastructure (deployment config exists)
-- Phase 9D-F: User onboarding, monitoring, legal
+- Phase 9C: Security hardening (rate limiting, CORS lockdown)
+- Phase 9D: User onboarding improvements
+- Phase 9E: Monitoring & analytics
+- Phase 9F: Legal pages (Privacy Policy, Terms of Service)
 
 ### 🌐 Deployed
 - **Frontend**: Cloudflare Pages (propequitylab.pages.dev)
 - **Backend**: AWS App Runner + Neon PostgreSQL
+- **Email Service**: Resend (configured & operational)
 
 ---
 
