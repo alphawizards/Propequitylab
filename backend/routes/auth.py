@@ -32,7 +32,7 @@ from utils.rate_limiter import rate_limit_login, rate_limit_register, rate_limit
 from utils.email import send_verification_email, send_password_reset_email
 
 
-router = APIRouter(prefix="/api/auth", tags=["Authentication"])
+router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
 # ============================================================================
