@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { login as apiLogin, register as apiRegister, logout as apiLogout, getProfile } from '../services/api';
+import { setUserContext } from '../utils/sentry';
 
 const AuthContext = createContext(null);
 
@@ -40,6 +41,8 @@ export const AuthProvider = ({ children }) => {
         const userData = await getProfile();
         setUser(userData);
         setIsAuthenticated(true);
+        // Set user context for Sentry error tracking
+        setUserContext(userData);
       } catch (error) {
         // Token invalid or expired - clear it
         console.warn('Token validation failed:', error.message);
@@ -69,6 +72,8 @@ export const AuthProvider = ({ children }) => {
 
       setUser(data.user);
       setIsAuthenticated(true);
+      // Set user context for Sentry error tracking
+      setUserContext(data.user);
 
       return { success: true };
     } catch (error) {
@@ -137,6 +142,8 @@ export const AuthProvider = ({ children }) => {
       // Always clear state regardless of API call success
       setUser(null);
       setIsAuthenticated(false);
+      // Clear user context in Sentry
+      setUserContext(null);
     }
   };
 
