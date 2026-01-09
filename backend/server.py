@@ -71,6 +71,7 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 api_router = APIRouter(prefix="/api")
 
 @api_router.get("/health")
+@api_router.head("/health")
 async def health_check():
     return {"status": "healthy", "stack": "PostgreSQL + App Runner"}
 
@@ -93,7 +94,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
     allow_origins=ALLOWED_ORIGINS,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD"],
     allow_headers=["Content-Type", "Authorization"],
 )
 
