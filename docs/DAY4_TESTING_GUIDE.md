@@ -44,7 +44,7 @@ Use this checklist to track your progress:
 **As a new visitor, I want to:**
 
 #### Step 1: Homepage Visit
-1. Visit: https://propequitylab.pages.dev
+1. Visit: https://propequitylab.com
 2. **Verify:**
    - [ ] Page loads in < 3 seconds
    - [ ] Hero section displays correctly
@@ -564,7 +564,7 @@ PropEquityLab provides free, accurate calculators for:
 - Suggestions for improvement
 
 **Get started:**
-1. Visit: https://propequitylab.pages.dev
+1. Visit: https://propequitylab.com
 2. Create a free account
 3. Try the calculators
 4. Email me feedback: [your-email]
@@ -597,7 +597,7 @@ Best regards,
 
 1. **Send invitations:**
    - [ ] Email 5-10 selected alpha users
-   - [ ] Include link: https://propequitylab.pages.dev
+   - [ ] Include link: https://propequitylab.com
    - [ ] Set deadline: 7 days
 
 2. **Provide support:**

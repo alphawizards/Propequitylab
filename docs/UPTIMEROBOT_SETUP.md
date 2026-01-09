@@ -48,7 +48,7 @@ UptimeRobot monitors your application 24/7 and alerts you immediately if it goes
 
 **Friendly Name:** `PropEquityLab - Frontend`
 
-**URL:** `https://propequitylab.pages.dev`
+**URL:** `https://propequitylab.com`
 
 **Monitoring Interval:** `5 minutes` (free tier)
 
