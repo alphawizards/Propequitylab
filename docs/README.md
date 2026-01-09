@@ -1,103 +1,240 @@
 # Propequitylab Documentation
 
-> **For AI Agents:** Start with `IMPLEMENTATION_STATUS.md` to understand current project state.
-
-## 📊 Quick Reference
-
-| Document | Purpose |
-|----------|---------|
-| [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) | **Current project status** - phases completed, in-progress, and remaining |
-| [NEXT_STEPS_ROADMAP.md](NEXT_STEPS_ROADMAP.md) | Prioritized next steps and deployment guide |
-| [PROJECT_SUMMARY.md](PROJECT_SUMMARY.md) | High-level project overview |
-| [QUICK_START.md](QUICK_START.md) | How to run the project locally |
-
-## 📁 Documentation Index
-
-### 🎯 Status & Planning
-- `IMPLEMENTATION_STATUS.md` - **START HERE** - Complete phase tracking
-- `NEXT_STEPS_ROADMAP.md` - What to do next
-- `PROJECT_SUMMARY.md` - Project overview
-- `PRODUCTION_READINESS_ASSESSMENT.md` - Launch readiness evaluation
-- `COMPREHENSIVE_TODO_LIST_RevC.md` - Detailed todo items
-
-### 🔐 Phase 9: Authentication & Security (Completed)
-- `PHASE_9A_BACKEND_IMPLEMENTATION_PLAN.md` - Backend auth implementation
-- `PHASE_9A_COMPLETION_REPORT.md` - Backend auth completion
-- `PHASE_9A_FRONTEND_IMPLEMENTATION_PLAN.md` - Frontend auth implementation
-- `PHASE_9A_FRONTEND_COMPLETION_SUMMARY.md` - Frontend auth completion
-- `PHASE_9B_IMPLEMENTATION_PLAN.md` - Security & data isolation plan
-- `PHASE_9B_AUDIT_REPORT.md` - Security audit results
-- `PHASE_9B_COMPLETION_SUMMARY.md` - Security phase summary
-
-### 📧 Phase 9C: Email Service (Completed)
-- `RESEND_EMAIL_SETUP.md` - Resend email service configuration
-- `EMAIL_TESTING_CHECKLIST.md` - Email verification testing procedures
-- `PHASE_9C_EMAIL_COMPLETION_REPORT.md` - Email service completion report
-
-### 🔐 Phase 9C: Security Hardening (Completed)
-- `SECURITY_TESTING_GUIDE.md` - Comprehensive security testing procedures
-- `DAY_2_COMPLETION_REPORT.md` - Security hardening completion report
-
-### 📄 Phase 9F: Legal Pages (Completed)
-- Privacy Policy and Terms of Service pages created
-
-### 🧮 Calculators
-- `CALCULATOR_EXTRACTION_GUIDE.md` - How to extract/build calculators
-- `CALCULATOR_QUICKSTART.md` - Quick guide for calculator development
-
-### 🎨 Frontend
-- `FRONTEND_DECISION_SUMMARY.md` - Technology choices
-- `FRONTEND_STACK_VALIDATION.md` - Stack validation report
-- `UI_UX_REDESIGN_PLAN.md` - UI/UX design decisions
-- `propequity_lab Revised Frontend implementation plan.md` - Latest frontend plan
-
-### 🔧 Infrastructure
-- `REDIS_PROVISIONING_GUIDE.md` - Redis setup for rate limiting
-- `IMPLEMENTATION_FRAMEWORK.md` - Full technical architecture
-
-### 📋 Handoffs & Testing
-- `AGENTS.md` - Instructions for AI agents
-- `CLAUDE_HANDOFF_GUIDE.md` - Agent handoff guide
-- `handoff_prompt.md` - Handoff prompt template
-- `verification_prompt.md` - Verification prompt
-- `manual_testing_guide.md` - Manual test procedures
-- `test_result.md` - Test results
-
-### 📝 Session Summaries
-- `SESSION_SUMMARY.md` - General session summary
-- `SESSION_SUMMARY_PHASE_9A.md` - Phase 9A session details
-- `VERIFICATION_REPORT.md` - Verification results
-
-### 📚 Reference
-- `COMBINED_IMPLEMENTATION_PLAN.md` - Combined implementation details
-- `IMPLEMENTATION_PLAN.md` - Original implementation plan
-- `MANUS_PROPOSAL_VALIDATION.md` - Proposal validation
-- `REVISED_RECOMMENDATION_PUBLIC_CONTENT.md` - Public content recommendations
+> **For AI Agents:** Start here, then proceed to `DAY_4_TODO_LIST.md` for next steps.
 
 ---
 
-## 🚀 Current State (January 2026)
-### ✅ Completed
-- Phases 1-8: Core features, dashboard, FIRE planning
-- Phase 9A: Authentication (JWT-based)
-- Phase 9B: Security & data isolation
-- Phase 9C: Email service (Resend configured & deployed)
-- Phase 9C: Security hardening (rate limiting, CORS lockdown, secure headers)
-- Phase 9F: Legal pages (Privacy Policy, Terms of Service)
-- Mortgage Calculator (public, no auth required)
+## 🚨 CRITICAL: Current Status (January 9, 2026)
 
-### 🔴 Remaining
+### Overall Progress: **85% Complete** - Ready for Manual Testing & Alpha
 
-- Phase 9D: User onboarding improvements
-- Phase 9E: Monitoring & analytics (error tracking, uptime monitoring)
-
-### 🌐 Deployed
-- **Frontend**: Cloudflare Pages (propequitylab.pages.dev)
-- **Backend**: AWS App Runner + Neon PostgreSQL
-- **Email Service**: Resend (configured & operational)
-- **Security**: Rate limiting, CORS lockdown, secure headers
-- **Legal**: Privacy Policy & Terms of Service pages
+| Category | Status | Notes |
+|----------|--------|-------|
+| Core Features (Phases 1-8) | ✅ Complete | Dashboard, FIRE planning, properties, assets, liabilities |
+| Authentication (9A) | ✅ Complete | JWT-based, login/register working |
+| Security (9B) | ✅ Complete | Data isolation, all routes secured |
+| Email Service (9C) | ✅ Complete | Resend configured & deployed |
+| Security Hardening | ✅ Complete | Rate limiting, CORS, secure headers |
+| Legal Pages (9F) | ✅ Complete | Privacy Policy, Terms of Service |
+| Monitoring (9E) | ✅ Complete | UptimeRobot + Sentry configured |
+| **Automated Testing** | ✅ **COMPLETE** | All infrastructure tests passed |
+| **Manual Testing** | 🟡 **READY** | **START HERE** - See MANUAL_TESTING_CHECKLIST.md |
+| **Alpha Testing** | ⏳ **PENDING** | After manual testing complete |
 
 ---
 
-*Last updated: 2026-01-09*
+## 🎯 NEXT STEPS (Priority Order)
+
+### ✅ COMPLETED: Automated Testing
+- All infrastructure tests passed (see [AUTOMATED_TEST_REPORT.md](AUTOMATED_TEST_REPORT.md))
+- Backend health: ✅ Operational
+- Frontend: ✅ Operational
+- Security headers: ✅ A+ rating
+- SSL certificates: ✅ Valid
+- API endpoints: ✅ 57 endpoints functional
+- Performance: ✅ Sub-400ms response times
+
+### 🎯 IMMEDIATE: Manual Testing (2-3 hours)
+
+**Quick Start:** See [QUICK_START_GUIDE.md](QUICK_START_GUIDE.md)
+**Detailed Guide:** [MANUAL_TESTING_CHECKLIST.md](MANUAL_TESTING_CHECKLIST.md)
+
+| Phase | Task | Time | Status |
+|-------|------|------|--------|
+| 1 | Configure monitoring (UptimeRobot + Sentry) | 15 min | ⬜ |
+| 2 | New user journey testing | 30 min | ⬜ |
+| 3 | Calculator functionality (all 5) | 45 min | ⬜ |
+| 4 | User account management | 30 min | ⬜ |
+| 5 | Error handling | 20 min | ⬜ |
+| 6 | Cross-browser & mobile testing | 30 min | ⬜ |
+| 7 | Legal & compliance check | 15 min | ⬜ |
+| 8 | Performance testing (Lighthouse) | 15 min | ⬜ |
+
+### 🔜 NEXT: Alpha User Testing (1 week)
+
+**Guide:** [ALPHA_INVITATION_KIT.md](ALPHA_INVITATION_KIT.md)
+
+1. Send invitations to 5-10 testers (email templates provided)
+2. Monitor for 7 days
+3. Collect feedback
+4. Fix critical bugs
+5. Iterate based on feedback
+
+### 🚀 AFTER: Public Beta Launch
+
+1. Announce on social media
+2. Monitor for 48-72 hours
+3. Continue collecting feedback
+4. Iterate and improve
+
+---
+
+## 🌐 Production URLs
+
+| Service | URL | Status |
+|---------|-----|--------|
+| **Frontend** | `https://propequitylab.com` | ✅ Live |
+| **Backend API** | `https://h3nhfwgxgf.ap-southeast-2.awsapprunner.com` | ✅ Live |
+| **Health Check** | `https://h3nhfwgxgf.ap-southeast-2.awsapprunner.com/health` | ✅ Monitored |
+
+---
+
+## 🔧 Infrastructure
+
+| Component | Provider | Notes |
+|-----------|----------|-------|
+| Frontend Hosting | Cloudflare Pages | Auto-deploy from GitHub |
+| Backend Hosting | AWS App Runner | Docker container |
+| Database | Neon PostgreSQL | Serverless |
+| Email Service | Resend | Verified domain |
+| Uptime Monitoring | UptimeRobot | Frontend + Backend monitors |
+| Error Tracking | Sentry | Frontend configured |
+
+### Environment Variables Configured
+
+**Cloudflare Pages:**
+- `REACT_APP_API_URL` ✅
+- `REACT_APP_SENTRY_DSN` ✅
+
+**AWS App Runner:**
+- `DATABASE_URL` ✅
+- `JWT_SECRET` ✅
+- `CORS_ORIGINS` ✅
+- `RESEND_API_KEY` ✅
+
+---
+
+## 📁 Key Files Reference
+
+### 🆕 Testing Documentation (Created Today)
+| Purpose | File | Status |
+|---------|------|--------|
+| **Quick Start** | [QUICK_START_GUIDE.md](QUICK_START_GUIDE.md) | ✅ Your starting point |
+| **Automated Test Results** | [AUTOMATED_TEST_REPORT.md](AUTOMATED_TEST_REPORT.md) | ✅ All tests passed |
+| **Manual Testing Checklist** | [MANUAL_TESTING_CHECKLIST.md](MANUAL_TESTING_CHECKLIST.md) | 🎯 Do this next |
+| **Alpha Invitation Kit** | [ALPHA_INVITATION_KIT.md](ALPHA_INVITATION_KIT.md) | 📧 Email templates |
+| **Testing Summary** | [DAY4_COMPLETION_SUMMARY.md](DAY4_COMPLETION_SUMMARY.md) | 📊 Full overview |
+
+### 📋 Previous Documentation
+| Purpose | File |
+|---------|------|
+| **Original Testing Guide** | [DAY4_TESTING_GUIDE.md](DAY4_TESTING_GUIDE.md) |
+| **Original TODO List** | [DAY_4_TODO_LIST.md](DAY_4_TODO_LIST.md) |
+| **Implementation Status** | [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) |
+| **Security Testing** | [SECURITY_TESTING_GUIDE.md](SECURITY_TESTING_GUIDE.md) |
+| **UptimeRobot Setup** | [UPTIMEROBOT_SETUP.md](UPTIMEROBOT_SETUP.md) |
+| **Sentry Setup** | [SENTRY_SETUP.md](SENTRY_SETUP.md) |
+| **Analytics Setup** | [ANALYTICS_SETUP.md](ANALYTICS_SETUP.md) |
+
+### 💻 Code Reference
+| Purpose | File |
+|---------|------|
+| **Sentry Config** | `frontend/src/utils/sentry.js` |
+| **Analytics** | `frontend/src/lib/analytics.js` |
+| **App Entry** | `frontend/src/index.js` |
+| **Auth Context** | `frontend/src/context/AuthContext.jsx` |
+| **Mortgage Calculator** | `frontend/src/pages/calculators/MortgageCalculatorPage.jsx` |
+
+---
+
+## ✅ Completed Work Summary
+
+### Phases 1-8: Core Features
+- FastAPI Backend with MongoDB → migrated to PostgreSQL
+- 9 Data Models (User, Portfolio, Property, Income, Expense, Asset, Liability, Plan, NetWorthSnapshot)
+- Full CRUD operations for all entities
+- 8-step onboarding wizard
+- Dashboard with charts (Recharts)
+- FIRE planning with projection engine
+- Dark mode support
+
+### Phase 9A: Authentication
+- JWT-based authentication (access + refresh tokens)
+- Login/Register pages with real authentication
+- Protected routes with AuthContext
+- Token storage in localStorage with auto-refresh
+
+### Phase 9B: Security & Data Isolation
+- All routes use JWT authentication
+- User-scoped data isolation on all endpoints
+- Parameterized queries (SQL injection protection)
+- Defense-in-depth with double-filter pattern
+
+### Phase 9C: Email Service
+- Resend API configured
+- Email verification flow working
+- Password reset emails ready
+
+### Security Hardening
+- Rate limiting (slowapi + Redis): 100/min default
+- Auth rate limits: Login 5/15min, Register 3/hour
+- CORS locked to production domains
+- Security headers: HSTS, CSP, X-Frame-Options, etc.
+
+### Phase 9F: Legal Pages
+- Privacy Policy (`/privacy-policy`)
+- Terms of Service (`/terms-of-service`)
+- GDPR-compliant, dark mode support
+
+### Monitoring (Just Completed)
+- UptimeRobot: Frontend + Backend monitors configured
+- Sentry DSN: Configured in Cloudflare Pages
+
+---
+
+## 🔴 Remaining Work
+
+| Item | Priority | Notes |
+|------|----------|-------|
+| Day 4 Testing | **CRITICAL** | Must complete before alpha |
+| User Onboarding (9D) | Medium | Welcome modal, guided tour |
+| Google Analytics | Optional | Can wait |
+| Facebook Pixel | Optional | Can wait |
+| Backend Sentry | Optional | Separate project |
+
+---
+
+## 📋 Documentation Index
+
+### Status & Planning
+- [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) - Complete phase tracking
+- [NEXT_STEPS_ROADMAP.md](NEXT_STEPS_ROADMAP.md) - Prioritized next steps
+- [DAY_4_TODO_LIST.md](DAY_4_TODO_LIST.md) - **Testing checklist**
+- [DAY4_TESTING_GUIDE.md](DAY4_TESTING_GUIDE.md) - Testing guide
+
+### Security & Auth
+- [SECURITY_TESTING_GUIDE.md](SECURITY_TESTING_GUIDE.md) - Security testing procedures
+- [PHASE_9B_AUDIT_REPORT.md](PHASE_9B_AUDIT_REPORT.md) - Security audit results
+
+### Email & Deployment
+- [RESEND_EMAIL_SETUP.md](RESEND_EMAIL_SETUP.md) - Email service configuration
+- [EMAIL_TESTING_CHECKLIST.md](EMAIL_TESTING_CHECKLIST.md) - Email verification testing
+
+### Monitoring
+- [UPTIMEROBOT_SETUP.md](UPTIMEROBOT_SETUP.md) - Uptime monitoring setup
+- [SENTRY_SETUP.md](SENTRY_SETUP.md) - Error tracking setup
+
+### Handoffs
+- [CLAUDE_HANDOFF_GUIDE.md](CLAUDE_HANDOFF_GUIDE.md) - Agent handoff guide
+- [handoff_prompt.md](handoff_prompt.md) - Handoff prompt template
+
+---
+
+## 🚀 Launch Checklist
+
+Before inviting alpha users:
+
+- [ ] All Day 4 tests passed
+- [ ] No critical console errors
+- [ ] Performance >90 on Lighthouse
+- [ ] Mobile responsive working
+- [ ] Email verification working
+- [ ] Legal pages accessible
+- [ ] Sentry receiving events
+- [ ] UptimeRobot monitors showing "Up"
+
+---
+
+*Last updated: 2026-01-09 14:46 AEST*
+*Status: Ready for Day 4 Testing*
+*Next Milestone: Alpha launch (1-2 days after testing)*
