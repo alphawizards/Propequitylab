@@ -13,18 +13,10 @@ export const initSentry = () => {
       dsn: process.env.REACT_APP_SENTRY_DSN,
       integrations: [
         new BrowserTracing(),
-        new Sentry.Replay({
-          maskAllText: true,
-          blockAllMedia: true,
-        }),
       ],
 
       // Performance Monitoring
       tracesSampleRate: 0.1, // Capture 10% of transactions for performance monitoring
-
-      // Session Replay
-      replaysSessionSampleRate: 0.1, // Sample 10% of sessions
-      replaysOnErrorSampleRate: 1.0, // Sample 100% of sessions with errors
 
       // Environment
       environment: process.env.NODE_ENV,
