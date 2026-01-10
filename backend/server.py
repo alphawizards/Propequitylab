@@ -25,6 +25,11 @@ from routes.plans import router as plans_router
 from routes.onboarding import router as onboarding_router
 from routes.dashboard import router as dashboard_router
 
+# Phase 1-3: Property Portfolio Forecasting Routes
+from routes.projections import router as projections_router
+from routes.loans import router as loans_router
+from routes.valuations import router as valuations_router
+
 # Load environment variables
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -86,6 +91,11 @@ api_router.include_router(expenses_router)
 api_router.include_router(assets_router)
 api_router.include_router(liabilities_router)
 api_router.include_router(plans_router)
+
+# Phase 1-3: Property Portfolio Forecasting Routes
+api_router.include_router(projections_router)
+api_router.include_router(loans_router)
+api_router.include_router(valuations_router)
 
 app.include_router(api_router)
 
