@@ -197,5 +197,122 @@ export const getProfile = async () => {
   return response.data;
 };
 
-// Default export
-export default apiClient;
+// ============================================================================
+// Portfolio API Functions
+// ============================================================================
+
+/**
+ * Get all portfolios for current user
+ * @returns {Promise<Array>} List of portfolios
+ */
+export const getPortfolios = async () => {
+  const response = await apiClient.get('/portfolios');
+  return response.data;
+};
+
+/**
+ * Get a specific portfolio by ID
+ * @param {string} id - Portfolio ID
+ * @returns {Promise<object>} Portfolio data
+ */
+export const getPortfolio = async (id) => {
+  const response = await apiClient.get(`/portfolios/${id}`);
+  return response.data;
+};
+
+/**
+ * Create a new portfolio
+ * @param {object} data - Portfolio data { name, type }
+ * @returns {Promise<object>} Created portfolio
+ */
+export const createPortfolio = async (data) => {
+  const response = await apiClient.post('/portfolios', data);
+  return response.data;
+};
+
+/**
+ * Get portfolio summary/dashboard data
+ * @param {string} id - Portfolio ID
+ * @returns {Promise<object>} Portfolio summary
+ */
+export const getPortfolioSummary = async (id) => {
+  const response = await apiClient.get(`/portfolios/${id}/summary`);
+  return response.data;
+};
+
+// ============================================================================
+// Onboarding API Functions
+// ============================================================================
+
+/**
+ * Get onboarding status
+ * @returns {Promise<object>} Onboarding status { completed, current_step, user }
+ */
+export const getOnboardingStatus = async () => {
+  const response = await apiClient.get('/onboarding/status');
+  return response.data;
+};
+
+/**
+ * Complete onboarding
+ * @returns {Promise<object>} Updated status
+ */
+export const completeOnboarding = async () => {
+  const response = await apiClient.post('/onboarding/complete');
+  return response.data;
+};
+
+/**
+ * Skip onboarding
+ * @returns {Promise<object>} Updated status
+ */
+export const skipOnboarding = async () => {
+  const response = await apiClient.post('/onboarding/skip');
+  return response.data;
+};
+
+/**
+ * Reset onboarding
+ * @returns {Promise<object>} Updated status
+ */
+export const resetOnboarding = async () => {
+  const response = await apiClient.post('/onboarding/reset');
+  return response.data;
+};
+
+// ============================================================================
+// Dashboard API Functions
+// ============================================================================
+
+/**
+ * Get dashboard summary data
+ * @returns {Promise<object>} Dashboard summary
+ */
+export const getDashboardSummary = async () => {
+  const response = await apiClient.get('/dashboard/summary');
+  return response.data;
+};
+
+// Default export with all methods
+const api = {
+  // Auth
+  login,
+  register,
+  logout,
+  getProfile,
+  // Portfolios
+  getPortfolios,
+  getPortfolio,
+  createPortfolio,
+  getPortfolioSummary,
+  // Onboarding
+  getOnboardingStatus,
+  completeOnboarding,
+  skipOnboarding,
+  resetOnboarding,
+  // Dashboard
+  getDashboardSummary,
+};
+
+export default api;
+
