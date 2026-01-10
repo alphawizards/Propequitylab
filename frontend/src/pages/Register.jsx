@@ -136,13 +136,13 @@ const Register = () => {
               <path d="M8 8L20 20L8 32" stroke="#BFFF00" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
               <path d="M32 8L20 20L32 32" stroke="#BFFF00" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            <span className="text-white text-xl font-semibold">Zapiio</span>
+            <span className="text-white text-xl font-semibold">PropEquityLab</span>
           </div>
           
           {/* Welcome Text */}
           <div className="flex-1 flex flex-col justify-center">
             <h1 className="text-5xl font-light text-lime-400 italic mb-2">Join</h1>
-            <h2 className="text-5xl font-bold text-white mb-6">Zapiio Today!</h2>
+            <h2 className="text-5xl font-bold text-white mb-6">PropEquityLab Today!</h2>
             <p className="text-gray-300 text-lg max-w-md">
               Start tracking your property portfolio, plan your financial future, and achieve your FIRE goals.
             </p>

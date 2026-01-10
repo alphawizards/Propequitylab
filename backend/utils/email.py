@@ -1,5 +1,5 @@
 """
-Email service utilities for Zapiio
+Email service utilities for PropEquityLab
 Handles email sending via Resend API
 """
 
@@ -9,7 +9,7 @@ import resend
 
 # Configure Resend API key
 RESEND_API_KEY = os.getenv("RESEND_API_KEY")
-FROM_EMAIL = os.getenv("FROM_EMAIL", "Zapiio <noreply@zapiio.com>")
+FROM_EMAIL = os.getenv("FROM_EMAIL", "PropEquityLab <noreply@propequitylab.com>")
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
 # Initialize Resend
@@ -72,7 +72,7 @@ def send_verification_email(email: str, name: str, verification_token: str) -> b
     """
     verification_url = f"{FRONTEND_URL}/verify-email?token={verification_token}"
     
-    subject = "Welcome to Zapiio - Verify Your Email"
+    subject = "Welcome to PropEquityLab - Verify Your Email"
     
     html = f"""
 <!DOCTYPE html>
@@ -80,7 +80,7 @@ def send_verification_email(email: str, name: str, verification_token: str) -> b
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verify Your Email - Zapiio</title>
+    <title>Verify Your Email - PropEquityLab</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5;">
     <table role="presentation" style="width: 100%; border-collapse: collapse;">
@@ -90,7 +90,7 @@ def send_verification_email(email: str, name: str, verification_token: str) -> b
                     <!-- Header -->
                     <tr>
                         <td style="padding: 40px 40px 20px 40px; text-align: center; background: linear-gradient(135deg, #1a1f36 0%, #2a3152 100%); border-radius: 8px 8px 0 0;">
-                            <h1 style="margin: 0; color: #BFFF00; font-size: 32px; font-weight: bold;">Zapiio</h1>
+                            <h1 style="margin: 0; color: #BFFF00; font-size: 32px; font-weight: bold;">PropEquityLab</h1>
                             <p style="margin: 10px 0 0 0; color: #ffffff; font-size: 16px;">Property Investment Portfolio Management</p>
                         </td>
                     </tr>
@@ -99,11 +99,11 @@ def send_verification_email(email: str, name: str, verification_token: str) -> b
                     <tr>
                         <td style="padding: 40px;">
                             <h2 style="margin: 0 0 20px 0; color: #1a1f36; font-size: 24px; font-weight: 600;">
-                                Welcome to Zapiio, {name}!
+                                Welcome to PropEquityLab, {name}!
                             </h2>
                             
                             <p style="margin: 0 0 20px 0; color: #4a5568; font-size: 16px; line-height: 1.6;">
-                                Thank you for creating your Zapiio account. We're excited to help you track your property portfolio and achieve your financial goals.
+                                Thank you for creating your PropEquityLab account. We're excited to help you track your property portfolio and achieve your financial goals.
                             </p>
                             
                             <p style="margin: 0 0 30px 0; color: #4a5568; font-size: 16px; line-height: 1.6;">
@@ -138,10 +138,10 @@ def send_verification_email(email: str, name: str, verification_token: str) -> b
                     <tr>
                         <td style="padding: 30px 40px; background-color: #f7fafc; border-radius: 0 0 8px 8px; border-top: 1px solid #e2e8f0;">
                             <p style="margin: 0 0 10px 0; color: #718096; font-size: 14px; line-height: 1.6;">
-                                If you didn't create a Zapiio account, you can safely ignore this email.
+                                If you didn't create a PropEquityLab account, you can safely ignore this email.
                             </p>
                             <p style="margin: 0; color: #a0aec0; font-size: 12px;">
-                                © 2026 Zapiio. All rights reserved.
+                                © 2026 PropEquityLab. All rights reserved.
                             </p>
                         </td>
                     </tr>
@@ -170,7 +170,7 @@ def send_password_reset_email(email: str, name: str, reset_token: str) -> bool:
     """
     reset_url = f"{FRONTEND_URL}/reset-password?token={reset_token}"
     
-    subject = "Reset Your Zapiio Password"
+    subject = "Reset Your PropEquityLab Password"
     
     html = f"""
 <!DOCTYPE html>
@@ -178,7 +178,7 @@ def send_password_reset_email(email: str, name: str, reset_token: str) -> bool:
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reset Your Password - Zapiio</title>
+    <title>Reset Your Password - PropEquityLab</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5;">
     <table role="presentation" style="width: 100%; border-collapse: collapse;">
@@ -188,7 +188,7 @@ def send_password_reset_email(email: str, name: str, reset_token: str) -> bool:
                     <!-- Header -->
                     <tr>
                         <td style="padding: 40px 40px 20px 40px; text-align: center; background: linear-gradient(135deg, #1a1f36 0%, #2a3152 100%); border-radius: 8px 8px 0 0;">
-                            <h1 style="margin: 0; color: #BFFF00; font-size: 32px; font-weight: bold;">Zapiio</h1>
+                            <h1 style="margin: 0; color: #BFFF00; font-size: 32px; font-weight: bold;">PropEquityLab</h1>
                             <p style="margin: 10px 0 0 0; color: #ffffff; font-size: 16px;">Property Investment Portfolio Management</p>
                         </td>
                     </tr>
@@ -205,7 +205,7 @@ def send_password_reset_email(email: str, name: str, reset_token: str) -> bool:
                             </p>
                             
                             <p style="margin: 0 0 20px 0; color: #4a5568; font-size: 16px; line-height: 1.6;">
-                                We received a request to reset the password for your Zapiio account. Click the button below to create a new password:
+                                We received a request to reset the password for your PropEquityLab account. Click the button below to create a new password:
                             </p>
                             
                             <!-- Button -->
@@ -248,7 +248,7 @@ def send_password_reset_email(email: str, name: str, reset_token: str) -> bool:
                                 For security reasons, this password reset link will expire in 1 hour.
                             </p>
                             <p style="margin: 0; color: #a0aec0; font-size: 12px;">
-                                © 2026 Zapiio. All rights reserved.
+                                © 2026 PropEquityLab. All rights reserved.
                             </p>
                         </td>
                     </tr>
@@ -274,7 +274,7 @@ def send_welcome_email(email: str, name: str) -> bool:
     Returns:
         True if email sent successfully
     """
-    subject = "Welcome to Zapiio - Let's Get Started!"
+    subject = "Welcome to PropEquityLab - Let's Get Started!"
     
     html = f"""
 <!DOCTYPE html>
@@ -282,7 +282,7 @@ def send_welcome_email(email: str, name: str) -> bool:
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Zapiio</title>
+    <title>Welcome to PropEquityLab</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5;">
     <table role="presentation" style="width: 100%; border-collapse: collapse;">
@@ -292,7 +292,7 @@ def send_welcome_email(email: str, name: str) -> bool:
                     <!-- Header -->
                     <tr>
                         <td style="padding: 40px 40px 20px 40px; text-align: center; background: linear-gradient(135deg, #1a1f36 0%, #2a3152 100%); border-radius: 8px 8px 0 0;">
-                            <h1 style="margin: 0; color: #BFFF00; font-size: 32px; font-weight: bold;">🎉 Welcome to Zapiio!</h1>
+                            <h1 style="margin: 0; color: #BFFF00; font-size: 32px; font-weight: bold;">🎉 Welcome to PropEquityLab!</h1>
                         </td>
                     </tr>
                     
@@ -304,7 +304,7 @@ def send_welcome_email(email: str, name: str) -> bool:
                             </h2>
                             
                             <p style="margin: 0 0 20px 0; color: #4a5568; font-size: 16px; line-height: 1.6;">
-                                Your email has been verified and your account is ready to use. Here's what you can do with Zapiio:
+                                Your email has been verified and your account is ready to use. Here's what you can do with PropEquityLab:
                             </p>
                             
                             <ul style="margin: 0 0 30px 0; padding-left: 20px; color: #4a5568; font-size: 16px; line-height: 1.8;">
@@ -336,7 +336,7 @@ def send_welcome_email(email: str, name: str) -> bool:
                     <tr>
                         <td style="padding: 30px 40px; background-color: #f7fafc; border-radius: 0 0 8px 8px; border-top: 1px solid #e2e8f0;">
                             <p style="margin: 0; color: #a0aec0; font-size: 12px;">
-                                © 2026 Zapiio. All rights reserved.
+                                © 2026 PropEquityLab. All rights reserved.
                             </p>
                         </td>
                     </tr>

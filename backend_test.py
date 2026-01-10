@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Backend API Test Suite for Zapiio Financial Planning App
+Backend API Test Suite for PropEquityLab Financial Planning App
 Tests Phase 4: Assets & Liabilities API endpoints
 """
 
@@ -358,7 +358,7 @@ class APITester:
     def run_all_tests(self):
         """Run all tests in sequence"""
         print("=" * 80)
-        print("ZAPIIO BACKEND API TEST SUITE - PHASE 4: ASSETS & LIABILITIES")
+        print("PROPEQUITYLAB BACKEND API TEST SUITE - PHASE 4: ASSETS & LIABILITIES")
         print("=" * 80)
         print(f"Testing backend at: {self.base_url}")
         print(f"Dev User ID: {DEV_USER_ID}")

@@ -14,7 +14,7 @@ const Landing = () => {
             <path d="M8 8L20 20L8 32" stroke="#BFFF00" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
             <path d="M32 8L20 20L32 32" stroke="#BFFF00" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-          <span className="text-white text-xl font-semibold">Zapiio</span>
+          <span className="text-white text-xl font-semibold">PropEquityLab</span>
         </div>
         <Button
           onClick={() => navigate('/login')}
@@ -33,7 +33,7 @@ const Landing = () => {
             <path d="M8 8L20 20L8 32" stroke="#BFFF00" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
             <path d="M32 8L20 20L32 32" stroke="#BFFF00" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-          <span className="text-lime-400 text-3xl font-semibold">zapiio</span>
+          <span className="text-lime-400 text-3xl font-semibold">propequitylab</span>
         </div>
         
         <h1 className="text-4xl md:text-5xl font-bold text-white italic mb-4">
@@ -45,7 +45,7 @@ const Landing = () => {
         </p>
         
         <p className="text-gray-400 max-w-3xl mx-auto mb-12">
-          Zapiio is the intelligent platform that empowers buyer's agents, mortgage brokers, and serious
+          PropEquityLab is the intelligent platform that empowers buyer's agents, mortgage brokers, and serious
           investors to navigate the property market with unparalleled clarity, strategic insight, and complete
           confidence.
         </p>

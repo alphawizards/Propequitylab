@@ -379,7 +379,7 @@ Since the infrastructure is already complete, this phase focuses on **verificati
   - Set environment variables:
     ```bash
     export RESEND_API_KEY="re_..."
-    export FROM_EMAIL="Zapiio <onboarding@yourdomain.com>"
+    export FROM_EMAIL="PropEquityLab <onboarding@yourdomain.com>"
     export FRONTEND_URL="http://localhost:3000"
     ```
   - Trigger registration with your email
@@ -387,7 +387,7 @@ Since the infrastructure is already complete, this phase focuses on **verificati
 
 - [ ] **Step 5.3:** Test email templates
   - Verification email should have:
-    - Zapiio branding
+    - PropEquityLab branding
     - Verification link
     - Clear instructions
   - Password reset email should have:
@@ -432,7 +432,7 @@ Create/update `.env` file in backend directory:
 - [ ] **Step 7.1:** Create `.env` file template
   ```bash
   # Database
-  DATABASE_URL=postgresql://user:pass@localhost:5432/zapiio
+  DATABASE_URL=postgresql://user:pass@localhost:5432/propequitylab
 
   # JWT Configuration
   JWT_SECRET_KEY=your-secret-key-change-this-in-production-use-secrets-token-hex-32
@@ -442,7 +442,7 @@ Create/update `.env` file in backend directory:
 
   # Email Service (Resend)
   RESEND_API_KEY=  # Optional - leave empty for development
-  FROM_EMAIL=Zapiio <noreply@zapiio.com>
+  FROM_EMAIL=PropEquityLab <noreply@propequitylab.com>
   FRONTEND_URL=http://localhost:3000
 
   # Rate Limiting (Optional - Redis)

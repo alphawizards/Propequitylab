@@ -63,7 +63,7 @@ Recommended services:
 
 - [ ] Page loads in < 3 seconds
 - [ ] Hero section displays correctly
-- [ ] "PropEquityLab" branding visible (not "Zapiio" or "Emergent")
+- [ ] "PropEquityLab" branding visible (not "PropEquityLab" or "Emergent")
 - [ ] Navigation menu works
 - [ ] Calculator cards display
 - [ ] Footer shows correct company info
@@ -119,7 +119,7 @@ Recommended services:
 
 **Email Verification Test:**
 - [ ] Email received within 5 minutes
-- [ ] Subject line correct (not "Zapiio")
+- [ ] Subject line correct (not "PropEquityLab")
 - [ ] Email content displays properly
 - [ ] Verification link present
 - [ ] Click verification link
@@ -201,7 +201,7 @@ Recommended services:
 2. [ ] PDF downloads
 3. [ ] Open PDF
 4. [ ] Verify PDF contains:
-   - [ ] PropEquityLab branding (not Zapiio)
+   - [ ] PropEquityLab branding (not PropEquityLab)
    - [ ] Calculation details
    - [ ] Results
    - [ ] Proper formatting
@@ -492,7 +492,7 @@ Recommended services:
 
 1. [ ] Navigate to Privacy Policy
 2. [ ] Page loads
-3. [ ] Content shows "PropEquityLab" (not Zapiio/Emergent)
+3. [ ] Content shows "PropEquityLab" (not PropEquityLab/Emergent)
 4. [ ] Covers:
    - [ ] Data collection
    - [ ] Cookie usage

@@ -106,7 +106,7 @@ After deployment, test the email verification flow:
 ### Step 2: Check Your Email
 
 1. Check your inbox for an email from Propequitylab
-2. Subject: "Welcome to Zapiio - Verify Your Email"
+2. Subject: "Welcome to PropEquityLab - Verify Your Email"
 3. Click the "Verify Email Address" button
 
 ### Step 3: Verify Login
@@ -126,7 +126,7 @@ If emails are not arriving, check AWS App Runner logs:
 
 **Expected log output:**
 ```
-✓ Email sent to user@example.com: Welcome to Zapiio - Verify Your Email
+✓ Email sent to user@example.com: Welcome to PropEquityLab - Verify Your Email
 ```
 
 **If RESEND_API_KEY is not set, you'll see:**

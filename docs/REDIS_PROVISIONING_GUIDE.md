@@ -1,4 +1,4 @@
-# Redis Provisioning Guide for Zapiio
+# Redis Provisioning Guide for PropEquityLab
 
 **Purpose:** Distributed rate limiting and token blacklisting  
 **Provider:** Upstash (Recommended) or Railway Redis  
@@ -33,7 +33,7 @@
 
 2. **Create Database**
    - Click "Create Database"
-   - Name: `zapiio-rate-limiting`
+   - Name: `propequitylab-rate-limiting`
    - Region: **ap-southeast-2 (AWS Sydney)**
    - Type: **Regional** (not Global, for lower latency)
    - Eviction: **No eviction** (we manage expiry)
@@ -86,7 +86,7 @@
    - Sign up with GitHub
 
 2. **Add Redis to Project**
-   - Open your Zapiio project (or create new)
+   - Open your PropEquityLab project (or create new)
    - Click "+ New"
    - Select "Database" → "Redis"
    - Railway will provision automatically
@@ -119,7 +119,7 @@
 1. **Create ElastiCache Cluster**
    - Go to AWS Console → ElastiCache
    - Click "Create" → "Redis"
-   - Name: `zapiio-rate-limiting`
+   - Name: `propequitylab-rate-limiting`
    - Node type: `cache.t4g.micro` (free tier eligible)
    - Region: **ap-southeast-2 (Sydney)**
    - Subnet: Same VPC as App Runner
@@ -130,11 +130,11 @@
 
 3. **Get Connection String**
    - Copy the **Primary Endpoint**
-   - Format: `redis://zapiio-rate-limiting.xxxxx.cache.amazonaws.com:6379`
+   - Format: `redis://propequitylab-rate-limiting.xxxxx.cache.amazonaws.com:6379`
 
 4. **Add to Environment Variables**
    ```bash
-   REDIS_URL=redis://zapiio-rate-limiting.xxxxx.cache.amazonaws.com:6379
+   REDIS_URL=redis://propequitylab-rate-limiting.xxxxx.cache.amazonaws.com:6379
    ```
 
 ---
@@ -207,7 +207,7 @@ This proves Redis is sharing state across instances.
 # backend/.env
 
 # PostgreSQL (Neon)
-DATABASE_URL=postgresql://user:password@ep-xxx.ap-southeast-2.aws.neon.tech/zapiio?sslmode=require
+DATABASE_URL=postgresql://user:password@ep-xxx.ap-southeast-2.aws.neon.tech/propequitylab?sslmode=require
 
 # Redis (Upstash)
 REDIS_URL=redis://default:xxxxx@ap-southeast-2-xxxxx.upstash.io:6379
@@ -263,4 +263,4 @@ After Redis is provisioned:
 
 **Guide Version:** 1.0  
 **Last Updated:** January 5, 2026  
-**Project:** Zapiio - Serverless Fintech Architecture
+**Project:** PropEquityLab - Serverless Fintech Architecture

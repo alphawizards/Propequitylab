@@ -1,6 +1,6 @@
 # PropEquityLab UI/UX Redesign & Rebranding Plan
 
-**Project:** Complete website redesign and rebrand from "Zapiio" to "PropEquityLab"
+**Project:** Complete website redesign and rebrand from "PropEquityLab" to "PropEquityLab"
 
 **Date:** January 8, 2026
 
@@ -10,9 +10,9 @@
 
 ## Executive Summary
 
-This plan outlines a comprehensive UI/UX redesign and complete rebranding of the Propequitylab platform, removing all references to "Zapiio" and establishing a fresh, professional brand identity for PropEquityLab. The redesign will modernize the interface, improve user experience, and create a cohesive brand presence across all touchpoints.
+This plan outlines a comprehensive UI/UX redesign and complete rebranding of the Propequitylab platform, removing all references to "PropEquityLab" and establishing a fresh, professional brand identity for PropEquityLab. The redesign will modernize the interface, improve user experience, and create a cohesive brand presence across all touchpoints.
 
-**Scope:** 97 occurrences of "Zapiio" across 23 files + complete UI/UX refresh
+**Scope:** 97 occurrences of "PropEquityLab" across 23 files + complete UI/UX refresh
 
 **Tech Stack:** React 19 + FastAPI + PostgreSQL + Tailwind CSS + Shadcn/UI
 
@@ -108,7 +108,7 @@ This plan outlines a comprehensive UI/UX redesign and complete rebranding of the
    - Updated feature showcase
    - Professional testimonials section
    - Modern call-to-action design
-   - Replace all 7+ "Zapiio" references
+   - Replace all 7+ "PropEquityLab" references
    - New imagery and graphics
 
 2. **Login Page** - `/frontend/src/pages/Login.jsx`
@@ -209,19 +209,19 @@ This plan outlines a comprehensive UI/UX redesign and complete rebranding of the
 **Files to Update:**
 
 1. `/backend/server.py`
-   - FastAPI title: "Zapiio API" → "PropEquityLab API"
+   - FastAPI title: "PropEquityLab API" → "PropEquityLab API"
    - API description and metadata
    - Startup logging messages
 
 2. `/backend/utils/database.py`
-   - Default database name: "zapiio" → "propequitylab"
+   - Default database name: "propequitylab" → "propequitylab"
 
 3. `/backend/utils/database_sql.py`
    - PostgreSQL database name update
    - Connection string references
 
 4. `/backend/utils/dev_user.py`
-   - Dev user email: `dev@zapiio.local` → `dev@propequitylab.local`
+   - Dev user email: `dev@propequitylab.local` → `dev@propequitylab.local`
 
 ---
 
@@ -362,7 +362,7 @@ FRONTEND_URL="https://propequitylab.com"
 - test_result.md
 
 **Changes:**
-- Replace all "Zapiio" references
+- Replace all "PropEquityLab" references
 - Update project name throughout
 - Update any hardcoded URLs or email addresses
 
@@ -533,7 +533,7 @@ This is a **phased implementation plan** broken into actionable steps:
 ## Success Criteria
 
 ### Branding
-- [ ] Zero references to "Zapiio" in production code
+- [ ] Zero references to "PropEquityLab" in production code
 - [ ] Consistent PropEquityLab branding across all touchpoints
 - [ ] Professional brand identity established
 

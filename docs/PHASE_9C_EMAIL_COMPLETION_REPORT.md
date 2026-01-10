@@ -45,7 +45,7 @@ Phase 9C Email Service configuration has been successfully completed and deploye
 Both email templates are fully implemented with:
 - ✅ Professional HTML design
 - ✅ Responsive layout
-- ✅ Brand colors (Zapiio theme)
+- ✅ Brand colors (PropEquityLab theme)
 - ✅ Clear call-to-action buttons
 - ✅ Security notices
 - ✅ Fallback text links
@@ -78,14 +78,14 @@ FRONTEND_URL (configured)
 
 ### **Verification Email**
 - **Trigger:** User registration
-- **Subject:** "Welcome to Zapiio - Verify Your Email"
+- **Subject:** "Welcome to PropEquityLab - Verify Your Email"
 - **Content:** Welcome message + verification button
 - **Token Expiry:** 24 hours
 - **Security:** Single-use tokens
 
 ### **Password Reset Email**
 - **Trigger:** Forgot password request
-- **Subject:** "Reset Your Zapiio Password"
+- **Subject:** "Reset Your PropEquityLab Password"
 - **Content:** Reset instructions + reset button
 - **Token Expiry:** 1 hour
 - **Security:** Single-use tokens, old tokens invalidated

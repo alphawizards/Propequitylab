@@ -1,8 +1,8 @@
-# Zapiio - Financial Planning Application
+# PropEquityLab - Financial Planning Application
 ## Project Summary (Updated December 2024)
 
 ### Overview
-Zapiio is a financial planning application similar to ProjectionLab, focused on property investment tracking, wealth management, and FIRE (Financial Independence, Retire Early) planning for Australian users. Built with FastAPI (Python) + React + MongoDB.
+PropEquityLab is a financial planning application similar to ProjectionLab, focused on property investment tracking, wealth management, and FIRE (Financial Independence, Retire Early) planning for Australian users. Built with FastAPI (Python) + React + MongoDB.
 
 **Current Status:** Core features complete, awaiting authentication for production launch.
 

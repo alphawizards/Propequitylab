@@ -118,7 +118,7 @@ const DashboardNew = () => {
           <div className="w-20 h-20 rounded-full bg-lime-100 flex items-center justify-center mx-auto mb-6">
             <Building className="w-10 h-10 text-lime-600" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome to Zapiio</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome to PropEquityLab</h2>
           <p className="text-gray-600 mb-6">
             Get started by creating your first portfolio to track your property investments and financial goals.
           </p>

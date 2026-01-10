@@ -112,7 +112,7 @@ Your backend is already configured for Neon PostgreSQL. Verify:
    - `FRONTEND_URL` (your Vercel URL once deployed)
    - `CORS_ORIGINS` (your Vercel domain)
 4. Deploy
-5. Note the deployed URL (e.g., `https://zapiio-api.railway.app`)
+5. Note the deployed URL (e.g., `https://propequitylab-api.railway.app`)
 
 ### Step 4: Frontend Deployment (30 min)
 **Recommended:** [Vercel](https://vercel.com)
@@ -123,7 +123,7 @@ Your backend is already configured for Neon PostgreSQL. Verify:
 3. Set environment variable:
    - `REACT_APP_API_URL` = `https://your-backend-url.railway.app/api`
 4. Deploy
-5. Note the deployed URL (e.g., `https://zapiio.vercel.app`)
+5. Note the deployed URL (e.g., `https://propequitylab.vercel.app`)
 
 ### Step 5: Connect Backend + Frontend
 1. Update Railway env: `FRONTEND_URL` = Vercel URL
@@ -132,9 +132,9 @@ Your backend is already configured for Neon PostgreSQL. Verify:
 4. Test full auth flow on production
 
 ### Step 6: Custom Domain (Optional but Recommended)
-1. Buy domain (e.g., `zapiio.com`)
+1. Buy domain (e.g., `propequitylab.com`)
 2. Point domain to Vercel for frontend
-3. Create subdomain `api.zapiio.com` for Railway backend
+3. Create subdomain `api.propequitylab.com` for Railway backend
 4. Update CORS and environment variables
 
 ---

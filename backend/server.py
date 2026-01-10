@@ -47,7 +47,7 @@ logger.info(f"CORS allowed origins: {ALLOWED_ORIGINS}")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan manager"""
-    logger.info("Starting up Zapiio API (Serverless Fintech Stack)...")
+    logger.info("Starting up PropEquityLab API (Serverless Fintech Stack)...")
     
     # Initialize PostgreSQL Tables
     create_db_and_tables()
@@ -58,7 +58,7 @@ async def lifespan(app: FastAPI):
     logger.info("Shutting down...")
 
 app = FastAPI(
-    title="Zapiio API",
+    title="PropEquityLab API",
     description="Property Investment Portfolio Management Platform",
     version="2.0.0",
     lifespan=lifespan

@@ -38,7 +38,7 @@ Before starting tests, verify:
 
 4. **Check Email Inbox** (within 2 minutes)
    - [ ] Email received from `Propequitylab <onboarding@resend.dev>`
-   - [ ] Subject: "Welcome to Zapiio - Verify Your Email"
+   - [ ] Subject: "Welcome to PropEquityLab - Verify Your Email"
    - [ ] Email contains "Verify Email Address" button
    - [ ] Email is properly formatted (not broken HTML)
 
@@ -86,7 +86,7 @@ If email is not received in Test 1:
 
 **Look for:**
 ```
-✓ Email sent to test@example.com: Welcome to Zapiio - Verify Your Email
+✓ Email sent to test@example.com: Welcome to PropEquityLab - Verify Your Email
 ```
 
 **If you see this instead:**
@@ -132,7 +132,7 @@ If email is not received in Test 1:
 
 4. **Check Email Inbox**
    - [ ] Email received within 1-2 minutes
-   - [ ] Subject: "Reset Your Zapiio Password"
+   - [ ] Subject: "Reset Your PropEquityLab Password"
    - [ ] Email contains "Reset Password" button
 
 5. **Click Reset Link**

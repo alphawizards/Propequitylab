@@ -1,4 +1,4 @@
-# ZAPIIO COMPREHENSIVE TODO LIST - REVISION C
+# PROPEQUITYLAB COMPREHENSIVE TODO LIST - REVISION C
 ## Serverless Fintech Architecture
 ## Generated: January 2026
 
@@ -64,10 +64,10 @@
 **Platform:** https://neon.tech
 
 - [ ] Create Neon account
-- [ ] Create new project: "zapiio-production"
+- [ ] Create new project: "propequitylab-production"
 - [ ] **CRITICAL:** Select region: **aws-ap-southeast-2** (Sydney)
 - [ ] Note the connection string (pooled)
-- [ ] Create database: `zapiio`
+- [ ] Create database: `propequitylab`
 - [ ] Enable connection pooling (PgBouncer)
 - [ ] Set minimum compute: 0.25 vCPU (auto-scale to 1 vCPU)
 
@@ -76,14 +76,14 @@
 
 ```bash
 # Neon PostgreSQL
-DATABASE_URL=postgresql://user:password@ep-xxx.ap-southeast-2.aws.neon.tech/zapiio?sslmode=require
+DATABASE_URL=postgresql://user:password@ep-xxx.ap-southeast-2.aws.neon.tech/propequitylab?sslmode=require
 DATABASE_POOL_SIZE=10
 DATABASE_MAX_OVERFLOW=20
 DATABASE_POOL_TIMEOUT=30
 
 # Legacy MongoDB (for migration only)
 MONGODB_URI=mongodb://localhost:27017
-MONGODB_DATABASE=zapiio
+MONGODB_DATABASE=propequitylab
 ```
 
 - [ ] Add these environment variables
@@ -900,15 +900,15 @@ CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8000", "--workers"
 ```
 
 - [ ] Create Dockerfile
-- [ ] Test Docker build locally: `docker build -t zapiio-backend .`
-- [ ] Test Docker run locally: `docker run -p 8000:8000 zapiio-backend`
+- [ ] Test Docker build locally: `docker build -t propequitylab-backend .`
+- [ ] Test Docker run locally: `docker run -p 8000:8000 propequitylab-backend`
 - [ ] Verify health check works
 
 #### 1.2 Deploy to AWS App Runner
 **Platform:** AWS Console or AWS CLI
 
 **Configuration:**
-- [ ] Create App Runner service: "zapiio-backend-production"
+- [ ] Create App Runner service: "propequitylab-backend-production"
 - [ ] **CRITICAL:** Region: **ap-southeast-2** (Sydney)
 - [ ] Source: GitHub repository (automatic deployment)
 - [ ] Build: Dockerfile
@@ -919,13 +919,13 @@ CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8000", "--workers"
 
 **Environment Variables:**
 ```bash
-DATABASE_URL=postgresql://user:pass@ep-xxx.ap-southeast-2.aws.neon.tech/zapiio
+DATABASE_URL=postgresql://user:pass@ep-xxx.ap-southeast-2.aws.neon.tech/propequitylab
 REDIS_URL=redis://default:xxx@xxx.upstash.io:6379
 JWT_SECRET_KEY=<generate-with-openssl-rand-hex-32>
 RESEND_API_KEY=re_xxxxxxxxxxxxx
-FROM_EMAIL=Zapiio <noreply@zapiio.com>
-FRONTEND_URL=https://zapiio.pages.dev
-CORS_ORIGINS=https://zapiio.pages.dev,https://www.zapiio.com
+FROM_EMAIL=PropEquityLab <noreply@propequitylab.com>
+FRONTEND_URL=https://propequitylab.pages.dev
+CORS_ORIGINS=https://propequitylab.pages.dev,https://www.propequitylab.com
 ENABLE_RATE_LIMITING=True
 ```
 
@@ -973,7 +973,7 @@ REACT_APP_API_URL=https://xxx.ap-southeast-2.awsapprunner.com/api
 
 **Configuration:**
 - [ ] Connect GitHub repository
-- [ ] Project name: "zapiio"
+- [ ] Project name: "propequitylab"
 - [ ] Production branch: `main`
 - [ ] Build command: `npm run build`
 - [ ] Build output directory: `dist`
@@ -988,7 +988,7 @@ REACT_APP_API_URL=https://xxx.ap-southeast-2.awsapprunner.com/api
 - [ ] Deploy to Cloudflare Pages
 - [ ] Configure environment variables
 - [ ] Test deployment
-- [ ] Note the Cloudflare Pages URL (e.g., `https://zapiio.pages.dev`)
+- [ ] Note the Cloudflare Pages URL (e.g., `https://propequitylab.pages.dev`)
 
 ### Step 3: CI/CD Pipeline (GitHub Actions)
 
@@ -1019,7 +1019,7 @@ jobs:
         image: postgres:15
         env:
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: zapiio_test
+          POSTGRES_DB: propequitylab_test
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -1044,7 +1044,7 @@ jobs:
       
       - name: Run tests
         env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/zapiio_test
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/propequitylab_test
           JWT_SECRET_KEY: test-secret-key
         run: |
           cd backend

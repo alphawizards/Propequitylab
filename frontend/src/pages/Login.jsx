@@ -56,7 +56,7 @@ const Login = () => {
               <path d="M8 8L20 20L8 32" stroke="#BFFF00" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
               <path d="M32 8L20 20L32 32" stroke="#BFFF00" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            <span className="text-white text-xl font-semibold">Zapiio</span>
+            <span className="text-white text-xl font-semibold">PropEquityLab</span>
           </div>
           
           {/* Welcome Text */}
@@ -68,7 +68,7 @@ const Login = () => {
           {/* Signup Options */}
           <div className="space-y-4">
             <p className="text-white font-semibold">Not a Member?</p>
-            <p className="text-lime-400 text-sm">Sign up to get started with Zapiio</p>
+            <p className="text-lime-400 text-sm">Sign up to get started with PropEquityLab</p>
             
             <div className="space-y-3 mt-6">
               <div className="border border-teal-500 rounded-lg p-4 flex items-center justify-between bg-[#1a1f36]/50 backdrop-blur">

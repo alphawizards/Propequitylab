@@ -85,7 +85,7 @@ Same as above: Register → Check email → Verify → Login
 
 **Backend Logs (AWS App Runner):**
 ```
-✓ Email sent to user@example.com: Welcome to Zapiio - Verify Your Email
+✓ Email sent to user@example.com: Welcome to PropEquityLab - Verify Your Email
 ```
 
 **User Experience:**

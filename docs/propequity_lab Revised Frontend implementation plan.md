@@ -5,7 +5,7 @@
 
 ## 1. Executive Summary
 
-This document provides a revised frontend implementation plan for the Propequitylab (Zapiio) application, based on a thorough analysis of the existing codebase. The current backend stack, built on FastAPI and intended for AWS and Cloudflare, is robust, well-documented, and near production-ready. The frontend is a feature-complete Create React App (CRA) application using a modern component library. 
+This document provides a revised frontend implementation plan for the Propequitylab (PropEquityLab) application, based on a thorough analysis of the existing codebase. The current backend stack, built on FastAPI and intended for AWS and Cloudflare, is robust, well-documented, and near production-ready. The frontend is a feature-complete Create React App (CRA) application using a modern component library. 
 
 The primary recommendation is to **migrate the frontend from Create React App to Next.js**. This strategic upgrade will align the application with modern web standards, significantly improve performance and SEO, and provide a more scalable architecture for future growth, while fully integrating with your existing backend infrastructure.
 

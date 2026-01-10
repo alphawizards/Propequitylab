@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 ETL Migration Script: MongoDB → PostgreSQL (Neon)
-Migrates all Zapiio data from MongoDB to PostgreSQL with DECIMAL precision
+Migrates all PropEquityLab data from MongoDB to PostgreSQL with DECIMAL precision
 
 Usage:
     python migrate_mongo_to_postgres.py
@@ -9,7 +9,7 @@ Usage:
 Environment Variables Required:
     - DATABASE_URL: PostgreSQL connection string (Neon)
     - MONGODB_URI: MongoDB connection string
-    - MONGODB_DATABASE: MongoDB database name (default: zapiio)
+    - MONGODB_DATABASE: MongoDB database name (default: propequitylab)
 """
 
 import os
@@ -41,7 +41,7 @@ from models.net_worth import NetWorthSnapshot
 
 # Configuration
 MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
-MONGODB_DATABASE = os.getenv("MONGODB_DATABASE", "zapiio")
+MONGODB_DATABASE = os.getenv("MONGODB_DATABASE", "propequitylab")
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if not DATABASE_URL:
@@ -526,7 +526,7 @@ def verify_migration():
 def main():
     """Main migration function"""
     print("=" * 60)
-    print("🚀 Zapiio ETL Migration: MongoDB → PostgreSQL (Neon)")
+    print("🚀 PropEquityLab ETL Migration: MongoDB → PostgreSQL (Neon)")
     print("=" * 60)
     
     print(f"\n📍 Source: {MONGODB_URI}/{MONGODB_DATABASE}")

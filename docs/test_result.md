@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Build a financial planning application (Zapiio) similar to ProjectionLab with property investment tracking. Phase 4 implementation - Assets & Liabilities pages with full CRUD functionality."
+user_problem_statement: "Build a financial planning application (PropEquityLab) similar to ProjectionLab with property investment tracking. Phase 4 implementation - Assets & Liabilities pages with full CRUD functionality."
 
 backend:
   - task: "Assets API - CRUD operations"

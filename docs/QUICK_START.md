@@ -1,4 +1,4 @@
-# Zapiio Quick Start Guide
+# PropEquityLab Quick Start Guide
 
 ## Prerequisites
 

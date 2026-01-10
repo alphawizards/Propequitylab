@@ -1,16 +1,16 @@
-# Zapiio + ProjectionLab Inspired - Combined Implementation Plan
+# PropEquityLab + ProjectionLab Inspired - Combined Implementation Plan
 
 ## Executive Summary
 
-This plan combines the property investment focus of Zapiio with the comprehensive financial planning UX of ProjectionLab to create a superior Australian property investment platform.
+This plan combines the property investment focus of PropEquityLab with the comprehensive financial planning UX of ProjectionLab to create a superior Australian property investment platform.
 
 ---
 
-## Gap Analysis: Current Zapiio Clone vs ProjectionLab
+## Gap Analysis: Current PropEquityLab Clone vs ProjectionLab
 
 ### What ProjectionLab Has (That We're Missing)
 
-| Feature | ProjectionLab | Current Zapiio Clone | Priority |
+| Feature | ProjectionLab | Current PropEquityLab Clone | Priority |
 |---------|---------------|----------------------|----------|
 | **Onboarding Wizard** | Step-by-step guided setup (5-10 min) | None - direct to dashboard | HIGH |
 | **Personal Profile** | Age, DOB, location, currency, family status | None | HIGH |
@@ -30,7 +30,7 @@ This plan combines the property investment focus of Zapiio with the comprehensiv
 | **Export/Reports** | PDF reports, CSV exports | Not implemented | LOW |
 | **Dark Mode** | Theme toggle | Light only | LOW |
 
-### What Zapiio Has (To Keep/Enhance)
+### What PropEquityLab Has (To Keep/Enhance)
 
 | Feature | Status | Enhancement Needed |
 |---------|--------|-------------------|
@@ -49,7 +49,7 @@ This plan combines the property investment focus of Zapiio with the comprehensiv
 
 ### 1. Design Language Updates
 
-**Current (Zapiio):**
+**Current (PropEquityLab):**
 - Dark navy (#1a1f36) with lime green (#BFFF00) accents
 - Property-centric layout
 

@@ -1,4 +1,4 @@
-# Zapiio - Implementation Status & Roadmap
+# PropEquityLab - Implementation Status & Roadmap
 ## Last Updated: January 2026
 
 ---

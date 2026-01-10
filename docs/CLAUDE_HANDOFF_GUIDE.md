@@ -1,6 +1,6 @@
 # Claude Handoff Guide: Refactor Remaining Routes to SQLModel + Auth
 
-**Context:** The Zapiio backend is migrating from MongoDB to PostgreSQL (Neon) with SQLModel. Two routes have been completed as "golden masters": `portfolios.py` and `properties.py`. You need to refactor the remaining 7 route files using the exact same pattern.
+**Context:** The PropEquityLab backend is migrating from MongoDB to PostgreSQL (Neon) with SQLModel. Two routes have been completed as "golden masters": `portfolios.py` and `properties.py`. You need to refactor the remaining 7 route files using the exact same pattern.
 
 ---
 

@@ -162,7 +162,7 @@ After deployment, check logs:
 2. Register a test user
 3. Look for:
    ```
-   ✓ Email sent to user@example.com: Welcome to Zapiio - Verify Your Email
+   ✓ Email sent to user@example.com: Welcome to PropEquityLab - Verify Your Email
    ```
 
 ### **Check 2: Resend Dashboard**

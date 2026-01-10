@@ -1,5 +1,5 @@
 """
-Input sanitization utilities for Zapiio
+Input sanitization utilities for PropEquityLab
 Prevents NoSQL injection attacks
 """
 
