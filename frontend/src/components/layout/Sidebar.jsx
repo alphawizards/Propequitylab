@@ -16,6 +16,9 @@ import {
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { usePortfolio } from '../../context/PortfolioContext';
+import { Card, CardContent } from '../ui/card';
+import { Badge } from '../ui/badge';
+import { Progress } from '../ui/progress';
 
 const Sidebar = () => {
   const location = useLocation();
@@ -99,7 +102,7 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className="w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex flex-col h-screen fixed left-0 top-0">
+    <aside className="w-[260px] bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex flex-col h-screen fixed left-0 top-0">
       {/* Logo */}
       <div className="p-4 border-b border-gray-100 dark:border-gray-800">
         <div className="flex items-center gap-2">
@@ -136,13 +139,34 @@ const Sidebar = () => {
         {navItems.map((item) => (
           <NavItem key={item.href} item={item} />
         ))}
-        
-        {/* New Plan Button */}
-        <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-lime-700 dark:text-lime-400 hover:bg-lime-50 dark:hover:bg-lime-900/30 transition-colors mt-4">
-          <Plus className="w-5 h-5" />
-          <span>New Plan</span>
-        </button>
       </nav>
+
+      {/* Confidence Score Widget */}
+      <div className="px-4 pb-4">
+        <Card className="bg-gradient-to-br from-emerald-50 to-lime-50 border-emerald-200">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-gray-700">Confidence Score</span>
+              <Badge className="bg-emerald-500 text-white hover:bg-emerald-600">HIGH</Badge>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="flex-1">
+                <Progress value={84} className="h-2" />
+              </div>
+              <span className="text-2xl font-bold text-emerald-600">84%</span>
+            </div>
+            <p className="text-xs text-gray-600 mt-2">Based on data quality</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* New Projection Button */}
+      <div className="px-4 pb-4">
+        <button className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-sm font-semibold bg-emerald-500 hover:bg-emerald-600 text-white transition-colors">
+          <Plus className="w-5 h-5" />
+          <span>New Projection</span>
+        </button>
+      </div>
 
       {/* Bottom Navigation */}
       <div className="p-4 border-t border-gray-100 dark:border-gray-800 space-y-1">
