@@ -8,6 +8,7 @@ import { PortfolioProvider } from './context/PortfolioContext';
 import { ThemeProvider } from './context/ThemeContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import MainLayout from './components/layout/MainLayout';
+import DashboardLayout from './components/layout/DashboardLayout';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import DashboardNew from './pages/DashboardNew';
@@ -38,9 +39,9 @@ const PlaceholderPage = ({ title }) => (
 const RootRedirect = () => {
   const { isAuthenticated, loading: authLoading } = useAuth();
   const { onboardingStatus, loading: userLoading } = useUser();
-  
+
   const loading = authLoading || userLoading;
-  
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -51,17 +52,17 @@ const RootRedirect = () => {
       </div>
     );
   }
-  
+
   // Redirect to login if not authenticated
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
-  
+
   // Redirect to onboarding if not completed
   if (!onboardingStatus.completed) {
     return <Navigate to="/onboarding" replace />;
   }
-  
+
   return <Navigate to="/dashboard" replace />;
 };
 
@@ -82,22 +83,30 @@ function AppRoutes() {
 
         {/* Root redirect based on auth and onboarding status */}
         <Route path="/" element={<RootRedirect />} />
-        
+
         {/* Protected routes */}
         <Route path="/onboarding" element={
           <ProtectedRoute>
             <OnboardingWizard />
           </ProtectedRoute>
         } />
-        
-        {/* Main app routes with sidebar layout - all protected */}
+
+        {/* Dashboard route with right panel */}
+        <Route element={
+          <ProtectedRoute>
+            <DashboardLayout />
+          </ProtectedRoute>
+        }>
+          <Route path="/dashboard" element={<DashboardNew />} />
+        </Route>
+
+        {/* Other app routes with standard layout - all protected */}
         <Route element={
           <ProtectedRoute>
             <MainLayout />
           </ProtectedRoute>
         }>
-          <Route path="/dashboard" element={<DashboardNew />} />
-          
+
           {/* Finances routes */}
           <Route path="/finances" element={<Navigate to="/finances/income" replace />} />
           <Route path="/finances/income" element={<IncomePage />} />
@@ -105,13 +114,13 @@ function AppRoutes() {
           <Route path="/finances/properties" element={<PropertiesPage />} />
           <Route path="/finances/assets" element={<AssetsPage />} />
           <Route path="/finances/liabilities" element={<LiabilitiesPage />} />
-          
+
           {/* Progress */}
           <Route path="/progress" element={<ProgressPage />} />
-          
+
           {/* Plans */}
           <Route path="/plans" element={<PlansPage />} />
-          
+
           {/* Settings & Help */}
           <Route path="/settings" element={<PlaceholderPage title="Settings" />} />
           <Route path="/help" element={<PlaceholderPage title="Help Center" />} />
