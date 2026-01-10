@@ -293,6 +293,154 @@ export const getDashboardSummary = async () => {
   return response.data;
 };
 
+// ============================================================================
+// Projections API Functions (Phase 4)
+// ============================================================================
+
+/**
+ * Get property projections
+ * @param {string} propertyId - Property ID
+ * @param {object} options - Optional parameters
+ * @param {number} options.years - Number of years to project (default 10)
+ * @param {number} options.expenseGrowthOverride - Override expense growth rate
+ * @param {number} options.interestRateOffset - Interest rate adjustment for stress test
+ * @returns {Promise<object>} Property projections data
+ */
+export const getPropertyProjections = async (propertyId, options = {}) => {
+  const params = new URLSearchParams();
+  if (options.years) params.append('years', options.years);
+  if (options.expenseGrowthOverride) params.append('expense_growth_override', options.expenseGrowthOverride);
+  if (options.interestRateOffset) params.append('interest_rate_offset', options.interestRateOffset);
+
+  const response = await apiClient.get(`/projections/${propertyId}?${params.toString()}`);
+  return response.data;
+};
+
+/**
+ * Get portfolio projections
+ * @param {string} portfolioId - Portfolio ID
+ * @param {object} options - Optional parameters
+ * @returns {Promise<object>} Portfolio projections data
+ */
+export const getPortfolioProjections = async (portfolioId, options = {}) => {
+  const params = new URLSearchParams();
+  if (options.years) params.append('years', options.years);
+  if (options.expenseGrowthOverride) params.append('expense_growth_override', options.expenseGrowthOverride);
+  if (options.interestRateOffset) params.append('interest_rate_offset', options.interestRateOffset);
+
+  const response = await apiClient.get(`/projections/portfolio/${portfolioId}?${params.toString()}`);
+  return response.data;
+};
+
+/**
+ * Get property projection summary
+ * @param {string} propertyId - Property ID
+ * @returns {Promise<object>} Property summary
+ */
+export const getPropertyProjectionSummary = async (propertyId) => {
+  const response = await apiClient.get(`/projections/property/${propertyId}/summary`);
+  return response.data;
+};
+
+// ============================================================================
+// Loans API Functions (Phase 4)
+// ============================================================================
+
+/**
+ * Get all loans for a property
+ * @param {string} propertyId - Property ID
+ * @returns {Promise<Array>} List of loans
+ */
+export const getPropertyLoans = async (propertyId) => {
+  const response = await apiClient.get(`/loans/property/${propertyId}`);
+  return response.data;
+};
+
+/**
+ * Get a single loan by ID
+ * @param {number} loanId - Loan ID
+ * @returns {Promise<object>} Loan data
+ */
+export const getLoan = async (loanId) => {
+  const response = await apiClient.get(`/loans/${loanId}`);
+  return response.data;
+};
+
+/**
+ * Create a new loan
+ * @param {object} loanData - Loan data
+ * @returns {Promise<object>} Created loan
+ */
+export const createLoan = async (loanData) => {
+  const response = await apiClient.post('/loans', loanData);
+  return response.data;
+};
+
+/**
+ * Update a loan
+ * @param {number} loanId - Loan ID
+ * @param {object} loanData - Updated loan data
+ * @returns {Promise<object>} Updated loan
+ */
+export const updateLoan = async (loanId, loanData) => {
+  const response = await apiClient.put(`/loans/${loanId}`, loanData);
+  return response.data;
+};
+
+/**
+ * Delete a loan
+ * @param {number} loanId - Loan ID
+ * @returns {Promise<object>} Deletion confirmation
+ */
+export const deleteLoan = async (loanId) => {
+  const response = await apiClient.delete(`/loans/${loanId}`);
+  return response.data;
+};
+
+// ============================================================================
+// Valuations API Functions (Phase 4)
+// ============================================================================
+
+/**
+ * Get all valuations for a property
+ * @param {string} propertyId - Property ID
+ * @returns {Promise<Array>} List of valuations
+ */
+export const getPropertyValuations = async (propertyId) => {
+  const response = await apiClient.get(`/valuations/property/${propertyId}`);
+  return response.data;
+};
+
+/**
+ * Create a new valuation
+ * @param {object} valuationData - Valuation data
+ * @returns {Promise<object>} Created valuation
+ */
+export const createValuation = async (valuationData) => {
+  const response = await apiClient.post('/valuations', valuationData);
+  return response.data;
+};
+
+/**
+ * Delete a valuation
+ * @param {number} valuationId - Valuation ID
+ * @returns {Promise<object>} Deletion confirmation
+ */
+export const deleteValuation = async (valuationId) => {
+  const response = await apiClient.delete(`/valuations/${valuationId}`);
+  return response.data;
+};
+
+/**
+ * Get latest valuation for a property
+ * @param {string} propertyId - Property ID
+ * @returns {Promise<object>} Latest valuation
+ */
+export const getLatestValuation = async (propertyId) => {
+  const response = await apiClient.get(`/valuations/property/${propertyId}/latest`);
+  return response.data;
+};
+
 // Default export with all methods
 const api = {
   // Auth
@@ -312,7 +460,23 @@ const api = {
   resetOnboarding,
   // Dashboard
   getDashboardSummary,
+  // Projections (Phase 4)
+  getPropertyProjections,
+  getPortfolioProjections,
+  getPropertyProjectionSummary,
+  // Loans (Phase 4)
+  getPropertyLoans,
+  getLoan,
+  createLoan,
+  updateLoan,
+  deleteLoan,
+  // Valuations (Phase 4)
+  getPropertyValuations,
+  createValuation,
+  deleteValuation,
+  getLatestValuation,
 };
 
 export default api;
+
 

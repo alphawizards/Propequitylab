@@ -23,6 +23,7 @@ import OnboardingWizard from './components/onboarding/OnboardingWizard';
 import { MortgageCalculatorPage } from './pages/calculators/MortgageCalculatorPage';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
+import ProjectionsPage from './pages/ProjectionsPage';
 import { Toaster } from './components/ui/toaster';
 
 // Placeholder pages - will be implemented in later phases
@@ -120,6 +121,9 @@ function AppRoutes() {
 
           {/* Plans */}
           <Route path="/plans" element={<PlansPage />} />
+
+          {/* Projections - Property Portfolio Forecasting */}
+          <Route path="/projections" element={<ProjectionsPage />} />
 
           {/* Settings & Help */}
           <Route path="/settings" element={<PlaceholderPage title="Settings" />} />
