@@ -6,6 +6,10 @@ import api from '../services/api';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { NetWorthChart, AssetAllocationChart, CashflowChart } from '../components/charts';
+import KPICard from '../components/dashboard/KPICard';
+import PortfolioSnapshotWidget from '../components/dashboard/PortfolioSnapshotWidget';
+import PropertyCashflowsWidget from '../components/dashboard/PropertyCashflowsWidget';
+import BorrowingWidget from '../components/dashboard/BorrowingWidget';
 import {
   Home,
   TrendingUp,
@@ -30,30 +34,6 @@ const formatCurrency = (value) => {
   }
   return `$${value.toFixed(0)}`;
 };
-
-const StatCard = ({ title, value, icon: Icon, color, trend, trendValue }) => (
-  <Card className="relative overflow-hidden">
-    <CardContent className="p-6">
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm font-medium text-gray-500">{title}</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">{value}</p>
-          {trend && (
-            <div className={`flex items-center gap-1 mt-2 text-sm ${
-              trend === 'up' ? 'text-green-600' : 'text-red-500'
-            }`}>
-              {trend === 'up' ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
-              <span>{trendValue}</span>
-            </div>
-          )}
-        </div>
-        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${color}`}>
-          <Icon className="w-6 h-6" />
-        </div>
-      </div>
-    </CardContent>
-  </Card>
-);
 
 const DashboardNew = () => {
   const navigate = useNavigate();
@@ -115,8 +95,8 @@ const DashboardNew = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
         <div className="text-center max-w-md">
-          <div className="w-20 h-20 rounded-full bg-lime-100 flex items-center justify-center mx-auto mb-6">
-            <Building className="w-10 h-10 text-lime-600" />
+          <div className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-6">
+            <Building className="w-10 h-10 text-emerald-600" />
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome to PropEquityLab</h2>
           <p className="text-gray-600 mb-6">
@@ -124,7 +104,7 @@ const DashboardNew = () => {
           </p>
           <Button
             onClick={() => createPortfolio('My Portfolio', 'actual')}
-            className="bg-lime-400 text-gray-900 hover:bg-lime-500"
+            className="bg-emerald-500 text-white hover:bg-emerald-600"
           >
             <Plus className="w-4 h-4 mr-2" />
             Create Portfolio
@@ -159,39 +139,39 @@ const DashboardNew = () => {
             </div>
             <div className="text-right">
               <p className="text-sm text-gray-400">Net Worth</p>
-              <p className="text-3xl font-bold text-lime-400">{formatCurrency(data.net_worth)}</p>
+              <p className="text-3xl font-bold text-emerald-400">{formatCurrency(data.net_worth)}</p>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Stats Grid */}
+      {/* KPI Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
+        <KPICard
           title="Total Assets"
           value={formatCurrency(data.total_assets)}
           icon={PiggyBank}
-          color="bg-green-100 text-green-600"
+          variant="green"
           trend="up"
           trendValue="+5.2% this month"
         />
-        <StatCard
+        <KPICard
           title="Total Liabilities"
           value={formatCurrency(data.total_liabilities)}
           icon={CreditCard}
-          color="bg-red-100 text-red-600"
+          variant="purple"
         />
-        <StatCard
+        <KPICard
           title="Monthly Cashflow"
           value={formatCurrency(data.monthly_cashflow)}
           icon={DollarSign}
-          color={data.monthly_cashflow >= 0 ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"}
+          variant={data.monthly_cashflow >= 0 ? "blue" : "yellow"}
         />
-        <StatCard
+        <KPICard
           title="Properties"
           value={data.properties_count.toString()}
           icon={Home}
-          color="bg-blue-100 text-blue-600"
+          variant="blue"
         />
       </div>
 
@@ -267,7 +247,7 @@ const DashboardNew = () => {
               disabled={snapshotLoading || !currentPortfolio?.id}
               variant="outline"
               size="sm"
-              className="hover:bg-lime-50 hover:border-lime-400"
+              className="hover:bg-emerald-50 hover:border-emerald-400"
               data-testid="create-snapshot-btn"
             >
               {snapshotLoading ? (
@@ -282,16 +262,43 @@ const DashboardNew = () => {
         </div>
 
         {/* Asset Allocation Pie Chart */}
-        <AssetAllocationChart 
-          breakdown={data.asset_breakdown} 
-          loading={loading} 
+        <AssetAllocationChart
+          breakdown={data.asset_breakdown}
+          loading={loading}
         />
 
         {/* Cashflow Chart */}
-        <CashflowChart 
-          income={data.monthly_income} 
+        <CashflowChart
+          income={data.monthly_income}
           expenses={data.monthly_expenses}
           loading={loading}
+        />
+      </div>
+
+      {/* Bottom Widgets Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <PortfolioSnapshotWidget
+          data={{
+            net_worth: data.net_worth,
+            liquid_assets: (data.asset_breakdown?.cash || 0) + (data.asset_breakdown?.shares || 0) + (data.asset_breakdown?.etf || 0),
+            property_equity: (data.asset_breakdown?.properties || 0) - (data.liability_breakdown?.property_loans || 0),
+            investments: (data.asset_breakdown?.shares || 0) + (data.asset_breakdown?.etf || 0),
+            super: data.asset_breakdown?.super || 0,
+          }}
+        />
+        <PropertyCashflowsWidget
+          properties={[
+            // Mock data - will be replaced with real property data
+            { address: '123 Main St', monthly_cashflow: 450 },
+            { address: '456 Oak Ave', monthly_cashflow: -200 },
+          ]}
+        />
+        <BorrowingWidget
+          data={{
+            lvr: data.total_assets > 0 ? ((data.liability_breakdown?.property_loans || 0) / (data.asset_breakdown?.properties || 1)) * 100 : 0,
+            borrowing_capacity: 800000,
+            used_capacity: data.liability_breakdown?.property_loans || 0,
+          }}
         />
       </div>
 
@@ -311,7 +318,7 @@ const DashboardNew = () => {
               <Button
                 key={action.label}
                 variant="outline"
-                className="h-auto py-4 flex flex-col items-center gap-2 hover:bg-lime-50 hover:border-lime-400"
+                className="h-auto py-4 flex flex-col items-center gap-2 hover:bg-emerald-50 hover:border-emerald-400"
                 onClick={() => navigate(action.href)}
                 data-testid={`quick-action-${action.label.toLowerCase().replace(/\s/g, '-')}`}
               >

@@ -89,17 +89,18 @@ const NetWorthChart = ({ data = [], loading = false }) => {
                 <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
               </linearGradient>
               <linearGradient id="colorNetWorth" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#84cc16" stopOpacity={0.4} />
-                <stop offset="95%" stopColor="#84cc16" stopOpacity={0} />
+                <stop offset="5%" stopColor="#6EE7B7" stopOpacity={0.5} />
+                <stop offset="50%" stopColor="#34D399" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#10B981" stopOpacity={0.1} />
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-            <XAxis 
-              dataKey="date" 
+            <XAxis
+              dataKey="date"
               tick={{ fill: '#6b7280', fontSize: 12 }}
               tickLine={{ stroke: '#e5e7eb' }}
             />
-            <YAxis 
+            <YAxis
               tick={{ fill: '#6b7280', fontSize: 12 }}
               tickLine={{ stroke: '#e5e7eb' }}
               tickFormatter={formatCurrency}
@@ -128,7 +129,7 @@ const NetWorthChart = ({ data = [], loading = false }) => {
               type="monotone"
               dataKey="netWorth"
               name="Net Worth"
-              stroke="#84cc16"
+              stroke="#10B981"
               strokeWidth={3}
               fillOpacity={1}
               fill="url(#colorNetWorth)"
