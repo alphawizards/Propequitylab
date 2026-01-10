@@ -13,6 +13,7 @@ import {
   HelpCircle,
   ChevronDown,
   Plus,
+  LineChart,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { usePortfolio } from '../../context/PortfolioContext';
@@ -52,6 +53,11 @@ const Sidebar = () => {
       icon: Target,
       href: '/plans',
     },
+    {
+      title: 'Projections',
+      icon: LineChart,
+      href: '/projections',
+    },
   ];
 
   const bottomItems = [
@@ -60,7 +66,7 @@ const Sidebar = () => {
   ];
 
   const NavItem = ({ item, isChild = false }) => {
-    const isActive = location.pathname === item.href || 
+    const isActive = location.pathname === item.href ||
       (item.children && item.children.some(child => location.pathname === child.href));
     const hasChildren = item.children && item.children.length > 0;
     const [isOpen, setIsOpen] = React.useState(isActive);
@@ -89,7 +95,7 @@ const Sidebar = () => {
             <ChevronDown className={cn('w-4 h-4 transition-transform', isOpen ? 'rotate-180' : '')} />
           )}
         </NavLink>
-        
+
         {hasChildren && isOpen && (
           <div className="mt-1 space-y-1">
             {item.children.map((child) => (
@@ -107,8 +113,8 @@ const Sidebar = () => {
       <div className="p-4 border-b border-gray-100 dark:border-gray-800">
         <div className="flex items-center gap-2">
           <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M8 8L20 20L8 32" stroke="#BFFF00" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M32 8L20 20L32 32" stroke="#1a1f36" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M8 8L20 20L8 32" stroke="#BFFF00" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M32 8L20 20L32 32" stroke="#1a1f36" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           <span className="text-xl font-bold text-gray-900 dark:text-white">PropEquityLab</span>
         </div>
@@ -162,10 +168,13 @@ const Sidebar = () => {
 
       {/* New Projection Button */}
       <div className="px-4 pb-4">
-        <button className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-sm font-semibold bg-emerald-500 hover:bg-emerald-600 text-white transition-colors">
+        <NavLink
+          to="/projections"
+          className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-sm font-semibold bg-emerald-500 hover:bg-emerald-600 text-white transition-colors"
+        >
           <Plus className="w-5 h-5" />
-          <span>New Projection</span>
-        </button>
+          <span>View Projections</span>
+        </NavLink>
       </div>
 
       {/* Bottom Navigation */}
@@ -180,7 +189,7 @@ const Sidebar = () => {
             <span>{item.title}</span>
           </NavLink>
         ))}
-        
+
         {/* Dev Mode Indicator */}
         <div className="mt-4 px-3 py-2 bg-amber-50 dark:bg-amber-900/30 rounded-lg">
           <p className="text-xs font-medium text-amber-700 dark:text-amber-400">Dev Mode</p>
