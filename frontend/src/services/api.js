@@ -293,6 +293,21 @@ export const getDashboardSummary = async () => {
   return response.data;
 };
 
+/**
+ * Get net worth history for a portfolio
+ * @param {string} portfolioId - Portfolio ID (optional)
+ * @param {number} limit - Number of snapshots to return (default 12)
+ * @returns {Promise<Array>} Net worth history snapshots
+ */
+export const getNetWorthHistory = async (portfolioId, limit = 12) => {
+  const params = new URLSearchParams();
+  if (portfolioId) params.append('portfolio_id', portfolioId);
+  if (limit) params.append('limit', limit);
+
+  const response = await apiClient.get(`/dashboard/net-worth-history?${params.toString()}`);
+  return response.data;
+};
+
 // ============================================================================
 // Projections API Functions (Phase 4)
 // ============================================================================
@@ -460,6 +475,7 @@ const api = {
   resetOnboarding,
   // Dashboard
   getDashboardSummary,
+  getNetWorthHistory,
   // Projections (Phase 4)
   getPropertyProjections,
   getPortfolioProjections,
