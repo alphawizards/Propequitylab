@@ -8,6 +8,7 @@ from sqlmodel import Session, select
 from typing import List
 from datetime import datetime
 import logging
+import uuid
 
 from models.property import Property, PropertyCreate, PropertyUpdate
 from models.portfolio import Portfolio
@@ -16,7 +17,7 @@ from utils.database_sql import get_session
 from utils.auth import get_current_user
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/properties", tags=["properties"])
+router = APIRouter(prefix="/properties", tags=["properties"])
 
 
 @router.get("/portfolio/{portfolio_id}", response_model=List[Property])
@@ -79,6 +80,7 @@ async def create_property(
     
     # Create property with user_id from authenticated user
     property_obj = Property(
+        id=str(uuid.uuid4()),
         user_id=current_user.id,  # CRITICAL: Set from authenticated user
         portfolio_id=data.portfolio_id,
         address=data.address,

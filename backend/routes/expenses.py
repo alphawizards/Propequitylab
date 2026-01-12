@@ -18,7 +18,7 @@ from utils.database_sql import get_session
 from utils.auth import get_current_user
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/expenses", tags=["expenses"])
+router = APIRouter(prefix="/expenses", tags=["expenses"])
 
 
 @router.get("/categories")

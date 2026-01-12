@@ -39,7 +39,7 @@ from utils.calculations import (
 )
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/projections", tags=["projections"])
+router = APIRouter(prefix="/projections", tags=["projections"])
 
 
 def _get_property_data(property_id: str, session: Session) -> dict:

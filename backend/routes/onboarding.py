@@ -15,7 +15,7 @@ from utils.database_sql import get_session
 from utils.auth import get_current_user
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/onboarding", tags=["onboarding"])
+router = APIRouter(prefix="/onboarding", tags=["onboarding"])
 
 
 class OnboardingStatus(BaseModel):
