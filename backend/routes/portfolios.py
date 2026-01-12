@@ -3,6 +3,7 @@ Portfolio Routes - SQL-Based with Authentication & Data Isolation
 ⚠️ CRITICAL: All queries include .where(Portfolio.user_id == current_user.id) for data isolation
 """
 
+import uuid
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select, func
 from typing import List
@@ -22,7 +23,7 @@ from utils.database_sql import get_session
 from utils.auth import get_current_user
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/portfolios", tags=["portfolios"])
+router = APIRouter(prefix="/portfolios", tags=["portfolios"])
 
 
 @router.get("", response_model=List[Portfolio])
@@ -53,6 +54,7 @@ async def create_portfolio(
     """
     # Create portfolio with user_id from authenticated user
     portfolio = Portfolio(
+        id=str(uuid.uuid4()),
         user_id=current_user.id,
         name=data.name,
         type=data.type,

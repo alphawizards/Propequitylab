@@ -24,7 +24,7 @@ from utils.database_sql import get_session
 from utils.auth import get_current_user
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/dashboard", tags=["dashboard"])
+router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 
 
 class DashboardSummary(BaseModel):
