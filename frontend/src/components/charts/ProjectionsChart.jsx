@@ -18,6 +18,7 @@ import {
 } from 'recharts';
 
 const formatCurrency = (value) => {
+    if (value === null || value === undefined || isNaN(value)) return '$0';
     if (value >= 1000000) {
         return `$${(value / 1000000).toFixed(1)}M`;
     }
@@ -27,7 +28,10 @@ const formatCurrency = (value) => {
     return `$${value.toFixed(0)}`;
 };
 
-const formatPercentage = (value) => `${value.toFixed(1)}%`;
+const formatPercentage = (value) => {
+    if (value === null || value === undefined || isNaN(value)) return '0%';
+    return `${value.toFixed(1)}%`;
+};
 
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {

@@ -32,6 +32,7 @@ const LABELS = {
 };
 
 const formatCurrency = (value) => {
+  if (value === null || value === undefined || isNaN(value)) return '$0';
   if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`;
   if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`;
   return `$${value.toFixed(0)}`;
@@ -45,7 +46,7 @@ const CustomTooltip = ({ active, payload }) => {
     <div className="bg-white p-3 rounded-lg shadow-lg border border-gray-200">
       <p className="font-semibold text-gray-900">{data.name}</p>
       <p className="text-sm text-gray-600">{formatCurrency(data.value)}</p>
-      <p className="text-sm text-gray-500">{data.percentage.toFixed(1)}%</p>
+      <p className="text-sm text-gray-500">{(data.percentage || 0).toFixed(1)}%</p>
     </div>
   );
 };
@@ -53,7 +54,7 @@ const CustomTooltip = ({ active, payload }) => {
 // Custom label component defined outside to avoid recreation
 const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
   if (percent < 0.05) return null; // Don't show labels for small slices
-  
+
   const RADIAN = Math.PI / 180;
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
@@ -77,7 +78,7 @@ const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent
 const AssetAllocationChart = ({ breakdown = {}, loading = false }) => {
   // Transform breakdown to chart data
   const total = Object.values(breakdown).reduce((sum, val) => sum + (val || 0), 0);
-  
+
   const chartData = Object.entries(breakdown)
     .filter(([_, value]) => value > 0)
     .map(([key, value]) => ({

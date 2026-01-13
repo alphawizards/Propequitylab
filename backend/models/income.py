@@ -4,6 +4,7 @@ Refactored from Pydantic/MongoDB to SQLModel/PostgreSQL
 ⚠️ CRITICAL: All currency fields use DECIMAL(19, 4) for financial precision
 """
 
+import uuid
 from sqlmodel import SQLModel, Field, Column
 from sqlalchemy import DECIMAL
 from typing import Optional
@@ -43,9 +44,9 @@ class IncomeSource(SQLModel, table=True):
     ⚠️ CRITICAL: All currency fields use DECIMAL(19, 4) for precision
     """
     __tablename__ = "income_sources"
-    
+
     # Primary Key
-    id: str = Field(primary_key=True, max_length=50)
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True, max_length=50)
     
     # Foreign Keys
     user_id: str = Field(foreign_key="users.id", index=True, max_length=50)
