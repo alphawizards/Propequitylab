@@ -241,6 +241,61 @@ export const getPortfolioSummary = async (id) => {
 };
 
 // ============================================================================
+// Property API Functions
+// ============================================================================
+
+/**
+ * Get all properties in a portfolio
+ * @param {string} portfolioId - Portfolio ID
+ * @returns {Promise<Array>} List of properties
+ */
+export const getProperties = async (portfolioId) => {
+  const response = await apiClient.get(`/properties/portfolio/${portfolioId}`);
+  return response.data;
+};
+
+/**
+ * Get a specific property by ID
+ * @param {string} id - Property ID
+ * @returns {Promise<object>} Property data
+ */
+export const getProperty = async (id) => {
+  const response = await apiClient.get(`/properties/${id}`);
+  return response.data;
+};
+
+/**
+ * Create a new property
+ * @param {object} data - Property data
+ * @returns {Promise<object>} Created property
+ */
+export const createProperty = async (data) => {
+  const response = await apiClient.post('/properties', data);
+  return response.data;
+};
+
+/**
+ * Update a property
+ * @param {string} id - Property ID
+ * @param {object} data - Updated property data
+ * @returns {Promise<object>} Updated property
+ */
+export const updateProperty = async (id, data) => {
+  const response = await apiClient.put(`/properties/${id}`, data);
+  return response.data;
+};
+
+/**
+ * Delete a property
+ * @param {string} id - Property ID
+ * @returns {Promise<object>} Deletion confirmation
+ */
+export const deleteProperty = async (id) => {
+  const response = await apiClient.delete(`/properties/${id}`);
+  return response.data;
+};
+
+// ============================================================================
 // Onboarding API Functions
 // ============================================================================
 
@@ -286,10 +341,24 @@ export const resetOnboarding = async () => {
 
 /**
  * Get dashboard summary data
+ * @param {string} portfolioId - Portfolio ID (optional)
  * @returns {Promise<object>} Dashboard summary
  */
-export const getDashboardSummary = async () => {
-  const response = await apiClient.get('/dashboard/summary');
+export const getDashboardSummary = async (portfolioId) => {
+  const params = new URLSearchParams();
+  if (portfolioId) params.append('portfolio_id', portfolioId);
+
+  const response = await apiClient.get(`/dashboard/summary?${params.toString()}`);
+  return response.data;
+};
+
+/**
+ * Create a net worth snapshot for a portfolio
+ * @param {string} portfolioId - Portfolio ID
+ * @returns {Promise<object>} Snapshot creation confirmation
+ */
+export const createSnapshot = async (portfolioId) => {
+  const response = await apiClient.post('/dashboard/snapshot', { portfolio_id: portfolioId });
   return response.data;
 };
 
@@ -475,7 +544,15 @@ const api = {
   resetOnboarding,
   // Dashboard
   getDashboardSummary,
+  getNet_worth_history: getNetWorthHistory,
   getNetWorthHistory,
+  createSnapshot,
+  // Properties
+  getProperties,
+  getProperty,
+  createProperty,
+  updateProperty,
+  deleteProperty,
   // Projections (Phase 4)
   getPropertyProjections,
   getPortfolioProjections,

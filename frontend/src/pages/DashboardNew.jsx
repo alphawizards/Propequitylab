@@ -26,6 +26,9 @@ import {
 } from 'lucide-react';
 
 const formatCurrency = (value) => {
+  if (value === null || value === undefined || isNaN(value)) {
+    return '$0';
+  }
   if (value >= 1000000) {
     return `$${(value / 1000000).toFixed(2)}M`;
   }

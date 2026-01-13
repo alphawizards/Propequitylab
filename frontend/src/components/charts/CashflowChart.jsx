@@ -13,6 +13,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 const formatCurrency = (value) => {
+  if (value === null || value === undefined || isNaN(value)) return '$0';
   if (Math.abs(value) >= 1000000) return `$${(value / 1000000).toFixed(1)}M`;
   if (Math.abs(value) >= 1000) return `$${(value / 1000).toFixed(0)}K`;
   return `$${value.toFixed(0)}`;
@@ -37,7 +38,7 @@ const CashflowChart = ({ income = 0, expenses = 0, loading = false }) => {
   // Create monthly data for the chart (simplified view)
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const currentMonth = new Date().getMonth();
-  
+
   // Generate last 6 months of data (using consistent variations)
   const chartData = Array.from({ length: 6 }, (_, i) => {
     const monthIndex = (currentMonth - 5 + i + 12) % 12;
@@ -89,12 +90,12 @@ const CashflowChart = ({ income = 0, expenses = 0, loading = false }) => {
         <ResponsiveContainer width="100%" height={280}>
           <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-            <XAxis 
-              dataKey="month" 
+            <XAxis
+              dataKey="month"
               tick={{ fill: '#6b7280', fontSize: 12 }}
               tickLine={{ stroke: '#e5e7eb' }}
             />
-            <YAxis 
+            <YAxis
               tick={{ fill: '#6b7280', fontSize: 12 }}
               tickLine={{ stroke: '#e5e7eb' }}
               tickFormatter={formatCurrency}
@@ -102,17 +103,17 @@ const CashflowChart = ({ income = 0, expenses = 0, loading = false }) => {
             <Tooltip content={<CustomTooltip />} />
             <Legend />
             <ReferenceLine y={0} stroke="#9ca3af" />
-            <Bar 
-              dataKey="income" 
-              name="Income" 
-              fill="#22c55e" 
+            <Bar
+              dataKey="income"
+              name="Income"
+              fill="#22c55e"
               radius={[4, 4, 0, 0]}
               animationDuration={800}
             />
-            <Bar 
-              dataKey="expenses" 
-              name="Expenses" 
-              fill="#ef4444" 
+            <Bar
+              dataKey="expenses"
+              name="Expenses"
+              fill="#ef4444"
               radius={[4, 4, 0, 0]}
               animationDuration={800}
             />

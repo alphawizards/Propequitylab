@@ -16,7 +16,7 @@ FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 if RESEND_API_KEY:
     resend.api_key = RESEND_API_KEY
 else:
-    print("⚠️  WARNING: RESEND_API_KEY not set. Email sending will be simulated.")
+    print("WARNING: RESEND_API_KEY not set. Email sending will be simulated.")
 
 
 def send_email(to: str, subject: str, html: str) -> bool:
