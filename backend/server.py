@@ -6,6 +6,8 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 import os
+import sentry_sdk
+from sentry_sdk.integrations.fastapi import FastApiIntegration
 import logging
 from pathlib import Path
 from contextlib import asynccontextmanager
@@ -43,6 +45,18 @@ logger = logging.getLogger(__name__)
 
 # Initialize rate limiter
 limiter = Limiter(key_func=get_remote_address, default_limits=["100/minute"])
+
+# Initialize Sentry if DSN is provided
+SENTRY_DSN = os.environ.get("SENTRY_DSN")
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[FastApiIntegration()],
+        traces_sample_rate=0.2,
+        environment=os.environ.get("ENVIRONMENT", "development"),
+        send_default_pii=True
+    )
+    logging.info("Sentry initialized")
 
 # Get allowed origins from environment
 ALLOWED_ORIGINS = os.environ.get('CORS_ORIGINS', 'http://localhost:3000').split(',')
