@@ -8,6 +8,7 @@ import {
 import { Card, CardContent } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Progress } from '../ui/progress';
+import { formatCurrency } from '../../utils/formatCurrency';
 import {
   Flame,
   Target,
@@ -30,12 +31,6 @@ import {
   Area,
   ComposedChart,
 } from 'recharts';
-
-const formatCurrency = (value) => {
-  if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`;
-  if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`;
-  return `$${value.toFixed(0)}`;
-};
 
 const PLAN_TYPE_INFO = {
   fire: { label: 'FIRE', color: 'bg-orange-100 text-orange-700' },
@@ -70,7 +65,7 @@ const PlanDetailsModal = ({ open, onOpenChange, plan, dashboardData }) => {
     for (let year = 0; year <= yearsToRetirement + 10; year++) {
       const age = currentAge + year;
       const isRetired = age >= retirementAge;
-      
+
       if (!isRetired) {
         // Growing phase
         netWorth = netWorth * (1 + growthRate) + annualSavings;
@@ -107,8 +102,8 @@ const PlanDetailsModal = ({ open, onOpenChange, plan, dashboardData }) => {
     }
 
     const fireAge = yearsToFire !== null ? currentAge + yearsToFire : null;
-    const progressPercent = targetNetWorth > 0 
-      ? Math.min(100, (currentNetWorth / targetNetWorth) * 100) 
+    const progressPercent = targetNetWorth > 0
+      ? Math.min(100, (currentNetWorth / targetNetWorth) * 100)
       : 0;
 
     return {
@@ -157,15 +152,15 @@ const PlanDetailsModal = ({ open, onOpenChange, plan, dashboardData }) => {
                   <div>
                     <p className="text-gray-400 text-sm">Target Net Worth</p>
                     <p className="text-2xl font-bold">
-                      {projections.targetNetWorth > 0 
-                        ? formatCurrency(projections.targetNetWorth) 
+                      {projections.targetNetWorth > 0
+                        ? formatCurrency(projections.targetNetWorth)
                         : 'Not set'}
                     </p>
                   </div>
                   <div>
                     <p className="text-gray-400 text-sm">Years to FIRE</p>
                     <p className="text-2xl font-bold text-orange-400">
-                      {projections.yearsToFire !== null 
+                      {projections.yearsToFire !== null
                         ? `${projections.yearsToFire} years (age ${projections.fireAge})`
                         : 'N/A'}
                     </p>
@@ -243,30 +238,30 @@ const PlanDetailsModal = ({ open, onOpenChange, plan, dashboardData }) => {
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                    <XAxis 
-                      dataKey="age" 
+                    <XAxis
+                      dataKey="age"
                       tick={{ fill: '#6b7280', fontSize: 12 }}
                       label={{ value: 'Age', position: 'insideBottom', offset: -5 }}
                     />
-                    <YAxis 
+                    <YAxis
                       tick={{ fill: '#6b7280', fontSize: 12 }}
                       tickFormatter={formatCurrency}
                     />
-                    <Tooltip 
+                    <Tooltip
                       formatter={(value, name) => [formatCurrency(value), name]}
                       labelFormatter={(label) => `Age: ${label}`}
                     />
                     {projections.targetNetWorth > 0 && (
-                      <ReferenceLine 
-                        y={projections.targetNetWorth} 
-                        stroke="#f97316" 
+                      <ReferenceLine
+                        y={projections.targetNetWorth}
+                        stroke="#f97316"
                         strokeDasharray="5 5"
                         label={{ value: 'Target', fill: '#f97316', fontSize: 12 }}
                       />
                     )}
-                    <ReferenceLine 
-                      x={plan.retirement_age} 
-                      stroke="#8b5cf6" 
+                    <ReferenceLine
+                      x={plan.retirement_age}
+                      stroke="#8b5cf6"
                       strokeDasharray="5 5"
                       label={{ value: 'Retire', fill: '#8b5cf6', fontSize: 12, position: 'top' }}
                     />

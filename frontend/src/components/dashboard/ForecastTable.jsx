@@ -8,19 +8,14 @@ import {
   TableRow,
 } from '../ui/table';
 import { ScrollArea } from '../ui/scroll-area';
+import { formatCurrencyMillions, formatCurrencyFull } from '../../utils/formatCurrency';
 
 const ForecastTable = ({ data, viewType, onYearSelect, selectedYear }) => {
-  const formatCurrency = (value, inMillions = true) => {
-    if (inMillions) {
-      return `$${value.toFixed(2)}m`;
-    }
-    return new Intl.NumberFormat('en-AU', {
-      style: 'currency',
-      currency: 'AUD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }).format(value);
+  // Use formatCurrencyMillions for equity view, formatCurrencyFull for cashflow view
+  const formatValue = (value, inMillions = true) => {
+    return inMillions ? formatCurrencyMillions(value) : formatCurrencyFull(value);
   };
+
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 mt-6">
@@ -28,7 +23,7 @@ const ForecastTable = ({ data, viewType, onYearSelect, selectedYear }) => {
         <h3 className="text-lg font-semibold text-gray-900">Portfolio Forecast</h3>
         <p className="text-sm text-gray-500">Click on a year to view detailed projections</p>
       </div>
-      
+
       <ScrollArea className="h-[400px]">
         <Table>
           <TableHeader className="sticky top-0 bg-gray-50">
@@ -56,9 +51,8 @@ const ForecastTable = ({ data, viewType, onYearSelect, selectedYear }) => {
             {data.map((row, index) => (
               <TableRow
                 key={row.year}
-                className={`cursor-pointer transition-colors hover:bg-lime-50 ${
-                  selectedYear === row.year ? 'bg-lime-100' : ''
-                }`}
+                className={`cursor-pointer transition-colors hover:bg-lime-50 ${selectedYear === row.year ? 'bg-lime-100' : ''
+                  }`}
                 onClick={() => onYearSelect(row.year)}
               >
                 <TableCell className="font-medium">
@@ -76,13 +70,13 @@ const ForecastTable = ({ data, viewType, onYearSelect, selectedYear }) => {
                 {viewType === 'equity' ? (
                   <>
                     <TableCell className="text-right font-medium text-gray-900">
-                      {formatCurrency(row.totalValue)}
+                      {formatValue(row.totalValue)}
                     </TableCell>
                     <TableCell className="text-right text-gray-600">
-                      {formatCurrency(row.debt)}
+                      {formatValue(row.debt)}
                     </TableCell>
                     <TableCell className="text-right font-semibold text-green-600">
-                      {formatCurrency(row.equity)}
+                      {formatValue(row.equity)}
                     </TableCell>
                     <TableCell className="text-right text-gray-600">
                       {row.grossYield}%
@@ -94,18 +88,17 @@ const ForecastTable = ({ data, viewType, onYearSelect, selectedYear }) => {
                 ) : (
                   <>
                     <TableCell className="text-right text-green-600">
-                      {formatCurrency(row.rentalIncome, false)}
+                      {formatValue(row.rentalIncome, false)}
                     </TableCell>
                     <TableCell className="text-right text-gray-600">
-                      {formatCurrency(row.expenses, false)}
+                      {formatValue(row.expenses, false)}
                     </TableCell>
                     <TableCell className="text-right text-red-500">
-                      {formatCurrency(row.loanPayments, false)}
+                      {formatValue(row.loanPayments, false)}
                     </TableCell>
-                    <TableCell className={`text-right font-semibold ${
-                      row.cashflow >= 0 ? 'text-green-600' : 'text-red-500'
-                    }`}>
-                      {formatCurrency(row.cashflow, false)}
+                    <TableCell className={`text-right font-semibold ${row.cashflow >= 0 ? 'text-green-600' : 'text-red-500'
+                      }`}>
+                      {formatValue(row.cashflow, false)}
                     </TableCell>
                   </>
                 )}

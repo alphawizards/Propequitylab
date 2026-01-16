@@ -9,24 +9,16 @@ import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Progress } from '../ui/progress';
+import { formatCurrency } from '../../utils/formatCurrency';
 import { Pencil, CreditCard, Receipt, Target, Calendar, Percent } from 'lucide-react';
 
 const LiabilityDetailsModal = ({ isOpen, onClose, liability, onEdit }) => {
   if (!liability) return null;
 
   const paidOff = liability.original_amount - liability.current_balance;
-  const paidPercent = liability.original_amount > 0 
-    ? ((paidOff / liability.original_amount) * 100).toFixed(1) 
+  const paidPercent = liability.original_amount > 0
+    ? ((paidOff / liability.original_amount) * 100).toFixed(1)
     : 0;
-
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat('en-AU', {
-      style: 'currency',
-      currency: 'AUD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value || 0);
-  };
 
   const getLiabilityIcon = (type) => {
     const icons = {
@@ -65,8 +57,8 @@ const LiabilityDetailsModal = ({ isOpen, onClose, liability, onEdit }) => {
 
   // Calculate monthly payment
   const monthlyPayment = (liability.minimum_payment + (liability.extra_payment || 0)) * ({
-    weekly: 52/12,
-    fortnightly: 26/12,
+    weekly: 52 / 12,
+    fortnightly: 26 / 12,
     monthly: 1,
   }[liability.payment_frequency] || 1);
 
@@ -90,8 +82,8 @@ const LiabilityDetailsModal = ({ isOpen, onClose, liability, onEdit }) => {
                 <p className="text-sm text-gray-500">{getLiabilityLabel(liability.type)}</p>
               </div>
             </div>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={onEdit}
               className="flex items-center gap-2"
             >
@@ -231,8 +223,8 @@ const LiabilityDetailsModal = ({ isOpen, onClose, liability, onEdit }) => {
                 <div>
                   <p className="text-sm text-gray-500">Est. Payoff Time</p>
                   <p className="font-medium">
-                    {monthsToPayoff > 12 
-                      ? `${Math.floor(monthsToPayoff/12)} years ${monthsToPayoff % 12} months`
+                    {monthsToPayoff > 12
+                      ? `${Math.floor(monthsToPayoff / 12)} years ${monthsToPayoff % 12} months`
                       : `${monthsToPayoff} months`
                     }
                   </p>

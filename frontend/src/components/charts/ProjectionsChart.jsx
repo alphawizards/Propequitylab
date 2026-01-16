@@ -16,22 +16,8 @@ import {
     Tooltip,
     Legend,
 } from 'recharts';
+import { formatCurrency, formatPercentage } from '../../utils/formatCurrency';
 
-const formatCurrency = (value) => {
-    if (value === null || value === undefined || isNaN(value)) return '$0';
-    if (value >= 1000000) {
-        return `$${(value / 1000000).toFixed(1)}M`;
-    }
-    if (value >= 1000) {
-        return `$${(value / 1000).toFixed(0)}K`;
-    }
-    return `$${value.toFixed(0)}`;
-};
-
-const formatPercentage = (value) => {
-    if (value === null || value === undefined || isNaN(value)) return '0%';
-    return `${value.toFixed(1)}%`;
-};
 
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
@@ -66,7 +52,7 @@ export const EquityValueChart = ({ data }) => {
     }));
 
     return (
-        <div className="w-full h-80">
+        <div className="w-full h-96">
             <ResponsiveContainer>
                 <ComposedChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
@@ -127,7 +113,7 @@ export const CashflowProjectionChart = ({ data }) => {
     }));
 
     return (
-        <div className="w-full h-80">
+        <div className="w-full h-96">
             <ResponsiveContainer>
                 <ComposedChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
@@ -171,7 +157,7 @@ export const LVRChart = ({ data }) => {
     }));
 
     return (
-        <div className="w-full h-64">
+        <div className="w-full h-80">
             <ResponsiveContainer>
                 <ComposedChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
@@ -225,7 +211,7 @@ export const PortfolioSummaryChart = ({ data }) => {
     }));
 
     return (
-        <div className="w-full h-80">
+        <div className="w-full h-96">
             <ResponsiveContainer>
                 <ComposedChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#374151" />

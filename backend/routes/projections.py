@@ -127,6 +127,7 @@ def _generate_property_projections(
     years: int,
     expense_growth_override: Optional[float] = None,
     interest_rate_offset: Optional[float] = None,
+    asset_growth_override: Optional[float] = None,
 ) -> List[ProjectionYearData]:
     """
     Generate projections for a single property.
@@ -137,9 +138,12 @@ def _generate_property_projections(
     # Get base value
     base_value = to_decimal(property_obj.current_value or property_obj.purchase_price)
     
-    # Default growth rates if none defined
+    # Default growth rates if none defined - or use override
     growth_rates = property_data.get("growth_rates", [])
-    if not growth_rates and property_obj.growth_assumptions:
+    if asset_growth_override is not None:
+        # Override all growth rates with user-specified rate
+        growth_rates = [{"start_year": current_year, "end_year": None, "growth_rate": asset_growth_override}]
+    elif not growth_rates and property_obj.growth_assumptions:
         rate = property_obj.growth_assumptions.get("capital_growth_rate", 5.0)
         growth_rates = [{"start_year": current_year, "end_year": None, "growth_rate": rate}]
     
@@ -222,6 +226,7 @@ async def get_property_projections(
     years: int = 10,
     expense_growth_override: Optional[float] = None,
     interest_rate_offset: Optional[float] = None,
+    asset_growth_override: Optional[float] = None,
     current_user: User = Depends(get_current_user),
     session: Session = Depends(get_session)
 ):
@@ -233,6 +238,7 @@ async def get_property_projections(
         years: Number of years to project (default 10, max 50)
         expense_growth_override: Override expense growth rate (percentage)
         interest_rate_offset: Interest rate adjustment for stress testing (percentage points)
+        asset_growth_override: Override property growth rate (percentage)
     
     Returns:
         PropertyProjectionResponse with year-by-year projections
@@ -266,7 +272,8 @@ async def get_property_projections(
         property_data,
         years,
         expense_growth_override,
-        interest_rate_offset
+        interest_rate_offset,
+        asset_growth_override
     )
     
     current_year = datetime.now().year
@@ -286,6 +293,7 @@ async def get_portfolio_projections(
     years: int = 10,
     expense_growth_override: Optional[float] = None,
     interest_rate_offset: Optional[float] = None,
+    asset_growth_override: Optional[float] = None,
     current_user: User = Depends(get_current_user),
     session: Session = Depends(get_session)
 ):
@@ -297,6 +305,7 @@ async def get_portfolio_projections(
         years: Number of years to project (default 10, max 50)
         expense_growth_override: Override expense growth rate
         interest_rate_offset: Interest rate adjustment for stress testing
+        asset_growth_override: Override property growth rate (percentage)
     
     Returns:
         PortfolioProjectionResponse with per-property and aggregated projections
@@ -346,7 +355,8 @@ async def get_portfolio_projections(
             property_data,
             years,
             expense_growth_override,
-            interest_rate_offset
+            interest_rate_offset,
+            asset_growth_override
         )
         
         property_projections.append(PropertyProjectionResponse(

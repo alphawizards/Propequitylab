@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
+import { formatCurrency } from '../../utils/formatCurrency';
 import {
   TrendingUp,
   MoreVertical,
@@ -20,8 +21,8 @@ import {
 
 const AssetCard = ({ asset, onView, onEdit, onDelete }) => {
   const gain = asset.current_value - (asset.purchase_value || 0);
-  const gainPercent = asset.purchase_value > 0 
-    ? ((gain / asset.purchase_value) * 100).toFixed(1) 
+  const gainPercent = asset.purchase_value > 0
+    ? ((gain / asset.purchase_value) * 100).toFixed(1)
     : 0;
 
   const getAssetIcon = (type) => {
@@ -73,15 +74,6 @@ const AssetCard = ({ asset, onView, onEdit, onDelete }) => {
     }
   };
 
-  const formatCurrency = (value) => {
-    if (value >= 1000000) {
-      return `$${(value / 1000000).toFixed(2)}M`;
-    } else if (value >= 1000) {
-      return `$${(value / 1000).toFixed(0)}K`;
-    }
-    return `$${value.toFixed(0)}`;
-  };
-
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow group">
       {/* Asset Header */}
@@ -89,19 +81,19 @@ const AssetCard = ({ asset, onView, onEdit, onDelete }) => {
         <div className="absolute inset-0 flex items-center justify-center">
           <span className="text-5xl">{getAssetIcon(asset.type)}</span>
         </div>
-        
+
         {/* Asset Type Badge */}
         <Badge className="absolute top-3 left-3 bg-white text-gray-700">
           {getAssetLabel(asset.type)}
         </Badge>
-        
+
         {/* Tax Environment Badge */}
         {asset.tax_environment !== 'taxable' && (
           <Badge className={`absolute top-3 right-12 ${getTaxBadgeColor(asset.tax_environment)}`}>
             {asset.tax_environment === 'tax_deferred' ? 'Tax Deferred' : 'Tax Free'}
           </Badge>
         )}
-        
+
         {/* Actions Menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -129,14 +121,14 @@ const AssetCard = ({ asset, onView, onEdit, onDelete }) => {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      
+
       <CardContent className="p-4">
         {/* Asset Name */}
         <h3 className="font-semibold text-gray-900 truncate mb-1">{asset.name}</h3>
         {asset.institution && (
           <p className="text-sm text-gray-500 mb-3 truncate">{asset.institution}</p>
         )}
-        
+
         {/* Current Value */}
         <div className="mb-4">
           <p className="text-2xl font-bold text-gray-900">
@@ -149,7 +141,7 @@ const AssetCard = ({ asset, onView, onEdit, onDelete }) => {
             </div>
           )}
         </div>
-        
+
         {/* Financials Grid */}
         <div className="grid grid-cols-2 gap-3 pt-3 border-t">
           <div>

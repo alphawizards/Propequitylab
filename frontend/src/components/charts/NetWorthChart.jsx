@@ -10,13 +10,8 @@ import {
   Legend,
 } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { formatCurrency } from '../../utils/formatCurrency';
 
-const formatCurrency = (value) => {
-  if (value === null || value === undefined || isNaN(value)) return '$0';
-  if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`;
-  if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`;
-  return `$${value.toFixed(0)}`;
-};
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload || !payload.length) return null;

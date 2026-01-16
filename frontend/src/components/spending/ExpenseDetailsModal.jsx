@@ -8,6 +8,7 @@ import {
 import { Card, CardContent } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Progress } from '../ui/progress';
+import { formatCurrency } from '../../utils/formatCurrency';
 import {
   Receipt,
   TrendingUp,
@@ -42,14 +43,6 @@ const CATEGORY_INFO = {
   other: { label: 'Other', icon: MoreHorizontal, color: 'bg-gray-100 text-gray-700' },
 };
 
-const formatCurrency = (value) => {
-  return new Intl.NumberFormat('en-AU', {
-    style: 'currency',
-    currency: 'AUD',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value);
-};
 
 const ExpenseDetailsModal = ({ open, onOpenChange, expense }) => {
   if (!expense) return null;

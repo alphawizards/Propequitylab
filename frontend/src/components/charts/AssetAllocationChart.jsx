@@ -8,6 +8,7 @@ import {
   Tooltip,
 } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { formatCurrency } from '../../utils/formatCurrency';
 
 const COLORS = {
   properties: '#3b82f6',
@@ -31,12 +32,6 @@ const LABELS = {
   other: 'Other',
 };
 
-const formatCurrency = (value) => {
-  if (value === null || value === undefined || isNaN(value)) return '$0';
-  if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`;
-  if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`;
-  return `$${value.toFixed(0)}`;
-};
 
 const CustomTooltip = ({ active, payload }) => {
   if (!active || !payload || !payload.length) return null;
@@ -76,16 +71,16 @@ const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent
 };
 
 const AssetAllocationChart = ({ breakdown = {}, loading = false }) => {
-  // Transform breakdown to chart data
-  const total = Object.values(breakdown).reduce((sum, val) => sum + (val || 0), 0);
+  // Transform breakdown to chart data - ensure numeric values
+  const total = Object.values(breakdown).reduce((sum, val) => sum + (Number(val) || 0), 0);
 
   const chartData = Object.entries(breakdown)
-    .filter(([_, value]) => value > 0)
+    .filter(([_, value]) => Number(value) > 0)
     .map(([key, value]) => ({
       name: LABELS[key] || key,
-      value: value,
+      value: Number(value),
       color: COLORS[key] || '#6b7280',
-      percentage: total > 0 ? (value / total) * 100 : 0,
+      percentage: total > 0 ? (Number(value) / total) * 100 : 0,
     }))
     .sort((a, b) => b.value - a.value);
 

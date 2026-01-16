@@ -3,6 +3,7 @@ import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Progress } from '../ui/progress';
+import { formatCurrency } from '../../utils/formatCurrency';
 import {
   MoreVertical,
   Eye,
@@ -20,8 +21,8 @@ import {
 
 const LiabilityCard = ({ liability, onView, onEdit, onDelete }) => {
   const paidOff = liability.original_amount - liability.current_balance;
-  const paidPercent = liability.original_amount > 0 
-    ? ((paidOff / liability.original_amount) * 100).toFixed(0) 
+  const paidPercent = liability.original_amount > 0
+    ? ((paidOff / liability.original_amount) * 100).toFixed(0)
     : 0;
 
   const getLiabilityIcon = (type) => {
@@ -67,19 +68,10 @@ const LiabilityCard = ({ liability, onView, onEdit, onDelete }) => {
     }
   };
 
-  const formatCurrency = (value) => {
-    if (value >= 1000000) {
-      return `$${(value / 1000000).toFixed(2)}M`;
-    } else if (value >= 1000) {
-      return `$${(value / 1000).toFixed(1)}K`;
-    }
-    return `$${value.toFixed(0)}`;
-  };
-
   // Calculate monthly payment based on frequency
   const monthlyPayment = liability.minimum_payment * ({
-    weekly: 52/12,
-    fortnightly: 26/12,
+    weekly: 52 / 12,
+    fortnightly: 26 / 12,
     monthly: 1,
   }[liability.payment_frequency] || 1);
 
@@ -90,19 +82,19 @@ const LiabilityCard = ({ liability, onView, onEdit, onDelete }) => {
         <div className="absolute inset-0 flex items-center justify-center">
           <span className="text-5xl">{getLiabilityIcon(liability.type)}</span>
         </div>
-        
+
         {/* Liability Type Badge */}
         <Badge className="absolute top-3 left-3 bg-white text-gray-700">
           {getLiabilityLabel(liability.type)}
         </Badge>
-        
+
         {/* Tax Deductible Badge */}
         {liability.is_tax_deductible && (
           <Badge className="absolute top-3 right-12 bg-green-100 text-green-700">
             Tax Deductible
           </Badge>
         )}
-        
+
         {/* Actions Menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -130,14 +122,14 @@ const LiabilityCard = ({ liability, onView, onEdit, onDelete }) => {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      
+
       <CardContent className="p-4">
         {/* Liability Name */}
         <h3 className="font-semibold text-gray-900 truncate mb-1">{liability.name}</h3>
         {liability.lender && (
           <p className="text-sm text-gray-500 mb-3 truncate">{liability.lender}</p>
         )}
-        
+
         {/* Current Balance */}
         <div className="mb-4">
           <p className="text-2xl font-bold text-red-600">
@@ -156,7 +148,7 @@ const LiabilityCard = ({ liability, onView, onEdit, onDelete }) => {
           </div>
           <Progress value={parseFloat(paidPercent)} className="h-2" />
         </div>
-        
+
         {/* Financials Grid */}
         <div className="grid grid-cols-2 gap-3 pt-3 border-t">
           <div>
@@ -181,8 +173,8 @@ const LiabilityCard = ({ liability, onView, onEdit, onDelete }) => {
           <div>
             <p className="text-xs text-gray-500">Strategy</p>
             <Badge className={`text-xs ${getStrategyBadgeColor(liability.payoff_strategy)}`}>
-              {liability.payoff_strategy === 'aggressive' ? 'Aggressive' : 
-               liability.payoff_strategy === 'custom' ? 'Custom' : 'Minimum'}
+              {liability.payoff_strategy === 'aggressive' ? 'Aggressive' :
+                liability.payoff_strategy === 'custom' ? 'Custom' : 'Minimum'}
             </Badge>
           </div>
         </div>

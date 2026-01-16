@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
+import { formatCurrency } from '../../utils/formatCurrency';
 import {
   MoreVertical,
   Edit,
@@ -36,14 +37,6 @@ const OWNER_LABELS = {
   joint: 'Joint',
 };
 
-const formatCurrency = (value) => {
-  return new Intl.NumberFormat('en-AU', {
-    style: 'currency',
-    currency: 'AUD',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value);
-};
 
 const formatFrequency = (freq) => {
   const labels = { weekly: '/wk', fortnightly: '/fn', monthly: '/mo', annual: '/yr' };
@@ -56,14 +49,14 @@ const IncomeCard = ({ income, onEdit, onDelete, onView }) => {
 
   // Calculate monthly amount
   const toMonthly = (amount, frequency) => {
-    const multipliers = { weekly: 4.33, fortnightly: 2.17, monthly: 1, annual: 1/12 };
+    const multipliers = { weekly: 4.33, fortnightly: 2.17, monthly: 1, annual: 1 / 12 };
     return amount * (multipliers[frequency] || 1);
   };
 
   const monthlyAmount = toMonthly(income.amount, income.frequency);
 
   return (
-    <Card 
+    <Card
       className="hover:shadow-lg transition-shadow cursor-pointer group"
       data-testid={`income-card-${income.id}`}
     >

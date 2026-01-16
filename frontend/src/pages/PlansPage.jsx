@@ -4,6 +4,7 @@ import api from '../services/api';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
+import { formatCurrency } from '../utils/formatCurrency';
 import {
   Plus,
   Target,
@@ -27,11 +28,6 @@ import PlanFormModal from '../components/plans/PlanFormModal';
 import PlanDetailsModal from '../components/plans/PlanDetailsModal';
 import FIRECalculator from '../components/plans/FIRECalculator';
 
-const formatCurrency = (value) => {
-  if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`;
-  if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`;
-  return `$${value.toFixed(0)}`;
-};
 
 const PLAN_TYPE_INFO = {
   fire: { label: 'FIRE', icon: Flame, color: 'bg-orange-100 text-orange-700', description: 'Financial Independence, Retire Early' },
@@ -48,7 +44,7 @@ const PlanCard = ({ plan, onEdit, onDelete, onView }) => {
   const Icon = typeInfo.icon;
 
   return (
-    <Card 
+    <Card
       className="hover:shadow-lg transition-shadow cursor-pointer group"
       data-testid={`plan-card-${plan.id}`}
     >
@@ -78,8 +74,8 @@ const PlanCard = ({ plan, onEdit, onDelete, onView }) => {
               <DropdownMenuItem onClick={() => onEdit(plan)}>
                 <Edit className="w-4 h-4 mr-2" /> Edit Plan
               </DropdownMenuItem>
-              <DropdownMenuItem 
-                onClick={() => onDelete(plan.id)} 
+              <DropdownMenuItem
+                onClick={() => onDelete(plan.id)}
                 className="text-red-600"
               >
                 <Trash2 className="w-4 h-4 mr-2" /> Delete
