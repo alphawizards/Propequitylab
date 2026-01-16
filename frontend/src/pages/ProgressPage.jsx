@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Button } from '../components/ui/button';
 import { Progress } from '../components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
+import { formatCurrency } from '../utils/formatCurrency';
 import {
   TrendingUp,
   Target,
@@ -29,11 +30,6 @@ import {
   ReferenceLine,
 } from 'recharts';
 
-const formatCurrency = (value) => {
-  if (Math.abs(value) >= 1000000) return `$${(value / 1000000).toFixed(1)}M`;
-  if (Math.abs(value) >= 1000) return `$${(value / 1000).toFixed(0)}K`;
-  return `$${value.toFixed(0)}`;
-};
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload || !payload.length) return null;
@@ -110,18 +106,18 @@ const ProgressPage = () => {
   // Calculate growth metrics
   const calculateGrowth = () => {
     if (!netWorthHistory || netWorthHistory.length < 2) {
-      return { 
-        monthlyChange: 0, 
-        monthlyPercent: 0, 
-        totalChange: 0, 
-        totalPercent: 0 
+      return {
+        monthlyChange: 0,
+        monthlyPercent: 0,
+        totalChange: 0,
+        totalPercent: 0
       };
     }
-    
+
     const latest = netWorthHistory[netWorthHistory.length - 1]?.net_worth || 0;
     const previous = netWorthHistory[netWorthHistory.length - 2]?.net_worth || 0;
     const first = netWorthHistory[0]?.net_worth || 0;
-    
+
     return {
       monthlyChange: latest - previous,
       monthlyPercent: previous > 0 ? ((latest - previous) / previous) * 100 : 0,
@@ -180,9 +176,8 @@ const ProgressPage = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                growth.monthlyChange >= 0 ? 'bg-green-100' : 'bg-red-100'
-              }`}>
+              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${growth.monthlyChange >= 0 ? 'bg-green-100' : 'bg-red-100'
+                }`}>
                 {growth.monthlyChange >= 0 ? (
                   <ArrowUpRight className="w-5 h-5 text-green-600" />
                 ) : (
@@ -191,9 +186,8 @@ const ProgressPage = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Monthly Change</p>
-                <p className={`text-xl font-bold ${
-                  growth.monthlyChange >= 0 ? 'text-green-600' : 'text-red-600'
-                }`}>
+                <p className={`text-xl font-bold ${growth.monthlyChange >= 0 ? 'text-green-600' : 'text-red-600'
+                  }`}>
                   {growth.monthlyChange >= 0 ? '+' : ''}{formatCurrency(growth.monthlyChange)}
                 </p>
               </div>
@@ -208,9 +202,8 @@ const ProgressPage = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Total Growth</p>
-                <p className={`text-xl font-bold ${
-                  growth.totalChange >= 0 ? 'text-green-600' : 'text-red-600'
-                }`}>
+                <p className={`text-xl font-bold ${growth.totalChange >= 0 ? 'text-green-600' : 'text-red-600'
+                  }`}>
                   {growth.totalPercent >= 0 ? '+' : ''}{growth.totalPercent.toFixed(1)}%
                 </p>
               </div>
@@ -226,8 +219,8 @@ const ProgressPage = () => {
               <div>
                 <p className="text-sm text-gray-500">FIRE Progress</p>
                 <p className="text-xl font-bold text-orange-600">
-                  {projectionData && projectionData.years_to_fire !== null 
-                    ? `${projectionData.years_to_fire} yrs` 
+                  {projectionData && projectionData.years_to_fire !== null
+                    ? `${projectionData.years_to_fire} yrs`
                     : 'Calculating...'}
                 </p>
               </div>
@@ -264,11 +257,11 @@ const ProgressPage = () => {
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                    <XAxis 
-                      dataKey="date" 
+                    <XAxis
+                      dataKey="date"
                       tick={{ fill: '#6b7280', fontSize: 12 }}
                     />
-                    <YAxis 
+                    <YAxis
                       tick={{ fill: '#6b7280', fontSize: 12 }}
                       tickFormatter={formatCurrency}
                     />
@@ -292,8 +285,8 @@ const ProgressPage = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Future Projection</CardTitle>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="sm"
                 onClick={fetchProjection}
                 disabled={projectionLoading}
@@ -350,23 +343,23 @@ const ProgressPage = () => {
                         </linearGradient>
                       </defs>
                       <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                      <XAxis 
-                        dataKey="age" 
+                      <XAxis
+                        dataKey="age"
                         tick={{ fill: '#6b7280', fontSize: 12 }}
                         label={{ value: 'Age', position: 'insideBottom', offset: -5 }}
                       />
-                      <YAxis 
+                      <YAxis
                         tick={{ fill: '#6b7280', fontSize: 12 }}
                         tickFormatter={formatCurrency}
                       />
-                      <Tooltip 
+                      <Tooltip
                         formatter={(value, name) => [formatCurrency(value), name]}
                         labelFormatter={(label) => `Age: ${label}`}
                       />
                       {projectionData.fire_number > 0 && (
-                        <ReferenceLine 
-                          y={projectionData.fire_number} 
-                          stroke="#f97316" 
+                        <ReferenceLine
+                          y={projectionData.fire_number}
+                          stroke="#f97316"
                           strokeDasharray="5 5"
                           label={{ value: 'FIRE Target', fill: '#f97316', fontSize: 12 }}
                         />
@@ -429,11 +422,10 @@ const ProgressPage = () => {
                             {row.withdrawals > 0 ? `-${formatCurrency(row.withdrawals)}` : '-'}
                           </td>
                           <td className="py-3 px-4">
-                            <span className={`px-2 py-1 rounded text-xs ${
-                              row.phase === 'accumulation' 
-                                ? 'bg-green-100 text-green-700' 
+                            <span className={`px-2 py-1 rounded text-xs ${row.phase === 'accumulation'
+                                ? 'bg-green-100 text-green-700'
                                 : 'bg-orange-100 text-orange-700'
-                            }`}>
+                              }`}>
                               {row.phase}
                             </span>
                           </td>

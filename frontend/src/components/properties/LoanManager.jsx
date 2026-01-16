@@ -1,6 +1,6 @@
 /**
  * Loan Manager Component
- * CRUD interface for managing property loans
+ * CRUD interface for managing property loans with Extra Repayment and Lump Sum features
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -9,6 +9,8 @@ import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
+import { formatCurrency } from '../../utils/formatCurrency';
+import { useToast } from '../../hooks/use-toast';
 import {
     Select,
     SelectContent,
@@ -33,19 +35,12 @@ import {
     DollarSign,
     Calendar,
     CreditCard,
+    TrendingDown,
+    Banknote,
 } from 'lucide-react';
 
-const formatCurrency = (value) => {
-    if (!value) return '$0';
-    return new Intl.NumberFormat('en-AU', {
-        style: 'currency',
-        currency: 'AUD',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(value);
-};
 
-const LoanCard = ({ loan, onEdit, onDelete }) => {
+const LoanCard = ({ loan, onEdit, onDelete, onExtraRepayment, onLumpSum }) => {
     const monthlyRepayment = loan.loan_structure === 'InterestOnly'
         ? (loan.current_amount * (loan.interest_rate / 100)) / 12
         : loan.current_amount * (
@@ -103,6 +98,28 @@ const LoanCard = ({ loan, onEdit, onDelete }) => {
                             <span className="font-semibold text-blue-600">{formatCurrency(loan.offset_balance)}</span>
                         </div>
                     )}
+                </div>
+
+                {/* Extra Repayment / Lump Sum Actions */}
+                <div className="mt-4 pt-4 border-t flex gap-2">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1 text-green-700 border-green-300 hover:bg-green-50"
+                        onClick={() => onExtraRepayment?.(loan)}
+                    >
+                        <TrendingDown className="w-4 h-4 mr-1" />
+                        Extra Repayment
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1 text-blue-700 border-blue-300 hover:bg-blue-50"
+                        onClick={() => onLumpSum?.(loan)}
+                    >
+                        <Banknote className="w-4 h-4 mr-1" />
+                        Lump Sum
+                    </Button>
                 </div>
             </CardContent>
         </Card>
@@ -305,11 +322,239 @@ const LoanFormModal = ({ isOpen, onClose, onSubmit, loan, propertyId }) => {
     );
 };
 
+// ============================================================================
+// Extra Repayment Modal - For recurring extra payments
+// ============================================================================
+const ExtraRepaymentModal = ({ isOpen, onClose, loanId, loanName, onSuccess }) => {
+    const { toast } = useToast();
+    const [formData, setFormData] = useState({
+        amount: '',
+        frequency: 'monthly',
+        start_date: new Date().toISOString().split('T')[0],
+        end_date: '',
+    });
+    const [submitting, setSubmitting] = useState(false);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setSubmitting(true);
+        try {
+            await api.addExtraRepayment(loanId, {
+                amount: parseFloat(formData.amount),
+                frequency: formData.frequency,
+                start_date: formData.start_date,
+                end_date: formData.end_date || undefined,
+            });
+            toast({
+                title: 'Extra Repayment Added',
+                description: `Added ${formatCurrency(formData.amount)} ${formData.frequency} extra repayment.`,
+            });
+            onSuccess?.();
+            onClose();
+        } catch (error) {
+            console.error('Failed to add extra repayment:', error);
+            toast({
+                title: 'Error',
+                description: 'Failed to add extra repayment. Please try again.',
+                variant: 'destructive',
+            });
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    return (
+        <Dialog open={isOpen} onOpenChange={onClose}>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2">
+                        <TrendingDown className="w-5 h-5 text-green-600" />
+                        Add Extra Repayment
+                    </DialogTitle>
+                    <DialogDescription>
+                        Set up recurring extra repayments for {loanName}
+                    </DialogDescription>
+                </DialogHeader>
+
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                        <Label htmlFor="extra_amount">Extra Payment Amount ($)</Label>
+                        <Input
+                            id="extra_amount"
+                            type="number"
+                            value={formData.amount}
+                            onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                            placeholder="100"
+                            required
+                            min="1"
+                        />
+                    </div>
+
+                    <div>
+                        <Label htmlFor="extra_frequency">Frequency</Label>
+                        <Select
+                            value={formData.frequency}
+                            onValueChange={(value) => setFormData({ ...formData, frequency: value })}
+                        >
+                            <SelectTrigger>
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="weekly">Weekly</SelectItem>
+                                <SelectItem value="fortnightly">Fortnightly</SelectItem>
+                                <SelectItem value="monthly">Monthly</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <Label htmlFor="start_date">Start Date</Label>
+                            <Input
+                                id="start_date"
+                                type="date"
+                                value={formData.start_date}
+                                onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <Label htmlFor="end_date">End Date (Optional)</Label>
+                            <Input
+                                id="end_date"
+                                type="date"
+                                value={formData.end_date}
+                                onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
+                            />
+                        </div>
+                    </div>
+
+                    <DialogFooter>
+                        <Button type="button" variant="outline" onClick={onClose}>
+                            Cancel
+                        </Button>
+                        <Button type="submit" disabled={submitting} className="bg-green-600 text-white hover:bg-green-700">
+                            {submitting ? 'Adding...' : 'Add Extra Repayment'}
+                        </Button>
+                    </DialogFooter>
+                </form>
+            </DialogContent>
+        </Dialog>
+    );
+};
+
+// ============================================================================
+// Lump Sum Modal - For one-time payments
+// ============================================================================
+const LumpSumModal = ({ isOpen, onClose, loanId, loanName, onSuccess }) => {
+    const { toast } = useToast();
+    const [formData, setFormData] = useState({
+        amount: '',
+        payment_date: new Date().toISOString().split('T')[0],
+        description: '',
+    });
+    const [submitting, setSubmitting] = useState(false);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setSubmitting(true);
+        try {
+            await api.addLumpSumPayment(loanId, {
+                amount: parseFloat(formData.amount),
+                payment_date: formData.payment_date,
+                description: formData.description || undefined,
+            });
+            toast({
+                title: 'Lump Sum Added',
+                description: `Added ${formatCurrency(formData.amount)} lump sum payment.`,
+            });
+            onSuccess?.();
+            onClose();
+        } catch (error) {
+            console.error('Failed to add lump sum payment:', error);
+            toast({
+                title: 'Error',
+                description: 'Failed to add lump sum payment. Please try again.',
+                variant: 'destructive',
+            });
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    return (
+        <Dialog open={isOpen} onOpenChange={onClose}>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2">
+                        <Banknote className="w-5 h-5 text-blue-600" />
+                        Add Lump Sum Payment
+                    </DialogTitle>
+                    <DialogDescription>
+                        Record a one-time lump sum payment for {loanName}
+                    </DialogDescription>
+                </DialogHeader>
+
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                        <Label htmlFor="lump_amount">Payment Amount ($)</Label>
+                        <Input
+                            id="lump_amount"
+                            type="number"
+                            value={formData.amount}
+                            onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                            placeholder="5000"
+                            required
+                            min="1"
+                        />
+                    </div>
+
+                    <div>
+                        <Label htmlFor="payment_date">Payment Date</Label>
+                        <Input
+                            id="payment_date"
+                            type="date"
+                            value={formData.payment_date}
+                            onChange={(e) => setFormData({ ...formData, payment_date: e.target.value })}
+                            required
+                        />
+                    </div>
+
+                    <div>
+                        <Label htmlFor="description">Description (Optional)</Label>
+                        <Input
+                            id="description"
+                            type="text"
+                            value={formData.description}
+                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                            placeholder="e.g., Tax refund, Bonus payment"
+                        />
+                    </div>
+
+                    <DialogFooter>
+                        <Button type="button" variant="outline" onClick={onClose}>
+                            Cancel
+                        </Button>
+                        <Button type="submit" disabled={submitting} className="bg-blue-600 text-white hover:bg-blue-700">
+                            {submitting ? 'Adding...' : 'Add Lump Sum'}
+                        </Button>
+                    </DialogFooter>
+                </form>
+            </DialogContent>
+        </Dialog>
+    );
+};
+
 const LoanManager = ({ propertyId, propertyAddress }) => {
     const [loans, setLoans] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [selectedLoan, setSelectedLoan] = useState(null);
+
+    // Extra Repayment & Lump Sum modal state
+    const [isExtraRepaymentOpen, setIsExtraRepaymentOpen] = useState(false);
+    const [isLumpSumOpen, setIsLumpSumOpen] = useState(false);
+    const [repaymentLoan, setRepaymentLoan] = useState(null);
 
     const fetchLoans = useCallback(async () => {
         if (!propertyId) return;
@@ -462,6 +707,14 @@ const LoanManager = ({ propertyId, propertyAddress }) => {
                             loan={loan}
                             onEdit={handleEditLoan}
                             onDelete={handleDeleteLoan}
+                            onExtraRepayment={(l) => {
+                                setRepaymentLoan(l);
+                                setIsExtraRepaymentOpen(true);
+                            }}
+                            onLumpSum={(l) => {
+                                setRepaymentLoan(l);
+                                setIsLumpSumOpen(true);
+                            }}
                         />
                     ))}
                 </div>
@@ -474,6 +727,24 @@ const LoanManager = ({ propertyId, propertyAddress }) => {
                 onSubmit={handleSubmit}
                 loan={selectedLoan}
                 propertyId={propertyId}
+            />
+
+            {/* Extra Repayment Modal */}
+            <ExtraRepaymentModal
+                isOpen={isExtraRepaymentOpen}
+                onClose={() => setIsExtraRepaymentOpen(false)}
+                loanId={repaymentLoan?.id}
+                loanName={repaymentLoan?.lender_name}
+                onSuccess={fetchLoans}
+            />
+
+            {/* Lump Sum Modal */}
+            <LumpSumModal
+                isOpen={isLumpSumOpen}
+                onClose={() => setIsLumpSumOpen(false)}
+                loanId={repaymentLoan?.id}
+                loanName={repaymentLoan?.lender_name}
+                onSuccess={fetchLoans}
             />
         </div>
     );

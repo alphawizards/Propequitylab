@@ -10,6 +10,7 @@ import KPICard from '../components/dashboard/KPICard';
 import PortfolioSnapshotWidget from '../components/dashboard/PortfolioSnapshotWidget';
 import PropertyCashflowsWidget from '../components/dashboard/PropertyCashflowsWidget';
 import BorrowingWidget from '../components/dashboard/BorrowingWidget';
+import { formatCurrency } from '../utils/formatCurrency';
 import {
   Home,
   TrendingUp,
@@ -25,18 +26,6 @@ import {
   Camera,
 } from 'lucide-react';
 
-const formatCurrency = (value) => {
-  if (value === null || value === undefined || isNaN(value)) {
-    return '$0';
-  }
-  if (value >= 1000000) {
-    return `$${(value / 1000000).toFixed(2)}M`;
-  }
-  if (value >= 1000) {
-    return `$${(value / 1000).toFixed(1)}K`;
-  }
-  return `$${value.toFixed(0)}`;
-};
 
 const DashboardNew = () => {
   const navigate = useNavigate();
@@ -44,6 +33,7 @@ const DashboardNew = () => {
   const { user, onboardingStatus } = useUser();
   const [dashboardData, setDashboardData] = useState(null);
   const [netWorthHistory, setNetWorthHistory] = useState([]);
+  const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [historyLoading, setHistoryLoading] = useState(true);
   const [snapshotLoading, setSnapshotLoading] = useState(false);
@@ -70,6 +60,29 @@ const DashboardNew = () => {
     }
   };
 
+  const fetchProperties = async () => {
+    try {
+      const props = await api.getProperties(currentPortfolio?.id);
+      // Compute cashflow for each property: rental income - expenses - loan payments
+      const propsWithCashflow = props.map(p => {
+        const monthlyRent = p.rental_details?.income
+          ? (p.rental_details.frequency === 'weekly' ? p.rental_details.income * 52 / 12 : p.rental_details.income)
+          : 0;
+        const monthlyExpenses = p.expenses
+          ? Object.values(p.expenses).reduce((sum, v) => sum + (Number(v) || 0), 0) / 12
+          : 0;
+        const loanAmount = p.loan_details?.amount || 0;
+        const interestRate = (p.loan_details?.interest_rate || 6) / 100;
+        const monthlyLoanPayment = loanAmount > 0 ? (loanAmount * interestRate / 12) : 0;
+        const cashflow = monthlyRent - monthlyExpenses - monthlyLoanPayment;
+        return { ...p, cashflow };
+      });
+      setProperties(propsWithCashflow);
+    } catch (error) {
+      console.error('Failed to fetch properties:', error);
+    }
+  };
+
   const handleCreateSnapshot = async () => {
     if (!currentPortfolio?.id) return;
     setSnapshotLoading(true);
@@ -87,6 +100,7 @@ const DashboardNew = () => {
     if (currentPortfolio?.id) {
       fetchDashboardData();
       fetchNetWorthHistory();
+      fetchProperties();
     } else {
       setLoading(false);
       setHistoryLoading(false);
@@ -191,11 +205,11 @@ const DashboardNew = () => {
           <CardContent>
             <div className="space-y-4">
               {[
-                { label: 'Properties', value: data.asset_breakdown?.properties || 0, color: 'bg-blue-500' },
-                { label: 'Superannuation', value: data.asset_breakdown?.super || 0, color: 'bg-purple-500' },
-                { label: 'Shares/ETFs', value: (data.asset_breakdown?.shares || 0) + (data.asset_breakdown?.etf || 0), color: 'bg-green-500' },
-                { label: 'Cash', value: data.asset_breakdown?.cash || 0, color: 'bg-yellow-500' },
-                { label: 'Other', value: data.asset_breakdown?.other || 0, color: 'bg-gray-500' },
+                { label: 'Properties', value: Number(data.asset_breakdown?.properties) || 0, color: 'bg-blue-500' },
+                { label: 'Superannuation', value: Number(data.asset_breakdown?.super) || 0, color: 'bg-purple-500' },
+                { label: 'Shares/ETFs', value: (Number(data.asset_breakdown?.shares) || 0) + (Number(data.asset_breakdown?.etf) || 0), color: 'bg-green-500' },
+                { label: 'Cash', value: Number(data.asset_breakdown?.cash) || 0, color: 'bg-yellow-500' },
+                { label: 'Other', value: Number(data.asset_breakdown?.other) || 0, color: 'bg-gray-500' },
               ].map((item) => (
                 <div key={item.label} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -220,11 +234,11 @@ const DashboardNew = () => {
           <CardContent>
             <div className="space-y-4">
               {[
-                { label: 'Property Loans', value: data.liability_breakdown?.property_loans || 0, color: 'bg-blue-500' },
-                { label: 'Car Loans', value: data.liability_breakdown?.car_loans || 0, color: 'bg-orange-500' },
-                { label: 'Credit Cards', value: data.liability_breakdown?.credit_cards || 0, color: 'bg-red-500' },
-                { label: 'HECS/HELP', value: data.liability_breakdown?.hecs || 0, color: 'bg-purple-500' },
-                { label: 'Other', value: data.liability_breakdown?.other || 0, color: 'bg-gray-500' },
+                { label: 'Property Loans', value: Number(data.liability_breakdown?.property_loans) || 0, color: 'bg-blue-500' },
+                { label: 'Car Loans', value: Number(data.liability_breakdown?.car_loans) || 0, color: 'bg-orange-500' },
+                { label: 'Credit Cards', value: Number(data.liability_breakdown?.credit_cards) || 0, color: 'bg-red-500' },
+                { label: 'HECS/HELP', value: Number(data.liability_breakdown?.hecs) || 0, color: 'bg-purple-500' },
+                { label: 'Other', value: Number(data.liability_breakdown?.other) || 0, color: 'bg-gray-500' },
               ].map((item) => (
                 <div key={item.label} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -290,11 +304,7 @@ const DashboardNew = () => {
           }}
         />
         <PropertyCashflowsWidget
-          properties={[
-            // Mock data - will be replaced with real property data
-            { address: '123 Main St', monthly_cashflow: 450 },
-            { address: '456 Oak Ave', monthly_cashflow: -200 },
-          ]}
+          properties={properties}
         />
         <BorrowingWidget
           data={{

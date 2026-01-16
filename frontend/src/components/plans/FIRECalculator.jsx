@@ -10,6 +10,7 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Slider } from '../ui/slider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { formatCurrency } from '../../utils/formatCurrency';
 import {
   Flame,
   Calculator,
@@ -29,11 +30,6 @@ import {
   ReferenceLine,
 } from 'recharts';
 
-const formatCurrency = (value) => {
-  if (Math.abs(value) >= 1000000) return `$${(value / 1000000).toFixed(1)}M`;
-  if (Math.abs(value) >= 1000) return `$${(value / 1000).toFixed(0)}K`;
-  return `$${value.toFixed(0)}`;
-};
 
 const FIRECalculator = ({ open, onOpenChange, dashboardData }) => {
   const [inputs, setInputs] = useState({
@@ -179,7 +175,7 @@ const FIRECalculator = ({ open, onOpenChange, dashboardData }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <h3 className="font-semibold text-gray-900">Personal Info</h3>
-                
+
                 <div className="space-y-2">
                   <Label>Current Age: {inputs.currentAge}</Label>
                   <Slider
@@ -215,7 +211,7 @@ const FIRECalculator = ({ open, onOpenChange, dashboardData }) => {
 
               <div className="space-y-4">
                 <h3 className="font-semibold text-gray-900">Income & Expenses</h3>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="annualIncome">Annual Income ($)</Label>
                   <Input
@@ -408,30 +404,30 @@ const FIRECalculator = ({ open, onOpenChange, dashboardData }) => {
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                    <XAxis 
-                      dataKey="age" 
+                    <XAxis
+                      dataKey="age"
                       tick={{ fill: '#6b7280', fontSize: 12 }}
                       label={{ value: 'Age', position: 'insideBottom', offset: -5 }}
                     />
-                    <YAxis 
+                    <YAxis
                       tick={{ fill: '#6b7280', fontSize: 12 }}
                       tickFormatter={formatCurrency}
                     />
-                    <Tooltip 
+                    <Tooltip
                       formatter={(value, name) => [formatCurrency(value), name === 'netWorth' ? 'Net Worth' : name]}
                       labelFormatter={(label) => `Age: ${label}`}
                     />
-                    <ReferenceLine 
-                      y={calculations.fireNumber} 
-                      stroke="#f97316" 
+                    <ReferenceLine
+                      y={calculations.fireNumber}
+                      stroke="#f97316"
                       strokeWidth={2}
                       strokeDasharray="5 5"
                       label={{ value: `FIRE: ${formatCurrency(calculations.fireNumber)}`, fill: '#f97316', fontSize: 12 }}
                     />
                     {calculations.yearsToFire && (
-                      <ReferenceLine 
-                        x={inputs.currentAge + calculations.yearsToFire} 
-                        stroke="#22c55e" 
+                      <ReferenceLine
+                        x={inputs.currentAge + calculations.yearsToFire}
+                        stroke="#22c55e"
                         strokeDasharray="5 5"
                         label={{ value: 'FIRE!', fill: '#22c55e', fontSize: 12, position: 'top' }}
                       />

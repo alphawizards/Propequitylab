@@ -31,6 +31,7 @@ from routes.dashboard import router as dashboard_router
 from routes.projections import router as projections_router
 from routes.loans import router as loans_router
 from routes.valuations import router as valuations_router
+from routes.scenarios import router as scenarios_router
 
 # Load environment variables
 ROOT_DIR = Path(__file__).parent
@@ -110,6 +111,7 @@ api_router.include_router(plans_router)
 api_router.include_router(projections_router)
 api_router.include_router(loans_router)
 api_router.include_router(valuations_router)
+api_router.include_router(scenarios_router)
 
 app.include_router(api_router)
 

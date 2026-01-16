@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { usePortfolio } from '../context/PortfolioContext';
 import api from '../services/api';
 import { Button } from '../components/ui/button';
@@ -23,6 +24,8 @@ import {
     LVRChart,
     PortfolioSummaryChart,
 } from '../components/charts/ProjectionsChart';
+import ScenarioListPanel from '../components/scenarios/ScenarioListPanel';
+import { formatCurrency, formatPercentage } from '../utils/formatCurrency';
 import {
     TrendingUp,
     Building,
@@ -36,21 +39,10 @@ import {
     Home,
 } from 'lucide-react';
 
-const formatCurrency = (value) => {
-    if (!value) return '$0';
-    const num = parseFloat(value);
-    if (num >= 1000000) return `$${(num / 1000000).toFixed(2)}M`;
-    if (num >= 1000) return `$${(num / 1000).toFixed(0)}K`;
-    return `$${num.toFixed(0)}`;
-};
-
-const formatPercentage = (value) => {
-    if (!value) return '0%';
-    return `${parseFloat(value).toFixed(1)}%`;
-};
 
 const ProjectionsPage = () => {
     const { currentPortfolio } = usePortfolio();
+    const navigate = useNavigate();
     const [properties, setProperties] = useState([]);
     const [selectedPropertyId, setSelectedPropertyId] = useState('portfolio');
     const [projections, setProjections] = useState(null);
@@ -61,6 +53,7 @@ const ProjectionsPage = () => {
     const [years, setYears] = useState(10);
     const [interestRateOffset, setInterestRateOffset] = useState(0);
     const [expenseGrowthOverride, setExpenseGrowthOverride] = useState(null);
+    const [assetGrowthOverride, setAssetGrowthOverride] = useState(null);
     const [showScenarioControls, setShowScenarioControls] = useState(false);
 
     // Fetch properties for dropdown
@@ -87,6 +80,7 @@ const ProjectionsPage = () => {
                 years,
                 interestRateOffset: interestRateOffset || undefined,
                 expenseGrowthOverride: expenseGrowthOverride || undefined,
+                assetGrowthOverride: assetGrowthOverride || undefined,
             };
 
             let data;
@@ -103,7 +97,7 @@ const ProjectionsPage = () => {
         } finally {
             setLoading(false);
         }
-    }, [currentPortfolio?.id, selectedPropertyId, years, interestRateOffset, expenseGrowthOverride]);
+    }, [currentPortfolio?.id, selectedPropertyId, years, interestRateOffset, expenseGrowthOverride, assetGrowthOverride]);
 
     useEffect(() => {
         fetchProperties();
@@ -145,7 +139,20 @@ const ProjectionsPage = () => {
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 relative">
+            {/* Scenario Panel - Fixed Right Sidebar */}
+            <div className="hidden xl:block fixed right-4 top-24 w-72 z-10">
+                <ScenarioListPanel
+                    portfolioId={currentPortfolio?.id}
+                    userTier="pro" // TODO: Get from user context
+                    onSelectScenario={(scenario) => {
+                        navigate(`/scenarios/${scenario.id}/dashboard`);
+                    }}
+                    onCompareScenario={(scenario) => {
+                        navigate(`/scenarios/${scenario.id}/dashboard?compare=true`);
+                    }}
+                />
+            </div>
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
@@ -224,7 +231,7 @@ const ProjectionsPage = () => {
 
                     {/* Scenario Controls */}
                     {showScenarioControls && (
-                        <div className="mt-4 pt-4 border-t grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="mt-4 pt-4 border-t grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
                                 <Label className="text-sm text-gray-500">
                                     Interest Rate Adjustment (stress test)
@@ -258,6 +265,24 @@ const ProjectionsPage = () => {
                                         step="0.5"
                                         min="0"
                                         max="15"
+                                        className="w-24"
+                                    />
+                                    <span className="text-gray-500">% per year</span>
+                                </div>
+                            </div>
+                            <div>
+                                <Label className="text-sm text-gray-500">
+                                    Asset Growth Rate Override
+                                </Label>
+                                <div className="flex items-center gap-2 mt-1">
+                                    <Input
+                                        type="number"
+                                        value={assetGrowthOverride || ''}
+                                        onChange={(e) => setAssetGrowthOverride(parseFloat(e.target.value) || null)}
+                                        placeholder="Default"
+                                        step="0.5"
+                                        min="-10"
+                                        max="30"
                                         className="w-24"
                                     />
                                     <span className="text-gray-500">% per year</span>
@@ -358,7 +383,7 @@ const ProjectionsPage = () => {
 
             {/* Charts */}
             {loading ? (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="space-y-6">
                     {[1, 2].map((i) => (
                         <Card key={i}>
                             <CardContent className="p-6">
@@ -368,7 +393,7 @@ const ProjectionsPage = () => {
                     ))}
                 </div>
             ) : projectionData.length > 0 ? (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="space-y-6">
                     {/* Equity & Value Chart */}
                     <Card>
                         <CardHeader>

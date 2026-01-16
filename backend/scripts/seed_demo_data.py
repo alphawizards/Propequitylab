@@ -14,7 +14,7 @@ from pathlib import Path
 backend_path = Path(__file__).parent.parent
 sys.path.insert(0, str(backend_path))
 
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from decimal import Decimal
 import uuid
 
@@ -135,6 +135,16 @@ def clear_demo_data(session: Session):
             # Delete liabilities
             for liab in session.exec(select(Liability).where(Liability.portfolio_id == portfolio.id)).all():
                 session.delete(liab)
+            
+            # Delete expenses (personal expenses)
+            from models.expense import Expense
+            for exp in session.exec(select(Expense).where(Expense.portfolio_id == portfolio.id)).all():
+                session.delete(exp)
+            
+            # Delete net worth snapshots (must be before portfolio due to FK)
+            from models.net_worth import NetWorthSnapshot
+            for snap in session.exec(select(NetWorthSnapshot).where(NetWorthSnapshot.portfolio_id == portfolio.id)).all():
+                session.delete(snap)
             
             session.delete(portfolio)
         
@@ -670,6 +680,40 @@ def create_income_sources(session: Session, user: User, portfolio: Portfolio):
     print("✅ Created 2 income sources")
 
 
+def create_personal_expenses(session: Session, user: User, portfolio: Portfolio):
+    """Create personal/living expenses for the portfolio"""
+    print("💸 Creating personal expenses...")
+    
+    from models.expense import Expense
+    
+    expenses_data = [
+        {"name": "Groceries & Food", "category": "food", "amount": Decimal("800"), "frequency": "monthly"},
+        {"name": "Health Insurance", "category": "insurance", "amount": Decimal("180"), "frequency": "monthly"},
+        {"name": "Utilities (Gas/Electric)", "category": "utilities", "amount": Decimal("250"), "frequency": "monthly"},
+        {"name": "Internet & Mobile", "category": "utilities", "amount": Decimal("120"), "frequency": "monthly"},
+        {"name": "Transport & Fuel", "category": "transport", "amount": Decimal("400"), "frequency": "monthly"},
+        {"name": "Entertainment & Dining", "category": "entertainment", "amount": Decimal("300"), "frequency": "monthly"},
+        {"name": "Personal & Misc", "category": "personal", "amount": Decimal("200"), "frequency": "monthly"},
+        {"name": "Gym Membership", "category": "health", "amount": Decimal("65"), "frequency": "monthly"},
+    ]
+    
+    for exp_data in expenses_data:
+        expense = Expense(
+            id=generate_id(),
+            user_id=user.id,
+            portfolio_id=portfolio.id,
+            name=exp_data["name"],
+            category=exp_data["category"],
+            amount=exp_data["amount"],
+            frequency=exp_data["frequency"],
+            is_active=True,
+        )
+        session.add(expense)
+    
+    session.commit()
+    print(f"✅ Created {len(expenses_data)} personal expenses")
+
+
 def create_assets(session: Session, user: User, portfolio: Portfolio):
     """Create non-property assets"""
     print("💎 Creating assets...")
@@ -833,6 +877,55 @@ def update_portfolio_totals(session: Session, portfolio: Portfolio):
     print(f"   Total Liabilities: ${portfolio.total_liabilities:,.2f}")
 
 
+def create_net_worth_snapshots(session: Session, user: User, portfolio: Portfolio):
+    """Create historical net worth snapshots for the chart"""
+    print("📊 Creating net worth snapshots...")
+    
+    from models.net_worth import NetWorthSnapshot
+    
+    # Create 6 months of historical snapshots
+    base_net_worth = Decimal("750000")
+    base_assets = Decimal("1700000")
+    base_liabilities = Decimal("950000")
+    
+    for months_ago in range(6, 0, -1):
+        # Simulate growth over time
+        growth_factor = Decimal(str(1 + (6 - months_ago) * 0.02))  # 2% growth per month
+        snapshot_date = date.today() - timedelta(days=months_ago * 30)
+        
+        snapshot = NetWorthSnapshot(
+            id=generate_id() + str(months_ago),
+            user_id=user.id,
+            portfolio_id=portfolio.id,
+            date=snapshot_date,
+            total_assets=base_assets * growth_factor,
+            total_liabilities=base_liabilities,
+            net_worth=base_net_worth * growth_factor,
+            asset_breakdown={
+                "properties": float(Decimal("1400000") * growth_factor),
+                "super": 175000,
+                "shares": 80000,
+                "cash": 45000,
+                "other": 0
+            },
+            liability_breakdown={
+                "property_loans": 930000,
+                "car_loans": 18000,
+                "credit_cards": 2500,
+                "hecs": 0,
+                "other": 0
+            },
+            monthly_income=10200,
+            monthly_expenses=0,
+            monthly_cashflow=10200,
+            savings_rate=100,
+        )
+        session.add(snapshot)
+    
+    session.commit()
+    print("✅ Created 6 historical snapshots")
+
+
 def main():
     """Main seed function"""
     print("\n" + "="*60)
@@ -863,11 +956,15 @@ def main():
         
         # Create personal finances
         create_income_sources(session, demo_user, portfolio)
+        create_personal_expenses(session, demo_user, portfolio)
         create_assets(session, demo_user, portfolio)
         create_liabilities(session, demo_user, portfolio)
         
         # Update portfolio totals
         update_portfolio_totals(session, portfolio)
+        
+        # Create historical net worth snapshots
+        create_net_worth_snapshots(session, demo_user, portfolio)
     
     print("\n" + "="*60)
     print("✅ Demo data seeding complete!")

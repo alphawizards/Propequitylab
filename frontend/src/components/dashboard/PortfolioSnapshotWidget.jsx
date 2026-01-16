@@ -1,16 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { formatCurrency } from '../../utils/formatCurrency';
 
-const formatCurrency = (value) => {
-  if (!value) return '$0';
-  if (value >= 1000000) {
-    return `$${(value / 1000000).toFixed(2)}M`;
-  }
-  if (value >= 1000) {
-    return `$${(value / 1000).toFixed(1)}K`;
-  }
-  return `$${value.toFixed(0)}`;
-};
 
 const PortfolioSnapshotWidget = ({ data }) => {
   const items = [

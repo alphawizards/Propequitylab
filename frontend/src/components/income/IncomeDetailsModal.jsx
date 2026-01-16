@@ -7,6 +7,7 @@ import {
 } from '../ui/dialog';
 import { Card, CardContent } from '../ui/card';
 import { Badge } from '../ui/badge';
+import { formatCurrency } from '../../utils/formatCurrency';
 import {
   DollarSign,
   TrendingUp,
@@ -27,14 +28,6 @@ const INCOME_TYPE_INFO = {
   other: { label: 'Other', icon: DollarSign, color: 'bg-gray-100 text-gray-700' },
 };
 
-const formatCurrency = (value) => {
-  return new Intl.NumberFormat('en-AU', {
-    style: 'currency',
-    currency: 'AUD',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value);
-};
 
 const IncomeDetailsModal = ({ open, onOpenChange, income }) => {
   if (!income) return null;

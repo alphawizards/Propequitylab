@@ -1,17 +1,8 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
+import { formatCurrency } from '../../utils/formatCurrency';
 
-const formatCurrency = (value) => {
-  if (!value) return '$0';
-  if (Math.abs(value) >= 1000000) {
-    return `$${(value / 1000000).toFixed(2)}M`;
-  }
-  if (Math.abs(value) >= 1000) {
-    return `$${(value / 1000).toFixed(1)}K`;
-  }
-  return `$${Math.abs(value).toFixed(0)}`;
-};
 
 const PropertyCashflowsWidget = ({ properties = [] }) => {
   const totalCashflow = properties.reduce((sum, p) => sum + (p.cashflow || 0), 0);
@@ -38,9 +29,8 @@ const PropertyCashflowsWidget = ({ properties = [] }) => {
                   <span className="text-sm text-gray-600 truncate max-w-[60%]">
                     {property.address || property.name || `Property ${idx + 1}`}
                   </span>
-                  <span className={`text-sm font-semibold ${
-                    property.cashflow >= 0 ? 'text-green-600' : 'text-red-500'
-                  }`}>
+                  <span className={`text-sm font-semibold ${property.cashflow >= 0 ? 'text-green-600' : 'text-red-500'
+                    }`}>
                     {property.cashflow >= 0 ? '+' : '-'}{formatCurrency(Math.abs(property.cashflow))}/mo
                   </span>
                 </div>
@@ -52,9 +42,8 @@ const PropertyCashflowsWidget = ({ properties = [] }) => {
               )}
               <div className="pt-3 border-t border-gray-200 flex items-center justify-between">
                 <span className="text-sm font-medium text-gray-700">Total Monthly</span>
-                <span className={`text-lg font-bold ${
-                  totalCashflow >= 0 ? 'text-green-600' : 'text-red-500'
-                }`}>
+                <span className={`text-lg font-bold ${totalCashflow >= 0 ? 'text-green-600' : 'text-red-500'
+                  }`}>
                   {totalCashflow >= 0 ? '+' : '-'}{formatCurrency(Math.abs(totalCashflow))}
                 </span>
               </div>

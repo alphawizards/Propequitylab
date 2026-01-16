@@ -395,6 +395,7 @@ export const getPropertyProjections = async (propertyId, options = {}) => {
   if (options.years) params.append('years', options.years);
   if (options.expenseGrowthOverride) params.append('expense_growth_override', options.expenseGrowthOverride);
   if (options.interestRateOffset) params.append('interest_rate_offset', options.interestRateOffset);
+  if (options.assetGrowthOverride) params.append('asset_growth_override', options.assetGrowthOverride);
 
   const response = await apiClient.get(`/projections/${propertyId}?${params.toString()}`);
   return response.data;
@@ -411,6 +412,7 @@ export const getPortfolioProjections = async (portfolioId, options = {}) => {
   if (options.years) params.append('years', options.years);
   if (options.expenseGrowthOverride) params.append('expense_growth_override', options.expenseGrowthOverride);
   if (options.interestRateOffset) params.append('interest_rate_offset', options.interestRateOffset);
+  if (options.assetGrowthOverride) params.append('asset_growth_override', options.assetGrowthOverride);
 
   const response = await apiClient.get(`/projections/portfolio/${portfolioId}?${params.toString()}`);
   return response.data;
@@ -568,6 +570,164 @@ const api = {
   createValuation,
   deleteValuation,
   getLatestValuation,
+  // Missing Onboarding & Entity Creation methods
+  saveOnboardingStep: async (step, payload) => {
+    const completePayload = { step, ...payload };
+    const response = await apiClient.put(`/onboarding/step/${step}`, completePayload);
+    return response.data;
+  },
+  createIncomeSource: async (data) => {
+    const response = await apiClient.post('/income', data);
+    return response.data;
+  },
+  createExpense: async (data) => {
+    const response = await apiClient.post('/expenses', data);
+    return response.data;
+  },
+  createAsset: async (data) => {
+    const response = await apiClient.post('/assets', data);
+    return response.data;
+  },
+  createLiability: async (data) => {
+    const response = await apiClient.post('/liabilities', data);
+    return response.data;
+  },
+
+  // Assets CRUD
+  getAssets: async (portfolioId) => {
+    const response = await apiClient.get(`/assets/portfolio/${portfolioId}`);
+    return response.data;
+  },
+  updateAsset: async (id, data) => {
+    const response = await apiClient.put(`/assets/${id}`, data);
+    return response.data;
+  },
+  deleteAsset: async (id) => {
+    const response = await apiClient.delete(`/assets/${id}`);
+    return response.data;
+  },
+
+  // Income CRUD
+  getIncomeSources: async (portfolioId) => {
+    const response = await apiClient.get(`/income/portfolio/${portfolioId}`);
+    return response.data;
+  },
+  updateIncomeSource: async (id, data) => {
+    const response = await apiClient.put(`/income/${id}`, data);
+    return response.data;
+  },
+  deleteIncomeSource: async (id) => {
+    const response = await apiClient.delete(`/income/${id}`);
+    return response.data;
+  },
+
+  // Expenses CRUD
+  getExpenses: async (portfolioId) => {
+    const response = await apiClient.get(`/expenses/portfolio/${portfolioId}`);
+    return response.data;
+  },
+  updateExpense: async (id, data) => {
+    const response = await apiClient.put(`/expenses/${id}`, data);
+    return response.data;
+  },
+  deleteExpense: async (id) => {
+    const response = await apiClient.delete(`/expenses/${id}`);
+    return response.data;
+  },
+
+  // Liabilities CRUD
+  getLiabilities: async (portfolioId) => {
+    const response = await apiClient.get(`/liabilities/portfolio/${portfolioId}`);
+    return response.data;
+  },
+  updateLiability: async (id, data) => {
+    const response = await apiClient.put(`/liabilities/${id}`, data);
+    return response.data;
+  },
+  deleteLiability: async (id) => {
+    const response = await apiClient.delete(`/liabilities/${id}`);
+    return response.data;
+  },
+  updatePortfolio: async (id, data) => {
+    const response = await apiClient.put(`/portfolios/${id}`, data);
+    return response.data;
+  },
+
+  // Loan Extra Repayments & Lump Sum Payments (Phase 3)
+  addExtraRepayment: async (loanId, data) => {
+    // data: { amount, frequency, start_date, end_date? }
+    const response = await apiClient.post(`/loans/${loanId}/extra-repayment`, null, { params: data });
+    return response.data;
+  },
+  addLumpSumPayment: async (loanId, data) => {
+    // data: { amount, payment_date, description? }
+    const response = await apiClient.post(`/loans/${loanId}/lump-sum`, null, { params: data });
+    return response.data;
+  },
+
+  // ========================================
+  // Scenario Management (Pro Feature)
+  // ========================================
+
+  /**
+   * Create a new scenario from a portfolio (deep copy)
+   * @param {string} portfolioId - Source portfolio ID
+   * @param {string} scenarioName - Name for the scenario
+   * @param {string} scenarioDescription - Optional description
+   */
+  createScenario: async (portfolioId, scenarioName, scenarioDescription = null) => {
+    const params = { scenario_name: scenarioName };
+    if (scenarioDescription) params.scenario_description = scenarioDescription;
+    const response = await apiClient.post(`/scenarios/create/${portfolioId}`, null, { params });
+    return response.data;
+  },
+
+  /**
+   * List all scenarios for a portfolio
+   * @param {string} portfolioId - Source portfolio ID
+   */
+  listScenarios: async (portfolioId) => {
+    const response = await apiClient.get(`/scenarios/portfolio/${portfolioId}`);
+    return response.data;
+  },
+
+  /**
+   * Get a single scenario by ID
+   * @param {string} scenarioId - Scenario portfolio ID
+   */
+  getScenario: async (scenarioId) => {
+    const response = await apiClient.get(`/scenarios/${scenarioId}`);
+    return response.data;
+  },
+
+  /**
+   * Update scenario metadata
+   * @param {string} scenarioId - Scenario portfolio ID
+   * @param {object} data - { scenario_name?, scenario_description? }
+   */
+  updateScenario: async (scenarioId, data) => {
+    const response = await apiClient.put(`/scenarios/${scenarioId}`, null, { params: data });
+    return response.data;
+  },
+
+  /**
+   * Delete a scenario
+   * @param {string} scenarioId - Scenario portfolio ID
+   */
+  deleteScenario: async (scenarioId) => {
+    const response = await apiClient.delete(`/scenarios/${scenarioId}`);
+    return response.data;
+  },
+
+  /**
+   * Compare scenario to its source portfolio
+   * @param {string} scenarioId - Scenario portfolio ID
+   * @returns {object} - { actual, scenario, differences }
+   */
+  compareScenario: async (scenarioId) => {
+    const response = await apiClient.get(`/scenarios/${scenarioId}/compare`);
+    return response.data;
+  },
 };
 
 export default api;

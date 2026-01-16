@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
+import { formatCurrency } from '../../utils/formatCurrency';
 import {
   MoreVertical,
   Edit,
@@ -42,14 +43,6 @@ const CATEGORY_INFO = {
   other: { label: 'Other', icon: MoreHorizontal, color: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300' },
 };
 
-const formatCurrency = (value) => {
-  return new Intl.NumberFormat('en-AU', {
-    style: 'currency',
-    currency: 'AUD',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value);
-};
 
 const formatFrequency = (freq) => {
   const labels = { weekly: '/wk', fortnightly: '/fn', monthly: '/mo', annual: '/yr' };
@@ -62,7 +55,7 @@ const ExpenseCard = ({ expense, onEdit, onDelete, onView }) => {
 
   // Calculate monthly amount
   const toMonthly = (amount, frequency) => {
-    const multipliers = { weekly: 4.33, fortnightly: 2.17, monthly: 1, annual: 1/12 };
+    const multipliers = { weekly: 4.33, fortnightly: 2.17, monthly: 1, annual: 1 / 12 };
     return amount * (multipliers[frequency] || 1);
   };
 
@@ -70,7 +63,7 @@ const ExpenseCard = ({ expense, onEdit, onDelete, onView }) => {
   const retirementAmount = monthlyAmount * (expense.retirement_percentage / 100);
 
   return (
-    <Card 
+    <Card
       className="hover:shadow-lg transition-shadow cursor-pointer group"
       data-testid={`expense-card-${expense.id}`}
     >

@@ -24,6 +24,7 @@ import { MortgageCalculatorPage } from './pages/calculators/MortgageCalculatorPa
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import ProjectionsPage from './pages/ProjectionsPage';
+import ScenarioDashboardPage from './pages/ScenarioDashboardPage';
 import { Toaster } from './components/ui/toaster';
 
 // Placeholder pages - will be implemented in later phases
@@ -124,6 +125,9 @@ function AppRoutes() {
 
           {/* Projections - Property Portfolio Forecasting */}
           <Route path="/projections" element={<ProjectionsPage />} />
+
+          {/* Scenario Dashboard - View individual scenario */}
+          <Route path="/scenarios/:scenarioId/dashboard" element={<ScenarioDashboardPage />} />
 
           {/* Settings & Help */}
           <Route path="/settings" element={<PlaceholderPage title="Settings" />} />
