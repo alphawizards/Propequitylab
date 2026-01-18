@@ -155,23 +155,22 @@ function App() {
   return (
     <ThemeProvider>
       <Sentry.ErrorBoundary fallback={ErrorFallback} showDialog>
-    <HelmetProvider>
-      <ThemeProvider>
-        <AuthProvider>
-          <UserProvider>
-            <PortfolioProvider>
-              <div className="App">
-                <AppRoutes />
-                <Toaster />
-              </div>
-            </PortfolioProvider>
-          </UserProvider>
-        </AuthProvider>
+        <HelmetProvider>
+          <AuthProvider>
+            <UserProvider>
+              <PortfolioProvider>
+                <div className="App">
+                  <AppRoutes />
+                  <Toaster />
+                </div>
+              </PortfolioProvider>
+            </UserProvider>
+          </AuthProvider>
+        </HelmetProvider>
       </Sentry.ErrorBoundary>
     </ThemeProvider>
-      </ThemeProvider>
-    </HelmetProvider>
   );
 }
 
 export default App;
+
