@@ -241,6 +241,66 @@ export const resendVerification = async (email) => {
   return response.data;
 };
 
+/**
+ * Update user password
+ * @param {string} currentPassword - Current password
+ * @param {string} newPassword - New password
+ * @returns {Promise<{message: string}>}
+ */
+export const updatePassword = async (currentPassword, newPassword) => {
+  const response = await apiClient.post('/auth/change-password', {
+    current_password: currentPassword,
+    new_password: newPassword,
+  });
+  return response.data;
+};
+
+/**
+ * Update user profile
+ * @param {object} profileData - Profile data to update
+ * @returns {Promise<object>} Updated user data
+ */
+export const updateProfile = async (profileData) => {
+  const response = await apiClient.put('/auth/profile', profileData);
+  return response.data;
+};
+
+// ============================================================================
+// GDPR API Functions
+// ============================================================================
+
+/**
+ * Export all user data (GDPR Right to Data Portability)
+ * @returns {Promise<Blob>} JSON file with all user data
+ */
+export const exportUserData = async () => {
+  const response = await apiClient.get('/gdpr/export-data', {
+    responseType: 'blob',
+  });
+  return response.data;
+};
+
+/**
+ * Get summary of stored data (GDPR Right of Access)
+ * @returns {Promise<object>} Summary of data categories and counts
+ */
+export const getDataSummary = async () => {
+  const response = await apiClient.get('/gdpr/data-summary');
+  return response.data;
+};
+
+/**
+ * Delete user account (GDPR Right to Erasure)
+ * @param {string} password - User password for verification
+ * @returns {Promise<{message: string, deletion_date: string}>}
+ */
+export const deleteAccount = async (password) => {
+  const response = await apiClient.delete('/gdpr/delete-account', {
+    data: { password },
+  });
+  return response.data;
+};
+
 // ============================================================================
 // Portfolio API Functions
 // ============================================================================
