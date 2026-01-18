@@ -1,6 +1,4 @@
 /**
- * Sentry Error Monitoring Configuration for React
- * Captures frontend errors, performance data, and user sessions
  * Sentry Error Tracking Configuration
  * Monitors errors and performance in production
  */
@@ -9,34 +7,61 @@ import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
 
 export const initSentry = () => {
-  const dsn = import.meta.env.VITE_SENTRY_DSN;
-  const environment = import.meta.env.VITE_ENVIRONMENT || "development";
+  const dsn = process.env.REACT_APP_SENTRY_DSN;
+  const environment = process.env.NODE_ENV;
 
-  // Only initialize Sentry in non-development environments
-  if (dsn && environment !== "development") {
+  // Only initialize if DSN is provided
+  if (dsn) {
     Sentry.init({
       dsn,
-      environment,
-
-      // Browser tracing - monitors page load and navigation performance
       integrations: [
-        new BrowserTracing({
-          tracingOrigins: [
-            "localhost",
-            import.meta.env.VITE_API_URL || "http://localhost:8000",
-            /^\//,
-          ],
-        }),
+        new BrowserTracing(),
       ],
 
-      // Performance monitoring - sample 10% of transactions
+      // Performance Monitoring - Capture 10% of transactions
       tracesSampleRate: 0.1,
 
-      // Enable debug mode in staging
-      debug: environment === "staging",
+      // Environment
+      environment,
 
-      // Before sending to Sentry, clean sensitive data
-      beforeSend(event) {
+      // Release tracking
+      release: `propequitylab@${process.env.REACT_APP_VERSION || '1.0.0'}`,
+
+      // Only enable in production
+      enabled: environment === 'production',
+
+      // Ignore common non-critical errors
+      ignoreErrors: [
+        // Browser extensions
+        'top.GLOBALS',
+        'chrome-extension://',
+        'moz-extension://',
+
+        // Random plugins/extensions
+        'fb_xd_fragment',
+
+        // ResizeObserver errors (non-critical)
+        'ResizeObserver loop limit exceeded',
+        'ResizeObserver loop completed with undelivered notifications',
+
+        // Network errors
+        'Network request failed',
+        'NetworkError when attempting to fetch resource',
+
+        // Non-Error promise rejections
+        'Non-Error promise rejection captured',
+      ],
+
+      // Filter out breadcrumbs from console.log in development
+      beforeBreadcrumb(breadcrumb) {
+        if (breadcrumb.category === 'console' && environment === 'development') {
+          return null;
+        }
+        return breadcrumb;
+      },
+
+      // Add custom context to all events
+      beforeSend(event, hint) {
         // Remove cookies for privacy
         if (event.request) {
           delete event.request.cookies;
@@ -47,13 +72,27 @@ export const initSentry = () => {
           return null;
         }
 
+        // Add user information if available
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
+          try {
+            const user = JSON.parse(userStr);
+            event.user = {
+              id: user.id,
+              email: user.email,
+            };
+          } catch (e) {
+            // Ignore parse errors
+          }
+        }
+
         return event;
       },
     });
 
-    console.log(`✅ Sentry initialized for environment: ${environment}`);
+    console.log('[Sentry] Error tracking initialized');
   } else {
-    console.log(`⚠️  Sentry NOT initialized (environment: ${environment})`);
+    console.log('[Sentry] No DSN provided, error tracking disabled');
   }
 };
 
