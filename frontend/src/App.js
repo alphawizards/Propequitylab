@@ -9,6 +9,11 @@ import ProtectedRoute from './components/ProtectedRoute';
 import MainLayout from './components/layout/MainLayout';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
+import VerifyEmail from './pages/VerifyEmail';
+import PrivacyPolicy from './pages/legal/PrivacyPolicy';
+import TermsOfService from './pages/legal/TermsOfService';
 import DashboardNew from './pages/DashboardNew';
 import PropertiesPage from './pages/PropertiesPage';
 import AssetsPage from './pages/AssetsPage';
@@ -17,8 +22,11 @@ import PlansPage from './pages/PlansPage';
 import ProgressPage from './pages/ProgressPage';
 import IncomePage from './pages/IncomePage';
 import SpendingPage from './pages/SpendingPage';
+import Settings from './pages/Settings';
 import OnboardingWizard from './components/onboarding/OnboardingWizard';
 import { Toaster } from './components/ui/toaster';
+import * as Sentry from '@sentry/react';
+import ErrorFallback from './components/ErrorBoundary';
 
 // Placeholder pages - will be implemented in later phases
 const PlaceholderPage = ({ title }) => (
@@ -68,7 +76,14 @@ function AppRoutes() {
         {/* Public routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
+
+        {/* Legal routes */}
+        <Route path="/legal/privacy" element={<PrivacyPolicy />} />
+        <Route path="/legal/terms" element={<TermsOfService />} />
+
         {/* Root redirect based on auth and onboarding status */}
         <Route path="/" element={<RootRedirect />} />
         
@@ -102,7 +117,7 @@ function AppRoutes() {
           <Route path="/plans" element={<PlansPage />} />
           
           {/* Settings & Help */}
-          <Route path="/settings" element={<PlaceholderPage title="Settings" />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="/help" element={<PlaceholderPage title="Help Center" />} />
         </Route>
       </Routes>
@@ -113,16 +128,18 @@ function AppRoutes() {
 function App() {
   return (
     <ThemeProvider>
-      <AuthProvider>
-        <UserProvider>
-          <PortfolioProvider>
-            <div className="App">
-              <AppRoutes />
-              <Toaster />
-            </div>
-          </PortfolioProvider>
-        </UserProvider>
-      </AuthProvider>
+      <Sentry.ErrorBoundary fallback={ErrorFallback} showDialog>
+        <AuthProvider>
+          <UserProvider>
+            <PortfolioProvider>
+              <div className="App">
+                <AppRoutes />
+                <Toaster />
+              </div>
+            </PortfolioProvider>
+          </UserProvider>
+        </AuthProvider>
+      </Sentry.ErrorBoundary>
     </ThemeProvider>
   );
 }

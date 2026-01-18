@@ -1,23 +1,50 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { Mail, Lock } from 'lucide-react';
+import { Mail, Lock, Loader2 } from 'lucide-react';
 
-const Login = ({ onLogin }) => {
+const Login = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
+  const location = useLocation();
+  const { login } = useAuth();
+
+  // Check for success message from registration
+  const successMessage = location.state?.message;
+  const prefilledEmail = location.state?.email || '';
+
+  const [email, setEmail] = useState(prefilledEmail);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (email && password) {
-      onLogin({ email, name: email.split('@')[0] });
-      navigate('/dashboard');
-    } else {
+    setError('');
+
+    if (!email || !password) {
       setError('Please enter email and password');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const result = await login(email, password);
+
+      if (result.success) {
+        // Redirect to intended destination or dashboard
+        const from = location.state?.from?.pathname || '/dashboard';
+        navigate(from, { replace: true });
+      } else {
+        setError(result.error);
+      }
+    } catch (err) {
+      setError('An unexpected error occurred. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -95,7 +122,13 @@ const Login = ({ onLogin }) => {
           <h2 className="text-2xl font-bold text-gray-900 text-center mb-8">
             Login to your Account
           </h2>
-          
+
+          {successMessage && (
+            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <p className="text-green-700 text-sm">{successMessage}</p>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -132,20 +165,31 @@ const Login = ({ onLogin }) => {
             </div>
             
             <div className="text-right">
-              <button type="button" className="text-sm text-gray-500 hover:text-gray-700">
+              <Link
+                to="/forgot-password"
+                className="text-sm text-gray-500 hover:text-gray-700"
+              >
                 Forgot password?
-              </button>
+              </Link>
             </div>
-            
+
             {error && (
               <p className="text-red-500 text-sm text-center">{error}</p>
             )}
-            
+
             <Button
               type="submit"
-              className="w-full h-12 bg-gray-900 text-white hover:bg-gray-800 rounded-lg"
+              disabled={loading}
+              className="w-full h-12 bg-gray-900 text-white hover:bg-gray-800 rounded-lg disabled:opacity-50"
             >
-              Sign In
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Signing In...
+                </>
+              ) : (
+                'Sign In'
+              )}
             </Button>
           </form>
         </div>

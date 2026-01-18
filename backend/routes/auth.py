@@ -11,7 +11,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlmodel import Session, select
 from pydantic import BaseModel, EmailStr
 
-from models.user import User
+from models.user import User, UserUpdate
 from utils.auth import (
     hash_password,
     verify_password,
@@ -407,4 +407,92 @@ async def reset_password(
     
     return {
         "message": "Password reset successfully. You can now log in with your new password."
+    }
+
+
+# ============================================================================
+# PROFILE MANAGEMENT
+# ============================================================================
+
+class ChangePasswordRequest(BaseModel):
+    """Change password request model"""
+    current_password: str
+    new_password: str
+
+
+@router.post("/change-password")
+async def change_password(
+    data: ChangePasswordRequest,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    """
+    Change user password (requires current password verification)
+    Used in Settings page for password updates
+    """
+    # Verify current password
+    if not verify_password(data.current_password, current_user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Current password is incorrect"
+        )
+
+    # Validate new password strength
+    if len(data.new_password) < 8:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="New password must be at least 8 characters long"
+        )
+
+    # Update password
+    current_user.password_hash = hash_password(data.new_password)
+    current_user.updated_at = datetime.utcnow()
+
+    session.add(current_user)
+    session.commit()
+
+    return {
+        "message": "Password changed successfully"
+    }
+
+
+@router.put("/profile")
+async def update_profile(
+    profile_data: UserUpdate,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    """
+    Update user profile information
+    Used in Settings page for profile updates
+    """
+    # Update only provided fields
+    update_fields = profile_data.model_dump(exclude_unset=True)
+
+    for field, value in update_fields.items():
+        setattr(current_user, field, value)
+
+    current_user.updated_at = datetime.utcnow()
+
+    session.add(current_user)
+    session.commit()
+    session.refresh(current_user)
+
+    # Return updated user data (excluding sensitive fields)
+    return {
+        "id": current_user.id,
+        "email": current_user.email,
+        "name": current_user.name,
+        "date_of_birth": current_user.date_of_birth,
+        "planning_type": current_user.planning_type,
+        "country": current_user.country,
+        "state": current_user.state,
+        "currency": current_user.currency,
+        "partner_details": current_user.partner_details,
+        "onboarding_completed": current_user.onboarding_completed,
+        "onboarding_step": current_user.onboarding_step,
+        "subscription_tier": current_user.subscription_tier,
+        "is_verified": current_user.is_verified,
+        "created_at": current_user.created_at,
+        "updated_at": current_user.updated_at
     }
