@@ -1,6 +1,4 @@
 /**
- * Sentry Error Monitoring Configuration for React
- * Captures frontend errors, performance data, and user sessions
  * Sentry Error Tracking Configuration
  * Monitors errors and performance in production
  */
@@ -9,62 +7,28 @@ import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
 
 export const initSentry = () => {
-  const dsn = import.meta.env.VITE_SENTRY_DSN;
-  const environment = import.meta.env.VITE_ENVIRONMENT || "development";
+  const dsn = process.env.REACT_APP_SENTRY_DSN;
+  const environment = process.env.NODE_ENV;
 
-  // Only initialize Sentry in non-development environments
-  if (dsn && environment !== "development") {
+  // Only initialize if DSN is provided
+  if (dsn) {
     Sentry.init({
       dsn,
-      environment,
-
-      // Browser tracing - monitors page load and navigation performance
-      integrations: [
-        new BrowserTracing({
-          tracingOrigins: [
-            "localhost",
-            import.meta.env.VITE_API_URL || "http://localhost:8000",
-            /^\//,
-          ],
-        }),
-      ],
-
-      // Performance monitoring - sample 10% of transactions
-      tracesSampleRate: 0.1,
-
-      // Enable debug mode in staging
-      debug: environment === "staging",
-
-      // Before sending to Sentry, clean sensitive data
-      beforeSend(event) {
-        // Remove cookies for privacy
-        if (event.request) {
-          delete event.request.cookies;
-        }
-
-        // Don't send 401 authentication errors to Sentry
-        if (event.exception?.values?.[0]?.value?.includes("401")) {
-          return null;
-        }
-  // Only initialize if DSN is provided
-  if (process.env.REACT_APP_SENTRY_DSN) {
-    Sentry.init({
-      dsn: process.env.REACT_APP_SENTRY_DSN,
       integrations: [
         new BrowserTracing(),
       ],
 
-      // Performance Monitoring
-      tracesSampleRate: 0.1, // Capture 10% of transactions for performance monitoring
+      // Performance Monitoring - Capture 10% of transactions
+      tracesSampleRate: 0.1,
 
       // Environment
-      environment: process.env.NODE_ENV,
+      environment,
 
-      // Release tracking (helps identify which version has bugs)
+      // Release tracking
       release: `propequitylab@${process.env.REACT_APP_VERSION || '1.0.0'}`,
 
       // Only enable in production
-      enabled: process.env.NODE_ENV === 'production',
+      enabled: environment === 'production',
 
       // Ignore common non-critical errors
       ignoreErrors: [
@@ -90,7 +54,7 @@ export const initSentry = () => {
 
       // Filter out breadcrumbs from console.log in development
       beforeBreadcrumb(breadcrumb) {
-        if (breadcrumb.category === 'console' && process.env.NODE_ENV === 'development') {
+        if (breadcrumb.category === 'console' && environment === 'development') {
           return null;
         }
         return breadcrumb;
@@ -98,6 +62,16 @@ export const initSentry = () => {
 
       // Add custom context to all events
       beforeSend(event, hint) {
+        // Remove cookies for privacy
+        if (event.request) {
+          delete event.request.cookies;
+        }
+
+        // Don't send 401 authentication errors to Sentry
+        if (event.exception?.values?.[0]?.value?.includes("401")) {
+          return null;
+        }
+
         // Add user information if available
         const userStr = localStorage.getItem('user');
         if (userStr) {
@@ -106,7 +80,6 @@ export const initSentry = () => {
             event.user = {
               id: user.id,
               email: user.email,
-              // Don't send sensitive data
             };
           } catch (e) {
             // Ignore parse errors
@@ -117,11 +90,6 @@ export const initSentry = () => {
       },
     });
 
-    console.log(`✅ Sentry initialized for environment: ${environment}`);
-  } else {
-    console.log(`⚠️  Sentry NOT initialized (environment: ${environment})`);
-  }
-};
     console.log('[Sentry] Error tracking initialized');
   } else {
     console.log('[Sentry] No DSN provided, error tracking disabled');
