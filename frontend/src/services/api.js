@@ -197,13 +197,6 @@ export const getProfile = async () => {
   return response.data;
 };
 
-/**
- * Request password reset
- * @param {string} email - User email
- * @returns {Promise<{message: string}>}
- */
-export const requestPasswordReset = async (email) => {
-  const response = await apiClient.post('/auth/request-password-reset', { email });
 // ============================================================================
 // Portfolio API Functions
 // ============================================================================
@@ -218,16 +211,6 @@ export const getPortfolios = async () => {
 };
 
 /**
- * Reset password with token
- * @param {string} token - Reset token from email
- * @param {string} newPassword - New password
- * @returns {Promise<{message: string}>}
- */
-export const resetPassword = async (token, newPassword) => {
-  const response = await apiClient.post('/auth/reset-password', {
-    token,
-    new_password: newPassword,
-  });
  * Get a specific portfolio by ID
  * @param {string} id - Portfolio ID
  * @returns {Promise<object>} Portfolio data
@@ -238,12 +221,6 @@ export const getPortfolio = async (id) => {
 };
 
 /**
- * Verify email with token
- * @param {string} token - Verification token from email
- * @returns {Promise<{message: string}>}
- */
-export const verifyEmail = async (token) => {
-  const response = await apiClient.get(`/auth/verify-email?token=${token}`);
  * Create a new portfolio
  * @param {object} data - Portfolio data { name, type }
  * @returns {Promise<object>} Created portfolio
@@ -254,12 +231,6 @@ export const createPortfolio = async (data) => {
 };
 
 /**
- * Resend verification email
- * @param {string} email - User email
- * @returns {Promise<{message: string}>}
- */
-export const resendVerification = async (email) => {
-  const response = await apiClient.post('/auth/resend-verification', { email });
  * Get portfolio summary/dashboard data
  * @param {string} id - Portfolio ID
  * @returns {Promise<object>} Portfolio summary
@@ -270,17 +241,6 @@ export const getPortfolioSummary = async (id) => {
 };
 
 // ============================================================================
-// GDPR API Functions
-// ============================================================================
-
-/**
- * Export all user data (GDPR Right to Data Portability)
- * @returns {Promise<Blob>} JSON file with all user data
- */
-export const exportUserData = async () => {
-  const response = await apiClient.get('/gdpr/export-data', {
-    responseType: 'blob',
-  });
 // Property API Functions
 // ============================================================================
 
@@ -326,11 +286,6 @@ export const updateProperty = async (id, data) => {
 };
 
 /**
- * Get summary of stored data (GDPR Right of Access)
- * @returns {Promise<object>} Summary of data categories and counts
- */
-export const getDataSummary = async () => {
-  const response = await apiClient.get('/gdpr/data-summary');
  * Delete a property
  * @param {string} id - Property ID
  * @returns {Promise<object>} Deletion confirmation
@@ -354,14 +309,6 @@ export const getOnboardingStatus = async () => {
 };
 
 /**
- * Delete user account (GDPR Right to Erasure)
- * @param {string} password - User password for verification
- * @returns {Promise<{message: string, deletion_date: string}>}
- */
-export const deleteAccount = async (password) => {
-  const response = await apiClient.delete('/gdpr/delete-account', {
-    data: { password },
-  });
  * Complete onboarding
  * @returns {Promise<object>} Updated status
  */
@@ -371,16 +318,6 @@ export const completeOnboarding = async () => {
 };
 
 /**
- * Update user password
- * @param {string} currentPassword - Current password
- * @param {string} newPassword - New password
- * @returns {Promise<{message: string}>}
- */
-export const updatePassword = async (currentPassword, newPassword) => {
-  const response = await apiClient.post('/auth/change-password', {
-    current_password: currentPassword,
-    new_password: newPassword,
-  });
  * Skip onboarding
  * @returns {Promise<object>} Updated status
  */
@@ -390,17 +327,6 @@ export const skipOnboarding = async () => {
 };
 
 /**
- * Update user profile
- * @param {object} profileData - Profile data to update
- * @returns {Promise<object>} Updated user data
- */
-export const updateProfile = async (profileData) => {
-  const response = await apiClient.put('/auth/profile', profileData);
-  return response.data;
-};
-
-// Default export
-export default apiClient;
  * Reset onboarding
  * @returns {Promise<object>} Updated status
  */
