@@ -197,6 +197,50 @@ export const getProfile = async () => {
   return response.data;
 };
 
+/**
+ * Request password reset
+ * @param {string} email - User email
+ * @returns {Promise<{message: string}>}
+ */
+export const requestPasswordReset = async (email) => {
+  const response = await apiClient.post('/auth/request-password-reset', { email });
+  return response.data;
+};
+
+/**
+ * Reset password with token
+ * @param {string} token - Reset token from email
+ * @param {string} newPassword - New password
+ * @returns {Promise<{message: string}>}
+ */
+export const resetPassword = async (token, newPassword) => {
+  const response = await apiClient.post('/auth/reset-password', {
+    token,
+    new_password: newPassword,
+  });
+  return response.data;
+};
+
+/**
+ * Verify email with token
+ * @param {string} token - Verification token from email
+ * @returns {Promise<{message: string}>}
+ */
+export const verifyEmail = async (token) => {
+  const response = await apiClient.get(`/auth/verify-email?token=${token}`);
+  return response.data;
+};
+
+/**
+ * Resend verification email
+ * @param {string} email - User email
+ * @returns {Promise<{message: string}>}
+ */
+export const resendVerification = async (email) => {
+  const response = await apiClient.post('/auth/resend-verification', { email });
+  return response.data;
+};
+
 // ============================================================================
 // Portfolio API Functions
 // ============================================================================
