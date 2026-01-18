@@ -24,7 +24,7 @@ from utils.database_sql import get_session
 from utils.auth import get_current_user
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/plans", tags=["plans"])
+router = APIRouter(prefix="/plans", tags=["plans"])
 
 
 class ProjectionInput(BaseModel):

@@ -4,6 +4,7 @@ Refactored from Pydantic/MongoDB to SQLModel/PostgreSQL
 ⚠️ CRITICAL: All currency fields use DECIMAL(19, 4) for financial precision
 """
 
+import uuid
 from sqlmodel import SQLModel, Field, Column
 from sqlalchemy import DECIMAL, JSON
 from typing import Optional, List
@@ -19,7 +20,7 @@ class Portfolio(SQLModel, table=True):
     __tablename__ = "portfolios"
     
     # Primary Key
-    id: str = Field(primary_key=True, max_length=50)
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True, max_length=50)
     
     # Foreign Key
     user_id: str = Field(foreign_key="users.id", index=True, max_length=50)
@@ -27,6 +28,17 @@ class Portfolio(SQLModel, table=True):
     # Basic Info
     name: str = Field(max_length=255)
     type: str = Field(default="actual", max_length=50)  # actual or scenario
+    
+    # Scenario-specific fields (null for actual portfolios)
+    source_portfolio_id: Optional[str] = Field(
+        default=None, 
+        foreign_key="portfolios.id", 
+        index=True, 
+        max_length=50,
+        description="Links to source portfolio for scenarios"
+    )
+    scenario_name: Optional[str] = Field(default=None, max_length=255)
+    scenario_description: Optional[str] = Field(default=None, max_length=1000)
     
     # Members (stored as JSON array)
     members: Optional[List[dict]] = Field(default=None, sa_column=Column(JSON))
@@ -125,6 +137,9 @@ class PortfolioResponse(SQLModel):
     user_id: str
     name: str
     type: str
+    source_portfolio_id: Optional[str] = None
+    scenario_name: Optional[str] = None
+    scenario_description: Optional[str] = None
     members: Optional[List[dict]] = None
     settings: Optional[dict] = None
     goal_settings: Optional[dict] = None

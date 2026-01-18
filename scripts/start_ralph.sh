@@ -1,0 +1,38 @@
+#!/bin/bash
+# Start Ralph for PropEquityLab
+
+echo "=================================="
+echo "  Starting Ralph for PropEquityLab"
+echo "=================================="
+echo ""
+echo "📋 Ralph Configuration:"
+echo "  - Tasks: 100+ in @fix_plan.md"
+echo "  - Priority: P0 (Critical) → P1 (High) → P2 (Medium) → P3 (Low)"
+echo "  - Testing: Each task has verification step"
+echo ""
+echo "🎯 What Ralph Will Do:"
+echo "  1. Fix UUID generation (CRITICAL - blocks all work)"
+echo "  2. Create Premium & Pro user sample data"
+echo "  3. Verify all CRUD endpoints work"
+echo "  4. Implement dashboard summary"
+echo "  5. Check Phase 5 visualization status"
+echo "  6. Implement subscription tier system"
+echo "  7. Add missing features (onboarding, progress, settings)"
+echo "  8. Comprehensive testing at each step"
+echo ""
+echo "📊 Monitoring:"
+echo "  - Logs: logs/ralph.log"
+echo "  - Status: status.json"
+echo "  - Task List: @fix_plan.md (updated as tasks complete)"
+echo ""
+echo "⚠️  Important:"
+echo "  - Backend server is running on port 8000"
+echo "  - Rate limit: 100 Claude API calls/hour"
+echo "  - Circuit breaker will stop if stuck"
+echo "  - Press Ctrl+C to stop Ralph gracefully"
+echo ""
+echo "=================================="
+echo ""
+
+# Start Ralph
+ralph --verbose --timeout 20

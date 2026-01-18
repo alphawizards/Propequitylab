@@ -5,6 +5,7 @@ import App from "@/App";
 import { initSentry } from "@/utils/sentry";
 
 // Initialize Sentry BEFORE rendering the app
+// Initialize Sentry error tracking before React renders
 initSentry();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

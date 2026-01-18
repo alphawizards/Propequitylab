@@ -1,4 +1,4 @@
-# Zapiio Backend - Serverless Fintech Stack
+# PropEquityLab Backend - Serverless Fintech Stack
 # Python 3.11 + FastAPI + SQLModel + PostgreSQL (Neon)
 
 FROM python:3.11-slim

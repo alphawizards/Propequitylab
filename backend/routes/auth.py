@@ -3,6 +3,7 @@ Authentication Routes - SQL-Based (PostgreSQL/Neon)
 Handles user registration, login, token refresh, password reset, and email verification
 """
 
+import os
 import uuid
 from datetime import datetime, timedelta
 from typing import Optional
@@ -32,7 +33,7 @@ from utils.rate_limiter import rate_limit_login, rate_limit_register, rate_limit
 from utils.email import send_verification_email, send_password_reset_email
 
 
-router = APIRouter(prefix="/api/auth", tags=["Authentication"])
+router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
 # ============================================================================
@@ -157,8 +158,10 @@ async def login(
             detail="Incorrect email or password"
         )
     
-    # Check if email is verified
-    if not user.is_verified:
+    # Check if email is verified (bypass for @propequitylab.com dev accounts or if email verification is disabled)
+    is_dev_account = user.email.endswith('@propequitylab.com')
+    email_verification_enabled = os.getenv('ENABLE_EMAIL_VERIFICATION', 'true').lower() == 'true'
+    if email_verification_enabled and not user.is_verified and not is_dev_account:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Email not verified. Please check your email for the verification link."

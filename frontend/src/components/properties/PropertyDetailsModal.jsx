@@ -9,6 +9,7 @@ import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Separator } from '../ui/separator';
+import { formatCurrency } from '../../utils/formatCurrency';
 import {
   Home,
   MapPin,
@@ -25,6 +26,7 @@ import {
   Pencil,
 } from 'lucide-react';
 
+
 const PropertyDetailsModal = ({ isOpen, onClose, property, onEdit }) => {
   if (!property) return null;
 
@@ -32,11 +34,11 @@ const PropertyDetailsModal = ({ isOpen, onClose, property, onEdit }) => {
   const ltv = property.current_value > 0
     ? ((property.loan_details?.amount || 0) / property.current_value * 100).toFixed(1)
     : 0;
-  
-  const annualRental = (property.rental_details?.income || 0) * 
-    (property.rental_details?.frequency === 'weekly' ? 52 : 
-     property.rental_details?.frequency === 'fortnightly' ? 26 : 12);
-  
+
+  const annualRental = (property.rental_details?.income || 0) *
+    (property.rental_details?.frequency === 'weekly' ? 52 :
+      property.rental_details?.frequency === 'fortnightly' ? 26 : 12);
+
   const grossYield = property.current_value > 0
     ? (annualRental / property.current_value * 100).toFixed(2)
     : 0;
@@ -46,16 +48,6 @@ const PropertyDetailsModal = ({ isOpen, onClose, property, onEdit }) => {
   const netYield = property.current_value > 0
     ? (netRental / property.current_value * 100).toFixed(2)
     : 0;
-
-  const formatCurrency = (value) => {
-    if (!value && value !== 0) return '-';
-    return new Intl.NumberFormat('en-AU', {
-      style: 'currency',
-      currency: 'AUD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
 
   const getPropertyTypeIcon = (type) => {
     switch (type) {
@@ -94,7 +86,7 @@ const PropertyDetailsModal = ({ isOpen, onClose, property, onEdit }) => {
             </Button>
           </div>
         </DialogHeader>
-        
+
         {/* Key Metrics */}
         <div className="grid grid-cols-4 gap-4 my-6">
           <Card className="bg-blue-50 border-blue-100">
@@ -122,7 +114,7 @@ const PropertyDetailsModal = ({ isOpen, onClose, property, onEdit }) => {
             </CardContent>
           </Card>
         </div>
-        
+
         <div className="grid grid-cols-2 gap-6">
           {/* Property Details */}
           <Card>
@@ -169,7 +161,7 @@ const PropertyDetailsModal = ({ isOpen, onClose, property, onEdit }) => {
               )}
             </CardContent>
           </Card>
-          
+
           {/* Purchase Details */}
           <Card>
             <CardHeader className="pb-2">
@@ -207,7 +199,7 @@ const PropertyDetailsModal = ({ isOpen, onClose, property, onEdit }) => {
               </div>
             </CardContent>
           </Card>
-          
+
           {/* Loan Details */}
           <Card>
             <CardHeader className="pb-2">
@@ -250,7 +242,7 @@ const PropertyDetailsModal = ({ isOpen, onClose, property, onEdit }) => {
               )}
             </CardContent>
           </Card>
-          
+
           {/* Rental Income */}
           <Card>
             <CardHeader className="pb-2">
@@ -290,7 +282,7 @@ const PropertyDetailsModal = ({ isOpen, onClose, property, onEdit }) => {
             </CardContent>
           </Card>
         </div>
-        
+
         {/* Annual Expenses */}
         {property.rental_details?.is_rented && totalExpenses > 0 && (
           <Card className="mt-6">
@@ -321,7 +313,7 @@ const PropertyDetailsModal = ({ isOpen, onClose, property, onEdit }) => {
             </CardContent>
           </Card>
         )}
-        
+
         {/* Growth Assumptions */}
         <Card className="mt-6">
           <CardHeader className="pb-2">
@@ -347,7 +339,7 @@ const PropertyDetailsModal = ({ isOpen, onClose, property, onEdit }) => {
             </div>
           </CardContent>
         </Card>
-        
+
         {/* Close Button */}
         <div className="flex justify-end mt-6 pt-4 border-t">
           <Button variant="outline" onClick={onClose}>

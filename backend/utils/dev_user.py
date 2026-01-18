@@ -12,7 +12,7 @@ DEV_USER_ID = "dev-user-01"
 # Default dev user data
 DEV_USER_DATA = {
     "id": DEV_USER_ID,
-    "email": "dev@zapiio.local",
+    "email": "dev@propequitylab.local",
     "name": "Dev User",
     "date_of_birth": "1990-01-15",
     "planning_type": "individual",
