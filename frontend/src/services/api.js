@@ -204,16 +204,6 @@ export const getProfile = async () => {
  */
 export const requestPasswordReset = async (email) => {
   const response = await apiClient.post('/auth/request-password-reset', { email });
-// ============================================================================
-// Portfolio API Functions
-// ============================================================================
-
-/**
- * Get all portfolios for current user
- * @returns {Promise<Array>} List of portfolios
- */
-export const getPortfolios = async () => {
-  const response = await apiClient.get('/portfolios');
   return response.data;
 };
 
@@ -228,12 +218,6 @@ export const resetPassword = async (token, newPassword) => {
     token,
     new_password: newPassword,
   });
- * Get a specific portfolio by ID
- * @param {string} id - Portfolio ID
- * @returns {Promise<object>} Portfolio data
- */
-export const getPortfolio = async (id) => {
-  const response = await apiClient.get(`/portfolios/${id}`);
   return response.data;
 };
 
@@ -244,12 +228,6 @@ export const getPortfolio = async (id) => {
  */
 export const verifyEmail = async (token) => {
   const response = await apiClient.get(`/auth/verify-email?token=${token}`);
- * Create a new portfolio
- * @param {object} data - Portfolio data { name, type }
- * @returns {Promise<object>} Created portfolio
- */
-export const createPortfolio = async (data) => {
-  const response = await apiClient.post('/portfolios', data);
   return response.data;
 };
 
@@ -260,12 +238,30 @@ export const createPortfolio = async (data) => {
  */
 export const resendVerification = async (email) => {
   const response = await apiClient.post('/auth/resend-verification', { email });
- * Get portfolio summary/dashboard data
- * @param {string} id - Portfolio ID
- * @returns {Promise<object>} Portfolio summary
+  return response.data;
+};
+
+/**
+ * Update user password
+ * @param {string} currentPassword - Current password
+ * @param {string} newPassword - New password
+ * @returns {Promise<{message: string}>}
  */
-export const getPortfolioSummary = async (id) => {
-  const response = await apiClient.get(`/portfolios/${id}/summary`);
+export const updatePassword = async (currentPassword, newPassword) => {
+  const response = await apiClient.post('/auth/change-password', {
+    current_password: currentPassword,
+    new_password: newPassword,
+  });
+  return response.data;
+};
+
+/**
+ * Update user profile
+ * @param {object} profileData - Profile data to update
+ * @returns {Promise<object>} Updated user data
+ */
+export const updateProfile = async (profileData) => {
+  const response = await apiClient.put('/auth/profile', profileData);
   return response.data;
 };
 
@@ -281,6 +277,74 @@ export const exportUserData = async () => {
   const response = await apiClient.get('/gdpr/export-data', {
     responseType: 'blob',
   });
+  return response.data;
+};
+
+/**
+ * Get summary of stored data (GDPR Right of Access)
+ * @returns {Promise<object>} Summary of data categories and counts
+ */
+export const getDataSummary = async () => {
+  const response = await apiClient.get('/gdpr/data-summary');
+  return response.data;
+};
+
+/**
+ * Delete user account (GDPR Right to Erasure)
+ * @param {string} password - User password for verification
+ * @returns {Promise<{message: string, deletion_date: string}>}
+ */
+export const deleteAccount = async (password) => {
+  const response = await apiClient.delete('/gdpr/delete-account', {
+    data: { password },
+  });
+  return response.data;
+};
+
+// ============================================================================
+// Portfolio API Functions
+// ============================================================================
+
+/**
+ * Get all portfolios for current user
+ * @returns {Promise<Array>} List of portfolios
+ */
+export const getPortfolios = async () => {
+  const response = await apiClient.get('/portfolios');
+  return response.data;
+};
+
+/**
+ * Get a specific portfolio by ID
+ * @param {string} id - Portfolio ID
+ * @returns {Promise<object>} Portfolio data
+ */
+export const getPortfolio = async (id) => {
+  const response = await apiClient.get(`/portfolios/${id}`);
+  return response.data;
+};
+
+/**
+ * Create a new portfolio
+ * @param {object} data - Portfolio data { name, type }
+ * @returns {Promise<object>} Created portfolio
+ */
+export const createPortfolio = async (data) => {
+  const response = await apiClient.post('/portfolios', data);
+  return response.data;
+};
+
+/**
+ * Get portfolio summary/dashboard data
+ * @param {string} id - Portfolio ID
+ * @returns {Promise<object>} Portfolio summary
+ */
+export const getPortfolioSummary = async (id) => {
+  const response = await apiClient.get(`/portfolios/${id}/summary`);
+  return response.data;
+};
+
+// ============================================================================
 // Property API Functions
 // ============================================================================
 
@@ -326,11 +390,6 @@ export const updateProperty = async (id, data) => {
 };
 
 /**
- * Get summary of stored data (GDPR Right of Access)
- * @returns {Promise<object>} Summary of data categories and counts
- */
-export const getDataSummary = async () => {
-  const response = await apiClient.get('/gdpr/data-summary');
  * Delete a property
  * @param {string} id - Property ID
  * @returns {Promise<object>} Deletion confirmation
@@ -354,14 +413,6 @@ export const getOnboardingStatus = async () => {
 };
 
 /**
- * Delete user account (GDPR Right to Erasure)
- * @param {string} password - User password for verification
- * @returns {Promise<{message: string, deletion_date: string}>}
- */
-export const deleteAccount = async (password) => {
-  const response = await apiClient.delete('/gdpr/delete-account', {
-    data: { password },
-  });
  * Complete onboarding
  * @returns {Promise<object>} Updated status
  */
@@ -371,16 +422,6 @@ export const completeOnboarding = async () => {
 };
 
 /**
- * Update user password
- * @param {string} currentPassword - Current password
- * @param {string} newPassword - New password
- * @returns {Promise<{message: string}>}
- */
-export const updatePassword = async (currentPassword, newPassword) => {
-  const response = await apiClient.post('/auth/change-password', {
-    current_password: currentPassword,
-    new_password: newPassword,
-  });
  * Skip onboarding
  * @returns {Promise<object>} Updated status
  */
@@ -390,17 +431,6 @@ export const skipOnboarding = async () => {
 };
 
 /**
- * Update user profile
- * @param {object} profileData - Profile data to update
- * @returns {Promise<object>} Updated user data
- */
-export const updateProfile = async (profileData) => {
-  const response = await apiClient.put('/auth/profile', profileData);
-  return response.data;
-};
-
-// Default export
-export default apiClient;
  * Reset onboarding
  * @returns {Promise<object>} Updated status
  */

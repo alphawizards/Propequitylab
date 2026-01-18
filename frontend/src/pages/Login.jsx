@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -17,8 +16,6 @@ const Login = () => {
   const prefilledEmail = location.state?.email || '';
 
   const [email, setEmail] = useState(prefilledEmail);
-  const { login } = useAuth();
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -48,15 +45,6 @@ const Login = () => {
       setError('An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
-    const result = await login(email, password);
-    setLoading(false);
-
-    if (result.success) {
-      // AuthContext handles user state
-      // Navigate to intended destination or dashboard
-      navigate('/dashboard');
-    } else {
-      setError(result.error);
     }
   };
 
@@ -202,9 +190,6 @@ const Login = () => {
               ) : (
                 'Sign In'
               )}
-              className="w-full h-12 bg-gray-900 text-white hover:bg-gray-800 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? 'Signing In...' : 'Sign In'}
             </Button>
           </form>
         </div>
