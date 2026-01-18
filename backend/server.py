@@ -14,6 +14,7 @@ from contextlib import asynccontextmanager
 
 # Import New Utilities
 from utils.database_sql import create_db_and_tables
+from utils.sentry_config import init_sentry
 
 # Import Routes (SQLModel versions)
 from routes.auth import router as auth_router
@@ -26,6 +27,7 @@ from routes.liabilities import router as liabilities_router
 from routes.plans import router as plans_router
 from routes.onboarding import router as onboarding_router
 from routes.dashboard import router as dashboard_router
+from routes.gdpr import router as gdpr_router
 
 # Phase 1-3: Property Portfolio Forecasting Routes
 from routes.projections import router as projections_router
@@ -67,14 +69,19 @@ logger.info(f"CORS allowed origins: {ALLOWED_ORIGINS}")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan manager"""
+    logger.info("Starting up Zapiio API (Serverless Fintech Stack)...")
+
+    # Initialize Sentry error monitoring (must be first)
+    init_sentry()
+
     logger.info("Starting up PropEquityLab API (Serverless Fintech Stack)...")
     
     # Initialize PostgreSQL Tables
     create_db_and_tables()
     logger.info("✅ Database tables verified/created")
-    
+
     yield
-    
+
     logger.info("Shutting down...")
 
 app = FastAPI(
@@ -106,6 +113,7 @@ api_router.include_router(expenses_router)
 api_router.include_router(assets_router)
 api_router.include_router(liabilities_router)
 api_router.include_router(plans_router)
+api_router.include_router(gdpr_router)
 
 # Phase 1-3: Property Portfolio Forecasting Routes
 api_router.include_router(projections_router)

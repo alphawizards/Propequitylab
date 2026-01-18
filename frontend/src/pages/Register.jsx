@@ -93,7 +93,7 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -106,14 +106,24 @@ const Register = () => {
 
     const result = await register(registrationData);
 
+    setLoading(false);
+
     if (result.success) {
-      // Registration successful, redirect to dashboard
-      navigate('/dashboard');
+      if (result.emailVerificationRequired) {
+        // Show success message and redirect to login with info
+        navigate('/login', {
+          state: {
+            message: 'Registration successful! Please check your email to verify your account before logging in.',
+            email: formData.email
+          }
+        });
+      } else {
+        // Email already verified, redirect to dashboard
+        navigate('/dashboard');
+      }
     } else {
       setErrors({ general: result.error });
     }
-    
-    setLoading(false);
   };
 
   return (
