@@ -27,8 +27,6 @@ import SpendingPage from './pages/SpendingPage';
 import Settings from './pages/Settings';
 import OnboardingWizard from './components/onboarding/OnboardingWizard';
 import { MortgageCalculatorPage } from './pages/calculators/MortgageCalculatorPage';
-import PrivacyPolicy from './pages/PrivacyPolicy';
-import TermsOfService from './pages/TermsOfService';
 import ProjectionsPage from './pages/ProjectionsPage';
 import ScenarioDashboardPage from './pages/ScenarioDashboardPage';
 import { Toaster } from './components/ui/toaster';
