@@ -12,7 +12,25 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Switch } from '../ui/switch';
-import { Home, DollarSign, Key, TrendingUp, Receipt } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { Home, DollarSign, Key, TrendingUp, Receipt, HelpCircle } from 'lucide-react';
+
+// Helper component for labels with contextual tooltips
+const LabelWithTooltip = ({ children, tooltip, className = '' }) => (
+  <div className={`flex items-center gap-1.5 ${className}`}>
+    <Label>{children}</Label>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <HelpCircle className="w-3.5 h-3.5 text-gray-400 hover:text-gray-600 cursor-help" />
+        </TooltipTrigger>
+        <TooltipContent className="max-w-xs bg-gray-900 text-white">
+          <p className="text-sm">{tooltip}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  </div>
+);
 
 const AUSTRALIAN_STATES = [
   { value: 'NSW', label: 'New South Wales' },
@@ -432,7 +450,9 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
                 />
               </div>
               <div>
-                <Label>Interest Rate (%)</Label>
+                <LabelWithTooltip tooltip="The annual interest rate on your loan. Check your loan statement or lender portal for the current rate.">
+                  Interest Rate (%)
+                </LabelWithTooltip>
                 <Input
                   type="number"
                   step="0.01"
@@ -443,7 +463,9 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
                 />
               </div>
               <div>
-                <Label>Loan Type</Label>
+                <LabelWithTooltip tooltip="Interest Only (IO) means you only pay interest - good for cash flow but loan doesn't reduce. Principal & Interest (P&I) pays down the loan over time.">
+                  Loan Type
+                </LabelWithTooltip>
                 <Select value={formData.loan_type} onValueChange={(v) => handleChange('loan_type', v)}>
                   <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                   <SelectContent>
@@ -472,7 +494,9 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
                 />
               </div>
               <div>
-                <Label>Offset Account Balance ($)</Label>
+                <LabelWithTooltip tooltip="Money in your offset account reduces the loan balance for interest calculations, saving you interest without reducing flexibility.">
+                  Offset Account Balance ($)
+                </LabelWithTooltip>
                 <Input
                   type="number"
                   value={formData.offset_balance}
@@ -482,7 +506,7 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
                 />
               </div>
             </div>
-            
+
             {/* LVR Indicator */}
             {formData.purchase_price && formData.loan_amount && (
               <Card className={`${
@@ -491,11 +515,23 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
                   : 'bg-green-50 border-green-200'
               }`}>
                 <CardContent className="p-4">
-                  <p className="text-sm font-medium">
-                    Loan to Value Ratio (LVR): {
-                      ((parseFloat(formData.loan_amount) / parseFloat(formData.current_value || formData.purchase_price)) * 100).toFixed(1)
-                    }%
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-medium">
+                      Loan to Value Ratio (LVR): {
+                        ((parseFloat(formData.loan_amount) / parseFloat(formData.current_value || formData.purchase_price)) * 100).toFixed(1)
+                      }%
+                    </p>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <HelpCircle className="w-3.5 h-3.5 text-gray-500 cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-xs bg-gray-900 text-white">
+                          <p className="text-sm">LVR = Loan Amount / Property Value. Below 80% is considered safe. Above 80% may require Lenders Mortgage Insurance (LMI).</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
                 </CardContent>
               </Card>
             )}
@@ -539,7 +575,9 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
                     </Select>
                   </div>
                   <div>
-                    <Label>Vacancy Rate (%)</Label>
+                    <LabelWithTooltip tooltip="Expected percentage of time the property will be vacant per year. Typical vacancy rates are 2-4% for well-located properties. Higher for regional areas.">
+                      Vacancy Rate (%)
+                    </LabelWithTooltip>
                     <Input
                       type="number"
                       step="0.5"
@@ -618,7 +656,9 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
                         />
                       </div>
                       <div className="col-span-2">
-                        <Label className="text-sm">Land Tax</Label>
+                        <LabelWithTooltip className="text-sm" tooltip="Annual state land tax. Varies by state and land value. NSW threshold is ~$969,000 (2024). Investment properties typically attract land tax above threshold.">
+                          Land Tax
+                        </LabelWithTooltip>
                         <Input
                           type="number"
                           value={formData.land_tax}
@@ -643,7 +683,9 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label>Capital Growth Rate (% p.a.)</Label>
+                    <LabelWithTooltip tooltip="Expected annual increase in property value. Australian property has historically averaged 5-7% long-term. Be conservative with projections.">
+                      Capital Growth Rate (% p.a.)
+                    </LabelWithTooltip>
                     <Input
                       type="number"
                       step="0.1"
@@ -657,7 +699,9 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
                     </p>
                   </div>
                   <div>
-                    <Label>Rental Growth Rate (% p.a.)</Label>
+                    <LabelWithTooltip tooltip="Expected annual increase in rental income. Typically trails capital growth at 2-4% annually. Depends on local market conditions.">
+                      Rental Growth Rate (% p.a.)
+                    </LabelWithTooltip>
                     <Input
                       type="number"
                       step="0.1"

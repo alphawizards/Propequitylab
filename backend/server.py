@@ -13,7 +13,7 @@ from pathlib import Path
 from contextlib import asynccontextmanager
 
 # Import New Utilities
-from utils.database_sql import create_db_and_tables
+from utils.database_sql import create_db_and_tables, test_connection
 from utils.sentry_config import init_sentry
 
 # Import Routes (SQLModel versions)
@@ -100,7 +100,20 @@ api_router = APIRouter(prefix="/api")
 @api_router.get("/health")
 @api_router.head("/health")
 async def health_check():
-    return {"status": "healthy", "stack": "PostgreSQL + App Runner"}
+    """
+    Health check endpoint with database connectivity status.
+    Returns overall health status and individual component statuses.
+    """
+    db_healthy = test_connection()
+
+    return {
+        "status": "healthy" if db_healthy else "degraded",
+        "stack": "PostgreSQL + App Runner",
+        "components": {
+            "database": "connected" if db_healthy else "disconnected",
+            "api": "running"
+        }
+    }
 
 # Include all routers
 api_router.include_router(auth_router)
