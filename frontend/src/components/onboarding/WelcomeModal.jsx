@@ -21,7 +21,7 @@ import {
 import { Button } from '../ui/button';
 import { Rocket, FileSpreadsheet, Loader2, Sparkles } from 'lucide-react';
 import api from '../../services/api';
-import { useToast } from '../ui/use-toast';
+import { useToast } from '../../hooks/use-toast';
 
 const WelcomeModal = ({ isOpen, onClose, onComplete }) => {
   const navigate = useNavigate();
