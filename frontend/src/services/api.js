@@ -439,6 +439,15 @@ export const resetOnboarding = async () => {
   return response.data;
 };
 
+/**
+ * Seed sample data for quick start
+ * @returns {Promise<object>} Seeding result with summary
+ */
+export const seedSampleData = async () => {
+  const response = await apiClient.post('/onboarding/seed-sample-data');
+  return response.data;
+};
+
 // ============================================================================
 // Dashboard API Functions
 // ============================================================================
@@ -648,6 +657,7 @@ const api = {
   completeOnboarding,
   skipOnboarding,
   resetOnboarding,
+  seedSampleData,
   // Dashboard
   getDashboardSummary,
   getNet_worth_history: getNetWorthHistory,

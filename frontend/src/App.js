@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import './App.css';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
@@ -33,6 +33,9 @@ import { Toaster } from './components/ui/toaster';
 import * as Sentry from '@sentry/react';
 import ErrorFallback from './components/ErrorBoundary';
 
+// Lazy load WelcomeModal to reduce initial bundle size
+const WelcomeModal = lazy(() => import('./components/onboarding/WelcomeModal'));
+
 // Placeholder pages - will be implemented in later phases
 const PlaceholderPage = ({ title }) => (
   <div className="flex items-center justify-center min-h-[60vh]">
@@ -42,6 +45,29 @@ const PlaceholderPage = ({ title }) => (
     </div>
   </div>
 );
+
+// Welcome Modal wrapper - shows for new users who haven't seen it yet
+const WelcomeModalWrapper = () => {
+  const { isAuthenticated } = useAuth();
+  const { hasSeenWelcome, markWelcomeSeen, onboardingStatus } = useUser();
+
+  // Show welcome modal for authenticated users who:
+  // 1. Haven't seen the welcome modal yet
+  // 2. Haven't completed onboarding
+  const shouldShowWelcome = isAuthenticated && !hasSeenWelcome && !onboardingStatus.completed;
+
+  if (!shouldShowWelcome) return null;
+
+  return (
+    <Suspense fallback={null}>
+      <WelcomeModal
+        isOpen={shouldShowWelcome}
+        onClose={markWelcomeSeen}
+        onComplete={markWelcomeSeen}
+      />
+    </Suspense>
+  );
+};
 
 // Root redirect component that checks authentication and onboarding status
 const RootRedirect = () => {
@@ -161,6 +187,7 @@ function App() {
               <PortfolioProvider>
                 <div className="App">
                   <AppRoutes />
+                  <WelcomeModalWrapper />
                   <Toaster />
                 </div>
               </PortfolioProvider>
