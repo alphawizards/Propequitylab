@@ -79,6 +79,7 @@ async def create_property(
         )
     
     # Create property with user_id from authenticated user
+    # Convert nested Pydantic models to dicts for JSON columns using model_dump()
     property_obj = Property(
         id=str(uuid.uuid4()),
         user_id=current_user.id,  # CRITICAL: Set from authenticated user
@@ -99,10 +100,10 @@ async def create_property(
         stamp_duty=data.stamp_duty,
         purchase_costs=data.purchase_costs,
         current_value=data.current_value or data.purchase_price,
-        loan_details=data.loan_details if data.loan_details else {},
-        rental_details=data.rental_details if data.rental_details else {},
-        expenses=data.expenses if data.expenses else {},
-        growth_assumptions=data.growth_assumptions if data.growth_assumptions else {},
+        loan_details=data.loan_details.model_dump(mode='json') if data.loan_details else {},
+        rental_details=data.rental_details.model_dump(mode='json') if data.rental_details else {},
+        expenses=data.expenses.model_dump(mode='json') if data.expenses else {},
+        growth_assumptions=data.growth_assumptions.model_dump(mode='json') if data.growth_assumptions else {},
         created_at=datetime.utcnow(),
         updated_at=datetime.utcnow()
     )
@@ -168,7 +169,7 @@ async def update_property(
         )
     
     # Update fields (only those provided)
-    update_data = data.model_dump(exclude_unset=True)
+    update_data = data.model_dump(exclude_unset=True, mode='json')
     for key, value in update_data.items():
         setattr(property_obj, key, value)
     

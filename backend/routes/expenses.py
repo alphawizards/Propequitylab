@@ -11,7 +11,7 @@ from decimal import Decimal
 import logging
 import uuid
 
-from models.expense import Expense, ExpenseCreate, ExpenseUpdate, EXPENSE_CATEGORIES
+from models.expense import Expense, ExpenseCreate, ExpenseUpdate, EXPENSE_CATEGORIES, ExpenseCategorySummary
 from models.portfolio import Portfolio
 from models.user import User
 from utils.database_sql import get_session
@@ -59,6 +59,74 @@ async def get_portfolio_expenses(
     expenses = session.exec(statement).all()
     
     return expenses
+
+
+@router.get("/portfolio/{portfolio_id}/summary", response_model=List[ExpenseCategorySummary])
+async def get_portfolio_expense_summary(
+    portfolio_id: str,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    """
+    Get expense summary by category for a portfolio
+    
+    ⚠️ Data Isolation: Only includes expenses owned by current_user
+    """
+    # Verify portfolio exists and user has access
+    portfolio_stmt = select(Portfolio).where(
+        Portfolio.id == portfolio_id,
+        Portfolio.user_id == current_user.id
+    )
+    portfolio = session.exec(portfolio_stmt).first()
+    
+    if not portfolio:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Portfolio not found or you don't have access"
+        )
+    
+    # Get all expenses
+    statement = select(Expense).where(
+        Expense.portfolio_id == portfolio_id,
+        Expense.user_id == current_user.id
+    )
+    expenses = session.exec(statement).all()
+    
+    # Calculate summary
+    category_totals = {}
+    total_monthly_expenses = Decimal("0.00")
+    
+    # Helper to convert to monthly
+    def to_monthly(amount: Decimal, frequency: str) -> Decimal:
+        multipliers = {
+            "weekly": Decimal("4.3333"),
+            "fortnightly": Decimal("2.1667"),
+            "monthly": Decimal("1.0"),
+            "annual": Decimal("0.0833")
+        }
+        return amount * multipliers.get(frequency.lower(), Decimal("1.0"))
+    
+    for expense in expenses:
+        monthly_amount = to_monthly(expense.amount, expense.frequency)
+        category = expense.category
+        
+        if category not in category_totals:
+            category_totals[category] = Decimal("0.00")
+        
+        category_totals[category] += monthly_amount
+        total_monthly_expenses += monthly_amount
+    
+    # Convert to response format
+    summary = []
+    for category, total in category_totals.items():
+        percentage = (total / total_monthly_expenses * 100) if total_monthly_expenses > 0 else Decimal("0.00")
+        summary.append(ExpenseCategorySummary(
+            category=category,
+            total_monthly=total,
+            percentage=percentage
+        ))
+        
+    return summary
 
 
 @router.post("", response_model=Expense, status_code=status.HTTP_201_CREATED)

@@ -13,7 +13,16 @@ import {
   TrendingDown,
   PiggyBank,
   Tag,
+  PieChart as PieChartIcon,
 } from 'lucide-react';
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+  Legend,
+} from 'recharts';
 import {
   Select,
   SelectContent,
@@ -159,6 +168,33 @@ const SpendingPage = () => {
     return matchesSearch && matchesCategory;
   });
 
+  // Calculate chart data
+  const getChartData = useCallback(() => {
+    if (!filteredExpenses.length) return [];
+
+    const categoryMap = {};
+    const multipliers = { weekly: 4.33, fortnightly: 2.17, monthly: 1, annual: 1 / 12 };
+
+    filteredExpenses.forEach((expense) => {
+      const monthlyAmount = expense.amount * (multipliers[expense.frequency] || 1);
+      if (!categoryMap[expense.category]) {
+        categoryMap[expense.category] = 0;
+      }
+      categoryMap[expense.category] += monthlyAmount;
+    });
+
+    return Object.entries(categoryMap)
+      .map(([name, value]) => ({
+        name: EXPENSE_CATEGORIES.find(c => c.value === name)?.label || name,
+        value,
+        originalCategory: name
+      }))
+      .sort((a, b) => b.value - a.value);
+  }, [filteredExpenses]);
+
+  const chartData = getChartData();
+  const COLORS = ['#84cc16', '#a3e635', '#bef264', '#d9f99d', '#ecfccb', '#f7fee7', '#3f6212', '#4d7c0f', '#65a30d'];
+
   // Calculate summaries
   const toMonthly = (amount, frequency) => {
     const multipliers = { weekly: 4.33, fortnightly: 2.17, monthly: 1, annual: 1 / 12 };
@@ -257,6 +293,44 @@ const SpendingPage = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Spending Graph */}
+      {filteredExpenses.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <PieChartIcon className="w-5 h-5 text-lime-600 dark:text-lime-400" />
+              Spending Breakdown
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[300px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={chartData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    outerRadius={100}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {chartData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    formatter={(value) => formatCurrency(value)}
+                    contentStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                  />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-4">

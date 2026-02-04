@@ -110,10 +110,14 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       const data = await apiRegister(userData);
 
-      setUser(data.user);
-      setIsAuthenticated(true);
-
-      return { success: true };
+      if (data.access_token) {
+        setUser(data.user);
+        setIsAuthenticated(true);
+        setUserContext(data.user);
+        return { success: true };
+      } else {
+        return { success: true, emailVerificationRequired: true };
+      }
     } catch (error) {
       console.error('Registration error:', error);
 

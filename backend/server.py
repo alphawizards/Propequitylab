@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, Request
+from fastapi import FastAPI, APIRouter, Request, Response
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
@@ -48,18 +48,6 @@ logger = logging.getLogger(__name__)
 
 # Initialize rate limiter
 limiter = Limiter(key_func=get_remote_address, default_limits=["100/minute"])
-
-# Initialize Sentry if DSN is provided
-SENTRY_DSN = os.environ.get("SENTRY_DSN")
-if SENTRY_DSN:
-    sentry_sdk.init(
-        dsn=SENTRY_DSN,
-        integrations=[FastApiIntegration()],
-        traces_sample_rate=0.2,
-        environment=os.environ.get("ENVIRONMENT", "development"),
-        send_default_pii=True
-    )
-    logging.info("Sentry initialized")
 
 # Get allowed origins from environment
 ALLOWED_ORIGINS = os.environ.get('CORS_ORIGINS', 'http://localhost:3000').split(',')
@@ -136,13 +124,51 @@ api_router.include_router(scenarios_router)
 
 app.include_router(api_router)
 
-# CORS Middleware - Locked down to production domains
+
+# Security Headers Middleware
+# @app.middleware("http")
+# async def add_security_headers(request: Request, call_next):
+#     # Handle Actual Request
+#     response = await call_next(request)
+#     
+#     # Strict-Transport-Security (HSTS)
+#     response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+#     
+#     # Content-Security-Policy (CSP)
+#     response.headers["Content-Security-Policy"] = (
+#         "default-src 'self'; "
+#         "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
+#         "style-src 'self' 'unsafe-inline'; "
+#         "img-src 'self' data: https:; "
+#         "font-src 'self' data:; "
+#         "connect-src 'self' http://localhost:3000 http://127.0.0.1:3000 http://localhost:8000 http://127.0.0.1:8000 https://propequitylab.com https://propequitylab.pages.dev https://h3nhfwgxgf.ap-southeast-2.awsapprunner.com https://*.awsapprunner.com; "
+#         "frame-ancestors 'none';"
+#     )
+#     
+#     # X-Frame-Options
+#     response.headers["X-Frame-Options"] = "DENY"
+#     
+#     # X-Content-Type-Options
+#     response.headers["X-Content-Type-Options"] = "nosniff"
+#     
+#     # X-XSS-Protection
+#     response.headers["X-XSS-Protection"] = "1; mode=block"
+#     
+#     # Referrer-Policy
+#     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+#     
+#     # Permissions-Policy
+#     response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()"
+#     
+#     return response
+
+# Standard CORS Middleware (Handles Preflight & Error Responses correctly)
 app.add_middleware(
     CORSMiddleware,
-    allow_credentials=True,
     allow_origins=ALLOWED_ORIGINS,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD"],
-    allow_headers=["Content-Type", "Authorization"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Security Headers Middleware

@@ -19,7 +19,8 @@ else:
     print("WARNING: RESEND_API_KEY not set. Email sending will be simulated.")
 
 
-def send_email(to: str, subject: str, html: str) -> bool:
+
+async def send_email(to: str, subject: str, html: str) -> bool:
     """
     Send an email using Resend API
     
@@ -58,7 +59,7 @@ def send_email(to: str, subject: str, html: str) -> bool:
         return False
 
 
-def send_verification_email(email: str, name: str, verification_token: str) -> bool:
+async def send_verification_email(email: str, name: str, verification_token: str) -> bool:
     """
     Send email verification email
     
@@ -156,7 +157,7 @@ def send_verification_email(email: str, name: str, verification_token: str) -> b
     return send_email(email, subject, html)
 
 
-def send_password_reset_email(email: str, name: str, reset_token: str) -> bool:
+async def send_password_reset_email(email: str, name: str, reset_token: str) -> bool:
     """
     Send password reset email
     
@@ -263,7 +264,7 @@ def send_password_reset_email(email: str, name: str, reset_token: str) -> bool:
     return send_email(email, subject, html)
 
 
-def send_welcome_email(email: str, name: str) -> bool:
+async def send_welcome_email(email: str, name: str) -> bool:
     """
     Send welcome email after email verification
     

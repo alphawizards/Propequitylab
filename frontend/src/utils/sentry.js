@@ -4,7 +4,6 @@
  */
 
 import * as Sentry from "@sentry/react";
-import { BrowserTracing } from "@sentry/tracing";
 
 export const initSentry = () => {
   const dsn = process.env.REACT_APP_SENTRY_DSN;
@@ -14,9 +13,7 @@ export const initSentry = () => {
   if (dsn) {
     Sentry.init({
       dsn,
-      integrations: [
-        new BrowserTracing(),
-      ],
+      integrations: [],
 
       // Performance Monitoring - Capture 10% of transactions
       tracesSampleRate: 0.1,
@@ -35,6 +32,7 @@ export const initSentry = () => {
         // Browser extensions
         'top.GLOBALS',
         'chrome-extension://',
+        'The message channel closed before a response was received',
         'moz-extension://',
 
         // Random plugins/extensions

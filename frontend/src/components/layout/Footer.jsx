@@ -12,8 +12,8 @@ const Footer = () => {
           <div className="col-span-1">
             <div className="flex items-center gap-3 mb-4">
               <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M8 8L20 20L8 32" stroke="#BFFF00" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M32 8L20 20L32 32" stroke="#BFFF00" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M8 8L20 20L8 32" stroke="#BFFF00" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M32 8L20 20L32 32" stroke="#BFFF00" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               <span className="text-white text-xl font-semibold">Zapiio</span>
             </div>
@@ -76,12 +76,12 @@ const Footer = () => {
             <h3 className="text-white font-semibold mb-4">Legal</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/privacy-policy" className="text-sm hover:text-lime-400 transition-colors">
+                <Link to="/legal/privacy" className="text-sm hover:text-lime-400 transition-colors">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link to="/terms-of-service" className="text-sm hover:text-lime-400 transition-colors">
+                <Link to="/legal/terms" className="text-sm hover:text-lime-400 transition-colors">
                   Terms of Service
                 </Link>
               </li>

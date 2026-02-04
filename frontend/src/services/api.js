@@ -158,12 +158,16 @@ export const register = async (userData) => {
   const response = await apiClient.post('/auth/register', userData);
   const { access_token, refresh_token } = response.data;
 
-  // Store tokens
-  localStorage.setItem('access_token', access_token);
-  localStorage.setItem('refresh_token', refresh_token);
-
-  // Set default auth header
-  apiClient.defaults.headers.common.Authorization = `Bearer ${access_token}`;
+  // Store tokens only if present (register may not return tokens for unverified users)
+  if (access_token) {
+    localStorage.setItem('access_token', access_token);
+  }
+  if (refresh_token) {
+    localStorage.setItem('refresh_token', refresh_token);
+  }
+  if (access_token) {
+    apiClient.defaults.headers.common.Authorization = `Bearer ${access_token}`;
+  }
 
   return response.data;
 };
@@ -749,6 +753,11 @@ const api = {
     return response.data;
   },
 
+  getExpenseSummary: async (portfolioId) => {
+    const response = await apiClient.get(`/expenses/portfolio/${portfolioId}/summary`);
+    return response.data;
+  },
+
   // Liabilities CRUD
   getLiabilities: async (portfolioId) => {
     const response = await apiClient.get(`/liabilities/portfolio/${portfolioId}`);
@@ -845,5 +854,3 @@ const api = {
 };
 
 export default api;
-
-

@@ -3,7 +3,7 @@ import { AlertCircle, Home, RefreshCw } from 'lucide-react';
 import { Button } from './ui/button';
 
 const ErrorFallback = ({ error }) => {
-  const isDev = import.meta.env.DEV;
+  const isDev = process.env.NODE_ENV === 'development';
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">

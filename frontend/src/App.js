@@ -102,102 +102,101 @@ const RootRedirect = () => {
 
 function AppRoutes() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Public routes */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/verify-email" element={<VerifyEmail />} />
+    <Routes>
+      {/* Public routes */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/verify-email" element={<VerifyEmail />} />
 
-        {/* Legal routes */}
-        <Route path="/legal/privacy" element={<PrivacyPolicy />} />
-        <Route path="/legal/terms" element={<TermsOfService />} />
+      {/* Legal routes */}
+      <Route path="/legal/privacy" element={<PrivacyPolicy />} />
+      <Route path="/legal/terms" element={<TermsOfService />} />
 
-        {/* Public Calculator Routes - NO AUTHENTICATION REQUIRED */}
-        <Route path="/calculators/mortgage" element={<MortgageCalculatorPage />} />
+      {/* Public Calculator Routes - NO AUTHENTICATION REQUIRED */}
+      <Route path="/calculators/mortgage" element={<MortgageCalculatorPage />} />
 
-        {/* Legal Pages - Public */}
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="/terms-of-service" element={<TermsOfService />} />
+      {/* Legal Pages - Public */}
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+      <Route path="/terms-of-service" element={<TermsOfService />} />
 
-        {/* Root redirect based on auth and onboarding status */}
-        <Route path="/" element={<RootRedirect />} />
+      {/* Root redirect based on auth and onboarding status */}
+      <Route path="/" element={<RootRedirect />} />
 
-        {/* Protected routes */}
-        <Route path="/onboarding" element={
-          <ProtectedRoute>
-            <OnboardingWizard />
-          </ProtectedRoute>
-        } />
+      {/* Protected routes */}
+      <Route path="/onboarding" element={
+        <ProtectedRoute>
+          <OnboardingWizard />
+        </ProtectedRoute>
+      } />
 
-        {/* Dashboard route with right panel */}
-        <Route element={
-          <ProtectedRoute>
-            <DashboardLayout />
-          </ProtectedRoute>
-        }>
-          <Route path="/dashboard" element={<DashboardNew />} />
-        </Route>
+      {/* Dashboard route with right panel */}
+      <Route element={
+        <ProtectedRoute>
+          <DashboardLayout />
+        </ProtectedRoute>
+      }>
+        <Route path="/dashboard" element={<DashboardNew />} />
+      </Route>
 
-        {/* Other app routes with standard layout - all protected */}
-        <Route element={
-          <ProtectedRoute>
-            <MainLayout />
-          </ProtectedRoute>
-        }>
+      {/* Other app routes with standard layout - all protected */}
+      <Route element={
+        <ProtectedRoute>
+          <MainLayout />
+        </ProtectedRoute>
+      }>
 
-          {/* Finances routes */}
-          <Route path="/finances" element={<Navigate to="/finances/income" replace />} />
-          <Route path="/finances/income" element={<IncomePage />} />
-          <Route path="/finances/spending" element={<SpendingPage />} />
-          <Route path="/finances/properties" element={<PropertiesPage />} />
-          <Route path="/finances/assets" element={<AssetsPage />} />
-          <Route path="/finances/liabilities" element={<LiabilitiesPage />} />
+        {/* Finances routes */}
+        <Route path="/finances" element={<Navigate to="/finances/income" replace />} />
+        <Route path="/finances/income" element={<IncomePage />} />
+        <Route path="/finances/spending" element={<SpendingPage />} />
+        <Route path="/finances/properties" element={<PropertiesPage />} />
+        <Route path="/finances/assets" element={<AssetsPage />} />
+        <Route path="/finances/liabilities" element={<LiabilitiesPage />} />
 
-          {/* Progress */}
-          <Route path="/progress" element={<ProgressPage />} />
+        {/* Progress */}
+        <Route path="/progress" element={<ProgressPage />} />
 
-          {/* Plans */}
-          <Route path="/plans" element={<PlansPage />} />
+        {/* Plans */}
+        <Route path="/plans" element={<PlansPage />} />
 
-          {/* Projections - Property Portfolio Forecasting */}
-          <Route path="/projections" element={<ProjectionsPage />} />
+        {/* Projections - Property Portfolio Forecasting */}
+        <Route path="/projections" element={<ProjectionsPage />} />
 
-          {/* Scenario Dashboard - View individual scenario */}
-          <Route path="/scenarios/:scenarioId/dashboard" element={<ScenarioDashboardPage />} />
+        {/* Scenario Dashboard - View individual scenario */}
+        <Route path="/scenarios/:scenarioId/dashboard" element={<ScenarioDashboardPage />} />
 
-          {/* Settings & Help */}
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/help" element={<PlaceholderPage title="Help Center" />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+        {/* Settings & Help */}
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/help" element={<PlaceholderPage title="Help Center" />} />
+      </Route>
+    </Routes>
   );
 }
 
 function App() {
   return (
-    <ThemeProvider>
-      <Sentry.ErrorBoundary fallback={ErrorFallback} showDialog>
-        <HelmetProvider>
-          <AuthProvider>
-            <UserProvider>
-              <PortfolioProvider>
-                <div className="App">
-                  <AppRoutes />
-                  <WelcomeModalWrapper />
-                  <Toaster />
-                </div>
-              </PortfolioProvider>
-            </UserProvider>
-          </AuthProvider>
-        </HelmetProvider>
-      </Sentry.ErrorBoundary>
-    </ThemeProvider>
+    <BrowserRouter>
+      <ThemeProvider>
+        <Sentry.ErrorBoundary fallback={ErrorFallback} showDialog>
+          <HelmetProvider>
+            <AuthProvider>
+              <UserProvider>
+                <PortfolioProvider>
+                  <div className="App">
+                    <AppRoutes />
+                    <WelcomeModalWrapper />
+                    <Toaster />
+                  </div>
+                </PortfolioProvider>
+              </UserProvider>
+            </AuthProvider>
+          </HelmetProvider>
+        </Sentry.ErrorBoundary>
+      </ThemeProvider>
+    </BrowserRouter>
   );
 }
 
 export default App;
-

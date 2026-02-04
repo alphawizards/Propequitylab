@@ -105,6 +105,13 @@ class ExpenseResponse(SQLModel):
     updated_at: datetime
 
 
+class ExpenseCategorySummary(SQLModel):
+    """Expense category summary for graphs"""
+    category: str
+    total_monthly: Decimal
+    percentage: Decimal
+
+
 # Expense categories for reference
 EXPENSE_CATEGORIES = [
     "housing",
