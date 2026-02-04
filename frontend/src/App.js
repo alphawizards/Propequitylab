@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import './App.css';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
@@ -33,6 +33,9 @@ import { Toaster } from './components/ui/toaster';
 import * as Sentry from '@sentry/react';
 import ErrorFallback from './components/ErrorBoundary';
 
+// Lazy load WelcomeModal to reduce initial bundle size
+const WelcomeModal = lazy(() => import('./components/onboarding/WelcomeModal'));
+
 // Placeholder pages - will be implemented in later phases
 const PlaceholderPage = ({ title }) => (
   <div className="flex items-center justify-center min-h-[60vh]">
@@ -42,6 +45,29 @@ const PlaceholderPage = ({ title }) => (
     </div>
   </div>
 );
+
+// Welcome Modal wrapper - shows for new users who haven't seen it yet
+const WelcomeModalWrapper = () => {
+  const { isAuthenticated } = useAuth();
+  const { hasSeenWelcome, markWelcomeSeen, onboardingStatus } = useUser();
+
+  // Show welcome modal for authenticated users who:
+  // 1. Haven't seen the welcome modal yet
+  // 2. Haven't completed onboarding
+  const shouldShowWelcome = isAuthenticated && !hasSeenWelcome && !onboardingStatus.completed;
+
+  if (!shouldShowWelcome) return null;
+
+  return (
+    <Suspense fallback={null}>
+      <WelcomeModal
+        isOpen={shouldShowWelcome}
+        onClose={markWelcomeSeen}
+        onComplete={markWelcomeSeen}
+      />
+    </Suspense>
+  );
+};
 
 // Root redirect component that checks authentication and onboarding status
 const RootRedirect = () => {
@@ -77,75 +103,75 @@ const RootRedirect = () => {
 function AppRoutes() {
   return (
     <Routes>
-        {/* Public routes */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/verify-email" element={<VerifyEmail />} />
+      {/* Public routes */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/verify-email" element={<VerifyEmail />} />
 
-        {/* Legal routes */}
-        <Route path="/legal/privacy" element={<PrivacyPolicy />} />
-        <Route path="/legal/terms" element={<TermsOfService />} />
+      {/* Legal routes */}
+      <Route path="/legal/privacy" element={<PrivacyPolicy />} />
+      <Route path="/legal/terms" element={<TermsOfService />} />
 
-        {/* Public Calculator Routes - NO AUTHENTICATION REQUIRED */}
-        <Route path="/calculators/mortgage" element={<MortgageCalculatorPage />} />
+      {/* Public Calculator Routes - NO AUTHENTICATION REQUIRED */}
+      <Route path="/calculators/mortgage" element={<MortgageCalculatorPage />} />
 
-        {/* Legal Pages - Public */}
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="/terms-of-service" element={<TermsOfService />} />
+      {/* Legal Pages - Public */}
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+      <Route path="/terms-of-service" element={<TermsOfService />} />
 
-        {/* Root redirect based on auth and onboarding status */}
-        <Route path="/" element={<RootRedirect />} />
+      {/* Root redirect based on auth and onboarding status */}
+      <Route path="/" element={<RootRedirect />} />
 
-        {/* Protected routes */}
-        <Route path="/onboarding" element={
-          <ProtectedRoute>
-            <OnboardingWizard />
-          </ProtectedRoute>
-        } />
+      {/* Protected routes */}
+      <Route path="/onboarding" element={
+        <ProtectedRoute>
+          <OnboardingWizard />
+        </ProtectedRoute>
+      } />
 
-        {/* Dashboard route with right panel */}
-        <Route element={
-          <ProtectedRoute>
-            <DashboardLayout />
-          </ProtectedRoute>
-        }>
-          <Route path="/dashboard" element={<DashboardNew />} />
-        </Route>
+      {/* Dashboard route with right panel */}
+      <Route element={
+        <ProtectedRoute>
+          <DashboardLayout />
+        </ProtectedRoute>
+      }>
+        <Route path="/dashboard" element={<DashboardNew />} />
+      </Route>
 
-        {/* Other app routes with standard layout - all protected */}
-        <Route element={
-          <ProtectedRoute>
-            <MainLayout />
-          </ProtectedRoute>
-        }>
+      {/* Other app routes with standard layout - all protected */}
+      <Route element={
+        <ProtectedRoute>
+          <MainLayout />
+        </ProtectedRoute>
+      }>
 
-          {/* Finances routes */}
-          <Route path="/finances" element={<Navigate to="/finances/income" replace />} />
-          <Route path="/finances/income" element={<IncomePage />} />
-          <Route path="/finances/spending" element={<SpendingPage />} />
-          <Route path="/finances/properties" element={<PropertiesPage />} />
-          <Route path="/finances/assets" element={<AssetsPage />} />
-          <Route path="/finances/liabilities" element={<LiabilitiesPage />} />
+        {/* Finances routes */}
+        <Route path="/finances" element={<Navigate to="/finances/income" replace />} />
+        <Route path="/finances/income" element={<IncomePage />} />
+        <Route path="/finances/spending" element={<SpendingPage />} />
+        <Route path="/finances/properties" element={<PropertiesPage />} />
+        <Route path="/finances/assets" element={<AssetsPage />} />
+        <Route path="/finances/liabilities" element={<LiabilitiesPage />} />
 
-          {/* Progress */}
-          <Route path="/progress" element={<ProgressPage />} />
+        {/* Progress */}
+        <Route path="/progress" element={<ProgressPage />} />
 
-          {/* Plans */}
-          <Route path="/plans" element={<PlansPage />} />
+        {/* Plans */}
+        <Route path="/plans" element={<PlansPage />} />
 
-          {/* Projections - Property Portfolio Forecasting */}
-          <Route path="/projections" element={<ProjectionsPage />} />
+        {/* Projections - Property Portfolio Forecasting */}
+        <Route path="/projections" element={<ProjectionsPage />} />
 
-          {/* Scenario Dashboard - View individual scenario */}
-          <Route path="/scenarios/:scenarioId/dashboard" element={<ScenarioDashboardPage />} />
+        {/* Scenario Dashboard - View individual scenario */}
+        <Route path="/scenarios/:scenarioId/dashboard" element={<ScenarioDashboardPage />} />
 
-          {/* Settings & Help */}
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/help" element={<PlaceholderPage title="Help Center" />} />
-        </Route>
-      </Routes>
+        {/* Settings & Help */}
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/help" element={<PlaceholderPage title="Help Center" />} />
+      </Route>
+    </Routes>
   );
 }
 
@@ -153,24 +179,24 @@ function App() {
   return (
     <BrowserRouter>
       <ThemeProvider>
-      <Sentry.ErrorBoundary fallback={ErrorFallback} showDialog>
-        <HelmetProvider>
-          <AuthProvider>
-            <UserProvider>
-              <PortfolioProvider>
-                <div className="App">
-                  <AppRoutes />
-                  <Toaster />
-                </div>
-              </PortfolioProvider>
-            </UserProvider>
-          </AuthProvider>
-        </HelmetProvider>
-      </Sentry.ErrorBoundary>
+        <Sentry.ErrorBoundary fallback={ErrorFallback} showDialog>
+          <HelmetProvider>
+            <AuthProvider>
+              <UserProvider>
+                <PortfolioProvider>
+                  <div className="App">
+                    <AppRoutes />
+                    <WelcomeModalWrapper />
+                    <Toaster />
+                  </div>
+                </PortfolioProvider>
+              </UserProvider>
+            </AuthProvider>
+          </HelmetProvider>
+        </Sentry.ErrorBoundary>
       </ThemeProvider>
     </BrowserRouter>
   );
 }
 
 export default App;
-

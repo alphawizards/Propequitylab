@@ -41,26 +41,44 @@ dump.rdb
 # System files
 .DS_Store
 *.pem
+Thumbs.db
 
 # Python
 __pycache__/
-*pyc*
+*.py[cod]
+*$py.class
 venv/
 .venv/
+env/
+.env
+.env.*
 
 # Development tools
 chainlit.md
 .chainlit
 .ipynb_checkpoints/
 .ac
+.tmp/
+
+# Agent Artifacts
+.call_count
+.circuit_breaker_history
+.circuit_breaker_state
+.exit_signals
+.last_reset
+.ralph_session
+.ralph_session_history
+.response_analysis
+.claude/
+
+# Data and databases
+agenthub/agents/youtube/db
+dump.rdb
 
 # Deployment
 .vercel
 
-# Data and databases
-agenthub/agents/youtube/db
-
-# Archive files and large assets
+# Archive files
 **/*.zip
 **/*.tar.gz
 **/*.tar

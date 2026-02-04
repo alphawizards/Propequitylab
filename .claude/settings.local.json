@@ -5,7 +5,22 @@
       "Bash(python -m py_compile:*)",
       "Bash(echo:*)",
       "Bash(npm run build:*)",
-      "Bash(npm install)"
+      "Bash(npm install)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(curl:*)",
+      "Bash(openssl s_client:*)",
+      "Bash(openssl x509:*)",
+      "Bash(python:*)",
+      "Bash(grep:*)",
+      "Bash(alembic revision:*)",
+      "Bash(pip install:*)",
+      "Bash(ls:*)",
+      "Bash(ralph --help:*)",
+      "Bash(ralph:*)",
+      "Bash(chmod:*)",
+      "Bash(cd:*)"
     ]
   }
 }

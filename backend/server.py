@@ -6,12 +6,14 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 import os
+import sentry_sdk
+from sentry_sdk.integrations.fastapi import FastApiIntegration
 import logging
 from pathlib import Path
 from contextlib import asynccontextmanager
 
 # Import New Utilities
-from utils.database_sql import create_db_and_tables
+from utils.database_sql import create_db_and_tables, test_connection
 from utils.sentry_config import init_sentry
 
 # Import Routes (SQLModel versions)
@@ -86,7 +88,20 @@ api_router = APIRouter(prefix="/api")
 @api_router.get("/health")
 @api_router.head("/health")
 async def health_check():
-    return {"status": "healthy", "stack": "PostgreSQL + App Runner"}
+    """
+    Health check endpoint with database connectivity status.
+    Returns overall health status and individual component statuses.
+    """
+    db_healthy = test_connection()
+
+    return {
+        "status": "healthy" if db_healthy else "degraded",
+        "stack": "PostgreSQL + App Runner",
+        "components": {
+            "database": "connected" if db_healthy else "disconnected",
+            "api": "running"
+        }
+    }
 
 # Include all routers
 api_router.include_router(auth_router)
@@ -155,3 +170,39 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Security Headers Middleware
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    
+    # Strict-Transport-Security (HSTS)
+    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    
+    # Content-Security-Policy (CSP)
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self'; "
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
+        "style-src 'self' 'unsafe-inline'; "
+        "img-src 'self' data: https:; "
+        "font-src 'self' data:; "
+        "connect-src 'self' http://localhost:3000 http://127.0.0.1:3000 http://localhost:8000 http://127.0.0.1:8000 https://propequitylab.com https://propequitylab.pages.dev https://h3nhfwgxgf.ap-southeast-2.awsapprunner.com https://*.awsapprunner.com; "
+        "frame-ancestors 'none';"
+    )
+    
+    # X-Frame-Options
+    response.headers["X-Frame-Options"] = "DENY"
+    
+    # X-Content-Type-Options
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    
+    # X-XSS-Protection
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    
+    # Referrer-Policy
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    
+    # Permissions-Policy
+    response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()"
+    
+    return response

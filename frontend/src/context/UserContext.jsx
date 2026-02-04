@@ -4,6 +4,9 @@ import { useAuth } from './AuthContext';
 
 const UserContext = createContext(null);
 
+// Key for localStorage to track welcome modal state
+const WELCOME_SEEN_KEY = 'propequitylab_welcome_seen';
+
 export const UserProvider = ({ children }) => {
   const { user: authUser, isAuthenticated, loading: authLoading } = useAuth();
   const [user, setUser] = useState(authUser);
@@ -11,6 +14,10 @@ export const UserProvider = ({ children }) => {
   const [onboardingStatus, setOnboardingStatus] = useState({
     completed: false,
     currentStep: 0,
+  });
+  const [hasSeenWelcome, setHasSeenWelcome] = useState(() => {
+    // Check localStorage on initial load
+    return localStorage.getItem(WELCOME_SEEN_KEY) === 'true';
   });
 
   // Update user when authUser changes
@@ -81,6 +88,16 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  const markWelcomeSeen = () => {
+    localStorage.setItem(WELCOME_SEEN_KEY, 'true');
+    setHasSeenWelcome(true);
+  };
+
+  const resetWelcome = () => {
+    localStorage.removeItem(WELCOME_SEEN_KEY);
+    setHasSeenWelcome(false);
+  };
+
   const value = {
     user,
     userId: user?.id,
@@ -90,6 +107,9 @@ export const UserProvider = ({ children }) => {
     completeOnboarding,
     skipOnboarding,
     resetOnboarding,
+    hasSeenWelcome,
+    markWelcomeSeen,
+    resetWelcome,
     isDevMode: false,
   };
 
