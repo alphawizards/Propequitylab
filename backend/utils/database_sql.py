@@ -19,7 +19,7 @@ POOL_TIMEOUT = int(os.getenv("DATABASE_POOL_TIMEOUT", "30"))
 # Validate DATABASE_URL
 if not DATABASE_URL:
     logger.warning("⚠️  DATABASE_URL not set. Using default PostgreSQL connection.")
-    DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/zapiio"
+    DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/propequitylab"
 
 # Create engine with connection pooling
 engine = create_engine(

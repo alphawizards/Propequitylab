@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { useToast } from '../hooks/use-toast';
+import { formatCurrency } from '../utils/formatCurrency';
 import {
   Plus,
   Search,
@@ -24,11 +25,6 @@ import IncomeCard from '../components/income/IncomeCard';
 import IncomeFormModal from '../components/income/IncomeFormModal';
 import IncomeDetailsModal from '../components/income/IncomeDetailsModal';
 
-const formatCurrency = (value) => {
-  if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`;
-  if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`;
-  return `$${value.toFixed(0)}`;
-};
 
 const IncomePage = () => {
   const { currentPortfolio } = usePortfolio();
@@ -152,7 +148,7 @@ const IncomePage = () => {
 
   // Calculate summaries
   const toMonthly = (amount, frequency) => {
-    const multipliers = { weekly: 4.33, fortnightly: 2.17, monthly: 1, annual: 1/12 };
+    const multipliers = { weekly: 4.33, fortnightly: 2.17, monthly: 1, annual: 1 / 12 };
     return amount * (multipliers[frequency] || 1);
   };
 

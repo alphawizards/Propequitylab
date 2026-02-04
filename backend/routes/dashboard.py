@@ -24,7 +24,7 @@ from utils.database_sql import get_session
 from utils.auth import get_current_user
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/dashboard", tags=["dashboard"])
+router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 
 
 class DashboardSummary(BaseModel):
@@ -190,15 +190,28 @@ async def get_net_worth_history(
     
     ⚠️ Data Isolation: Only returns snapshots owned by current_user
     """
-    # Note: NetWorthSnapshot may need to be a SQLModel table if we want to persist it
-    # For now, returning empty list as this feature requires migration of net_worth_history table
-    logger.warning("Net worth history not yet implemented for SQLModel - requires table migration")
-    return []
+    # Build query with data isolation
+    if portfolio_id:
+        stmt = select(NetWorthSnapshot).where(
+            NetWorthSnapshot.portfolio_id == portfolio_id,
+            NetWorthSnapshot.user_id == current_user.id
+        ).order_by(NetWorthSnapshot.date.desc()).limit(limit)
+    else:
+        stmt = select(NetWorthSnapshot).where(
+            NetWorthSnapshot.user_id == current_user.id
+        ).order_by(NetWorthSnapshot.date.desc()).limit(limit)
+    
+    snapshots = session.exec(stmt).all()
+    return list(snapshots)
+
+
+class SnapshotRequest(BaseModel):
+    portfolio_id: str
 
 
 @router.post("/snapshot")
 async def create_net_worth_snapshot(
-    portfolio_id: str,
+    request: SnapshotRequest,
     current_user: User = Depends(get_current_user),
     session: Session = Depends(get_session)
 ):
@@ -207,6 +220,8 @@ async def create_net_worth_snapshot(
     
     ⚠️ Data Isolation: Only creates snapshot for portfolio owned by current_user
     """
+    portfolio_id = request.portfolio_id
+    
     # Verify portfolio access
     portfolio_stmt = select(Portfolio).where(
         Portfolio.id == portfolio_id,
@@ -223,24 +238,33 @@ async def create_net_worth_snapshot(
     # Get dashboard summary to use for snapshot
     summary = await get_dashboard_summary(portfolio_id, current_user, session)
     
-    # Note: NetWorthSnapshot persistence requires table migration
-    # For now, return the calculated snapshot without persisting
+    # Convert breakdowns to dict for JSON storage
+    asset_breakdown_dict = summary.asset_breakdown.model_dump() if hasattr(summary.asset_breakdown, 'model_dump') else dict(summary.asset_breakdown)
+    liability_breakdown_dict = summary.liability_breakdown.model_dump() if hasattr(summary.liability_breakdown, 'model_dump') else dict(summary.liability_breakdown)
+    
+    # Create and persist the snapshot
     snapshot = NetWorthSnapshot(
         id=str(uuid.uuid4()),
         user_id=current_user.id,
         portfolio_id=portfolio_id,
-        date=datetime.utcnow().strftime('%Y-%m-%d'),
-        total_assets=summary.total_assets,
-        total_liabilities=summary.total_liabilities,
-        net_worth=summary.net_worth,
-        asset_breakdown=summary.asset_breakdown,
-        liability_breakdown=summary.liability_breakdown,
-        monthly_income=summary.monthly_income,
-        monthly_expenses=summary.monthly_expenses,
-        monthly_cashflow=summary.monthly_cashflow,
-        savings_rate=summary.savings_rate
+        date=datetime.utcnow().date(),
+        total_assets=Decimal(str(summary.total_assets)),
+        total_liabilities=Decimal(str(summary.total_liabilities)),
+        net_worth=Decimal(str(summary.net_worth)),
+        asset_breakdown=asset_breakdown_dict,
+        liability_breakdown=liability_breakdown_dict,
+        monthly_income=Decimal(str(summary.monthly_income)),
+        monthly_expenses=Decimal(str(summary.monthly_expenses)),
+        monthly_cashflow=Decimal(str(summary.monthly_cashflow)),
+        savings_rate=Decimal(str(summary.savings_rate))
     )
     
-    logger.info(f"Net worth snapshot created for portfolio: {portfolio_id} by user: {current_user.id}")
+    # Persist to database
+    session.add(snapshot)
+    session.commit()
+    session.refresh(snapshot)
+    
+    logger.info(f"Net worth snapshot persisted for portfolio: {portfolio_id} by user: {current_user.id}")
     
     return {"message": "Snapshot created", "snapshot": snapshot}
+

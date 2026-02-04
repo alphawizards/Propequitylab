@@ -6,6 +6,11 @@ import api from '../services/api';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { NetWorthChart, AssetAllocationChart, CashflowChart } from '../components/charts';
+import KPICard from '../components/dashboard/KPICard';
+import PortfolioSnapshotWidget from '../components/dashboard/PortfolioSnapshotWidget';
+import PropertyCashflowsWidget from '../components/dashboard/PropertyCashflowsWidget';
+import BorrowingWidget from '../components/dashboard/BorrowingWidget';
+import { formatCurrency } from '../utils/formatCurrency';
 import {
   Home,
   TrendingUp,
@@ -21,39 +26,6 @@ import {
   Camera,
 } from 'lucide-react';
 
-const formatCurrency = (value) => {
-  if (value >= 1000000) {
-    return `$${(value / 1000000).toFixed(2)}M`;
-  }
-  if (value >= 1000) {
-    return `$${(value / 1000).toFixed(1)}K`;
-  }
-  return `$${value.toFixed(0)}`;
-};
-
-const StatCard = ({ title, value, icon: Icon, color, trend, trendValue }) => (
-  <Card className="relative overflow-hidden">
-    <CardContent className="p-6">
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm font-medium text-gray-500">{title}</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">{value}</p>
-          {trend && (
-            <div className={`flex items-center gap-1 mt-2 text-sm ${
-              trend === 'up' ? 'text-green-600' : 'text-red-500'
-            }`}>
-              {trend === 'up' ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
-              <span>{trendValue}</span>
-            </div>
-          )}
-        </div>
-        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${color}`}>
-          <Icon className="w-6 h-6" />
-        </div>
-      </div>
-    </CardContent>
-  </Card>
-);
 
 const DashboardNew = () => {
   const navigate = useNavigate();
@@ -61,6 +33,7 @@ const DashboardNew = () => {
   const { user, onboardingStatus } = useUser();
   const [dashboardData, setDashboardData] = useState(null);
   const [netWorthHistory, setNetWorthHistory] = useState([]);
+  const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [historyLoading, setHistoryLoading] = useState(true);
   const [snapshotLoading, setSnapshotLoading] = useState(false);
@@ -87,6 +60,29 @@ const DashboardNew = () => {
     }
   };
 
+  const fetchProperties = async () => {
+    try {
+      const props = await api.getProperties(currentPortfolio?.id);
+      // Compute cashflow for each property: rental income - expenses - loan payments
+      const propsWithCashflow = props.map(p => {
+        const monthlyRent = p.rental_details?.income
+          ? (p.rental_details.frequency === 'weekly' ? p.rental_details.income * 52 / 12 : p.rental_details.income)
+          : 0;
+        const monthlyExpenses = p.expenses
+          ? Object.values(p.expenses).reduce((sum, v) => sum + (Number(v) || 0), 0) / 12
+          : 0;
+        const loanAmount = p.loan_details?.amount || 0;
+        const interestRate = (p.loan_details?.interest_rate || 6) / 100;
+        const monthlyLoanPayment = loanAmount > 0 ? (loanAmount * interestRate / 12) : 0;
+        const cashflow = monthlyRent - monthlyExpenses - monthlyLoanPayment;
+        return { ...p, cashflow };
+      });
+      setProperties(propsWithCashflow);
+    } catch (error) {
+      console.error('Failed to fetch properties:', error);
+    }
+  };
+
   const handleCreateSnapshot = async () => {
     if (!currentPortfolio?.id) return;
     setSnapshotLoading(true);
@@ -104,6 +100,7 @@ const DashboardNew = () => {
     if (currentPortfolio?.id) {
       fetchDashboardData();
       fetchNetWorthHistory();
+      fetchProperties();
     } else {
       setLoading(false);
       setHistoryLoading(false);
@@ -115,16 +112,16 @@ const DashboardNew = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
         <div className="text-center max-w-md">
-          <div className="w-20 h-20 rounded-full bg-lime-100 flex items-center justify-center mx-auto mb-6">
-            <Building className="w-10 h-10 text-lime-600" />
+          <div className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-6">
+            <Building className="w-10 h-10 text-emerald-600" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome to Zapiio</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome to PropEquityLab</h2>
           <p className="text-gray-600 mb-6">
             Get started by creating your first portfolio to track your property investments and financial goals.
           </p>
           <Button
             onClick={() => createPortfolio('My Portfolio', 'actual')}
-            className="bg-lime-400 text-gray-900 hover:bg-lime-500"
+            className="bg-emerald-500 text-white hover:bg-emerald-600"
           >
             <Plus className="w-4 h-4 mr-2" />
             Create Portfolio
@@ -159,39 +156,39 @@ const DashboardNew = () => {
             </div>
             <div className="text-right">
               <p className="text-sm text-gray-400">Net Worth</p>
-              <p className="text-3xl font-bold text-lime-400">{formatCurrency(data.net_worth)}</p>
+              <p className="text-3xl font-bold text-emerald-400">{formatCurrency(data.net_worth)}</p>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Stats Grid */}
+      {/* KPI Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
+        <KPICard
           title="Total Assets"
           value={formatCurrency(data.total_assets)}
           icon={PiggyBank}
-          color="bg-green-100 text-green-600"
+          variant="green"
           trend="up"
           trendValue="+5.2% this month"
         />
-        <StatCard
+        <KPICard
           title="Total Liabilities"
           value={formatCurrency(data.total_liabilities)}
           icon={CreditCard}
-          color="bg-red-100 text-red-600"
+          variant="purple"
         />
-        <StatCard
+        <KPICard
           title="Monthly Cashflow"
           value={formatCurrency(data.monthly_cashflow)}
           icon={DollarSign}
-          color={data.monthly_cashflow >= 0 ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"}
+          variant={data.monthly_cashflow >= 0 ? "blue" : "yellow"}
         />
-        <StatCard
+        <KPICard
           title="Properties"
           value={data.properties_count.toString()}
           icon={Home}
-          color="bg-blue-100 text-blue-600"
+          variant="blue"
         />
       </div>
 
@@ -208,11 +205,11 @@ const DashboardNew = () => {
           <CardContent>
             <div className="space-y-4">
               {[
-                { label: 'Properties', value: data.asset_breakdown?.properties || 0, color: 'bg-blue-500' },
-                { label: 'Superannuation', value: data.asset_breakdown?.super || 0, color: 'bg-purple-500' },
-                { label: 'Shares/ETFs', value: (data.asset_breakdown?.shares || 0) + (data.asset_breakdown?.etf || 0), color: 'bg-green-500' },
-                { label: 'Cash', value: data.asset_breakdown?.cash || 0, color: 'bg-yellow-500' },
-                { label: 'Other', value: data.asset_breakdown?.other || 0, color: 'bg-gray-500' },
+                { label: 'Properties', value: Number(data.asset_breakdown?.properties) || 0, color: 'bg-blue-500' },
+                { label: 'Superannuation', value: Number(data.asset_breakdown?.super) || 0, color: 'bg-purple-500' },
+                { label: 'Shares/ETFs', value: (Number(data.asset_breakdown?.shares) || 0) + (Number(data.asset_breakdown?.etf) || 0), color: 'bg-green-500' },
+                { label: 'Cash', value: Number(data.asset_breakdown?.cash) || 0, color: 'bg-yellow-500' },
+                { label: 'Other', value: Number(data.asset_breakdown?.other) || 0, color: 'bg-gray-500' },
               ].map((item) => (
                 <div key={item.label} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -237,11 +234,11 @@ const DashboardNew = () => {
           <CardContent>
             <div className="space-y-4">
               {[
-                { label: 'Property Loans', value: data.liability_breakdown?.property_loans || 0, color: 'bg-blue-500' },
-                { label: 'Car Loans', value: data.liability_breakdown?.car_loans || 0, color: 'bg-orange-500' },
-                { label: 'Credit Cards', value: data.liability_breakdown?.credit_cards || 0, color: 'bg-red-500' },
-                { label: 'HECS/HELP', value: data.liability_breakdown?.hecs || 0, color: 'bg-purple-500' },
-                { label: 'Other', value: data.liability_breakdown?.other || 0, color: 'bg-gray-500' },
+                { label: 'Property Loans', value: Number(data.liability_breakdown?.property_loans) || 0, color: 'bg-blue-500' },
+                { label: 'Car Loans', value: Number(data.liability_breakdown?.car_loans) || 0, color: 'bg-orange-500' },
+                { label: 'Credit Cards', value: Number(data.liability_breakdown?.credit_cards) || 0, color: 'bg-red-500' },
+                { label: 'HECS/HELP', value: Number(data.liability_breakdown?.hecs) || 0, color: 'bg-purple-500' },
+                { label: 'Other', value: Number(data.liability_breakdown?.other) || 0, color: 'bg-gray-500' },
               ].map((item) => (
                 <div key={item.label} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -267,7 +264,7 @@ const DashboardNew = () => {
               disabled={snapshotLoading || !currentPortfolio?.id}
               variant="outline"
               size="sm"
-              className="hover:bg-lime-50 hover:border-lime-400"
+              className="hover:bg-emerald-50 hover:border-emerald-400"
               data-testid="create-snapshot-btn"
             >
               {snapshotLoading ? (
@@ -282,16 +279,39 @@ const DashboardNew = () => {
         </div>
 
         {/* Asset Allocation Pie Chart */}
-        <AssetAllocationChart 
-          breakdown={data.asset_breakdown} 
-          loading={loading} 
+        <AssetAllocationChart
+          breakdown={data.asset_breakdown}
+          loading={loading}
         />
 
         {/* Cashflow Chart */}
-        <CashflowChart 
-          income={data.monthly_income} 
+        <CashflowChart
+          income={data.monthly_income}
           expenses={data.monthly_expenses}
           loading={loading}
+        />
+      </div>
+
+      {/* Bottom Widgets Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <PortfolioSnapshotWidget
+          data={{
+            net_worth: data.net_worth,
+            liquid_assets: (data.asset_breakdown?.cash || 0) + (data.asset_breakdown?.shares || 0) + (data.asset_breakdown?.etf || 0),
+            property_equity: (data.asset_breakdown?.properties || 0) - (data.liability_breakdown?.property_loans || 0),
+            investments: (data.asset_breakdown?.shares || 0) + (data.asset_breakdown?.etf || 0),
+            super: data.asset_breakdown?.super || 0,
+          }}
+        />
+        <PropertyCashflowsWidget
+          properties={properties}
+        />
+        <BorrowingWidget
+          data={{
+            lvr: data.total_assets > 0 ? ((data.liability_breakdown?.property_loans || 0) / (data.asset_breakdown?.properties || 1)) * 100 : 0,
+            borrowing_capacity: 800000,
+            used_capacity: data.liability_breakdown?.property_loans || 0,
+          }}
         />
       </div>
 
@@ -311,7 +331,7 @@ const DashboardNew = () => {
               <Button
                 key={action.label}
                 variant="outline"
-                className="h-auto py-4 flex flex-col items-center gap-2 hover:bg-lime-50 hover:border-lime-400"
+                className="h-auto py-4 flex flex-col items-center gap-2 hover:bg-emerald-50 hover:border-emerald-400"
                 onClick={() => navigate(action.href)}
                 data-testid={`quick-action-${action.label.toLowerCase().replace(/\s/g, '-')}`}
               >

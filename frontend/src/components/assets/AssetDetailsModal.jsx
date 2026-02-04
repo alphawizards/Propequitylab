@@ -8,24 +8,16 @@ import {
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { formatCurrency } from '../../utils/formatCurrency';
 import { Pencil, TrendingUp, Calendar, Building, User, Wallet } from 'lucide-react';
 
 const AssetDetailsModal = ({ isOpen, onClose, asset, onEdit }) => {
   if (!asset) return null;
 
   const gain = asset.current_value - (asset.purchase_value || 0);
-  const gainPercent = asset.purchase_value > 0 
-    ? ((gain / asset.purchase_value) * 100).toFixed(1) 
+  const gainPercent = asset.purchase_value > 0
+    ? ((gain / asset.purchase_value) * 100).toFixed(1)
     : 0;
-
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat('en-AU', {
-      style: 'currency',
-      currency: 'AUD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value || 0);
-  };
 
   const getAssetIcon = (type) => {
     const icons = {
@@ -66,14 +58,14 @@ const AssetDetailsModal = ({ isOpen, onClose, asset, onEdit }) => {
     return labels[env] || env;
   };
 
-  const annualContribution = asset.contributions?.amount 
+  const annualContribution = asset.contributions?.amount
     ? asset.contributions.amount * ({
-        weekly: 52,
-        fortnightly: 26,
-        monthly: 12,
-        quarterly: 4,
-        annual: 1,
-      }[asset.contributions.frequency] || 12)
+      weekly: 52,
+      fortnightly: 26,
+      monthly: 12,
+      quarterly: 4,
+      annual: 1,
+    }[asset.contributions.frequency] || 12)
     : 0;
 
   return (
@@ -88,8 +80,8 @@ const AssetDetailsModal = ({ isOpen, onClose, asset, onEdit }) => {
                 <p className="text-sm text-gray-500">{getAssetLabel(asset.type)}</p>
               </div>
             </div>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={onEdit}
               className="flex items-center gap-2"
             >

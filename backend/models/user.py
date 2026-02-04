@@ -59,7 +59,11 @@ class User(SQLModel, table=True):
     
     # Subscription
     subscription_tier: str = Field(default="free", max_length=50)
-    
+
+    # GDPR - Account Deletion
+    deleted_at: Optional[datetime] = Field(default=None)
+    is_active: bool = Field(default=True)
+
     # Timestamps
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)

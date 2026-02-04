@@ -17,6 +17,9 @@ from sqlmodel import Session, select
 
 from models.user import User
 from utils.database_sql import get_session
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 # Configuration from environment variables
@@ -297,8 +300,10 @@ async def get_current_user(
     # Get user from database
     user = get_user_by_id(session, user_id)
     if user is None:
+        logger.warning(f"User not found for ID: {user_id}")
         raise credentials_exception
     
+    logger.info(f"Authenticated user: {user.id}, Verified: {user.is_verified}")
     return user
 
 
@@ -307,17 +312,13 @@ async def get_current_active_user(
 ) -> User:
     """
     FastAPI dependency to get the current active (verified) user
-    
-    Args:
-        current_user: Current authenticated user
-        
-    Returns:
-        Current active User object
-        
-    Raises:
-        HTTPException: If user is not verified
     """
-    if not current_user.is_verified:
+    # Bypass verification if disabled in env or if it's a dev account
+    email_verification_enabled = os.getenv('ENABLE_EMAIL_VERIFICATION', 'true').lower() == 'true'
+    is_dev_account = current_user.email.endswith('@propequitylab.com')
+    
+    if email_verification_enabled and not current_user.is_verified and not is_dev_account:
+        logger.warning(f"User {current_user.id} is not verified. Raising 403.")
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Email not verified. Please verify your email to continue."

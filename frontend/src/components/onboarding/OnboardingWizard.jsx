@@ -180,7 +180,7 @@ const OnboardingWizard = () => {
                 <path d="M8 8L20 20L8 32" stroke="#BFFF00" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
                 <path d="M32 8L20 20L32 32" stroke="#1a1f36" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-              <span className="text-xl font-bold text-gray-900">Zapiio</span>
+              <span className="text-xl font-bold text-gray-900">PropEquityLab</span>
             </div>
           </div>
           

@@ -29,7 +29,7 @@ const PropertiesPage = () => {
 
   const fetchProperties = useCallback(async () => {
     if (!currentPortfolio?.id) return;
-    
+
     try {
       setLoading(true);
       const data = await api.getProperties(currentPortfolio.id);
@@ -65,7 +65,7 @@ const PropertiesPage = () => {
 
   const handleDeleteProperty = async (propertyId) => {
     if (!window.confirm('Are you sure you want to delete this property?')) return;
-    
+
     try {
       await api.deleteProperty(propertyId);
       setProperties(prev => prev.filter(p => p.id !== propertyId));
@@ -95,11 +95,12 @@ const PropertiesPage = () => {
   };
 
   // Calculate portfolio totals
+  // Calculate portfolio totals
   const totals = properties.reduce((acc, prop) => ({
-    totalValue: acc.totalValue + (prop.current_value || 0),
-    totalDebt: acc.totalDebt + (prop.loan_details?.amount || 0),
-    totalEquity: acc.totalEquity + ((prop.current_value || 0) - (prop.loan_details?.amount || 0)),
-    annualRental: acc.annualRental + ((prop.rental_details?.income || 0) * (prop.rental_details?.frequency === 'weekly' ? 52 : prop.rental_details?.frequency === 'fortnightly' ? 26 : 12)),
+    totalValue: acc.totalValue + Number(prop.current_value || 0),
+    totalDebt: acc.totalDebt + Number(prop.loan_details?.amount || 0),
+    totalEquity: acc.totalEquity + (Number(prop.current_value || 0) - Number(prop.loan_details?.amount || 0)),
+    annualRental: acc.annualRental + (Number(prop.rental_details?.income || 0) * (prop.rental_details?.frequency === 'weekly' ? 52 : prop.rental_details?.frequency === 'fortnightly' ? 26 : 12)),
   }), { totalValue: 0, totalDebt: 0, totalEquity: 0, annualRental: 0 });
 
   const filteredProperties = properties.filter(prop =>
@@ -147,7 +148,7 @@ const PropertiesPage = () => {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -163,7 +164,7 @@ const PropertiesPage = () => {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -179,7 +180,7 @@ const PropertiesPage = () => {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">

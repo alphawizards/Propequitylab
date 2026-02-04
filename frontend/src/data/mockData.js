@@ -1,4 +1,4 @@
-// Mock data for Zapiio clone with Australian property data
+// Mock data for PropEquityLab with Australian property data
 
 export const mockUser = {
   id: '1',
