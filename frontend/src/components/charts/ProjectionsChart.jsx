@@ -22,7 +22,7 @@ import { formatCurrency, formatPercentage } from '../../utils/formatCurrency';
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
         return (
-            <div className="bg-gray-900 text-white p-4 rounded-lg shadow-lg border border-gray-700">
+            <div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white p-4 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
                 <p className="font-semibold mb-2">Year {label}</p>
                 {payload.map((entry, index) => (
                     <p key={index} className="text-sm" style={{ color: entry.color }}>

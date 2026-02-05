@@ -165,9 +165,9 @@ const OnboardingWizard = () => {
   const progress = ((currentStep) / (STEPS.length - 1)) * 100;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-6 py-4">
+      <header className="bg-card border-b border-border px-6 py-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             {currentStep > 0 && (
@@ -180,12 +180,12 @@ const OnboardingWizard = () => {
                 <path d="M8 8L20 20L8 32" stroke="#BFFF00" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
                 <path d="M32 8L20 20L32 32" stroke="#1a1f36" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-              <span className="text-xl font-bold text-gray-900">PropEquityLab</span>
+              <span className="text-xl font-bold text-foreground">PropEquityLab</span>
             </div>
           </div>
           
           <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-500">
+            <span className="text-sm text-muted-foreground">
               Step {currentStep + 1} of {STEPS.length}
             </span>
             <Button variant="ghost" size="sm" onClick={handleSkip}>
@@ -204,7 +204,7 @@ const OnboardingWizard = () => {
                 <span
                   key={step.id}
                   className={`text-xs ${
-                    index + 1 <= currentStep ? 'text-lime-600 font-medium' : 'text-gray-400'
+                    index + 1 <= currentStep ? 'text-lime-600 font-medium' : 'text-muted-foreground'
                   }`}
                 >
                   {step.name}

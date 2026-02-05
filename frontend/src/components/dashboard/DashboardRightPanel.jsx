@@ -6,7 +6,7 @@ import QuickSettings from './QuickSettings';
 
 const DashboardRightPanel = ({ onScenarioChange, onSettingsChange, onExport }) => {
   return (
-    <div className="flex flex-col h-full p-6 space-y-6 bg-white">
+    <div className="flex flex-col h-full p-6 space-y-6 bg-background border-l border-border">
       {/* Scenario Selector */}
       <ScenarioSelector onScenarioChange={onScenarioChange} />
 
@@ -19,7 +19,7 @@ const DashboardRightPanel = ({ onScenarioChange, onSettingsChange, onExport }) =
       {/* Export Button */}
       <Button
         onClick={onExport}
-        className="w-full bg-gray-900 hover:bg-gray-800 text-white"
+        className="w-full bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900"
       >
         <Download className="w-4 h-4 mr-2" />
         Export PDF Report

@@ -26,7 +26,7 @@ const PropertyCashflowsWidget = ({ properties = [] }) => {
             <>
               {properties.slice(0, 4).map((property, idx) => (
                 <div key={idx} className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600 truncate max-w-[60%]">
+                  <span className="text-sm text-muted-foreground truncate max-w-[60%]">
                     {property.address || property.name || `Property ${idx + 1}`}
                   </span>
                   <span className={`text-sm font-semibold ${property.cashflow >= 0 ? 'text-green-600' : 'text-red-500'
@@ -36,12 +36,12 @@ const PropertyCashflowsWidget = ({ properties = [] }) => {
                 </div>
               ))}
               {properties.length > 4 && (
-                <p className="text-xs text-gray-500 text-center pt-2">
+                <p className="text-xs text-muted-foreground text-center pt-2">
                   +{properties.length - 4} more properties
                 </p>
               )}
               <div className="pt-3 border-t border-gray-200 flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700">Total Monthly</span>
+                <span className="text-sm font-medium text-foreground">Total Monthly</span>
                 <span className={`text-lg font-bold ${totalCashflow >= 0 ? 'text-green-600' : 'text-red-500'
                   }`}>
                   {totalCashflow >= 0 ? '+' : '-'}{formatCurrency(Math.abs(totalCashflow))}
@@ -49,7 +49,7 @@ const PropertyCashflowsWidget = ({ properties = [] }) => {
               </div>
             </>
           ) : (
-            <p className="text-sm text-gray-500 text-center py-4">No properties added yet</p>
+            <p className="text-sm text-muted-foreground text-center py-4">No properties added yet</p>
           )}
         </div>
       </CardContent>
