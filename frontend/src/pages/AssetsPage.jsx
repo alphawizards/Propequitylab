@@ -94,27 +94,30 @@ const AssetsPage = () => {
     }
   };
 
-  // Calculate totals
+  // Calculate totals with safe number conversion
   const totals = assets.reduce((acc, asset) => {
-    const annualContrib = asset.contributions?.amount 
-      ? asset.contributions.amount * ({
-          weekly: 52,
-          fortnightly: 26,
-          monthly: 12,
-          quarterly: 4,
-          annual: 1,
-        }[asset.contributions?.frequency] || 12)
-      : 0;
+    const currentValue = Number(asset.current_value) || 0;
+    const purchaseValue = Number(asset.purchase_value) || 0;
+    const expectedReturn = Number(asset.expected_return) || 0;
+    const contribAmount = Number(asset.contributions?.amount) || 0;
+    
+    const annualContrib = contribAmount * ({
+        weekly: 52,
+        fortnightly: 26,
+        monthly: 12,
+        quarterly: 4,
+        annual: 1,
+      }[asset.contributions?.frequency] || 12);
     
     return {
-      totalValue: acc.totalValue + (asset.current_value || 0),
-      totalGain: acc.totalGain + ((asset.current_value || 0) - (asset.purchase_value || 0)),
+      totalValue: acc.totalValue + currentValue,
+      totalGain: acc.totalGain + (currentValue - purchaseValue),
       annualContributions: acc.annualContributions + annualContrib,
-      avgReturn: acc.avgReturn + (asset.expected_return || 0),
+      avgReturn: acc.avgReturn + expectedReturn,
     };
   }, { totalValue: 0, totalGain: 0, annualContributions: 0, avgReturn: 0 });
 
-  const avgExpectedReturn = assets.length > 0 ? (totals.avgReturn / assets.length).toFixed(1) : 0;
+  const avgExpectedReturn = assets.length > 0 ? (totals.avgReturn / assets.length).toFixed(1) : '0.0';
 
   const filteredAssets = assets.filter(asset =>
     asset.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -125,7 +128,7 @@ const AssetsPage = () => {
   if (!currentPortfolio) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <p className="text-gray-500">Please create a portfolio first.</p>
+        <p className="text-muted-foreground">Please create a portfolio first.</p>
       </div>
     );
   }
@@ -135,8 +138,8 @@ const AssetsPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Assets</h1>
-          <p className="text-gray-500">Manage your investment assets</p>
+          <h1 className="text-2xl font-bold text-foreground">Assets</h1>
+          <p className="text-muted-foreground">Manage your investment assets</p>
         </div>
         <Button
           onClick={handleAddAsset}
@@ -153,7 +156,7 @@ const AssetsPage = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Total Assets</p>
+                <p className="text-sm text-muted-foreground">Total Assets</p>
                 <p className="text-2xl font-bold text-gray-900">
                   ${(totals.totalValue / 1000).toFixed(0)}K
                 </p>
@@ -169,7 +172,7 @@ const AssetsPage = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Total Gain/Loss</p>
+                <p className="text-sm text-muted-foreground">Total Gain/Loss</p>
                 <p className={`text-2xl font-bold ${totals.totalGain >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                   {totals.totalGain >= 0 ? '+' : ''}${(totals.totalGain / 1000).toFixed(0)}K
                 </p>
@@ -185,7 +188,7 @@ const AssetsPage = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Annual Contributions</p>
+                <p className="text-sm text-muted-foreground">Annual Contributions</p>
                 <p className="text-2xl font-bold text-gray-900">
                   ${totals.annualContributions.toLocaleString()}
                 </p>
@@ -201,7 +204,7 @@ const AssetsPage = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Avg Expected Return</p>
+                <p className="text-sm text-muted-foreground">Avg Expected Return</p>
                 <p className="text-2xl font-bold text-gray-900">
                   {avgExpectedReturn}%
                 </p>
@@ -245,10 +248,10 @@ const AssetsPage = () => {
             <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
               <Wallet className="w-8 h-8 text-gray-400" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-foreground mb-2">
               {searchQuery ? 'No assets found' : 'No assets yet'}
             </h3>
-            <p className="text-gray-500 mb-6">
+            <p className="text-muted-foreground mb-6">
               {searchQuery
                 ? 'Try adjusting your search'
                 : 'Add your first asset to start tracking your wealth'}

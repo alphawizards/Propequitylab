@@ -35,8 +35,8 @@ const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload || !payload.length) return null;
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-lg border border-gray-200">
-      <p className="font-semibold text-gray-900 mb-2">{label}</p>
+    <div className="bg-card text-card-foreground p-4 rounded-lg shadow-lg border border-border">
+      <p className="font-semibold text-foreground mb-2">{label}</p>
       {payload.map((entry, index) => (
         <p key={index} className="text-sm" style={{ color: entry.color }}>
           {entry.name}: {formatCurrency(entry.value)}
@@ -141,8 +141,8 @@ const ProgressPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Progress Tracking</h1>
-          <p className="text-gray-500">Monitor your financial journey over time</p>
+          <h1 className="text-2xl font-bold text-foreground">Progress Tracking</h1>
+          <p className="text-muted-foreground">Monitor your financial journey over time</p>
         </div>
         <div className="flex gap-3">
           <Button
@@ -165,7 +165,7 @@ const ProgressPage = () => {
                 <DollarSign className="w-5 h-5 text-lime-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-500">Current Net Worth</p>
+                <p className="text-sm text-muted-foreground">Current Net Worth</p>
                 <p className="text-xl font-bold text-gray-900">
                   {formatCurrency(dashboardData?.net_worth || 0)}
                 </p>
@@ -185,7 +185,7 @@ const ProgressPage = () => {
                 )}
               </div>
               <div>
-                <p className="text-sm text-gray-500">Monthly Change</p>
+                <p className="text-sm text-muted-foreground">Monthly Change</p>
                 <p className={`text-xl font-bold ${growth.monthlyChange >= 0 ? 'text-green-600' : 'text-red-600'
                   }`}>
                   {growth.monthlyChange >= 0 ? '+' : ''}{formatCurrency(growth.monthlyChange)}
@@ -201,7 +201,7 @@ const ProgressPage = () => {
                 <TrendingUp className="w-5 h-5 text-blue-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-500">Total Growth</p>
+                <p className="text-sm text-muted-foreground">Total Growth</p>
                 <p className={`text-xl font-bold ${growth.totalChange >= 0 ? 'text-green-600' : 'text-red-600'
                   }`}>
                   {growth.totalPercent >= 0 ? '+' : ''}{growth.totalPercent.toFixed(1)}%
@@ -217,7 +217,7 @@ const ProgressPage = () => {
                 <Target className="w-5 h-5 text-orange-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-500">FIRE Progress</p>
+                <p className="text-sm text-muted-foreground">FIRE Progress</p>
                 <p className="text-xl font-bold text-orange-600">
                   {projectionData && projectionData.years_to_fire !== null
                     ? `${projectionData.years_to_fire} yrs`
@@ -244,7 +244,7 @@ const ProgressPage = () => {
             </CardHeader>
             <CardContent>
               {netWorthHistory.length === 0 ? (
-                <div className="h-80 flex items-center justify-center text-gray-500">
+                <div className="h-80 flex items-center justify-center text-muted-foreground">
                   <p>No historical data yet. Take snapshots regularly to track your progress.</p>
                 </div>
               ) : (
@@ -256,13 +256,13 @@ const ProgressPage = () => {
                         <stop offset="95%" stopColor="#84cc16" stopOpacity={0} />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                     <XAxis
                       dataKey="date"
-                      tick={{ fill: '#6b7280', fontSize: 12 }}
+                      tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
                     />
                     <YAxis
-                      tick={{ fill: '#6b7280', fontSize: 12 }}
+                      tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
                       tickFormatter={formatCurrency}
                     />
                     <Tooltip content={<CustomTooltip />} />
@@ -308,26 +308,26 @@ const ProgressPage = () => {
                 <>
                   {/* FIRE Summary */}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                    <div className="p-3 bg-gray-50 rounded-lg">
-                      <p className="text-xs text-gray-500">FIRE Number</p>
-                      <p className="text-lg font-bold text-gray-900">
+                    <div className="p-3 bg-muted rounded-lg">
+                      <p className="text-xs text-muted-foreground">FIRE Number</p>
+                      <p className="text-lg font-bold text-foreground">
                         {formatCurrency(projectionData.fire_number)}
                       </p>
                     </div>
-                    <div className="p-3 bg-orange-50 rounded-lg">
-                      <p className="text-xs text-gray-500">FIRE Age</p>
+                    <div className="p-3 bg-orange-100/50 dark:bg-orange-900/20 rounded-lg">
+                      <p className="text-xs text-muted-foreground">FIRE Age</p>
                       <p className="text-lg font-bold text-orange-600">
                         {projectionData.fire_age || 'N/A'}
                       </p>
                     </div>
-                    <div className="p-3 bg-green-50 rounded-lg">
-                      <p className="text-xs text-gray-500">Success Probability</p>
+                    <div className="p-3 bg-green-100/50 dark:bg-green-900/20 rounded-lg">
+                      <p className="text-xs text-muted-foreground">Success Probability</p>
                       <p className="text-lg font-bold text-green-600">
                         {projectionData.success_probability}%
                       </p>
                     </div>
-                    <div className="p-3 bg-blue-50 rounded-lg">
-                      <p className="text-xs text-gray-500">Final Net Worth</p>
+                    <div className="p-3 bg-blue-100/50 dark:bg-blue-900/20 rounded-lg">
+                      <p className="text-xs text-muted-foreground">Final Net Worth</p>
                       <p className="text-lg font-bold text-blue-600">
                         {formatCurrency(projectionData.final_net_worth)}
                       </p>
@@ -342,11 +342,11 @@ const ProgressPage = () => {
                           <stop offset="95%" stopColor="#84cc16" stopOpacity={0} />
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                       <XAxis
                         dataKey="age"
-                        tick={{ fill: '#6b7280', fontSize: 12 }}
-                        label={{ value: 'Age', position: 'insideBottom', offset: -5 }}
+                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                        label={{ value: 'Age', position: 'insideBottom', offset: -5, fill: 'hsl(var(--foreground))' }}
                       />
                       <YAxis
                         tick={{ fill: '#6b7280', fontSize: 12 }}
