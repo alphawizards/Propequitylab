@@ -127,7 +127,7 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex relative">
       {/* Left Side - Dark with Branding */}
       <div className="hidden lg:flex lg:w-1/2 bg-[#1a1f36] relative overflow-hidden">
         {/* Diagonal Lines */}
@@ -352,6 +352,13 @@ const Register = () => {
             </div>
           </form>
         </div>
+      </div>
+
+      {/* Footer */}
+      <div className="absolute bottom-0 left-0 right-0 py-4 text-center text-sm text-gray-500">
+        <Link to="/legal/privacy" className="hover:text-gray-700">Privacy Policy</Link>
+        <span className="mx-2">|</span>
+        <Link to="/legal/terms" className="hover:text-gray-700">Terms of Service</Link>
       </div>
     </div>
   );

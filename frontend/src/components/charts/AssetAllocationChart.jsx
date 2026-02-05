@@ -38,10 +38,10 @@ const CustomTooltip = ({ active, payload }) => {
   const data = payload[0].payload;
 
   return (
-    <div className="bg-white p-3 rounded-lg shadow-lg border border-gray-200">
-      <p className="font-semibold text-gray-900">{data.name}</p>
-      <p className="text-sm text-gray-600">{formatCurrency(data.value)}</p>
-      <p className="text-sm text-gray-500">{(data.percentage || 0).toFixed(1)}%</p>
+    <div className="bg-card text-card-foreground p-3 rounded-lg shadow-lg border border-border">
+      <p className="font-semibold text-foreground">{data.name}</p>
+      <p className="text-sm text-muted-foreground">{formatCurrency(data.value)}</p>
+      <p className="text-sm text-muted-foreground">{(data.percentage || 0).toFixed(1)}%</p>
     </div>
   );
 };
@@ -106,7 +106,7 @@ const AssetAllocationChart = ({ breakdown = {}, loading = false }) => {
           <CardTitle>Asset Allocation</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-80 flex items-center justify-center text-gray-500">
+          <div className="h-80 flex items-center justify-center text-muted-foreground">
             <p>No assets to display. Add assets to see your allocation.</p>
           </div>
         </CardContent>
@@ -142,7 +142,7 @@ const AssetAllocationChart = ({ breakdown = {}, loading = false }) => {
             <Tooltip content={<CustomTooltip />} />
             <Legend
               formatter={(value, entry) => (
-                <span className="text-sm text-gray-700">{value}</span>
+                <span style={{ color: 'hsl(var(--foreground))' }}>{value}</span>
               )}
             />
           </PieChart>

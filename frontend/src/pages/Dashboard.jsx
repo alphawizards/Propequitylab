@@ -32,13 +32,13 @@ const Dashboard = ({ user }) => {
     const totalValue = properties.reduce((sum, p) => sum + (p.currentValue || 0), 0) / 1000000;
     const totalDebt = properties.reduce((sum, p) => sum + (p.loanAmount || 0), 0) / 1000000;
     const equity = totalValue - totalDebt;
-    
+
     // Calculate goal year (when equity exceeds certain threshold)
     const targetEquity = 10; // $10m target
     const avgGrowth = 0.052;
     const yearsToGoal = equity > 0 ? Math.ceil(Math.log(targetEquity / equity) / Math.log(1 + avgGrowth)) : 40;
     const goalYear = new Date().getFullYear() + yearsToGoal;
-    
+
     return {
       properties: properties.length,
       totalValue: totalValue,
@@ -65,25 +65,25 @@ const Dashboard = ({ user }) => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Navbar
         user={user}
         activeTab={activeTab}
         onTabChange={setActiveTab}
       />
-      
+
       <main className="max-w-7xl mx-auto px-6 py-8">
         <PortfolioHeader
           portfolio={{ ...portfolio, ...portfolioSummary }}
           onAddProperty={() => setIsAddPropertyOpen(true)}
           onViewMembers={() => setIsMembersOpen(true)}
         />
-        
+
         <PortfolioStats
           summary={portfolioSummary}
           lastUpdated={portfolio.lastUpdated}
         />
-        
+
         <ProjectionControls
           viewType={viewType}
           onViewTypeChange={setViewType}
@@ -95,13 +95,13 @@ const Dashboard = ({ user }) => {
           chartType={chartType}
           onChartTypeChange={setChartType}
         />
-        
+
         <ProjectionChart
           data={forecastData}
           viewType={viewType}
           chartType={chartType}
         />
-        
+
         <ForecastTable
           data={forecastData}
           viewType={viewType}
@@ -109,19 +109,19 @@ const Dashboard = ({ user }) => {
           selectedYear={selectedYear}
         />
       </main>
-      
+
       <AddPropertyModal
         isOpen={isAddPropertyOpen}
         onClose={() => setIsAddPropertyOpen(false)}
         onAdd={handleAddProperty}
       />
-      
+
       <MembersModal
         isOpen={isMembersOpen}
         onClose={() => setIsMembersOpen(false)}
         members={portfolioMembers}
       />
-      
+
       {/* Get Started Button */}
       <button className="fixed bottom-6 right-6 bg-lime-400 text-gray-900 px-6 py-3 rounded-full font-semibold shadow-lg hover:bg-lime-500 transition-all hover:shadow-xl">
         Get Started

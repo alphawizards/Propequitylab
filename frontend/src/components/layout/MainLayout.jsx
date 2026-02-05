@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './Header';
+import Footer from './Footer';
 
 const MainLayout = ({ title = 'Dashboard', subtitle, rightPanel }) => {
   return (
@@ -12,22 +13,27 @@ const MainLayout = ({ title = 'Dashboard', subtitle, rightPanel }) => {
       </div>
 
       {/* 2. Main Content Area (Fluid Center) */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-[#F6F7F9]">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-background">
         {/* Header (Sticky Top) */}
         <Header title={title} subtitle={subtitle} />
 
-        {/* Scrollable Content */}
-        <main className="flex-1 overflow-y-auto p-6 scrollbar-hide">
-             <div className="max-w-5xl mx-auto w-full">
+        {/* Scrollable Content + Footer */}
+        <main className="flex-1 overflow-y-auto scrollbar-hide">
+          <div className="min-h-full flex flex-col">
+            <div className="flex-1 p-6">
+              <div className="max-w-5xl mx-auto w-full">
                 <Outlet />
-             </div>
+              </div>
+            </div>
+            <Footer />
+          </div>
         </main>
       </div>
 
       {/* 3. Right Panel (Fixed Right - Optional) */}
       {rightPanel && (
         <div className="w-80 flex-shrink-0 border-l border-border bg-card z-10 hidden xl:flex flex-col overflow-y-auto">
-            {rightPanel}
+          {rightPanel}
         </div>
       )}
     </div>

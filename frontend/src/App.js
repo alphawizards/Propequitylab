@@ -32,6 +32,7 @@ import ScenarioDashboardPage from './pages/ScenarioDashboardPage';
 import { Toaster } from './components/ui/toaster';
 import * as Sentry from '@sentry/react';
 import ErrorFallback from './components/ErrorBoundary';
+import CookieBanner from './components/CookieBanner';
 
 // Lazy load WelcomeModal to reduce initial bundle size
 const WelcomeModal = lazy(() => import('./components/onboarding/WelcomeModal'));
@@ -188,6 +189,7 @@ function App() {
                     <AppRoutes />
                     <WelcomeModalWrapper />
                     <Toaster />
+                    <CookieBanner />
                   </div>
                 </PortfolioProvider>
               </UserProvider>

@@ -17,8 +17,8 @@ const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload || !payload.length) return null;
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-lg border border-gray-200">
-      <p className="font-semibold text-gray-900 mb-2">{label}</p>
+    <div className="bg-card text-card-foreground p-4 rounded-lg shadow-lg border border-border">
+      <p className="font-semibold text-foreground mb-2">{label}</p>
       {payload.map((entry, index) => (
         <p key={index} className="text-sm" style={{ color: entry.color }}>
           {entry.name}: {formatCurrency(entry.value)}
@@ -59,7 +59,7 @@ const NetWorthChart = ({ data = [], loading = false }) => {
           <CardTitle>Net Worth Over Time</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-80 flex items-center justify-center text-gray-500">
+          <div className="h-80 flex items-center justify-center text-muted-foreground">
             <p>No historical data available yet. Create a snapshot to start tracking.</p>
           </div>
         </CardContent>

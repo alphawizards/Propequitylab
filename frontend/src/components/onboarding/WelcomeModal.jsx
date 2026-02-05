@@ -74,7 +74,7 @@ const WelcomeModal = ({ isOpen, onClose, onComplete }) => {
         </DialogHeader>
 
         <div className="py-6 space-y-4">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted-foreground">
             How would you like to get started?
           </p>
 
@@ -88,8 +88,8 @@ const WelcomeModal = ({ isOpen, onClose, onComplete }) => {
                 <Rocket className="w-6 h-6 text-lime-700" />
               </div>
               <div className="flex-1">
-                <h3 className="font-semibold text-gray-900">Quick Start with Demo Data</h3>
-                <p className="text-sm text-gray-600 mt-1">
+                <h3 className="font-semibold text-foreground">Quick Start with Demo Data</h3>
+                <p className="text-sm text-muted-foreground mt-1">
                   Load sample properties, income, and expenses to explore the platform instantly.
                 </p>
               </div>
@@ -106,8 +106,8 @@ const WelcomeModal = ({ isOpen, onClose, onComplete }) => {
                 <FileSpreadsheet className="w-6 h-6 text-gray-700" />
               </div>
               <div className="flex-1">
-                <h3 className="font-semibold text-gray-900">Start Fresh</h3>
-                <p className="text-sm text-gray-600 mt-1">
+                <h3 className="font-semibold text-foreground">Start Fresh</h3>
+                <p className="text-sm text-muted-foreground mt-1">
                   Begin with an empty portfolio and enter your own financial data.
                 </p>
               </div>

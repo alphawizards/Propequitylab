@@ -115,7 +115,7 @@ const DashboardNew = () => {
           <div className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-6">
             <Building className="w-10 h-10 text-emerald-600" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome to PropEquityLab</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Welcome to PropEquityLab</h2>
           <p className="text-gray-600 mb-6">
             Get started by creating your first portfolio to track your property investments and financial goals.
           </p>
@@ -147,16 +147,16 @@ const DashboardNew = () => {
   return (
     <div className="space-y-6">
       {/* Welcome Banner */}
-      <Card className="bg-gradient-to-r from-gray-900 to-gray-800 text-white border-0">
+      <Card className="bg-gradient-to-r from-emerald-600 to-emerald-800 text-white border-0">
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold">Welcome back, {user?.name?.split(' ')[0]}!</h2>
-              <p className="text-gray-300 mt-1">Here's your financial snapshot</p>
+              <p className="text-emerald-100 mt-1">Here's your financial snapshot</p>
             </div>
             <div className="text-right">
-              <p className="text-sm text-gray-400">Net Worth</p>
-              <p className="text-3xl font-bold text-emerald-400">{formatCurrency(data.net_worth)}</p>
+              <p className="text-sm text-emerald-200">Net Worth</p>
+              <p className="text-3xl font-bold text-white">{formatCurrency(data.net_worth)}</p>
             </div>
           </div>
         </CardContent>
@@ -214,9 +214,9 @@ const DashboardNew = () => {
                 <div key={item.label} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className={`w-3 h-3 rounded-full ${item.color}`}></div>
-                    <span className="text-sm text-gray-600">{item.label}</span>
+                    <span className="text-sm text-muted-foreground">{item.label}</span>
                   </div>
-                  <span className="text-sm font-medium text-gray-900">{formatCurrency(item.value)}</span>
+                  <span className="text-sm font-medium text-foreground">{formatCurrency(item.value)}</span>
                 </div>
               ))}
             </div>
@@ -243,9 +243,9 @@ const DashboardNew = () => {
                 <div key={item.label} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className={`w-3 h-3 rounded-full ${item.color}`}></div>
-                    <span className="text-sm text-gray-600">{item.label}</span>
+                    <span className="text-sm text-muted-foreground">{item.label}</span>
                   </div>
-                  <span className="text-sm font-medium text-gray-900">{formatCurrency(item.value)}</span>
+                  <span className="text-sm font-medium text-foreground">{formatCurrency(item.value)}</span>
                 </div>
               ))}
             </div>
@@ -258,7 +258,7 @@ const DashboardNew = () => {
         {/* Net Worth Over Time Chart */}
         <div className="lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Financial History</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Financial History</h3>
             <Button
               onClick={handleCreateSnapshot}
               disabled={snapshotLoading || !currentPortfolio?.id}
