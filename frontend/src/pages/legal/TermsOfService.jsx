@@ -28,7 +28,7 @@ const TermsOfService = () => {
           <section>
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">Introduction</h2>
             <p className="text-gray-700 leading-relaxed">
-              These Terms of Service ("Terms") govern your access to and use of Zapiio's website, software,
+              These Terms of Service ("Terms") govern your access to and use of Propequitylab's website, software,
               and services (collectively, the "Service"). By accessing or using the Service, you agree to be
               bound by these Terms. If you do not agree to these Terms, do not use the Service.
             </p>
@@ -38,7 +38,7 @@ const TermsOfService = () => {
           <section>
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">1. Service Description</h2>
             <p className="text-gray-700 mb-4 leading-relaxed">
-              Zapiio provides a property portfolio tracking and financial planning platform that allows you to:
+              Propequitylab provides a property portfolio tracking and financial planning platform that allows you to:
             </p>
             <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
               <li>Track multiple property portfolios and calculate net worth</li>
@@ -88,7 +88,7 @@ const TermsOfService = () => {
               <li>Reverse engineer, decompile, or disassemble any part of the Service</li>
               <li>Share your account with others or create multiple accounts</li>
               <li>Upload malicious code, viruses, or harmful content</li>
-              <li>Violate the intellectual property rights of Zapiio or others</li>
+              <li>Violate the intellectual property rights of Propequitylab or others</li>
             </ul>
           </section>
 
@@ -97,12 +97,12 @@ const TermsOfService = () => {
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">4. Your Data</h2>
             <p className="text-gray-700 mb-4 leading-relaxed">
               <strong>Data Ownership:</strong> You retain all rights to the data you input into the Service.
-              By using the Service, you grant Zapiio a license to use, store, and process your data solely
+              By using the Service, you grant Propequitylab a license to use, store, and process your data solely
               for the purpose of providing the Service.
             </p>
             <p className="text-gray-700 mb-4 leading-relaxed">
               <strong>Data Accuracy:</strong> You are responsible for the accuracy and completeness of the
-              data you provide. Zapiio is not liable for any decisions made based on inaccurate data.
+              data you provide. Propequitylab is not liable for any decisions made based on inaccurate data.
             </p>
             <p className="text-gray-700 leading-relaxed">
               <strong>Data Backup:</strong> While we implement backup procedures, you are responsible for
@@ -114,7 +114,7 @@ const TermsOfService = () => {
           <section>
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">5. Intellectual Property</h2>
             <p className="text-gray-700 mb-4 leading-relaxed">
-              The Service, including all content, features, and functionality, is owned by Zapiio and is
+              The Service, including all content, features, and functionality, is owned by Propequitylab and is
               protected by copyright, trademark, and other intellectual property laws.
             </p>
             <p className="text-gray-700 leading-relaxed">
@@ -131,7 +131,7 @@ const TermsOfService = () => {
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Not Financial Advice</h3>
               <p className="text-gray-700 leading-relaxed">
-                <strong>Zapiio is a financial tracking and planning tool, NOT a financial advisor.</strong> The
+                <strong>Propequitylab is a financial tracking and planning tool, NOT a financial advisor.</strong> The
                 Service provides calculations, projections, and visualizations based on data you provide, but
                 does not constitute financial, investment, tax, or legal advice.
               </p>
@@ -148,7 +148,7 @@ const TermsOfService = () => {
             </ul>
 
             <p className="text-gray-700 leading-relaxed">
-              Zapiio is not responsible for any financial losses, investment decisions, or tax implications
+              Propequitylab is not responsible for any financial losses, investment decisions, or tax implications
               resulting from your use of the Service.
             </p>
           </section>
@@ -179,7 +179,7 @@ const TermsOfService = () => {
           <section>
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">8. Limitation of Liability</h2>
             <p className="text-gray-700 mb-4 leading-relaxed">
-              To the maximum extent permitted by law, Zapiio and its affiliates, directors, employees, and
+              To the maximum extent permitted by law, Propequitylab and its affiliates, directors, employees, and
               agents shall not be liable for:
             </p>
             <ul className="list-disc list-inside text-gray-700 space-y-2 mb-4 ml-4">
@@ -268,8 +268,8 @@ const TermsOfService = () => {
               If you have questions about these Terms, please contact us:
             </p>
             <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-              <p className="text-gray-700"><strong>Email:</strong> <a href="mailto:legal@zapiio.com" className="text-lime-600 hover:text-lime-700">legal@zapiio.com</a></p>
-              <p className="text-gray-700 mt-2"><strong>Support:</strong> <a href="mailto:support@zapiio.com" className="text-lime-600 hover:text-lime-700">support@zapiio.com</a></p>
+              <p className="text-gray-700"><strong>Email:</strong> <a href="mailto:legal@propequitylab.com.au" className="text-lime-600 hover:text-lime-700">legal@propequitylab.com.au</a></p>
+              <p className="text-gray-700 mt-2"><strong>Support:</strong> <a href="mailto:support@propequitylab.com.au" className="text-lime-600 hover:text-lime-700">support@propequitylab.com.au</a></p>
             </div>
           </section>
 
@@ -282,7 +282,7 @@ const TermsOfService = () => {
             </p>
             <p className="text-sm text-gray-600 mt-4 leading-relaxed">
               <strong>Entire Agreement:</strong> These Terms, together with our Privacy Policy, constitute the
-              entire agreement between you and Zapiio regarding the Service and supersede any prior agreements.
+              entire agreement between you and Propequitylab regarding the Service and supersede any prior agreements.
             </p>
           </section>
         </div>
