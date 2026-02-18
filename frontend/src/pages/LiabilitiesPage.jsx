@@ -94,27 +94,33 @@ const LiabilitiesPage = () => {
     }
   };
 
-  // Calculate totals
+  // Calculate totals with safe number conversion
   const totals = liabilities.reduce((acc, liability) => {
-    const monthlyPayment = (liability.minimum_payment + (liability.extra_payment || 0)) * ({
+    const currentBalance = Number(liability.current_balance) || 0;
+    const originalAmount = Number(liability.original_amount) || 0;
+    const interestRate = Number(liability.interest_rate) || 0;
+    const minimumPayment = Number(liability.minimum_payment) || 0;
+    const extraPayment = Number(liability.extra_payment) || 0;
+    
+    const monthlyPayment = (minimumPayment + extraPayment) * ({
       weekly: 52/12,
       fortnightly: 26/12,
       monthly: 1,
     }[liability.payment_frequency] || 1);
     
-    const annualInterest = liability.current_balance * (liability.interest_rate / 100);
+    const annualInterest = currentBalance * (interestRate / 100);
     
     return {
-      totalBalance: acc.totalBalance + (liability.current_balance || 0),
-      totalOriginal: acc.totalOriginal + (liability.original_amount || 0),
+      totalBalance: acc.totalBalance + currentBalance,
+      totalOriginal: acc.totalOriginal + originalAmount,
       monthlyPayments: acc.monthlyPayments + monthlyPayment,
       annualInterest: acc.annualInterest + annualInterest,
-      avgRate: acc.avgRate + (liability.interest_rate || 0),
+      avgRate: acc.avgRate + interestRate,
     };
   }, { totalBalance: 0, totalOriginal: 0, monthlyPayments: 0, annualInterest: 0, avgRate: 0 });
 
-  const avgInterestRate = liabilities.length > 0 ? (totals.avgRate / liabilities.length).toFixed(1) : 0;
-  const totalPaid = totals.totalOriginal - totals.totalBalance;
+  const avgInterestRate = liabilities.length > 0 ? (totals.avgRate / liabilities.length).toFixed(1) : '0.0';
+  const totalPaid = Math.max(0, totals.totalOriginal - totals.totalBalance);
 
   const filteredLiabilities = liabilities.filter(liability =>
     liability.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -125,7 +131,7 @@ const LiabilitiesPage = () => {
   if (!currentPortfolio) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <p className="text-gray-500">Please create a portfolio first.</p>
+        <p className="text-muted-foreground">Please create a portfolio first.</p>
       </div>
     );
   }
@@ -135,8 +141,8 @@ const LiabilitiesPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Liabilities</h1>
-          <p className="text-gray-500">Manage your debts and loans</p>
+          <h1 className="text-2xl font-bold text-foreground">Liabilities</h1>
+          <p className="text-muted-foreground">Manage your debts and loans</p>
         </div>
         <Button
           onClick={handleAddLiability}
@@ -153,7 +159,7 @@ const LiabilitiesPage = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Total Debt</p>
+                <p className="text-sm text-muted-foreground">Total Debt</p>
                 <p className="text-2xl font-bold text-red-600">
                   ${(totals.totalBalance / 1000).toFixed(0)}K
                 </p>
@@ -169,7 +175,7 @@ const LiabilitiesPage = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Total Paid Off</p>
+                <p className="text-sm text-muted-foreground">Total Paid Off</p>
                 <p className="text-2xl font-bold text-green-600">
                   ${(totalPaid / 1000).toFixed(0)}K
                 </p>
@@ -185,7 +191,7 @@ const LiabilitiesPage = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Monthly Payments</p>
+                <p className="text-sm text-muted-foreground">Monthly Payments</p>
                 <p className="text-2xl font-bold text-gray-900">
                   ${totals.monthlyPayments.toFixed(0)}
                 </p>
@@ -201,7 +207,7 @@ const LiabilitiesPage = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Avg Interest Rate</p>
+                <p className="text-sm text-muted-foreground">Avg Interest Rate</p>
                 <p className="text-2xl font-bold text-orange-600">
                   {avgInterestRate}%
                 </p>
@@ -245,10 +251,10 @@ const LiabilitiesPage = () => {
             <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
               <CreditCard className="w-8 h-8 text-gray-400" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-foreground mb-2">
               {searchQuery ? 'No liabilities found' : 'No liabilities yet'}
             </h3>
-            <p className="text-gray-500 mb-6">
+            <p className="text-muted-foreground mb-6">
               {searchQuery
                 ? 'Try adjusting your search'
                 : 'Track your debts to understand your full financial picture'}

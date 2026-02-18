@@ -28,7 +28,7 @@ const PrivacyPolicy = () => {
           <section>
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">Introduction</h2>
             <p className="text-gray-700 leading-relaxed">
-              Welcome to Zapiio. We respect your privacy and are committed to protecting your personal data.
+              Welcome to Propequitylab. We respect your privacy and are committed to protecting your personal data.
               This privacy policy will inform you about how we look after your personal data when you visit
               our website and use our services, and tell you about your privacy rights and how the law protects you.
             </p>
@@ -40,7 +40,7 @@ const PrivacyPolicy = () => {
 
             <h3 className="text-lg font-semibold text-gray-800 mb-2">Personal Information</h3>
             <p className="text-gray-700 mb-4 leading-relaxed">
-              When you register for Zapiio, we collect:
+              When you register for Propequitylab, we collect:
             </p>
             <ul className="list-disc list-inside text-gray-700 space-y-2 mb-4 ml-4">
               <li>Name and email address</li>
@@ -140,7 +140,7 @@ const PrivacyPolicy = () => {
             </ul>
             <p className="text-gray-700 mt-4 leading-relaxed">
               To exercise these rights, visit your <Link to="/settings" className="text-lime-600 hover:text-lime-700 font-semibold">Settings</Link> page
-              or contact us at <a href="mailto:privacy@zapiio.com" className="text-lime-600 hover:text-lime-700">privacy@zapiio.com</a>.
+              or contact us at <a href="mailto:privacy@propequitylab.com.au" className="text-lime-600 hover:text-lime-700">privacy@propequitylab.com.au</a>.
             </p>
           </section>
 
@@ -203,8 +203,8 @@ const PrivacyPolicy = () => {
               If you have any questions about this privacy policy or our data practices, please contact us:
             </p>
             <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-              <p className="text-gray-700"><strong>Email:</strong> <a href="mailto:privacy@zapiio.com" className="text-lime-600 hover:text-lime-700">privacy@zapiio.com</a></p>
-              <p className="text-gray-700 mt-2"><strong>Data Protection Officer:</strong> <a href="mailto:dpo@zapiio.com" className="text-lime-600 hover:text-lime-700">dpo@zapiio.com</a></p>
+              <p className="text-gray-700"><strong>Email:</strong> <a href="mailto:privacy@propequitylab.com.au" className="text-lime-600 hover:text-lime-700">privacy@propequitylab.com.au</a></p>
+              <p className="text-gray-700 mt-2"><strong>Data Protection Officer:</strong> <a href="mailto:dpo@propequitylab.com.au" className="text-lime-600 hover:text-lime-700">dpo@propequitylab.com.au</a></p>
             </div>
           </section>
 

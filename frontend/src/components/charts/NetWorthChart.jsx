@@ -29,12 +29,12 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 const NetWorthChart = ({ data = [], loading = false }) => {
-  // Transform data for the chart
+  // Transform data for the chart with safe number conversion
   const chartData = data.map((snapshot) => ({
     date: snapshot.date,
-    assets: snapshot.total_assets || 0,
-    liabilities: snapshot.total_liabilities || 0,
-    netWorth: snapshot.net_worth || 0,
+    assets: Number(snapshot.total_assets) || 0,
+    liabilities: Number(snapshot.total_liabilities) || 0,
+    netWorth: Number(snapshot.net_worth) || 0,
   })).reverse(); // Reverse to show oldest first
 
   if (loading) {
@@ -90,15 +90,15 @@ const NetWorthChart = ({ data = [], loading = false }) => {
                 <stop offset="95%" stopColor="#10B981" stopOpacity={0.1} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
             <XAxis
               dataKey="date"
-              tick={{ fill: '#6b7280', fontSize: 12 }}
-              tickLine={{ stroke: '#e5e7eb' }}
+              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+              tickLine={{ stroke: 'hsl(var(--border))' }}
             />
             <YAxis
-              tick={{ fill: '#6b7280', fontSize: 12 }}
-              tickLine={{ stroke: '#e5e7eb' }}
+              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+              tickLine={{ stroke: 'hsl(var(--border))' }}
               tickFormatter={formatCurrency}
             />
             <Tooltip content={<CustomTooltip />} />
