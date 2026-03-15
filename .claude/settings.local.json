@@ -20,7 +20,17 @@
       "Bash(ralph --help:*)",
       "Bash(ralph:*)",
       "Bash(chmod:*)",
-      "Bash(cd:*)"
+      "Bash(cd:*)",
+      "WebSearch",
+      "Bash(claude mcp:*)",
+      "mcp__jcodemunch__index_folder",
+      "mcp__jcodemunch__get_repo_outline",
+      "mcp__jcodemunch__get_file_tree",
+      "mcp__jcodemunch__get_file_outline",
+      "Bash(gh repo:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:api.github.com)"
     ]
   }
 }

@@ -1,0 +1,26 @@
+stories:
+  - name: "Onboarding page loads after login for new-like user"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter dev@propequitylab.com in the email field
+      Enter DevTest2026! in the password field
+      Click Sign In and wait for redirect
+      Navigate to https://www.propequitylab.com/onboarding
+      Verify the onboarding page loads
+      Check if a wizard or step-by-step form is displayed
+      Take a screenshot of the onboarding page
+
+  - name: "Dashboard empty states display correctly"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter dev@propequitylab.com in the email field
+      Enter DevTest2026! in the password field
+      Click Sign In and wait for dashboard to load
+      Navigate to https://www.propequitylab.com/finances/income
+      Check if the page shows either income sources or an empty state message
+      Take a screenshot
+      Navigate to https://www.propequitylab.com/finances/assets
+      Check if the page shows either assets or an empty state message
+      Take a screenshot

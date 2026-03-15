@@ -1,0 +1,60 @@
+stories:
+  - name: "Settings page loads with profile form"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter "dev@propequitylab.com" in the email field
+      Enter "DevTest2026!" in the password field
+      Click the Sign In / login button
+      Navigate to https://www.propequitylab.com/settings
+      Verify the Settings page loads successfully
+      Verify the Profile Information section is visible with fields: Full Name, Email, Country, State, Currency
+      Verify the Email field is disabled (not editable)
+      Verify a "Save Changes" button is present
+      Take a screenshot of the profile settings section
+
+  - name: "Settings page shows password change section"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter "dev@propequitylab.com" in the email field
+      Enter "DevTest2026!" in the password field
+      Click the Sign In / login button
+      Navigate to https://www.propequitylab.com/settings
+      Verify a Password Change section is visible
+      Verify input fields exist for: Current Password, New Password, Confirm New Password
+      Verify password requirements text is shown (8+ chars, mixed case, number, special char)
+      Verify a "Change Password" button is present
+      Take a screenshot of the password change section
+
+  - name: "Settings page shows privacy and data section"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter "dev@propequitylab.com" in the email field
+      Enter "DevTest2026!" in the password field
+      Click the Sign In / login button
+      Navigate to https://www.propequitylab.com/settings
+      Scroll down to the Privacy & Data section
+      Verify a "Download Your Data" button is visible (data export / right to portability)
+      Verify a "Delete Account" button is visible (red/destructive styling)
+      Take a screenshot of the privacy and data section
+
+  - name: "Settings page delete account shows confirmation modal"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter "dev@propequitylab.com" in the email field
+      Enter "DevTest2026!" in the password field
+      Click the Sign In / login button
+      Navigate to https://www.propequitylab.com/settings
+      Scroll to the Privacy & Data section
+      Click the "Delete Account" button
+      Verify a confirmation modal appears
+      Verify the modal shows a warning about consequences of deletion
+      Verify the modal requires password confirmation
+      Verify the modal requires typing "DELETE" for confirmation
+      Verify a checkbox acknowledging permanent deletion is present
+      Verify Cancel and "Delete Forever" buttons are present
+      Take a screenshot of the delete confirmation modal
+      Click Cancel to close the modal without deleting

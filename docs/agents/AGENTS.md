@@ -1,69 +1,170 @@
-# Agent Instructions
+# AI Agent Roster — PropEquityLab
 
-> This file is mirrored across CLAUDE.md, AGENTS.md, and GEMINI.md so the same instructions load in any AI environment.
+This document describes the full roster of AI agents configured for PropEquityLab development. Agents are installed at `~/.claude/agents/` and are available in any Claude Code session.
 
-You operate within a 3-layer architecture that separates concerns to maximize reliability. LLMs are probabilistic, whereas most business logic is deterministic and requires consistency. This system fixes that mismatch.
+---
 
-## The 3-Layer Architecture
+## How Agents Work
 
-**Layer 1: Directive (What to do)**
-- Basically just SOPs written in Markdown, live in `directives/`
-- Define the goals, inputs, tools/scripts to use, outputs, and edge cases
-- Natural language instructions, like you'd give a mid-level employee
+Agents in `~/.claude/agents/` are **Claude Code subagents** — specialized AI personas that Claude can invoke automatically or that you can request explicitly.
 
-**Layer 2: Orchestration (Decision making)**
-- This is you. Your job: intelligent routing.
-- Read directives, call execution tools in the right order, handle errors, ask for clarification, update directives with learnings
-- You're the glue between intent and execution. E.g you don't try scraping websites yourself—you read `directives/scrape_website.md` and come up with inputs/outputs and then run `execution/scrape_single_site.py`
+**Automatic activation**: Claude will select the right agent based on your request.  
+**Manual activation**: You can explicitly ask for a specific agent:
+> "Use the PropEquityLab Backend Engineer agent to add a new endpoint for property tags"
 
-**Layer 3: Execution (Doing the work)**
-- Deterministic Python scripts in `execution/`
-- Environment variables, api tokens, etc are stored in `.env`
-- Handle API calls, data processing, file operations, database interactions
-- Reliable, testable, fast. Use scripts instead of manual work. Commented well.
+**Source**: Agents were adapted from the [agency-agents](https://github.com/msitarzewski/agency-agents) open-source collection and customized for this codebase.
 
-**Why this works:** if you do everything yourself, errors compound. 90% accuracy per step = 59% success over 5 steps. The solution is push complexity into deterministic code. That way you just focus on decision-making.
+---
 
-## Operating Principles
+## 🏠 PropEquityLab-Specific Agents (Start Here)
 
-**1. Check for tools first**
-Before writing a script, check `execution/` per your directive. Only create new scripts if none exist.
+These are custom agents built specifically for this codebase. They know the exact stack, file layout, naming conventions, and patterns.
 
-**2. Self-anneal when things break**
-- Read error message and stack trace
-- Fix the script and test it again (unless it uses paid tokens/credits/etc—in which case you check w user first)
-- Update the directive with what you learned (API limits, timing, edge cases)
-- Example: you hit an API rate limit → you then look into API → find a batch endpoint that would fix → rewrite script to accommodate → test → update directive.
+### 🟢 PropEquityLab Feature Planner
+**File**: `propequitylab-feature-planner.md`  
+**When to use**: Before starting any significant new feature or refactor.  
+**What it does**: Converts a feature request into a complete implementation plan — data models, API contracts, frontend changes, migration steps, security requirements, and an ordered task list. Outputs a directive file to `directives/`.
 
-**3. Update directives as you learn**
-Directives are living documents. When you discover API constraints, better approaches, common errors, or timing expectations—update the directive. But don't create or overwrite directives without asking unless explicitly told to. Directives are your instruction set and must be preserved (and improved upon over time, not extemporaneously used and then discarded).
+> Example: "Plan a property comparison feature that lets users compare two properties side-by-side"
 
-## Self-annealing loop
+---
 
-Errors are learning opportunities. When something breaks:
-1. Fix it
-2. Update the tool
-3. Test tool, make sure it works
-4. Update directive to include new flow
-5. System is now stronger
+### 🔵 PropEquityLab Backend Engineer
+**File**: `propequitylab-backend-engineer.md`  
+**When to use**: Any backend work — new endpoints, model changes, migrations, financial calculations, auth fixes.  
+**What it does**: Writes FastAPI/SQLModel code that exactly matches the existing patterns. Knows the full `backend/` structure, the `Decimal` requirement for financial fields, the ownership-check pattern, and the Alembic migration workflow.
 
-## File Organization
+> Example: "Add a notes field to properties and expose it via the API"
 
-**Deliverables vs Intermediates:**
-- **Deliverables**: Google Sheets, Google Slides, or other cloud-based outputs that the user can access
-- **Intermediates**: Temporary files needed during processing
+---
 
-**Directory structure:**
-- `.tmp/` - All intermediate files (dossiers, scraped data, temp exports). Never commit, always regenerated.
-- `execution/` - Python scripts (the deterministic tools)
-- `directives/` - SOPs in Markdown (the instruction set)
-- `.env` - Environment variables and API keys
-- `credentials.json`, `token.json` - Google OAuth credentials (required files, in `.gitignore`)
+### 🩵 PropEquityLab Frontend Engineer
+**File**: `propequitylab-frontend-engineer.md`  
+**When to use**: Any React work — new pages, components, charts, forms, API wiring, or UI fixes.  
+**What it does**: Writes React code using shadcn/ui, Tailwind, Recharts, and the centralised `api.js` service. Knows the context providers, existing component patterns, and Cloudflare Pages deployment.
 
-**Key principle:** Local files are only for processing. Deliverables live in cloud services (Google Sheets, Slides, etc.) where the user can access them. Everything in `.tmp/` can be deleted and regenerated.
+> Example: "Build a property comparison page with a side-by-side table and equity chart"
 
-## Summary
+---
 
-You sit between human intent (directives) and deterministic execution (Python scripts). Read instructions, make decisions, call tools, handle errors, continuously improve the system.
+### 🔴 PropEquityLab Security Reviewer
+**File**: `propequitylab-security-reviewer.md`  
+**When to use**: Before merging any PR involving auth, user data, financial records, or new public-facing endpoints.  
+**What it does**: Reviews code for IDOR vulnerabilities, missing ownership checks, GDPR compliance, JWT handling, and fintech-specific data exposure risks. Produces a structured security report with CRITICAL/HIGH/MEDIUM/LOW findings and concrete fixes.
 
-Be pragmatic. Be reliable. Self-anneal.
+> Example: "Do a security review of the new valuations endpoint"
+
+---
+
+### 🟣 PropEquityLab QA Engineer
+**File**: `propequitylab-qa-engineer.md`  
+**When to use**: Writing tests, debugging failing tests, or doing a QA pass before release.  
+**What it does**: Writes pytest tests that cover the financial edge cases specific to property investment (negative equity, zero rates, empty portfolios, decimal precision). Knows the `conftest.py` fixture system and the existing test patterns.
+
+> Example: "Write tests for the new property comparison endpoint"
+
+---
+
+## 🔧 Generic Engineering Agents
+
+General-purpose agents from the agency-agents collection, useful for tasks outside PropEquityLab's specific context.
+
+### Backend Architect
+Deep system design, database architecture, scalable API design, cloud infrastructure.
+
+### Frontend Developer
+React/Vue/Angular, Core Web Vitals optimization, accessibility, design systems.
+
+### Security Engineer
+Threat modeling, OWASP Top 10, CI/CD security pipelines, penetration testing.
+
+### DevOps Automator
+CI/CD pipelines, Docker, infrastructure-as-code, deployment automation.
+
+---
+
+## 🧪 Testing Agents
+
+### API Tester
+Comprehensive API testing — functional, performance, security. Produces k6/Playwright test suites.
+
+### Reality Checker
+Evidence-based QA certification. Requires proof before declaring anything "production ready". Defaults to NEEDS WORK.
+
+### Evidence Collector
+Screenshot-based QA and visual verification. UI testing and bug documentation.
+
+---
+
+## 📊 Product Agents
+
+### Sprint Prioritizer
+Agile sprint planning, RICE/MoSCoW prioritization, backlog management, velocity tracking.
+
+---
+
+## 🛠️ Recommended Workflows
+
+### Starting a New Feature
+1. **Feature Planner** → produces a directive in `directives/`
+2. **Backend Engineer** → implements the API (models, routes, migrations)
+3. **Frontend Engineer** → implements the UI (pages, components, api.js)
+4. **QA Engineer** → writes the tests
+5. **Security Reviewer** → reviews before merge
+
+### Debugging a Backend Issue
+1. **Backend Engineer** → diagnose and fix
+2. **QA Engineer** → add regression test
+
+### Security Audit
+1. **Security Reviewer** → full security pass on target files
+2. **Backend Engineer** → implement fixes
+
+### Performance Review
+1. **API Tester** → load test and identify bottlenecks
+2. **Backend Architect** → recommend architectural improvements
+3. **Frontend Developer** → Core Web Vitals pass
+
+---
+
+## 📁 Agent File Locations
+
+```
+~/.claude/agents/                               # Global (available in all projects)
+├── propequitylab-backend-engineer.md           ← Use for backend work
+├── propequitylab-frontend-engineer.md          ← Use for frontend work
+├── propequitylab-security-reviewer.md          ← Use before merging
+├── propequitylab-qa-engineer.md                ← Use for tests
+├── propequitylab-feature-planner.md            ← Use to plan features
+├── engineering-backend-architect.md
+├── engineering-frontend-developer.md
+├── engineering-security-engineer.md
+├── engineering-devops-automator.md
+├── testing-api-tester.md
+├── testing-reality-checker.md
+├── testing-evidence-collector.md
+└── product-sprint-prioritizer.md
+```
+
+---
+
+## 🔄 Keeping Agents Updated
+
+When the PropEquityLab codebase evolves significantly (new major models, stack changes, new conventions), update the PropEquityLab-specific agents to reflect the changes:
+
+```bash
+# Edit the agent files directly
+notepad "C:\Users\ckr_4\.claude\agents\propequitylab-backend-engineer.md"
+```
+
+To add more agents from the agency-agents collection:
+```bash
+# The source repo is cloned at C:\Users\ckr_4\.tmp\agency-agents
+ls "C:\Users\ckr_4\.tmp\agency-agents"
+copy "C:\Users\ckr_4\.tmp\agency-agents\[division]\[agent].md" "C:\Users\ckr_4\.claude\agents\"
+```
+
+---
+
+*Last updated: 2026-03-10*  
+*Source: https://github.com/msitarzewski/agency-agents*

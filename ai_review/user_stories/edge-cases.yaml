@@ -1,0 +1,52 @@
+stories:
+  - name: "Homepage redirects to login when unauthenticated"
+    url: "https://www.propequitylab.com/"
+    workflow: |
+      Navigate to https://www.propequitylab.com/
+      Verify the page redirects to /login
+      Verify the login form is displayed
+      Take a screenshot
+
+  - name: "Duplicate privacy policy route works"
+    url: "https://www.propequitylab.com/privacy-policy"
+    workflow: |
+      Navigate to https://www.propequitylab.com/privacy-policy
+      Verify the privacy policy page loads with content
+      Verify heading mentions "Privacy"
+      Take a screenshot
+
+  - name: "Duplicate terms of service route works"
+    url: "https://www.propequitylab.com/terms-of-service"
+    workflow: |
+      Navigate to https://www.propequitylab.com/terms-of-service
+      Verify the terms page loads with content
+      Verify heading mentions "Terms"
+      Take a screenshot
+
+  - name: "Login form validates empty submission"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Click the Sign In button without entering any credentials
+      Verify an error message or validation message appears
+      Take a screenshot of the validation state
+
+  - name: "Registration form validates mismatched passwords"
+    url: "https://www.propequitylab.com/register"
+    workflow: |
+      Navigate to https://www.propequitylab.com/register
+      Enter "Test User" in the Full Name field
+      Enter "test@example.com" in the Email field
+      Enter "StrongPass1!" in the Password field
+      Enter "DifferentPass2!" in the Confirm Password field
+      Submit the form or tab out of the confirm password field
+      Verify a password mismatch error is shown
+      Take a screenshot
+
+  - name: "Forgot password form validates empty email"
+    url: "https://www.propequitylab.com/forgot-password"
+    workflow: |
+      Navigate to https://www.propequitylab.com/forgot-password
+      Click the Send Reset Link button without entering an email
+      Verify a validation error appears
+      Take a screenshot

@@ -1,0 +1,69 @@
+stories:
+  - name: "Dashboard loads with KPI cards and charts"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter "dev@propequitylab.com" in the email field
+      Enter "DevTest2026!" in the password field
+      Click the Sign In / login button
+      Verify redirect to the dashboard page
+      Verify KPI cards are visible showing: Net Worth, Monthly Cashflow, Property Equity, and Asset Allocation
+      Verify at least one chart is rendered (Net Worth History, Asset Allocation, or Cashflow)
+      Take a screenshot of the full dashboard
+
+  - name: "Dashboard sidebar navigation works"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter "dev@propequitylab.com" in the email field
+      Enter "DevTest2026!" in the password field
+      Click the Sign In / login button
+      Verify the dashboard loads
+      Verify the sidebar is visible with navigation links
+      Verify the sidebar contains: Dashboard, Current Finances (expandable), Progress, Plans, Projections
+      Verify a Portfolio Selector dropdown is visible in the sidebar
+      Verify the Confidence Score widget is shown in the sidebar
+      Click on "Current Finances" or the Finances section in the sidebar
+      Verify sub-items appear: Income, Spending, Properties, Assets, Liabilities
+      Take a screenshot showing the expanded sidebar menu
+
+  - name: "Dashboard theme toggle works"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter "dev@propequitylab.com" in the email field
+      Enter "DevTest2026!" in the password field
+      Click the Sign In / login button
+      Verify the dashboard loads
+      Note the current theme (dark or light background)
+      Click the theme toggle button (sun/moon icon) in the header
+      Verify the theme changes (background color and text color should swap)
+      Take a screenshot of the new theme
+      Click the theme toggle again
+      Verify it switches back to the original theme
+      Take a screenshot confirming the toggle works both ways
+
+  - name: "Dashboard right panel shows scenarios and settings"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter "dev@propequitylab.com" in the email field
+      Enter "DevTest2026!" in the password field
+      Click the Sign In / login button
+      Verify the dashboard loads
+      Verify the right panel is visible (on desktop/wide viewport)
+      Verify the right panel contains a Scenario Selector or Projection Scenarios section
+      Verify Quick Settings controls are present
+      Take a screenshot of the right panel
+
+  - name: "Dashboard net worth snapshot creation"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter "dev@propequitylab.com" in the email field
+      Enter "DevTest2026!" in the password field
+      Click the Sign In / login button
+      Verify the dashboard loads
+      Look for a "Create Snapshot" or snapshot button on the dashboard
+      Verify the button is visible and clickable
+      Take a screenshot showing the snapshot button location

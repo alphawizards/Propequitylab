@@ -1,0 +1,80 @@
+stories:
+  - name: "Full navigation walkthrough - all main pages"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter "dev@propequitylab.com" in the email field
+      Enter "DevTest2026!" in the password field
+      Click the Sign In / login button
+      Verify the dashboard loads
+
+      Click "Dashboard" in the sidebar
+      Verify the dashboard page is displayed with KPI cards
+      Take a screenshot
+
+      Click "Current Finances" in the sidebar to expand it
+      Click "Income" in the sub-menu
+      Verify the Income page loads
+      Take a screenshot
+
+      Click "Spending" in the sidebar sub-menu
+      Verify the Spending page loads
+      Take a screenshot
+
+      Click "Properties" in the sidebar sub-menu
+      Verify the Properties page loads
+      Take a screenshot
+
+      Click "Assets" in the sidebar sub-menu
+      Verify the Assets page loads
+      Take a screenshot
+
+      Click "Liabilities" in the sidebar sub-menu
+      Verify the Liabilities page loads
+      Take a screenshot
+
+      Click "Progress" in the sidebar
+      Verify the Progress page loads
+      Take a screenshot
+
+      Click "Plans" in the sidebar
+      Verify the Plans page loads
+      Take a screenshot
+
+      Click "Projections" in the sidebar
+      Verify the Projections page loads
+      Take a screenshot
+
+      Click "Settings" in the sidebar (bottom)
+      Verify the Settings page loads
+      Take a screenshot
+
+  - name: "Header elements are present and functional"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter "dev@propequitylab.com" in the email field
+      Enter "DevTest2026!" in the password field
+      Click the Sign In / login button
+      Verify the dashboard loads
+      Verify the header bar is visible at the top of the page
+      Verify the page title is displayed in the header
+      Verify a theme toggle button (sun/moon icon) is present
+      Verify a notifications bell icon is present
+      Verify the user profile section shows user name and avatar
+      Verify a logout button (LogOut icon) is visible
+      Take a screenshot of the header
+
+  - name: "Logout functionality works"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter "dev@propequitylab.com" in the email field
+      Enter "DevTest2026!" in the password field
+      Click the Sign In / login button
+      Verify the dashboard loads
+      Click the logout button in the header
+      Verify the user is redirected to the login page
+      Try navigating to https://www.propequitylab.com/dashboard
+      Verify the user is redirected back to login (not authenticated)
+      Take a screenshot confirming logout was successful

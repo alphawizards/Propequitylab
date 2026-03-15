@@ -1,0 +1,45 @@
+stories:
+  - name: "Stamp duty calculator page is blank"
+    url: "https://www.propequitylab.com/calculators/stamp-duty"
+    workflow: |
+      Navigate to https://www.propequitylab.com/calculators/stamp-duty
+      Verify the page loads (no 404 or server error)
+      Check if the page has any meaningful content or is blank
+      Take a screenshot documenting the current state
+      Report whether this page needs a component built or a coming-soon placeholder
+
+  - name: "Equity calculator page is blank"
+    url: "https://www.propequitylab.com/calculators/equity"
+    workflow: |
+      Navigate to https://www.propequitylab.com/calculators/equity
+      Verify the page loads (no 404 or server error)
+      Check if the page has any meaningful content or is blank
+      Take a screenshot documenting the current state
+
+  - name: "Rental income calculator page is blank"
+    url: "https://www.propequitylab.com/calculators/rental-income"
+    workflow: |
+      Navigate to https://www.propequitylab.com/calculators/rental-income
+      Verify the page loads (no 404 or server error)
+      Check if the page has any meaningful content or is blank
+      Take a screenshot documenting the current state
+
+  - name: "Calculators index page is blank"
+    url: "https://www.propequitylab.com/calculators"
+    workflow: |
+      Navigate to https://www.propequitylab.com/calculators
+      Verify the page loads (no 404 or server error)
+      Check if the page has any meaningful content or is blank
+      Take a screenshot documenting the current state
+
+  - name: "Help center page shows placeholder"
+    url: "https://www.propequitylab.com/help"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter dev@propequitylab.com in the email field
+      Enter DevTest2026! in the password field
+      Click Sign In and wait for dashboard to load
+      Navigate to https://www.propequitylab.com/help
+      Verify the page loads
+      Check if it shows "Coming soon" or placeholder content
+      Take a screenshot documenting the current state

@@ -1,0 +1,70 @@
+stories:
+  - name: "Progress page loads with charts and goal tracking"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter "dev@propequitylab.com" in the email field
+      Enter "DevTest2026!" in the password field
+      Click the Sign In / login button
+      Navigate to https://www.propequitylab.com/progress
+      Verify the Progress page loads successfully
+      Verify tabs are present for different views (Net Worth Trend, Goal Progress, Projections)
+      Verify at least one chart or progress visualization is rendered
+      Click through each tab and verify content changes
+      Take a screenshot of the progress page
+
+  - name: "Plans page loads and displays retirement plans"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter "dev@propequitylab.com" in the email field
+      Enter "DevTest2026!" in the password field
+      Click the Sign In / login button
+      Navigate to https://www.propequitylab.com/plans
+      Verify the Plans page loads successfully
+      Verify an "Add New Plan" button is visible
+      If plans exist, verify plan cards show: plan name, type badge with icon, target amount, progress
+      Verify plan type badges use correct colors (FIRE=orange, Lean FIRE=green, Fat FIRE=purple, etc.)
+      Take a screenshot of the plans page
+
+  - name: "Plans page add plan modal opens"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter "dev@propequitylab.com" in the email field
+      Enter "DevTest2026!" in the password field
+      Click the Sign In / login button
+      Navigate to https://www.propequitylab.com/plans
+      Click the "Add New Plan" button
+      Verify a modal or form opens with fields for: Plan Name, Plan Type, Retirement Age, Target Equity, Target Passive Income
+      Verify plan type options include FIRE, Lean FIRE, Fat FIRE, Coast FIRE, Barista FIRE, Traditional, Custom
+      Verify a Save or Submit button is present
+      Take a screenshot of the add plan modal
+
+  - name: "Projections page loads with charts and controls"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter "dev@propequitylab.com" in the email field
+      Enter "DevTest2026!" in the password field
+      Click the Sign In / login button
+      Navigate to https://www.propequitylab.com/projections
+      Verify the Projections page loads successfully
+      Verify a Property/Portfolio selector dropdown is present
+      Verify projection controls are visible: Years slider, Interest Rate Offset, Growth Rate overrides
+      Verify at least one projection chart is rendered (Equity, Cashflow, or LVR)
+      Take a screenshot of the projections page
+
+  - name: "Projections page responds to parameter changes"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter "dev@propequitylab.com" in the email field
+      Enter "DevTest2026!" in the password field
+      Click the Sign In / login button
+      Navigate to https://www.propequitylab.com/projections
+      Verify the page loads with default projections
+      Take a screenshot of the default state
+      Adjust the Years slider to a different value (e.g. 20 years)
+      Verify the chart updates to reflect the new projection period
+      Take a screenshot showing the updated projections
