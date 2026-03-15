@@ -5,6 +5,7 @@ Replaces MongoDB connection with PostgreSQL + SQLModel
 
 from sqlmodel import SQLModel, create_engine, Session
 from sqlalchemy.pool import QueuePool
+from sqlalchemy import text
 import os
 import logging
 
@@ -69,7 +70,7 @@ def test_connection():
     """
     try:
         with Session(engine) as session:
-            session.exec("SELECT 1")
+            session.exec(text("SELECT 1"))
         logger.info("✓ Database connection test successful")
         return True
     except Exception as e:

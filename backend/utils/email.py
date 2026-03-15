@@ -154,7 +154,7 @@ async def send_verification_email(email: str, name: str, verification_token: str
 </html>
 """
     
-    return send_email(email, subject, html)
+    return await send_email(email, subject, html)
 
 
 async def send_password_reset_email(email: str, name: str, reset_token: str) -> bool:
@@ -261,7 +261,7 @@ async def send_password_reset_email(email: str, name: str, reset_token: str) -> 
 </html>
 """
     
-    return send_email(email, subject, html)
+    return await send_email(email, subject, html)
 
 
 async def send_welcome_email(email: str, name: str) -> bool:
@@ -349,7 +349,7 @@ async def send_welcome_email(email: str, name: str) -> bool:
 </html>
 """
     
-    return send_email(email, subject, html)
+    return await send_email(email, subject, html)
 
 
 # Example usage and testing

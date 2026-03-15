@@ -1,0 +1,40 @@
+{
+  "waf_rules": [
+    {
+      "name": "Block SQL Injection Attempts",
+      "description": "Blocks common SQL injection patterns in query strings",
+      "expression": "(http.request.uri.query contains \"UNION SELECT\") or (http.request.uri.query contains \"'; DROP\") or (http.request.uri.query contains \"--\") or (http.request.body contains \"UNION SELECT\")",
+      "action": "block"
+    },
+    {
+      "name": "Block XSS Attempts",
+      "description": "Blocks cross-site scripting patterns",
+      "expression": "(http.request.uri.query contains \"<script\") or (http.request.uri.query contains \"javascript:\")",
+      "action": "block"
+    },
+    {
+      "name": "Rate Limit API Endpoints",
+      "description": "100 requests per minute per IP for API endpoints",
+      "expression": "(http.request.uri.path contains \"/api/\")",
+      "action": "rate_limit",
+      "rate_limit": {
+        "requests_per_period": 100,
+        "period": 60,
+        "action": "block",
+        "timeout": 3600
+      }
+    },
+    {
+      "name": "Challenge Suspicious Bots",
+      "description": "Challenge non-verified bots",
+      "expression": "(cf.client.bot) and not (cf.client.bot eq verified_bot)",
+      "action": "challenge"
+    },
+    {
+      "name": "Block Known Bad User Agents",
+      "description": "Block common scraping and attack tools",
+      "expression": "(http.user_agent contains \"sqlmap\") or (http.user_agent contains \"nikto\") or (http.user_agent contains \"nmap\")",
+      "action": "block"
+    }
+  ]
+}
