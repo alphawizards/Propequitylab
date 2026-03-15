@@ -99,3 +99,7 @@ android-sdk/
 *.env.*
 *token.json*
 *credentials.json*
+
+# System/Accidental Artifacts
+.auth/
+**/nul

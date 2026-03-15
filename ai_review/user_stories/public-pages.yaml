@@ -1,0 +1,40 @@
+stories:
+  - name: "Mortgage calculator page loads and is functional"
+    url: "https://www.propequitylab.com/calculators/mortgage"
+    workflow: |
+      Navigate to https://www.propequitylab.com/calculators/mortgage
+      Verify the mortgage calculator page loads successfully
+      Verify input fields exist for: Property Price, Deposit, Interest Rate, Loan Term
+      Verify a Repayment Frequency selector is present (weekly, fortnightly, monthly)
+      Verify fields for Offset Account Balance and Extra Repayments are visible
+      Take a screenshot of the calculator in its default state
+
+  - name: "Mortgage calculator produces results"
+    url: "https://www.propequitylab.com/calculators/mortgage"
+    workflow: |
+      Navigate to https://www.propequitylab.com/calculators/mortgage
+      Enter 800000 in the Property Price field
+      Enter 160000 in the Deposit field (20%)
+      Enter 6.5 in the Interest Rate field
+      Enter 30 in the Loan Term field
+      Verify results are displayed showing monthly repayment amount
+      Verify total interest paid is shown
+      Verify LVR percentage is displayed
+      Verify a chart or amortization schedule is visible
+      Take a screenshot of the calculator with results
+
+  - name: "Privacy policy page loads"
+    url: "https://www.propequitylab.com/legal/privacy"
+    workflow: |
+      Navigate to https://www.propequitylab.com/legal/privacy
+      Verify the privacy policy page loads with content
+      Verify the page has a heading mentioning "Privacy" or similar
+      Take a screenshot of the privacy policy page
+
+  - name: "Terms of service page loads"
+    url: "https://www.propequitylab.com/legal/terms"
+    workflow: |
+      Navigate to https://www.propequitylab.com/legal/terms
+      Verify the terms of service page loads with content
+      Verify the page has a heading mentioning "Terms" or similar
+      Take a screenshot of the terms page

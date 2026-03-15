@@ -1,0 +1,7 @@
+stories:
+  - name: "Homepage loads"
+    url: "https://www.propequitylab.com"
+    workflow: |
+      1. Go to https://www.propequitylab.com
+      2. Verify the page loads successfully
+      3. Take a screenshot of the homepage

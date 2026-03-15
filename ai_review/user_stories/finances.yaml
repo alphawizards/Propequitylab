@@ -1,0 +1,113 @@
+stories:
+  - name: "Income page loads and displays income sources"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter "dev@propequitylab.com" in the email field
+      Enter "DevTest2026!" in the password field
+      Click the Sign In / login button
+      Navigate to https://www.propequitylab.com/finances/income
+      Verify the Income page loads successfully
+      Verify an "Add Income Source" button is visible
+      Verify a search field is present
+      Verify filter options are available (by type or owner)
+      If income sources exist, verify they display as cards with amount and frequency
+      Take a screenshot of the income page
+
+  - name: "Income page add income modal opens"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter "dev@propequitylab.com" in the email field
+      Enter "DevTest2026!" in the password field
+      Click the Sign In / login button
+      Navigate to https://www.propequitylab.com/finances/income
+      Click the "Add Income Source" button
+      Verify a modal or form opens with fields: Source type, Amount, Frequency, Owner
+      Verify a Save or Submit button is present in the modal
+      Take a screenshot of the add income modal
+
+  - name: "Spending page loads and displays expenses"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter "dev@propequitylab.com" in the email field
+      Enter "DevTest2026!" in the password field
+      Click the Sign In / login button
+      Navigate to https://www.propequitylab.com/finances/spending
+      Verify the Spending page loads successfully
+      Verify an "Add Expense" button is visible
+      Verify a search field is present
+      Verify category filter options are available
+      If expenses exist, verify they show category, description, and amount
+      Take a screenshot of the spending page
+
+  - name: "Spending page add expense modal opens"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter "dev@propequitylab.com" in the email field
+      Enter "DevTest2026!" in the password field
+      Click the Sign In / login button
+      Navigate to https://www.propequitylab.com/finances/spending
+      Click the "Add Expense" button
+      Verify a modal or form opens with fields: Category, Description, Amount, Frequency
+      Verify category options include Housing, Food, Transport, Utilities, etc.
+      Verify a Save or Submit button is present
+      Take a screenshot of the add expense modal
+
+  - name: "Properties page loads and displays properties"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter "dev@propequitylab.com" in the email field
+      Enter "DevTest2026!" in the password field
+      Click the Sign In / login button
+      Navigate to https://www.propequitylab.com/finances/properties
+      Verify the Properties page loads successfully
+      Verify an "Add Property" button is visible
+      Verify a search field is present
+      If properties exist, verify they display address, value, equity, and cashflow
+      Take a screenshot of the properties page
+
+  - name: "Properties page add property modal opens"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter "dev@propequitylab.com" in the email field
+      Enter "DevTest2026!" in the password field
+      Click the Sign In / login button
+      Navigate to https://www.propequitylab.com/finances/properties
+      Click the "Add Property" button
+      Verify a modal or form opens with fields for: Address, Property Type, Purchase Price, Current Value
+      Verify loan detail fields are present: Loan Amount, Interest Rate, Loan Term, Loan Type
+      Verify rental income fields are present
+      Verify expense fields are present (council rates, insurance, etc.)
+      Verify a Save or Submit button is present
+      Take a screenshot of the add property modal
+
+  - name: "Assets page loads and displays assets"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter "dev@propequitylab.com" in the email field
+      Enter "DevTest2026!" in the password field
+      Click the Sign In / login button
+      Navigate to https://www.propequitylab.com/finances/assets
+      Verify the Assets page loads successfully
+      Verify an "Add Asset" button is visible
+      If assets exist, verify they display name, type, and current value
+      Take a screenshot of the assets page
+
+  - name: "Liabilities page loads and displays liabilities"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter "dev@propequitylab.com" in the email field
+      Enter "DevTest2026!" in the password field
+      Click the Sign In / login button
+      Navigate to https://www.propequitylab.com/finances/liabilities
+      Verify the Liabilities page loads successfully
+      Verify an "Add Liability" button is visible
+      If liabilities exist, verify they display name, balance, interest rate, and payment
+      Take a screenshot of the liabilities page

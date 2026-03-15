@@ -1,0 +1,73 @@
+stories:
+  - name: "Login page renders correctly"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Verify the login form is visible with email and password input fields
+      Verify a "Sign In" or login submit button is present
+      Verify a "Forgot password?" link is visible
+      Verify a link to the registration page exists
+      Verify links to Privacy Policy and Terms of Service are visible
+      Take a screenshot of the full login page
+
+  - name: "Login with invalid credentials shows error"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter "fake@email.com" in the email field
+      Enter "WrongPassword123!" in the password field
+      Click the Sign In / login button
+      Verify an error message is displayed (e.g. "Invalid credentials" or similar)
+      Take a screenshot showing the error state
+
+  - name: "Login with valid credentials succeeds"
+    url: "https://www.propequitylab.com/login"
+    workflow: |
+      Navigate to https://www.propequitylab.com/login
+      Enter "dev@propequitylab.com" in the email field
+      Enter "DevTest2026!" in the password field
+      Click the Sign In / login button
+      Verify the page redirects to the dashboard
+      Verify dashboard content is visible (KPI cards, charts, or sidebar navigation)
+      Take a screenshot of the authenticated dashboard
+
+  - name: "Register page renders correctly"
+    url: "https://www.propequitylab.com/register"
+    workflow: |
+      Navigate to https://www.propequitylab.com/register
+      Verify the registration form is visible
+      Verify input fields exist for: Full Name, Email, Password, Confirm Password
+      Verify a Planning Type dropdown is present (Individual, Couple, Family)
+      Verify a State dropdown is present with Australian states
+      Verify a "Create Account" or register submit button is present
+      Verify a link to the login page exists
+      Take a screenshot of the full registration page
+
+  - name: "Register form validates password requirements"
+    url: "https://www.propequitylab.com/register"
+    workflow: |
+      Navigate to https://www.propequitylab.com/register
+      Enter "Test User" in the Full Name field
+      Enter "testuser@example.com" in the Email field
+      Enter "weak" in the Password field
+      Enter "weak" in the Confirm Password field
+      Click the Create Account / register button
+      Verify a validation error is shown about password requirements (8+ characters, uppercase, lowercase, number, special character)
+      Take a screenshot showing the validation errors
+
+  - name: "Forgot password page renders correctly"
+    url: "https://www.propequitylab.com/forgot-password"
+    workflow: |
+      Navigate to https://www.propequitylab.com/forgot-password
+      Verify an email input field is visible
+      Verify a "Send Reset Link" or similar button is present
+      Verify a "Back to Login" link is visible
+      Take a screenshot of the forgot password page
+
+  - name: "Unauthenticated user is redirected to login"
+    url: "https://www.propequitylab.com/dashboard"
+    workflow: |
+      Navigate to https://www.propequitylab.com/dashboard
+      Verify the page redirects to the login page (URL should contain /login)
+      Verify the login form is displayed
+      Take a screenshot confirming the redirect to login
