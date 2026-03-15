@@ -1,11 +1,9 @@
+# Force nixpacks to use Python
 [phases.setup]
-nixPkgs = ["python311", "pip"]
+nixPkgs = ["python311", "gcc"]
 
 [phases.install]
-cmds = ["pip install -r requirements.txt"]
-
-[phases.build]
-cmds = ["echo 'Build complete'"]
+cmds = ["pip install --user -r requirements.txt"]
 
 [start]
 cmd = "uvicorn server:app --host 0.0.0.0 --port $PORT"
