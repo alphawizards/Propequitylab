@@ -2,11 +2,5 @@ name = "propequitylab"
 compatibility_date = "2024-01-01"
 pages_build_output_dir = "frontend/build"
 
-[env.production]
-routes = [
-  { pattern = "propequitylab.com/*", zone_name = "propequitylab.com" },
-  { pattern = "www.propequitylab.com/*", zone_name = "propequitylab.com" }
-]
-
 [observability]
 enabled = true
