@@ -8,7 +8,7 @@ on:
 
 env:
   PYTHON_VERSION: '3.11'
-  NODE_VERSION: '20'
+  NODE_VERSION: '24'
 
 jobs:
   test-backend:
@@ -76,4 +76,4 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: ./frontend
-          command: pages deploy build --project-name=propequitylab
+          command: pages deploy build --project-name propequitylab --commit-dirty=true
