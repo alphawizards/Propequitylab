@@ -155,7 +155,7 @@ const IncomePage = () => {
   const totalMonthly = incomeSources.reduce((sum, s) => sum + toMonthly(s.amount, s.frequency), 0);
   const totalAnnual = totalMonthly * 12;
   const avgGrowthRate = incomeSources.length > 0
-    ? incomeSources.reduce((sum, s) => sum + s.growth_rate, 0) / incomeSources.length
+    ? incomeSources.reduce((sum, s) => sum + (s.growth_rate || 0), 0) / incomeSources.length
     : 0;
 
   if (loading) {
