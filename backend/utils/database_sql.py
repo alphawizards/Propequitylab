@@ -22,6 +22,10 @@ if not DATABASE_URL:
     logger.warning("⚠️  DATABASE_URL not set. Using default PostgreSQL connection.")
     DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/propequitylab"
 
+# Railway uses postgres:// but SQLAlchemy requires postgresql://
+if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
 # Create engine with connection pooling
 engine = create_engine(
     DATABASE_URL,
