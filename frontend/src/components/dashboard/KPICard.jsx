@@ -1,5 +1,4 @@
 import React from 'react';
-import { Card, CardContent } from '../ui/card';
 import { cn } from '../../lib/utils';
 
 const KPICard = ({
@@ -7,51 +6,49 @@ const KPICard = ({
   value,
   subtext,
   icon: Icon,
-  variant = 'blue', // blue, green, purple, yellow
+  variant = 'blue',
   trend,
   trendValue
 }) => {
-  const bgColors = {
-    blue: 'bg-pastel-blue',
-    green: 'bg-pastel-green',
-    purple: 'bg-pastel-purple',
-    yellow: 'bg-pastel-yellow',
+  const accentColors = {
+    blue: 'text-blue-600',
+    green: 'text-emerald-600',
+    purple: 'text-violet-600',
+    yellow: 'text-amber-600',
   };
 
-  const iconColors = {
-    blue: 'text-blue-600',
-    green: 'text-green-600',
-    purple: 'text-purple-600',
-    yellow: 'text-yellow-600',
+  const bgAccentColors = {
+    blue: 'bg-blue-50',
+    green: 'bg-emerald-50',
+    purple: 'bg-violet-50',
+    yellow: 'bg-amber-50',
   };
 
   return (
-    <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
-      <CardContent className={cn("p-6", bgColors[variant])}>
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <p className="text-sm font-medium text-muted-foreground mb-1">{title}</p>
-            <p className="text-3xl font-bold text-foreground mb-1">{value}</p>
-            {subtext && (
-              <p className="text-xs text-muted-foreground">{subtext}</p>
-            )}
-            {trend && trendValue && (
-              <div className={cn(
-                "flex items-center gap-1 mt-2 text-sm font-medium",
-                trend === 'up' ? 'text-green-600' : 'text-red-500'
-              )}>
-                <span>{trendValue}</span>
-              </div>
-            )}
-          </div>
-          {Icon && (
-            <div className={cn("w-12 h-12 rounded-xl bg-background flex items-center justify-center shadow-sm", iconColors[variant])}>
-              <Icon className="w-6 h-6" />
+    <div className="rounded-[1rem] border border-slate-200/50 bg-white p-6 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.06)] transition-shadow duration-300">
+      <div className="flex items-start justify-between">
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-medium text-zinc-400 uppercase tracking-wider mb-2">{title}</p>
+          <p className="text-2xl font-bold text-zinc-900 font-mono tracking-tight">{value}</p>
+          {subtext && (
+            <p className="text-xs text-zinc-400 mt-1">{subtext}</p>
+          )}
+          {trend && trendValue && (
+            <div className={cn(
+              "flex items-center gap-1 mt-3 text-xs font-medium",
+              trend === 'up' ? 'text-emerald-600' : 'text-red-500'
+            )}>
+              <span>{trendValue}</span>
             </div>
           )}
         </div>
-      </CardContent>
-    </Card>
+        {Icon && (
+          <div className={cn("w-10 h-10 rounded-[0.75rem] flex items-center justify-center", bgAccentColors[variant])}>
+            <Icon className={cn("w-5 h-5", accentColors[variant])} />
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
