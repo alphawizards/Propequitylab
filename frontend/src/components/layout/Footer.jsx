@@ -15,7 +15,7 @@ const Footer = () => {
                 <path d="M8 8L20 20L8 32" stroke="#BFFF00" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
                 <path d="M32 8L20 20L32 32" stroke="#BFFF00" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-              <span className="text-white text-xl font-semibold">Zapiio</span>
+              <span className="text-white text-xl font-semibold">PropEquityLab</span>
             </div>
             <p className="text-sm text-gray-400">
               Track your property portfolio, plan your financial future, and achieve FIRE.
@@ -59,7 +59,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <a href="mailto:support@zapiio.com" className="text-sm hover:text-lime-400 transition-colors">
+                <a href="mailto:support@propequitylab.com" className="text-sm hover:text-lime-400 transition-colors">
                   Contact Support
                 </a>
               </li>
@@ -86,7 +86,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <a href="mailto:privacy@zapiio.com" className="text-sm hover:text-lime-400 transition-colors">
+                <a href="mailto:privacy@propequitylab.com" className="text-sm hover:text-lime-400 transition-colors">
                   Data Protection
                 </a>
               </li>
@@ -97,12 +97,12 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-gray-400">
-            © {currentYear} Zapiio. All rights reserved.
+            © {currentYear} PropEquityLab. All rights reserved.
           </p>
 
           <div className="flex items-center gap-6 mt-4 md:mt-0">
             <a
-              href="https://twitter.com/zapiio"
+              href="https://twitter.com/propequitylab"
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-400 hover:text-lime-400 transition-colors"
@@ -114,7 +114,7 @@ const Footer = () => {
             </a>
 
             <a
-              href="https://linkedin.com/company/zapiio"
+              href="https://linkedin.com/company/propequitylab"
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-400 hover:text-lime-400 transition-colors"
@@ -126,7 +126,7 @@ const Footer = () => {
             </a>
 
             <a
-              href="https://github.com/zapiio"
+              href="https://github.com/alphawizards"
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-400 hover:text-lime-400 transition-colors"
