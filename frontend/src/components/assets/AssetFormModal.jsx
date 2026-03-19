@@ -365,7 +365,7 @@ const AssetFormModal = ({ isOpen, onClose, onSubmit, asset, editMode }) => {
               <div className="col-span-2">
                 <Label>Notes</Label>
                 <textarea
-                  className="w-full min-h-[100px] px-3 py-2 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-lime-400"
+                  className="w-full min-h-[100px] px-3 py-2 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   value={formData.notes}
                   onChange={(e) => handleChange('notes', e.target.value)}
                   placeholder="Any additional notes about this asset..."
@@ -383,7 +383,7 @@ const AssetFormModal = ({ isOpen, onClose, onSubmit, asset, editMode }) => {
           <Button 
             onClick={handleSubmit}
             disabled={isSubmitting || !formData.name || !formData.current_value}
-            className="bg-lime-400 text-gray-900 hover:bg-lime-500"
+            className="bg-emerald-600 text-white hover:bg-emerald-700"
           >
             {isSubmitting ? 'Saving...' : (editMode ? 'Update Asset' : 'Add Asset')}
           </Button>

@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+const defaultTheme = require('tailwindcss/defaultTheme');
+
 module.exports = {
 	darkMode: ["class"],
 	content: [
@@ -7,10 +9,22 @@ module.exports = {
 	],
 	theme: {
 		extend: {
+			fontFamily: {
+				sans: ['Plus Jakarta Sans', ...defaultTheme.fontFamily.sans],
+			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
+			},
+			boxShadow: {
+				'card':       '0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03)',
+				'card-hover': '0 2px 8px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.05)',
+				'modal':      '0 8px 32px rgba(0,0,0,0.08), 0 24px 64px rgba(0,0,0,0.06)',
+				'dropdown':   '0 2px 8px rgba(0,0,0,0.08)',
+			},
+			transitionDuration: {
+				DEFAULT: '150ms',
 			},
 			colors: {
 				background: 'hsl(var(--background))',

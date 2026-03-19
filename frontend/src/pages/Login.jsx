@@ -49,116 +49,62 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex relative">
-      {/* Left Side - Dark with Welcome */}
-      <div className="hidden lg:flex lg:w-1/2 bg-[#1a1f36] relative overflow-hidden">
-        {/* Diagonal Lines */}
-        <div className="absolute inset-0">
-          <svg className="w-full h-full" viewBox="0 0 600 800" preserveAspectRatio="none">
-            <line x1="0" y1="400" x2="300" y2="800" stroke="#2a3152" strokeWidth="100" />
-            <line x1="100" y1="0" x2="400" y2="400" stroke="#2a3152" strokeWidth="80" />
-            <line x1="400" y1="600" x2="600" y2="800" stroke="#BFFF00" strokeWidth="60" />
+    <div className="min-h-[100dvh] bg-[#FAFAF9] flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* Logo */}
+        <div className="flex items-center justify-center gap-2 mb-8">
+          <svg width="36" height="36" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 8L20 20L8 32" stroke="#059669" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M32 8L20 20L32 32" stroke="#111111" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
+          <span className="text-xl font-semibold text-[#111111]">PropEquityLab</span>
         </div>
 
-        <div className="relative z-10 p-12 flex flex-col h-full">
-          {/* Logo */}
-          <div className="flex items-center gap-3 mb-20">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 8L20 20L8 32" stroke="#BFFF00" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M32 8L20 20L32 32" stroke="#BFFF00" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            <span className="text-white text-xl font-semibold">PropEquityLab</span>
-          </div>
-
-          {/* Welcome Text */}
-          <div className="flex-1 flex flex-col justify-center">
-            <h1 className="text-5xl font-light text-lime-400 italic mb-2">Hello,</h1>
-            <h2 className="text-5xl font-bold text-white">Welcome!</h2>
-          </div>
-
-          {/* Signup Options */}
-          <div className="space-y-4">
-            <p className="text-white font-semibold">Not a Member?</p>
-            <p className="text-lime-400 text-sm">Sign up to get started with PropEquityLab</p>
-
-            <div className="space-y-3 mt-6">
-              <div className="border border-teal-500 rounded-lg p-4 flex items-center justify-between bg-[#1a1f36]/50 backdrop-blur">
-                <div>
-                  <p className="text-lime-400 font-bold text-sm">PROFESSIONALS</p>
-                  <p className="text-gray-400 text-sm">Help clients plan, track, and invest with clarity.</p>
-                </div>
-                <Button className="bg-lime-400 text-gray-900 hover:bg-lime-500 font-semibold">
-                  JOIN NOW
-                </Button>
-              </div>
-
-              <div className="border border-teal-500 rounded-lg p-4 flex items-center justify-between bg-[#1a1f36]/50 backdrop-blur">
-                <div>
-                  <p className="text-lime-400 font-bold text-sm">PRIVATE INVESTORS</p>
-                  <p className="text-gray-400 text-sm">Manage your property portfolio and plan your next move.</p>
-                </div>
-                <Button className="bg-lime-400 text-gray-900 hover:bg-lime-500 font-semibold">
-                  JOIN NOW
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom Logo */}
-          <div className="mt-8">
-            <svg width="48" height="48" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="20" cy="20" r="18" stroke="#BFFF00" strokeWidth="2" />
-              <path d="M12 12L20 20L12 28" stroke="#BFFF00" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M28 12L20 20L28 28" stroke="#BFFF00" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
-        </div>
-      </div>
-
-      {/* Right Side - Login Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white dark:bg-gray-900">
-        <div className="w-full max-w-md">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-8">
-            Login to your Account
+        {/* Card */}
+        <div className="bg-white rounded-2xl border border-[#EAEAEA] shadow-modal p-10">
+          <h2 className="text-2xl font-semibold text-[#111111] text-center mb-2">
+            Welcome back
           </h2>
+          <p className="text-sm text-[#6B7280] text-center mb-8">
+            Sign in to your account to continue
+          </p>
 
           {successMessage && (
-            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-              <p className="text-green-700 text-sm">{successMessage}</p>
+            <div className="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+              <p className="text-emerald-700 text-sm">{successMessage}</p>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-sm font-medium text-[#111111]">Email</Label>
               <div className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-gray-100 rounded-md flex items-center justify-center">
-                  <Mail className="w-4 h-4 text-gray-400" />
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center">
+                  <Mail className="w-4 h-4 text-[#6B7280]" />
                 </div>
                 <Input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="pl-14 h-12 bg-gray-50 border-gray-200"
+                  className="pl-10 h-11 border-[#EAEAEA] focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 rounded-lg"
                   placeholder="Enter your email"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-sm font-medium text-[#111111]">Password</Label>
               <div className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-gray-100 rounded-md flex items-center justify-center">
-                  <Lock className="w-4 h-4 text-gray-400" />
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center">
+                  <Lock className="w-4 h-4 text-[#6B7280]" />
                 </div>
                 <Input
                   id="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="pl-14 h-12 bg-lime-50 border-lime-200"
+                  className="pl-10 h-11 border-[#EAEAEA] focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 rounded-lg"
                   placeholder="Enter your password"
                 />
               </div>
@@ -167,7 +113,7 @@ const Login = () => {
             <div className="text-right">
               <Link
                 to="/forgot-password"
-                className="text-sm text-gray-500 hover:text-gray-700"
+                className="text-sm text-emerald-600 hover:text-emerald-700 transition-colors duration-150"
               >
                 Forgot password?
               </Link>
@@ -180,7 +126,7 @@ const Login = () => {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full h-12 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 rounded-lg disabled:opacity-50"
+              className="w-full h-11 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-medium rounded-lg disabled:opacity-50 transition-all duration-150"
             >
               {loading ? (
                 <>
@@ -192,14 +138,21 @@ const Login = () => {
               )}
             </Button>
           </form>
-        </div>
-      </div>
 
-      {/* Footer */}
-      <div className="absolute bottom-0 left-0 right-0 py-4 text-center text-sm text-gray-500">
-        <Link to="/legal/privacy" className="hover:text-gray-700">Privacy Policy</Link>
-        <span className="mx-2">|</span>
-        <Link to="/legal/terms" className="hover:text-gray-700">Terms of Service</Link>
+          <p className="text-center text-sm text-[#6B7280] mt-6">
+            Don't have an account?{' '}
+            <Link to="/register" className="text-emerald-600 hover:text-emerald-700 font-medium transition-colors duration-150">
+              Create account
+            </Link>
+          </p>
+        </div>
+
+        {/* Footer */}
+        <div className="mt-6 text-center text-sm text-[#6B7280]">
+          <Link to="/legal/privacy" className="hover:text-[#111111] transition-colors duration-150">Privacy Policy</Link>
+          <span className="mx-2">·</span>
+          <Link to="/legal/terms" className="hover:text-[#111111] transition-colors duration-150">Terms of Service</Link>
+        </div>
       </div>
     </div>
   );

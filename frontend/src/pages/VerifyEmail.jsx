@@ -72,10 +72,10 @@ const VerifyEmail = () => {
   // Verifying state
   if (status === 'verifying') {
     return (
-      <div className="min-h-screen flex items-center justify-center p-8 bg-white">
+      <div className="min-h-[100dvh] flex items-center justify-center p-4 bg-[#FAFAF9]">
         <div className="w-full max-w-md text-center">
           <div className="mb-6 flex justify-center">
-            <Loader2 className="w-16 h-16 text-lime-500 animate-spin" />
+            <Loader2 className="w-16 h-16 text-emerald-600 animate-spin" />
           </div>
 
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
@@ -93,11 +93,11 @@ const VerifyEmail = () => {
   // Success state
   if (status === 'success') {
     return (
-      <div className="min-h-screen flex items-center justify-center p-8 bg-white">
+      <div className="min-h-[100dvh] flex items-center justify-center p-4 bg-[#FAFAF9]">
         <div className="w-full max-w-md text-center">
           <div className="mb-6 flex justify-center">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-              <CheckCircle2 className="w-8 h-8 text-green-600" />
+            <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center">
+              <CheckCircle2 className="w-8 h-8 text-emerald-600" />
             </div>
           </div>
 
@@ -110,7 +110,7 @@ const VerifyEmail = () => {
           </p>
 
           <Link to="/login">
-            <Button className="w-full h-12 bg-gray-900 text-white hover:bg-gray-800">
+            <Button className="w-full h-11 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-medium rounded-lg transition-all duration-150">
               Go to Login
             </Button>
           </Link>
@@ -122,7 +122,7 @@ const VerifyEmail = () => {
   // Error state with resend option
   if (resendSuccess) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-8 bg-white">
+      <div className="min-h-[100dvh] flex items-center justify-center p-4 bg-[#FAFAF9]">
         <div className="w-full max-w-md text-center">
           <div className="mb-6 flex justify-center">
             <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
@@ -141,7 +141,7 @@ const VerifyEmail = () => {
 
           <div className="space-y-3">
             <Link to="/login">
-              <Button className="w-full h-12 bg-gray-900 text-white hover:bg-gray-800">
+              <Button className="w-full h-11 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-medium rounded-lg transition-all duration-150">
                 Go to Login
               </Button>
             </Link>
@@ -156,7 +156,7 @@ const VerifyEmail = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-8 bg-white">
+    <div className="min-h-[100dvh] flex items-center justify-center p-4 bg-[#FAFAF9]">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="mb-6 flex justify-center">
@@ -206,7 +206,7 @@ const VerifyEmail = () => {
               <Button
                 type="submit"
                 disabled={resendLoading}
-                className="w-full h-12 bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-50"
+                className="w-full h-11 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-medium rounded-lg disabled:opacity-50 transition-all duration-150"
               >
                 {resendLoading ? (
                   <>

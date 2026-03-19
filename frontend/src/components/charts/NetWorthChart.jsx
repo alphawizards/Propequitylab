@@ -45,7 +45,7 @@ const NetWorthChart = ({ data = [], loading = false }) => {
         </CardHeader>
         <CardContent>
           <div className="h-80 flex items-center justify-center">
-            <div className="w-8 h-8 border-4 border-lime-400 border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
           </div>
         </CardContent>
       </Card>

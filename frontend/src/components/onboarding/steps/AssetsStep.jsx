@@ -87,7 +87,7 @@ const AssetsStep = ({ data, updateData, onNext, isLoading }) => {
       </Card>
       
       {/* Info about properties */}
-      <Card className="mb-6 border-lime-200 bg-lime-50">
+      <Card className="mb-6 border-emerald-200 bg-emerald-50">
         <CardContent className="p-4">
           <p className="text-sm text-gray-700">
             <strong>Note:</strong> Properties can be added later from the dashboard. 
@@ -233,7 +233,7 @@ const AssetsStep = ({ data, updateData, onNext, isLoading }) => {
           <Button
             onClick={addAsset}
             variant="outline"
-            className="w-full hover:bg-lime-50 hover:border-lime-400"
+            className="w-full hover:bg-emerald-50 hover:border-emerald-500"
           >
             <Plus className="w-4 h-4 mr-2" />
             Add Asset
@@ -247,7 +247,7 @@ const AssetsStep = ({ data, updateData, onNext, isLoading }) => {
         </Button>
         <Button 
           onClick={onNext}
-          className="bg-lime-400 text-gray-900 hover:bg-lime-500 px-8"
+          className="bg-emerald-600 text-white hover:bg-emerald-700 px-8"
           disabled={isLoading}
         >
           {isLoading ? 'Saving...' : 'Continue'}

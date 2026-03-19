@@ -220,7 +220,7 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold flex items-center gap-2">
-            <Home className="w-5 h-5 text-lime-600" />
+            <Home className="w-5 h-5 text-emerald-600" />
             {editMode ? 'Edit Property' : 'Add New Property'}
           </DialogTitle>
         </DialogHeader>
@@ -414,7 +414,7 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
               </div>
             </div>
             
-            <Card className="bg-lime-50 border-lime-200">
+            <Card className="bg-emerald-50 border-emerald-200">
               <CardHeader className="pb-2">
                 <CardTitle className="text-base">Current Valuation</CardTitle>
               </CardHeader>
@@ -727,7 +727,7 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
           </Button>
           <Button
             onClick={handleSubmit}
-            className="bg-lime-400 text-gray-900 hover:bg-lime-500"
+            className="bg-emerald-600 text-white hover:bg-emerald-700"
             disabled={isSubmitting || !formData.address || !formData.suburb || !formData.purchase_price}
           >
             {isSubmitting ? 'Saving...' : editMode ? 'Update Property' : 'Add Property'}

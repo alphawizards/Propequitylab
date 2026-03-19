@@ -226,7 +226,7 @@ const ExpenseFormModal = ({ open, onOpenChange, expense, onSubmit }) => {
             </Button>
             <Button
               type="submit"
-              className="bg-lime-400 text-gray-900 hover:bg-lime-500"
+              className="bg-emerald-600 text-white hover:bg-emerald-700"
               data-testid="submit-expense-btn"
             >
               {expense ? 'Update Expense' : 'Add Expense'}

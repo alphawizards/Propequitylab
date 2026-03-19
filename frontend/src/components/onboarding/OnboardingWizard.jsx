@@ -177,8 +177,8 @@ const OnboardingWizard = () => {
             )}
             <div className="flex items-center gap-2">
               <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
-                <path d="M8 8L20 20L8 32" stroke="#BFFF00" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M32 8L20 20L32 32" stroke="#1a1f36" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M8 8L20 20L8 32" stroke="#059669" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M32 8L20 20L32 32" stroke="#111111" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
               <span className="text-xl font-bold text-foreground">PropEquityLab</span>
             </div>
@@ -204,7 +204,7 @@ const OnboardingWizard = () => {
                 <span
                   key={step.id}
                   className={`text-xs ${
-                    index + 1 <= currentStep ? 'text-lime-600 font-medium' : 'text-muted-foreground'
+                    index + 1 <= currentStep ? 'text-emerald-600 font-medium' : 'text-muted-foreground'
                   }`}
                 >
                   {step.name}

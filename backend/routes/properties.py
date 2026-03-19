@@ -6,7 +6,7 @@ Property Routes - SQL-Based with Authentication & Data Isolation (GOLDEN MASTER)
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 from typing import List
-from datetime import datetime
+from datetime import datetime, date
 import logging
 import uuid
 
@@ -96,7 +96,7 @@ async def create_property(
         building_size=data.building_size,
         year_built=data.year_built,
         purchase_price=data.purchase_price,
-        purchase_date=data.purchase_date,
+        purchase_date=date.fromisoformat(data.purchase_date) if isinstance(data.purchase_date, str) else data.purchase_date,
         stamp_duty=data.stamp_duty,
         purchase_costs=data.purchase_costs,
         current_value=data.current_value or data.purchase_price,

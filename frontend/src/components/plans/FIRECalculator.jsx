@@ -351,10 +351,10 @@ const FIRECalculator = ({ open, onOpenChange, dashboardData }) => {
                   </div>
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <Target className="w-4 h-4 text-lime-500" />
+                      <Target className="w-4 h-4 text-emerald-500" />
                       <span className="text-sm text-gray-500">Progress</span>
                     </div>
-                    <p className="text-2xl font-bold text-lime-600">
+                    <p className="text-2xl font-bold text-emerald-600">
                       {calculations.progressPercent.toFixed(0)}%
                     </p>
                   </div>

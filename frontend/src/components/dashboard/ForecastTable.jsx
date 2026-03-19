@@ -51,17 +51,17 @@ const ForecastTable = ({ data, viewType, onYearSelect, selectedYear }) => {
             {data.map((row, index) => (
               <TableRow
                 key={row.year}
-                className={`cursor-pointer transition-colors hover:bg-lime-50 ${selectedYear === row.year ? 'bg-lime-100' : ''
+                className={`cursor-pointer transition-colors hover:bg-emerald-50 ${selectedYear === row.year ? 'bg-emerald-100' : ''
                   }`}
                 onClick={() => onYearSelect(row.year)}
               >
                 <TableCell className="font-medium">
                   <div className="flex items-center gap-2">
-                    <span className={selectedYear === row.year ? 'text-lime-700' : 'text-gray-900'}>
+                    <span className={selectedYear === row.year ? 'text-emerald-700' : 'text-gray-900'}>
                       {row.fiscalYear}
                     </span>
                     {index === 0 && (
-                      <span className="px-2 py-0.5 text-xs bg-lime-400 text-gray-900 rounded-full">
+                      <span className="px-2 py-0.5 text-xs bg-emerald-600 text-white rounded-full">
                         Current
                       </span>
                     )}

@@ -212,7 +212,7 @@ const SpendingPage = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-12 h-12 border-4 border-lime-400 border-t-transparent rounded-full animate-spin" />
+        <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -230,7 +230,7 @@ const SpendingPage = () => {
             setSelectedExpense(null);
             setShowFormModal(true);
           }}
-          className="bg-lime-400 text-gray-900 hover:bg-lime-500"
+          className="bg-emerald-600 text-white hover:bg-emerald-700"
           data-testid="add-expense-btn"
         >
           <Plus className="w-4 h-4 mr-2" />
@@ -299,7 +299,7 @@ const SpendingPage = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
-              <PieChartIcon className="w-5 h-5 text-lime-600 dark:text-lime-400" />
+              <PieChartIcon className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
               Spending Breakdown
             </CardTitle>
           </CardHeader>
@@ -369,7 +369,7 @@ const SpendingPage = () => {
             </p>
             <Button
               onClick={() => setShowFormModal(true)}
-              className="bg-lime-400 text-gray-900 hover:bg-lime-500"
+              className="bg-emerald-600 text-white hover:bg-emerald-700"
             >
               <Plus className="w-4 h-4 mr-2" />
               Add Your First Expense

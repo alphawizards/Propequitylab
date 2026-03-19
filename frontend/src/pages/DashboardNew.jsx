@@ -181,7 +181,7 @@ const DashboardNew = () => {
   return (
     <div className="space-y-8">
       {/* Welcome Banner — Asymmetric, not centered */}
-      <div className="rounded-[1.5rem] bg-gradient-to-br from-emerald-600 via-emerald-700 to-emerald-800 text-white p-8 lg:p-10 shadow-[0_20px_40px_-15px_rgba(16,185,129,0.3)]">
+      <div className="rounded-[1.5rem] bg-gradient-to-br from-emerald-600 to-emerald-700 text-white p-8 lg:p-10 shadow-[0_8px_32px_rgba(0,0,0,0.08)]">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
           <div>
             <p className="text-emerald-200 text-sm font-medium tracking-wide uppercase mb-2">Dashboard</p>
@@ -196,7 +196,7 @@ const DashboardNew = () => {
       </div>
 
       {/* KPI Cards — Asymmetric 2+2 grid on large, stacked on mobile */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         <KPICard
           title="Total Assets"
           value={formatCurrency(data.total_assets)}
@@ -230,7 +230,7 @@ const DashboardNew = () => {
         {/* Net Worth Chart — Takes 2 columns */}
         <div className="lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-zinc-900 tracking-tight">Financial History</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-[#6B7280]">Financial History</h3>
             <Button
               onClick={handleCreateSnapshot}
               disabled={snapshotLoading || !currentPortfolio?.id}
@@ -246,14 +246,14 @@ const DashboardNew = () => {
               Snapshot
             </Button>
           </div>
-          <div className="rounded-[1.25rem] border border-slate-200/50 bg-white p-6 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)]">
+          <div className="rounded-xl border border-[#EAEAEA] bg-white p-6 shadow-card">
             <NetWorthChart data={netWorthHistory} loading={historyLoading} />
           </div>
         </div>
 
         {/* Asset Allocation — 1 column */}
-        <div className="rounded-[1.25rem] border border-slate-200/50 bg-white p-6 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)]">
-          <h3 className="text-lg font-semibold text-zinc-900 tracking-tight mb-4">Asset Allocation</h3>
+        <div className="rounded-xl border border-[#EAEAEA] bg-white p-6 shadow-card">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-[#6B7280] mb-4">Asset Allocation</h3>
           <AssetAllocationChart
             key={`assets-${dataVersion}`}
             breakdown={data.asset_breakdown}
@@ -268,7 +268,7 @@ const DashboardNew = () => {
         <div>
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp className="w-5 h-5 text-emerald-600" />
-            <h3 className="text-lg font-semibold text-zinc-900 tracking-tight">Assets</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-[#6B7280]">Assets</h3>
           </div>
           <div className="space-y-3">
             {[
@@ -302,7 +302,7 @@ const DashboardNew = () => {
         <div>
           <div className="flex items-center gap-2 mb-4">
             <TrendingDown className="w-5 h-5 text-red-500" />
-            <h3 className="text-lg font-semibold text-zinc-900 tracking-tight">Liabilities</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-[#6B7280]">Liabilities</h3>
           </div>
           <div className="space-y-3">
             {[
@@ -365,7 +365,7 @@ const DashboardNew = () => {
 
       {/* Quick Actions — Horizontal scroll on mobile, grid on desktop */}
       <div>
-        <h3 className="text-lg font-semibold text-zinc-900 tracking-tight mb-4">Quick Actions</h3>
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-[#6B7280] mb-4">Quick Actions</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
             { label: 'Add Property', icon: Home, href: '/finances/properties' },
@@ -376,11 +376,11 @@ const DashboardNew = () => {
             <button
               key={action.label}
               onClick={() => navigate(action.href)}
-              className="group flex items-center gap-3 p-4 rounded-[1rem] border border-slate-200/50 bg-white hover:border-emerald-300 hover:bg-emerald-50/50 transition-all duration-300 active:scale-[0.98] text-left"
+              className="group flex items-center gap-3 p-4 rounded-lg border border-[#EAEAEA] bg-white hover:bg-slate-50 hover:border-slate-300 transition-all duration-150 active:scale-[0.98] text-left"
             >
-              <action.icon className="w-5 h-5 text-zinc-400 group-hover:text-emerald-600 transition-colors" />
-              <span className="text-sm font-medium text-zinc-700 group-hover:text-zinc-900">{action.label}</span>
-              <ArrowRight className="w-4 h-4 text-zinc-300 group-hover:text-emerald-500 ml-auto transition-all group-hover:translate-x-0.5" />
+              <action.icon className="w-5 h-5 text-[#6B7280] group-hover:text-emerald-600 transition-colors" />
+              <span className="text-sm font-medium text-[#111111]">{action.label}</span>
+              <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-emerald-500 ml-auto transition-all group-hover:translate-x-0.5" />
             </button>
           ))}
         </div>

@@ -68,7 +68,7 @@ const IncomeStep = ({ data, updateData, onNext, isLoading }) => {
       </div>
       
       {/* Income Summary */}
-      <Card className="mb-6 bg-gradient-to-r from-green-50 to-lime-50 border-green-200">
+      <Card className="mb-6 bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -205,7 +205,7 @@ const IncomeStep = ({ data, updateData, onNext, isLoading }) => {
           <Button
             onClick={addIncome}
             variant="outline"
-            className="w-full hover:bg-lime-50 hover:border-lime-400"
+            className="w-full hover:bg-emerald-50 hover:border-emerald-500"
           >
             <Plus className="w-4 h-4 mr-2" />
             Add Income
@@ -219,7 +219,7 @@ const IncomeStep = ({ data, updateData, onNext, isLoading }) => {
         </Button>
         <Button 
           onClick={onNext}
-          className="bg-lime-400 text-gray-900 hover:bg-lime-500 px-8"
+          className="bg-emerald-600 text-white hover:bg-emerald-700 px-8"
           disabled={isLoading}
         >
           {isLoading ? 'Saving...' : 'Continue'}

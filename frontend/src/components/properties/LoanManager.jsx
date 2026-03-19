@@ -312,7 +312,7 @@ const LoanFormModal = ({ isOpen, onClose, onSubmit, loan, propertyId }) => {
                         <Button type="button" variant="outline" onClick={onClose}>
                             Cancel
                         </Button>
-                        <Button type="submit" disabled={submitting} className="bg-lime-400 text-gray-900 hover:bg-lime-500">
+                        <Button type="submit" disabled={submitting} className="bg-emerald-600 text-white hover:bg-emerald-700">
                             {submitting ? 'Saving...' : loan ? 'Update Loan' : 'Add Loan'}
                         </Button>
                     </DialogFooter>
@@ -625,7 +625,7 @@ const LoanManager = ({ propertyId, propertyAddress }) => {
                 </div>
                 <Button
                     onClick={handleAddLoan}
-                    className="bg-lime-400 text-gray-900 hover:bg-lime-500"
+                    className="bg-emerald-600 text-white hover:bg-emerald-700"
                 >
                     <Plus className="w-4 h-4 mr-2" />
                     Add Loan
@@ -692,7 +692,7 @@ const LoanManager = ({ propertyId, propertyAddress }) => {
                         <p className="text-gray-500 mb-4">Add your first loan to start tracking</p>
                         <Button
                             onClick={handleAddLoan}
-                            className="bg-lime-400 text-gray-900 hover:bg-lime-500"
+                            className="bg-emerald-600 text-white hover:bg-emerald-700"
                         >
                             <Plus className="w-4 h-4 mr-2" />
                             Add Loan

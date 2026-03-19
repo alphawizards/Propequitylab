@@ -8,6 +8,13 @@ For full project documentation see @AGENTS.md.
 
 ---
 
+## Tool Usage (Mandatory)
+
+- **Code search**: Always use **jcodemunch-mcp** tools for searching code — never raw grep/find
+- **Complex tasks**: Always invoke **superpowers skills** before planning or executing multi-step work
+
+---
+
 ## Build & Dev Commands
 
 ### Backend

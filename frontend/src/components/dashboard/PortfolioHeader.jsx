@@ -7,7 +7,7 @@ const PortfolioHeader = ({ portfolio, onAddProperty, onViewMembers }) => {
     <div className="flex items-center justify-between mb-6">
       <div className="flex items-center gap-3">
         <h1 className="text-2xl font-semibold text-gray-900">{portfolio.name}</h1>
-        <button className="flex items-center gap-1 px-3 py-1 bg-lime-400 text-gray-900 text-sm font-medium rounded-full hover:bg-lime-500 transition-colors">
+        <button className="flex items-center gap-1 px-3 py-1 bg-emerald-600 text-white text-sm font-medium rounded-full hover:bg-emerald-700 transition-colors">
           {portfolio.type}
           <ChevronDown className="w-4 h-4" />
         </button>
@@ -18,14 +18,14 @@ const PortfolioHeader = ({ portfolio, onAddProperty, onViewMembers }) => {
           variant="outline"
           size="icon"
           onClick={onAddProperty}
-          className="w-10 h-10 rounded-lg border-2 border-gray-200 hover:border-lime-400 hover:bg-lime-50"
+          className="w-10 h-10 rounded-lg border-2 border-gray-200 hover:border-emerald-500 hover:bg-emerald-50"
         >
           <Plus className="w-5 h-5" />
         </Button>
         <Button
           variant="outline"
           onClick={onViewMembers}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-gray-200 hover:border-lime-400 hover:bg-lime-50"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-gray-200 hover:border-emerald-500 hover:bg-emerald-50"
         >
           <Users className="w-4 h-4" />
           Members

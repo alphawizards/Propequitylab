@@ -56,7 +56,7 @@ button:active {
 input:focus, select:focus, button:focus {
   outline: none;
   ring: 2px;
-  ring-color: #BFFF00;
+  ring-color: #059669;
 }
 
 /* Animations */
@@ -92,7 +92,7 @@ input:focus, select:focus, button:focus {
 
 /* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, #BFFF00 0%, #7FFF00 100%);
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

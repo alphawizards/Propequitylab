@@ -15,6 +15,7 @@ const KPICard = ({
     green: 'text-emerald-600',
     purple: 'text-violet-600',
     yellow: 'text-amber-600',
+    red: 'text-red-500',
   };
 
   const bgAccentColors = {
@@ -22,16 +23,17 @@ const KPICard = ({
     green: 'bg-emerald-50',
     purple: 'bg-violet-50',
     yellow: 'bg-amber-50',
+    red: 'bg-red-50',
   };
 
   return (
-    <div className="rounded-[1rem] border border-slate-200/50 bg-white p-6 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.06)] transition-shadow duration-300">
+    <div className="bg-white rounded-xl border border-[#EAEAEA] shadow-card p-6 hover:shadow-card-hover transition-all duration-150 hover:-translate-y-px">
       <div className="flex items-start justify-between">
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-medium text-zinc-400 uppercase tracking-wider mb-2">{title}</p>
-          <p className="text-2xl font-bold text-zinc-900 font-mono tracking-tight">{value}</p>
+          <p className="text-xs font-medium text-[#6B7280] uppercase tracking-wide mb-2">{title}</p>
+          <p className="text-2xl font-semibold tabular-nums text-[#111111]">{value}</p>
           {subtext && (
-            <p className="text-xs text-zinc-400 mt-1">{subtext}</p>
+            <p className="text-xs text-[#6B7280] mt-1">{subtext}</p>
           )}
           {trend && trendValue && (
             <div className={cn(
@@ -43,7 +45,7 @@ const KPICard = ({
           )}
         </div>
         {Icon && (
-          <div className={cn("w-10 h-10 rounded-[0.75rem] flex items-center justify-center", bgAccentColors[variant])}>
+          <div className={cn("w-9 h-9 rounded-lg flex items-center justify-center", bgAccentColors[variant])}>
             <Icon className={cn("w-5 h-5", accentColors[variant])} />
           </div>
         )}

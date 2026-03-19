@@ -131,7 +131,7 @@ const ProgressPage = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-12 h-12 border-4 border-lime-400 border-t-transparent rounded-full animate-spin" />
+        <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -148,7 +148,7 @@ const ProgressPage = () => {
           <Button
             variant="outline"
             onClick={fetchData}
-            className="hover:bg-lime-50 hover:border-lime-400"
+            className="hover:bg-emerald-50 hover:border-emerald-500"
           >
             <RefreshCw className="w-4 h-4 mr-2" />
             Refresh
@@ -161,8 +161,8 @@ const ProgressPage = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-lime-100 flex items-center justify-center">
-                <DollarSign className="w-5 h-5 text-lime-600" />
+              <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
+                <DollarSign className="w-5 h-5 text-emerald-600" />
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Current Net Worth</p>
@@ -302,7 +302,7 @@ const ProgressPage = () => {
             <CardContent>
               {projectionLoading ? (
                 <div className="h-80 flex items-center justify-center">
-                  <div className="w-8 h-8 border-4 border-lime-400 border-t-transparent rounded-full animate-spin" />
+                  <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
                 </div>
               ) : projectionData ? (
                 <>

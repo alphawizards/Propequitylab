@@ -30,7 +30,9 @@
       "Bash(gh repo:*)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "WebFetch(domain:api.github.com)"
+      "WebFetch(domain:api.github.com)",
+      "mcp__jcodemunch__search_text",
+      "mcp__jcodemunch__get_file_content"
     ]
   }
 }

@@ -46,16 +46,16 @@ const AboutYouStep = ({ data, updateData, onNext, isLoading }) => {
                 htmlFor="individual"
                 className={`flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${
                   data.planning_type === 'individual'
-                    ? 'border-lime-400 bg-lime-50'
+                    ? 'border-emerald-500 bg-emerald-50'
                     : 'border-gray-200 hover:border-gray-300'
                 }`}
               >
                 <RadioGroupItem value="individual" id="individual" className="sr-only" />
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                  data.planning_type === 'individual' ? 'bg-lime-400' : 'bg-gray-100'
+                  data.planning_type === 'individual' ? 'bg-emerald-600' : 'bg-gray-100'
                 }`}>
                   <User className={`w-6 h-6 ${
-                    data.planning_type === 'individual' ? 'text-gray-900' : 'text-gray-500'
+                    data.planning_type === 'individual' ? 'text-white' : 'text-gray-500'
                   }`} />
                 </div>
                 <div>
@@ -68,16 +68,16 @@ const AboutYouStep = ({ data, updateData, onNext, isLoading }) => {
                 htmlFor="couple"
                 className={`flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${
                   data.planning_type === 'couple'
-                    ? 'border-lime-400 bg-lime-50'
+                    ? 'border-emerald-500 bg-emerald-50'
                     : 'border-gray-200 hover:border-gray-300'
                 }`}
               >
                 <RadioGroupItem value="couple" id="couple" className="sr-only" />
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                  data.planning_type === 'couple' ? 'bg-lime-400' : 'bg-gray-100'
+                  data.planning_type === 'couple' ? 'bg-emerald-600' : 'bg-gray-100'
                 }`}>
                   <Users className={`w-6 h-6 ${
-                    data.planning_type === 'couple' ? 'text-gray-900' : 'text-gray-500'
+                    data.planning_type === 'couple' ? 'text-white' : 'text-gray-500'
                   }`} />
                 </div>
                 <div>
@@ -183,7 +183,7 @@ const AboutYouStep = ({ data, updateData, onNext, isLoading }) => {
         <div className="flex justify-end">
           <Button 
             type="submit" 
-            className="bg-lime-400 text-gray-900 hover:bg-lime-500 px-8"
+            className="bg-emerald-600 text-white hover:bg-emerald-700 px-8"
             disabled={isLoading}
           >
             {isLoading ? 'Saving...' : 'Continue'}

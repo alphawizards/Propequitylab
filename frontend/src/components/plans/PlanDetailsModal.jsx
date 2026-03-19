@@ -39,7 +39,7 @@ const PLAN_TYPE_INFO = {
   coast_fire: { label: 'Coast FIRE', color: 'bg-blue-100 text-blue-700' },
   barista_fire: { label: 'Barista FIRE', color: 'bg-yellow-100 text-yellow-700' },
   traditional: { label: 'Traditional', color: 'bg-gray-100 text-gray-700' },
-  custom: { label: 'Custom', color: 'bg-lime-100 text-lime-700' },
+  custom: { label: 'Custom', color: 'bg-emerald-100 text-emerald-700' },
 };
 
 const PlanDetailsModal = ({ open, onOpenChange, plan, dashboardData }) => {
@@ -145,7 +145,7 @@ const PlanDetailsModal = ({ open, onOpenChange, plan, dashboardData }) => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div>
                     <p className="text-gray-400 text-sm">Current Net Worth</p>
-                    <p className="text-2xl font-bold text-lime-400">
+                    <p className="text-2xl font-bold text-emerald-400">
                       {formatCurrency(projections.currentNetWorth)}
                     </p>
                   </div>

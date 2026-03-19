@@ -238,7 +238,7 @@ const IncomeFormModal = ({ open, onOpenChange, income, onSubmit }) => {
             </Button>
             <Button
               type="submit"
-              className="bg-lime-400 text-gray-900 hover:bg-lime-500"
+              className="bg-emerald-600 text-white hover:bg-emerald-700"
               data-testid="submit-income-btn"
             >
               {income ? 'Update Income' : 'Add Income'}

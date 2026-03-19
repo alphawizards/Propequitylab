@@ -143,7 +143,7 @@ const AssetsPage = () => {
         </div>
         <Button
           onClick={handleAddAsset}
-          className="bg-lime-400 text-gray-900 hover:bg-lime-500"
+          className="bg-emerald-600 text-white hover:bg-emerald-700"
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Asset
@@ -259,7 +259,7 @@ const AssetsPage = () => {
             {!searchQuery && (
               <Button
                 onClick={handleAddAsset}
-                className="bg-lime-400 text-gray-900 hover:bg-lime-500"
+                className="bg-emerald-600 text-white hover:bg-emerald-700"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Add Asset

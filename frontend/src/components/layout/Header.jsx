@@ -47,7 +47,7 @@ const Header = ({ title, subtitle }) => {
         {/* Notifications */}
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-lime-500 rounded-full"></span>
+          <span className="absolute top-1 right-1 w-2 h-2 bg-emerald-500 rounded-full"></span>
         </Button>
 
         {/* User Profile */}
@@ -56,8 +56,8 @@ const Header = ({ title, subtitle }) => {
             <p className="text-sm font-medium text-gray-900 dark:text-white">{user?.name}</p>
             <p className="text-xs text-gray-500 dark:text-gray-400">{user?.email}</p>
           </div>
-          <div className="w-10 h-10 rounded-full bg-lime-100 dark:bg-lime-900 flex items-center justify-center border-2 border-lime-400">
-            <User className="w-5 h-5 text-lime-700 dark:text-lime-300" />
+          <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center border-2 border-emerald-200">
+            <User className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
           </div>
           <Button
             variant="ghost"

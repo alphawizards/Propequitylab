@@ -23,7 +23,7 @@ const GoalsStep = ({ data, updateData, onNext, isLoading }) => {
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-lime-600" />
+            <Calendar className="w-5 h-5 text-emerald-600" />
             Target Retirement Age
           </CardTitle>
         </CardHeader>
@@ -35,7 +35,7 @@ const GoalsStep = ({ data, updateData, onNext, isLoading }) => {
                 <p className="text-sm text-gray-500">years old</p>
               </div>
               <div className="text-right">
-                <p className="text-2xl font-semibold text-lime-600">{retirementYear}</p>
+                <p className="text-2xl font-semibold text-emerald-600">{retirementYear}</p>
                 <p className="text-sm text-gray-500">{data.retirement_age - currentAge} years away</p>
               </div>
             </div>
@@ -64,7 +64,7 @@ const GoalsStep = ({ data, updateData, onNext, isLoading }) => {
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
-            <Target className="w-5 h-5 text-lime-600" />
+            <Target className="w-5 h-5 text-emerald-600" />
             Target Net Worth
           </CardTitle>
         </CardHeader>
@@ -95,8 +95,8 @@ const GoalsStep = ({ data, updateData, onNext, isLoading }) => {
                   onClick={() => updateData({ target_equity: amount })}
                   className={`${
                     data.target_equity === amount
-                      ? 'border-lime-400 bg-lime-50'
-                      : 'hover:border-lime-400 hover:bg-lime-50'
+                      ? 'border-emerald-500 bg-emerald-50'
+                      : 'hover:border-emerald-500 hover:bg-emerald-50'
                   }`}
                 >
                   ${(amount / 1000000).toFixed(0)}M
@@ -111,7 +111,7 @@ const GoalsStep = ({ data, updateData, onNext, isLoading }) => {
       <Card className="mb-8">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-lime-600" />
+            <TrendingUp className="w-5 h-5 text-emerald-600" />
             Target Passive Income
           </CardTitle>
         </CardHeader>
@@ -142,8 +142,8 @@ const GoalsStep = ({ data, updateData, onNext, isLoading }) => {
                   onClick={() => updateData({ target_passive_income: amount })}
                   className={`${
                     data.target_passive_income === amount
-                      ? 'border-lime-400 bg-lime-50'
-                      : 'hover:border-lime-400 hover:bg-lime-50'
+                      ? 'border-emerald-500 bg-emerald-50'
+                      : 'hover:border-emerald-500 hover:bg-emerald-50'
                   }`}
                 >
                   ${(amount / 1000).toFixed(0)}K/year
@@ -166,7 +166,7 @@ const GoalsStep = ({ data, updateData, onNext, isLoading }) => {
       {/* Summary Card */}
       <Card className="mb-8 bg-gradient-to-br from-gray-900 to-gray-800 text-white border-0">
         <CardContent className="p-6">
-          <h3 className="font-semibold text-lime-400 mb-4">Your FIRE Goal Summary</h3>
+          <h3 className="font-semibold text-emerald-400 mb-4">Your FIRE Goal Summary</h3>
           <div className="grid grid-cols-3 gap-4">
             <div>
               <p className="text-2xl font-bold">{data.retirement_age}</p>
@@ -187,7 +187,7 @@ const GoalsStep = ({ data, updateData, onNext, isLoading }) => {
       <div className="flex justify-end">
         <Button 
           onClick={onNext}
-          className="bg-lime-400 text-gray-900 hover:bg-lime-500 px-8"
+          className="bg-emerald-600 text-white hover:bg-emerald-700 px-8"
           disabled={isLoading}
         >
           {isLoading ? 'Saving...' : 'Continue'}

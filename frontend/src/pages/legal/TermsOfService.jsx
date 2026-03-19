@@ -268,8 +268,8 @@ const TermsOfService = () => {
               If you have questions about these Terms, please contact us:
             </p>
             <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-              <p className="text-gray-700"><strong>Email:</strong> <a href="mailto:legal@propequitylab.com.au" className="text-lime-600 hover:text-lime-700">legal@propequitylab.com.au</a></p>
-              <p className="text-gray-700 mt-2"><strong>Support:</strong> <a href="mailto:support@propequitylab.com.au" className="text-lime-600 hover:text-lime-700">support@propequitylab.com.au</a></p>
+              <p className="text-gray-700"><strong>Email:</strong> <a href="mailto:legal@propequitylab.com.au" className="text-emerald-600 hover:text-emerald-700">legal@propequitylab.com.au</a></p>
+              <p className="text-gray-700 mt-2"><strong>Support:</strong> <a href="mailto:support@propequitylab.com.au" className="text-emerald-600 hover:text-emerald-700">support@propequitylab.com.au</a></p>
             </div>
           </section>
 

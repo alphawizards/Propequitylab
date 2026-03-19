@@ -86,7 +86,7 @@ const SummaryStep = ({ data, onComplete, isLoading }) => {
     {
       title: 'Goals',
       icon: Target,
-      color: 'bg-lime-100 text-lime-600',
+      color: 'bg-emerald-100 text-emerald-600',
       items: [
         { label: 'Retirement Age', value: data.retirement_age.toString() },
         { label: 'Target Net Worth', value: `$${(data.target_equity / 1000000).toFixed(1)}M` },
@@ -101,19 +101,19 @@ const SummaryStep = ({ data, onComplete, isLoading }) => {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="text-center mb-8">
-        <div className="w-20 h-20 rounded-full bg-lime-100 flex items-center justify-center mx-auto mb-4">
-          <Rocket className="w-10 h-10 text-lime-600" />
+        <div className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
+          <Rocket className="w-10 h-10 text-emerald-600" />
         </div>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">You're All Set!</h1>
         <p className="text-gray-600">Here's a summary of your financial profile.</p>
       </div>
       
       {/* Progress indicator */}
-      <Card className="mb-6 bg-gradient-to-r from-lime-50 to-green-50 border-lime-200">
+      <Card className="mb-6 bg-gradient-to-r from-emerald-50 to-green-50 border-emerald-200">
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <CheckCircle className="w-6 h-6 text-lime-600" />
+              <CheckCircle className="w-6 h-6 text-emerald-600" />
               <span className="font-medium text-gray-900">
                 {completedSections} of {sections.length} sections completed
               </span>
@@ -162,7 +162,7 @@ const SummaryStep = ({ data, onComplete, isLoading }) => {
       <Card className="mb-8 bg-gradient-to-br from-gray-900 to-gray-800 text-white border-0">
         <CardContent className="p-6">
           <h3 className="text-sm text-gray-400 mb-2">Current Net Worth (estimated)</h3>
-          <p className="text-4xl font-bold text-lime-400">
+          <p className="text-4xl font-bold text-emerald-400">
             ${(totalAssets - totalLiabilities).toLocaleString()}
           </p>
           <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-gray-700">
@@ -181,7 +181,7 @@ const SummaryStep = ({ data, onComplete, isLoading }) => {
       <div className="flex justify-center">
         <Button 
           onClick={onComplete}
-          className="bg-lime-400 text-gray-900 hover:bg-lime-500 px-12 py-6 text-lg"
+          className="bg-emerald-600 text-white hover:bg-emerald-700 px-12 py-6 text-lg"
           disabled={isLoading}
         >
           {isLoading ? 'Setting up...' : 'Go to Dashboard'}

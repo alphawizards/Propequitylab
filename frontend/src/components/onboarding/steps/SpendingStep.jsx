@@ -116,7 +116,7 @@ const SpendingStep = ({ data, updateData, onNext, isLoading }) => {
                 <Button
                   key={preset.name}
                   variant="outline"
-                  className="justify-start h-auto py-3 hover:bg-lime-50 hover:border-lime-400"
+                  className="justify-start h-auto py-3 hover:bg-emerald-50 hover:border-emerald-500"
                   onClick={() => handleQuickAdd(preset)}
                 >
                   <Plus className="w-4 h-4 mr-2" />
@@ -242,7 +242,7 @@ const SpendingStep = ({ data, updateData, onNext, isLoading }) => {
           <Button
             onClick={addExpense}
             variant="outline"
-            className="w-full hover:bg-lime-50 hover:border-lime-400"
+            className="w-full hover:bg-emerald-50 hover:border-emerald-500"
           >
             <Plus className="w-4 h-4 mr-2" />
             Add Expense
@@ -256,7 +256,7 @@ const SpendingStep = ({ data, updateData, onNext, isLoading }) => {
         </Button>
         <Button 
           onClick={onNext}
-          className="bg-lime-400 text-gray-900 hover:bg-lime-500 px-8"
+          className="bg-emerald-600 text-white hover:bg-emerald-700 px-8"
           disabled={isLoading}
         >
           {isLoading ? 'Saving...' : 'Continue'}

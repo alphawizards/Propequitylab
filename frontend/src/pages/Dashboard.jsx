@@ -123,7 +123,7 @@ const Dashboard = ({ user }) => {
       />
 
       {/* Get Started Button */}
-      <button className="fixed bottom-6 right-6 bg-lime-400 text-gray-900 px-6 py-3 rounded-full font-semibold shadow-lg hover:bg-lime-500 transition-all hover:shadow-xl">
+      <button className="fixed bottom-6 right-6 bg-emerald-600 text-white px-6 py-3 rounded-full font-medium shadow-lg hover:bg-emerald-700 transition-all duration-150 hover:shadow-xl">
         Get Started
       </button>
     </div>

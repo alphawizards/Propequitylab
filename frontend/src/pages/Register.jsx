@@ -5,12 +5,12 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { Mail, Lock, User, MapPin, DollarSign } from 'lucide-react';
+import { Mail, Lock, User, Loader2 } from 'lucide-react';
 
 const Register = () => {
   const navigate = useNavigate();
   const { register } = useAuth();
-  
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -21,7 +21,7 @@ const Register = () => {
     state: 'NSW',
     currency: 'AUD'
   });
-  
+
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -39,14 +39,12 @@ const Register = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    // Email validation
     if (!formData.email) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Email is invalid';
     }
 
-    // Password validation
     if (!formData.password) {
       newErrors.password = 'Password is required';
     } else if (formData.password.length < 8) {
@@ -55,12 +53,10 @@ const Register = () => {
       newErrors.password = 'Password must contain uppercase, lowercase, number, and special character';
     }
 
-    // Confirm password
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
     }
 
-    // Name validation
     if (!formData.name || formData.name.trim().length < 2) {
       newErrors.name = 'Name must be at least 2 characters';
     }
@@ -75,7 +71,6 @@ const Register = () => {
       ...prev,
       [name]: value
     }));
-    // Clear error for this field
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -101,7 +96,6 @@ const Register = () => {
     setLoading(true);
     setErrors({});
 
-    // Remove confirmPassword before sending to API
     const { confirmPassword, ...registrationData } = formData;
 
     const result = await register(registrationData);
@@ -110,7 +104,6 @@ const Register = () => {
 
     if (result.success) {
       if (result.emailVerificationRequired) {
-        // Show success message and redirect to login with info
         navigate('/login', {
           state: {
             message: 'Registration successful! Please check your email to verify your account before logging in.',
@@ -118,7 +111,6 @@ const Register = () => {
           }
         });
       } else {
-        // Email already verified, redirect to dashboard
         navigate('/dashboard');
       }
     } else {
@@ -126,89 +118,31 @@ const Register = () => {
     }
   };
 
+  const inputClass = (hasError) =>
+    `pl-10 h-11 border-[#EAEAEA] focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 rounded-lg${hasError ? ' border-red-400' : ''}`;
+
   return (
-    <div className="min-h-screen flex relative">
-      {/* Left Side - Dark with Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-[#1a1f36] relative overflow-hidden">
-        {/* Diagonal Lines */}
-        <div className="absolute inset-0">
-          <svg className="w-full h-full" viewBox="0 0 600 800" preserveAspectRatio="none">
-            <line x1="0" y1="400" x2="300" y2="800" stroke="#2a3152" strokeWidth="100" />
-            <line x1="100" y1="0" x2="400" y2="400" stroke="#2a3152" strokeWidth="80" />
-            <line x1="400" y1="600" x2="600" y2="800" stroke="#BFFF00" strokeWidth="60" />
+    <div className="min-h-[100dvh] bg-[#FAFAF9] flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* Logo */}
+        <div className="flex items-center justify-center gap-2 mb-8">
+          <svg width="36" height="36" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 8L20 20L8 32" stroke="#059669" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M32 8L20 20L32 32" stroke="#111111" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
+          <span className="text-xl font-semibold text-[#111111]">PropEquityLab</span>
         </div>
-        
-        <div className="relative z-10 p-12 flex flex-col h-full">
-          {/* Logo */}
-          <div className="flex items-center gap-3 mb-20">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 8L20 20L8 32" stroke="#BFFF00" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M32 8L20 20L32 32" stroke="#BFFF00" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            <span className="text-white text-xl font-semibold">PropEquityLab</span>
-          </div>
-          
-          {/* Welcome Text */}
-          <div className="flex-1 flex flex-col justify-center">
-            <h1 className="text-5xl font-light text-lime-400 italic mb-2">Join</h1>
-            <h2 className="text-5xl font-bold text-white mb-6">PropEquityLab Today!</h2>
-            <p className="text-gray-300 text-lg max-w-md">
-              Start tracking your property portfolio, plan your financial future, and achieve your FIRE goals.
-            </p>
-          </div>
-          
-          {/* Features List */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-lime-400/20 flex items-center justify-center">
-                <svg className="w-5 h-5 text-lime-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <span className="text-white">Track multiple property portfolios</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-lime-400/20 flex items-center justify-center">
-                <svg className="w-5 h-5 text-lime-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <span className="text-white">Visualize net worth & cashflow</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-lime-400/20 flex items-center justify-center">
-                <svg className="w-5 h-5 text-lime-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <span className="text-white">Plan your path to FIRE</span>
-            </div>
-          </div>
-          
-          {/* Bottom Logo */}
-          <div className="mt-8">
-            <svg width="48" height="48" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="20" cy="20" r="18" stroke="#BFFF00" strokeWidth="2" />
-              <path d="M12 12L20 20L12 28" stroke="#BFFF00" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M28 12L20 20L28 28" stroke="#BFFF00" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </div>
-        </div>
-      </div>
-      
-      {/* Right Side - Registration Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white overflow-y-auto">
-        <div className="w-full max-w-md">
-          <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">
-            Create your Account
+
+        {/* Card */}
+        <div className="bg-white rounded-2xl border border-[#EAEAEA] shadow-modal p-10">
+          <h2 className="text-2xl font-semibold text-[#111111] text-center mb-2">
+            Create your account
           </h2>
-          <p className="text-gray-600 text-center mb-8">
+          <p className="text-sm text-[#6B7280] text-center mb-8">
             Start your property investment journey
           </p>
-          
+
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* General Error */}
             {errors.general && (
               <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
                 <p className="text-red-600 text-sm">{errors.general}</p>
@@ -217,10 +151,10 @@ const Register = () => {
 
             {/* Name */}
             <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
+              <Label htmlFor="name" className="text-sm font-medium text-[#111111]">Full Name</Label>
               <div className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-gray-100 rounded-md flex items-center justify-center">
-                  <User className="w-4 h-4 text-gray-400" />
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center">
+                  <User className="w-4 h-4 text-[#6B7280]" />
                 </div>
                 <Input
                   id="name"
@@ -228,19 +162,19 @@ const Register = () => {
                   type="text"
                   value={formData.name}
                   onChange={handleChange}
-                  className={`pl-14 h-12 bg-gray-50 border-gray-200 ${errors.name ? 'border-red-500' : ''}`}
+                  className={inputClass(errors.name)}
                   placeholder="Enter your full name"
                 />
               </div>
               {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
             </div>
-            
+
             {/* Email */}
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-sm font-medium text-[#111111]">Email</Label>
               <div className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-gray-100 rounded-md flex items-center justify-center">
-                  <Mail className="w-4 h-4 text-gray-400" />
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center">
+                  <Mail className="w-4 h-4 text-[#6B7280]" />
                 </div>
                 <Input
                   id="email"
@@ -248,19 +182,19 @@ const Register = () => {
                   type="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`pl-14 h-12 bg-gray-50 border-gray-200 ${errors.email ? 'border-red-500' : ''}`}
+                  className={inputClass(errors.email)}
                   placeholder="Enter your email"
                 />
               </div>
               {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
             </div>
-            
+
             {/* Password */}
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-sm font-medium text-[#111111]">Password</Label>
               <div className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-gray-100 rounded-md flex items-center justify-center">
-                  <Lock className="w-4 h-4 text-gray-400" />
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center">
+                  <Lock className="w-4 h-4 text-[#6B7280]" />
                 </div>
                 <Input
                   id="password"
@@ -268,22 +202,22 @@ const Register = () => {
                   type="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className={`pl-14 h-12 bg-lime-50 border-lime-200 ${errors.password ? 'border-red-500' : ''}`}
+                  className={inputClass(errors.password)}
                   placeholder="Create a strong password"
                 />
               </div>
               {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
-              <p className="text-xs text-gray-500">
-                Must be 8+ characters with uppercase, lowercase, number, and special character
+              <p className="text-xs text-[#6B7280]">
+                8+ characters with uppercase, lowercase, number, and special character
               </p>
             </div>
 
             {/* Confirm Password */}
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Label htmlFor="confirmPassword" className="text-sm font-medium text-[#111111]">Confirm Password</Label>
               <div className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-gray-100 rounded-md flex items-center justify-center">
-                  <Lock className="w-4 h-4 text-gray-400" />
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center">
+                  <Lock className="w-4 h-4 text-[#6B7280]" />
                 </div>
                 <Input
                   id="confirmPassword"
@@ -291,7 +225,7 @@ const Register = () => {
                   type="password"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className={`pl-14 h-12 bg-lime-50 border-lime-200 ${errors.confirmPassword ? 'border-red-500' : ''}`}
+                  className={inputClass(errors.confirmPassword)}
                   placeholder="Confirm your password"
                 />
               </div>
@@ -300,12 +234,12 @@ const Register = () => {
 
             {/* Planning Type */}
             <div className="space-y-2">
-              <Label htmlFor="planning_type">Planning Type</Label>
-              <Select 
-                value={formData.planning_type} 
+              <Label htmlFor="planning_type" className="text-sm font-medium text-[#111111]">Planning Type</Label>
+              <Select
+                value={formData.planning_type}
                 onValueChange={(value) => handleSelectChange('planning_type', value)}
               >
-                <SelectTrigger className="h-12">
+                <SelectTrigger className="h-11 border-[#EAEAEA] rounded-lg">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -318,12 +252,12 @@ const Register = () => {
 
             {/* State */}
             <div className="space-y-2">
-              <Label htmlFor="state">State</Label>
-              <Select 
-                value={formData.state} 
+              <Label htmlFor="state" className="text-sm font-medium text-[#111111]">State</Label>
+              <Select
+                value={formData.state}
                 onValueChange={(value) => handleSelectChange('state', value)}
               >
-                <SelectTrigger className="h-12">
+                <SelectTrigger className="h-11 border-[#EAEAEA] rounded-lg">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -335,30 +269,37 @@ const Register = () => {
                 </SelectContent>
               </Select>
             </div>
-            
+
             <Button
               type="submit"
               disabled={loading}
-              className="w-full h-12 bg-gray-900 text-white hover:bg-gray-800 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full h-11 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-medium rounded-lg disabled:opacity-50 transition-all duration-150"
             >
-              {loading ? 'Creating Account...' : 'Create Account'}
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Creating Account...
+                </>
+              ) : (
+                'Create Account'
+              )}
             </Button>
 
-            <div className="text-center text-sm text-gray-600">
+            <p className="text-center text-sm text-[#6B7280]">
               Already have an account?{' '}
-              <Link to="/login" className="text-lime-600 hover:text-lime-700 font-semibold">
+              <Link to="/login" className="text-emerald-600 hover:text-emerald-700 font-medium transition-colors duration-150">
                 Sign in
               </Link>
-            </div>
+            </p>
           </form>
         </div>
-      </div>
 
-      {/* Footer */}
-      <div className="absolute bottom-0 left-0 right-0 py-4 text-center text-sm text-gray-500">
-        <Link to="/legal/privacy" className="hover:text-gray-700">Privacy Policy</Link>
-        <span className="mx-2">|</span>
-        <Link to="/legal/terms" className="hover:text-gray-700">Terms of Service</Link>
+        {/* Footer */}
+        <div className="mt-6 text-center text-sm text-[#6B7280]">
+          <Link to="/legal/privacy" className="hover:text-[#111111] transition-colors duration-150">Privacy Policy</Link>
+          <span className="mx-2">·</span>
+          <Link to="/legal/terms" className="hover:text-[#111111] transition-colors duration-150">Terms of Service</Link>
+        </div>
       </div>
     </div>
   );

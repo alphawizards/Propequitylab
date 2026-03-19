@@ -326,13 +326,13 @@ const PropertyDetailsModal = ({ isOpen, onClose, property, onEdit }) => {
             <div className="flex gap-8">
               <div>
                 <p className="text-sm text-gray-500">Capital Growth</p>
-                <p className="text-lg font-semibold text-lime-600">
+                <p className="text-lg font-semibold text-emerald-600">
                   {property.growth_assumptions?.capital_growth_rate || 5}% p.a.
                 </p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Rental Growth</p>
-                <p className="text-lg font-semibold text-lime-600">
+                <p className="text-lg font-semibold text-emerald-600">
                   {property.growth_assumptions?.rental_growth_rate || 3}% p.a.
                 </p>
               </div>

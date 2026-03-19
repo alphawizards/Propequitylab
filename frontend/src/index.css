@@ -5,6 +5,7 @@
 body {
     margin: 0;
     font-family:
+        'Plus Jakarta Sans',
         -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
         "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
         sans-serif;
@@ -19,45 +20,47 @@ code {
 
 @layer base {
     :root {
-        /* New "Lime & Wealth" Theme base */
-        --background: 210 20% 97%;
-        /* #F6F7F9 (Light Blue-Gray) */
-        --foreground: 222 47% 11%;
-        /* Dark Gray Text */
+        /* Premium Minimalist Theme — warm white base, emerald accent */
+        --background: 50 10% 98%;
+        /* #FAFAF9 — warm white */
+        --foreground: 0 0% 7%;
+        /* #111111 — off-black */
 
         --card: 0 0% 100%;
         /* #FFFFFF */
-        --card-foreground: 222 47% 11%;
+        --card-foreground: 0 0% 7%;
 
         --popover: 0 0% 100%;
-        --popover-foreground: 222 47% 11%;
+        --popover-foreground: 0 0% 7%;
 
-        /* New Primary: Emerald Green #10B981 ~ HSL(151, 84%, 40%) - Adjusted for vibrancy */
-        /* Tailwind Emerald 500 is 158 64% 52% approx */
-        --primary: 158 64% 52%;
+        /* Primary: Emerald 600 — deeper, more premium */
+        --primary: 158 64% 42%;
+        /* HSL(158 64% 42%) = emerald-600 #059669 */
         --primary-foreground: 0 0% 100%;
-        /* White Text for Emerald buttons */
+        /* White text on emerald */
 
         --secondary: 210 40% 96.1%;
-        --secondary-foreground: 222 47% 11%;
+        --secondary-foreground: 0 0% 7%;
 
         --muted: 210 40% 96.1%;
-        --muted-foreground: 215.4 16.3% 46.9%;
+        --muted-foreground: 220 9% 46%;
+        /* #6B7280 — gray-500 */
 
-        --accent: 158 64% 52%;
-        /* Same as primary for now */
+        --accent: 158 64% 42%;
+        /* Same as primary */
         --accent-foreground: 0 0% 100%;
 
         --destructive: 0 84.2% 60.2%;
         --destructive-foreground: 210 40% 98%;
 
-        --border: 214.3 31.8% 91.4%;
-        --input: 214.3 31.8% 91.4%;
-        --ring: 158 64% 52%;
+        --border: 0 0% 91.8%;
+        /* #EAEAEA — crisp neutral */
+        --input: 0 0% 91.8%;
+        --ring: 158 64% 42%;
         /* Emerald ring */
 
         /* Chart Colors */
-        --chart-1: 158 64% 52%;
+        --chart-1: 158 64% 42%;
         /* Emerald */
         --chart-2: 173 58% 39%;
         /* Teal */
@@ -78,19 +81,21 @@ code {
         --card-foreground: 0 0% 98%;
         --popover: 0 0% 3.9%;
         --popover-foreground: 0 0% 98%;
-        --primary: 0 0% 98%;
+        --primary: 158 64% 52%;
+        /* emerald-400 for dark mode — lighter for contrast */
         --primary-foreground: 0 0% 9%;
         --secondary: 222 30% 18%;
         --secondary-foreground: 0 0% 98%;
         --muted: 222 30% 18%;
         --muted-foreground: 0 0% 63.9%;
-        --accent: 158 64% 40%;
+        --accent: 158 64% 52%;
+        /* emerald-400 in dark mode */
         --accent-foreground: 0 0% 98%;
         --destructive: 0 62.8% 30.6%;
         --destructive-foreground: 0 0% 98%;
         --border: 222 30% 20%;
         --input: 222 30% 20%;
-        --ring: 0 0% 83.1%;
+        --ring: 158 64% 52%;
         --chart-1: 220 70% 50%;
         --chart-2: 160 60% 45%;
         --chart-3: 30 80% 55%;

@@ -80,8 +80,8 @@ const ProjectionChart = ({ data, viewType, chartType }) => {
                 {/* Area fill for equity */}
                 <defs>
                   <linearGradient id="equityGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor="#BFFF00" stopOpacity="0.3" />
-                    <stop offset="100%" stopColor="#BFFF00" stopOpacity="0.05" />
+                    <stop offset="0%" stopColor="#059669" stopOpacity="0.3" />
+                    <stop offset="100%" stopColor="#059669" stopOpacity="0.05" />
                   </linearGradient>
                   <linearGradient id="debtGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                     <stop offset="0%" stopColor="#60A5FA" stopOpacity="0.2" />
@@ -93,7 +93,7 @@ const ProjectionChart = ({ data, viewType, chartType }) => {
                 <path
                   d={getPathData(totalValues)}
                   fill="none"
-                  stroke="#BFFF00"
+                  stroke="#059669"
                   strokeWidth="2"
                   strokeDasharray="6,4"
                 />
@@ -121,7 +121,7 @@ const ProjectionChart = ({ data, viewType, chartType }) => {
                 <path
                   d={getPathData(data.map(d => d.cashflow || 0))}
                   fill="none"
-                  stroke="#BFFF00"
+                  stroke="#059669"
                   strokeWidth="3"
                 />
               </>
@@ -149,13 +149,13 @@ const ProjectionChart = ({ data, viewType, chartType }) => {
                 <span className="text-xs text-gray-600">Debt</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-4 h-0.5 bg-lime-400 border-dashed"></div>
+                <div className="w-4 h-0.5 bg-emerald-500 border-dashed"></div>
                 <span className="text-xs text-gray-600">Total Value</span>
               </div>
             </>
           ) : (
             <div className="flex items-center gap-2">
-              <div className="w-4 h-0.5 bg-lime-400"></div>
+              <div className="w-4 h-0.5 bg-emerald-500"></div>
               <span className="text-xs text-gray-600">Annual Cashflow</span>
             </div>
           )}

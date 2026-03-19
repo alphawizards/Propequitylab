@@ -36,7 +36,7 @@ const PLAN_TYPE_INFO = {
   coast_fire: { label: 'Coast FIRE', icon: TrendingUp, color: 'bg-blue-100 text-blue-700', description: 'Let investments grow, stop saving' },
   barista_fire: { label: 'Barista FIRE', icon: DollarSign, color: 'bg-yellow-100 text-yellow-700', description: 'Part-time work in retirement' },
   traditional: { label: 'Traditional', icon: Calendar, color: 'bg-gray-100 text-gray-700', description: 'Standard retirement at 65+' },
-  custom: { label: 'Custom', icon: Target, color: 'bg-lime-100 text-lime-700', description: 'Custom plan' },
+  custom: { label: 'Custom', icon: Target, color: 'bg-emerald-100 text-emerald-700', description: 'Custom plan' },
 };
 
 const PlanCard = ({ plan, onEdit, onDelete, onView }) => {
@@ -95,7 +95,7 @@ const PlanCard = ({ plan, onEdit, onDelete, onView }) => {
           </div>
           <div>
             <p className="text-xs text-gray-500">Target Net Worth</p>
-            <p className="text-lg font-bold text-lime-600">
+            <p className="text-lg font-bold text-emerald-600">
               {plan.target_equity > 0 ? formatCurrency(plan.target_equity) : 'Not set'}
             </p>
           </div>
@@ -112,8 +112,8 @@ const PlanCard = ({ plan, onEdit, onDelete, onView }) => {
         </div>
 
         {plan.projected_fire_age && (
-          <div className="mt-4 p-3 bg-lime-50 rounded-lg">
-            <p className="text-sm text-lime-700">
+          <div className="mt-4 p-3 bg-emerald-50 rounded-lg">
+            <p className="text-sm text-emerald-700">
               <Flame className="w-4 h-4 inline mr-1" />
               Projected FIRE Age: <span className="font-bold">{plan.projected_fire_age}</span>
             </p>
@@ -208,7 +208,7 @@ const PlansPage = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-12 h-12 border-4 border-lime-400 border-t-transparent rounded-full animate-spin" />
+        <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -225,7 +225,7 @@ const PlansPage = () => {
           <Button
             variant="outline"
             onClick={() => setShowCalculator(true)}
-            className="hover:bg-lime-50 hover:border-lime-400"
+            className="hover:bg-emerald-50 hover:border-emerald-500"
             data-testid="fire-calculator-btn"
           >
             <Flame className="w-4 h-4 mr-2" />
@@ -236,7 +236,7 @@ const PlansPage = () => {
               setSelectedPlan(null);
               setShowFormModal(true);
             }}
-            className="bg-lime-400 text-gray-900 hover:bg-lime-500"
+            className="bg-emerald-600 text-white hover:bg-emerald-700"
             data-testid="create-plan-btn"
           >
             <Plus className="w-4 h-4 mr-2" />
@@ -250,8 +250,8 @@ const PlansPage = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-lime-100 flex items-center justify-center">
-                <Target className="w-5 h-5 text-lime-600" />
+              <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
+                <Target className="w-5 h-5 text-emerald-600" />
               </div>
               <div>
                 <p className="text-sm text-gray-500">Total Plans</p>
@@ -311,8 +311,8 @@ const PlansPage = () => {
       {plans.length === 0 ? (
         <Card className="py-12">
           <CardContent className="text-center">
-            <div className="w-16 h-16 rounded-full bg-lime-100 flex items-center justify-center mx-auto mb-4">
-              <Target className="w-8 h-8 text-lime-600" />
+            <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
+              <Target className="w-8 h-8 text-emerald-600" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">No Plans Yet</h3>
             <p className="text-gray-500 mb-4 max-w-md mx-auto">
@@ -320,7 +320,7 @@ const PlansPage = () => {
             </p>
             <Button
               onClick={() => setShowFormModal(true)}
-              className="bg-lime-400 text-gray-900 hover:bg-lime-500"
+              className="bg-emerald-600 text-white hover:bg-emerald-700"
             >
               <Plus className="w-4 h-4 mr-2" />
               Create Your First Plan

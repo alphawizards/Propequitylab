@@ -38,7 +38,6 @@ const WelcomeModal = ({ isOpen, onClose, onComplete }) => {
       });
       onComplete?.();
       onClose();
-      // Navigate to dashboard to see the demo data
       navigate('/dashboard');
     } catch (error) {
       console.error('Failed to load demo data:', error);
@@ -61,35 +60,35 @@ const WelcomeModal = ({ isOpen, onClose, onComplete }) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader className="text-center sm:text-left">
-          <div className="mx-auto sm:mx-0 mb-4 w-16 h-16 bg-lime-100 rounded-full flex items-center justify-center">
-            <Sparkles className="w-8 h-8 text-lime-600" />
+          <div className="mx-auto sm:mx-0 mb-4 w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center">
+            <Sparkles className="w-8 h-8 text-emerald-600" />
           </div>
-          <DialogTitle className="text-2xl font-bold">
+          <DialogTitle className="text-2xl font-semibold text-[#111111]">
             Welcome to PropEquityLab!
           </DialogTitle>
-          <DialogDescription className="text-base mt-2">
+          <DialogDescription className="text-base mt-2 text-[#6B7280]">
             Your journey to financial independence starts here. Track your property portfolio,
             plan your FIRE strategy, and visualize your path to wealth.
           </DialogDescription>
         </DialogHeader>
 
         <div className="py-6 space-y-4">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-[#6B7280]">
             How would you like to get started?
           </p>
 
           {/* Quick Start Option */}
           <div
-            className="p-4 border-2 border-lime-200 rounded-lg bg-lime-50 hover:border-lime-400 transition-colors cursor-pointer"
+            className="p-4 border border-emerald-200 rounded-xl bg-emerald-50 hover:border-emerald-400 transition-colors duration-150 cursor-pointer"
             onClick={!isLoading ? handleLoadDemoData : undefined}
           >
             <div className="flex items-start gap-4">
-              <div className="p-2 bg-lime-200 rounded-lg">
-                <Rocket className="w-6 h-6 text-lime-700" />
+              <div className="p-2 bg-emerald-100 rounded-lg">
+                <Rocket className="w-6 h-6 text-emerald-700" />
               </div>
               <div className="flex-1">
-                <h3 className="font-semibold text-foreground">Quick Start with Demo Data</h3>
-                <p className="text-sm text-muted-foreground mt-1">
+                <h3 className="font-semibold text-[#111111]">Quick Start with Demo Data</h3>
+                <p className="text-sm text-[#6B7280] mt-1">
                   Load sample properties, income, and expenses to explore the platform instantly.
                 </p>
               </div>
@@ -98,16 +97,16 @@ const WelcomeModal = ({ isOpen, onClose, onComplete }) => {
 
           {/* Start Fresh Option */}
           <div
-            className="p-4 border-2 border-gray-200 rounded-lg hover:border-gray-400 transition-colors cursor-pointer"
+            className="p-4 border border-[#EAEAEA] rounded-xl hover:border-slate-300 transition-colors duration-150 cursor-pointer"
             onClick={!isLoading ? handleStartFresh : undefined}
           >
             <div className="flex items-start gap-4">
-              <div className="p-2 bg-gray-100 rounded-lg">
-                <FileSpreadsheet className="w-6 h-6 text-gray-700" />
+              <div className="p-2 bg-slate-100 rounded-lg">
+                <FileSpreadsheet className="w-6 h-6 text-slate-600" />
               </div>
               <div className="flex-1">
-                <h3 className="font-semibold text-foreground">Start Fresh</h3>
-                <p className="text-sm text-muted-foreground mt-1">
+                <h3 className="font-semibold text-[#111111]">Start Fresh</h3>
+                <p className="text-sm text-[#6B7280] mt-1">
                   Begin with an empty portfolio and enter your own financial data.
                 </p>
               </div>
@@ -120,7 +119,7 @@ const WelcomeModal = ({ isOpen, onClose, onComplete }) => {
             variant="outline"
             onClick={handleStartFresh}
             disabled={isLoading}
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto border-[#EAEAEA] hover:bg-slate-50"
           >
             <FileSpreadsheet className="w-4 h-4 mr-2" />
             Start Fresh
@@ -128,7 +127,7 @@ const WelcomeModal = ({ isOpen, onClose, onComplete }) => {
           <Button
             onClick={handleLoadDemoData}
             disabled={isLoading}
-            className="w-full sm:w-auto bg-lime-400 text-gray-900 hover:bg-lime-500"
+            className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white active:scale-[0.98] transition-all duration-150"
           >
             {isLoading ? (
               <>

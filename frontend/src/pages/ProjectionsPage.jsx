@@ -164,7 +164,7 @@ const ProjectionsPage = () => {
                 <Button
                     onClick={fetchProjections}
                     disabled={loading}
-                    className="bg-lime-400 text-gray-900 hover:bg-lime-500"
+                    className="bg-emerald-600 text-white hover:bg-emerald-700"
                 >
                     <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
                     Refresh
@@ -329,15 +329,15 @@ const ProjectionsPage = () => {
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm text-gray-500">Current Equity</p>
-                                    <p className="text-2xl font-bold text-lime-600">
+                                    <p className="text-2xl font-bold text-emerald-600">
                                         {formatCurrency(currentData.equity)}
                                     </p>
                                     <p className="text-sm text-green-600">
                                         → {formatCurrency(finalData.equity)} in {years}y
                                     </p>
                                 </div>
-                                <div className="w-12 h-12 rounded-lg bg-lime-100 flex items-center justify-center">
-                                    <DollarSign className="w-6 h-6 text-lime-600" />
+                                <div className="w-12 h-12 rounded-lg bg-emerald-100 flex items-center justify-center">
+                                    <DollarSign className="w-6 h-6 text-emerald-600" />
                                 </div>
                             </div>
                         </CardContent>

@@ -161,7 +161,7 @@ const IncomePage = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-12 h-12 border-4 border-lime-400 border-t-transparent rounded-full animate-spin" />
+        <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -179,7 +179,7 @@ const IncomePage = () => {
             setSelectedIncome(null);
             setShowFormModal(true);
           }}
-          className="bg-lime-400 text-gray-900 hover:bg-lime-500"
+          className="bg-emerald-600 text-white hover:bg-emerald-700"
           data-testid="add-income-btn"
         >
           <Plus className="w-4 h-4 mr-2" />
@@ -294,7 +294,7 @@ const IncomePage = () => {
             </p>
             <Button
               onClick={() => setShowFormModal(true)}
-              className="bg-lime-400 text-gray-900 hover:bg-lime-500"
+              className="bg-emerald-600 text-white hover:bg-emerald-700"
             >
               <Plus className="w-4 h-4 mr-2" />
               Add Your First Income

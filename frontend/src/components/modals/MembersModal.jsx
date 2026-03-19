@@ -23,8 +23,8 @@ const MembersModal = ({ isOpen, onClose, members }) => {
               className="flex items-center justify-between p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-lime-100 flex items-center justify-center">
-                  <User className="w-5 h-5 text-lime-700" />
+                <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
+                  <User className="w-5 h-5 text-emerald-700" />
                 </div>
                 <div>
                   <div className="font-medium text-gray-900 flex items-center gap-2">
@@ -53,7 +53,7 @@ const MembersModal = ({ isOpen, onClose, members }) => {
         <div className="mt-6 pt-4 border-t">
           <Button
             variant="outline"
-            className="w-full flex items-center justify-center gap-2 hover:bg-lime-50 hover:border-lime-400"
+            className="w-full flex items-center justify-center gap-2 hover:bg-emerald-50 hover:border-emerald-500"
           >
             <UserPlus className="w-4 h-4" />
             Invite Member

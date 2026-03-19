@@ -51,7 +51,7 @@ const ProjectionControls = ({
                 onClick={() => onTimeRangeChange(range)}
                 className={`px-4 py-2 text-sm font-medium rounded-full border transition-colors ${
                   timeRange === range
-                    ? 'bg-lime-400 border-lime-400 text-gray-900'
+                    ? 'bg-emerald-600 border-emerald-600 text-white'
                     : 'border-gray-200 text-gray-600 hover:border-gray-300'
                 }`}
               >
@@ -99,9 +99,9 @@ const ProjectionControls = ({
       </div>
       
       {/* Info Banner */}
-      <div className="bg-lime-100 rounded-xl px-5 py-4 flex items-center justify-between">
+      <div className="bg-emerald-100 rounded-xl px-5 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-6 h-6 rounded-full bg-lime-400 flex items-center justify-center">
+          <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center">
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="12" cy="12" r="10" />
               <path d="M12 16v-4M12 8h.01" />

@@ -126,7 +126,7 @@ const PropertiesPage = () => {
         </div>
         <Button
           onClick={handleAddProperty}
-          className="bg-lime-400 text-gray-900 hover:bg-lime-500"
+          className="bg-emerald-600 text-white hover:bg-emerald-700"
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Property
@@ -174,8 +174,8 @@ const PropertiesPage = () => {
                   ${(totals.totalEquity / 1000000).toFixed(2)}M
                 </p>
               </div>
-              <div className="w-10 h-10 rounded-lg bg-lime-100 flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-lime-600" />
+              <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 text-emerald-600" />
               </div>
             </div>
           </CardContent>
@@ -240,7 +240,7 @@ const PropertiesPage = () => {
             {!searchQuery && (
               <Button
                 onClick={handleAddProperty}
-                className="bg-lime-400 text-gray-900 hover:bg-lime-500"
+                className="bg-emerald-600 text-white hover:bg-emerald-700"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Add Property

@@ -139,8 +139,8 @@ const PrivacyPolicy = () => {
               <li><strong>Right to Withdraw Consent:</strong> Withdraw consent for data processing at any time</li>
             </ul>
             <p className="text-gray-700 mt-4 leading-relaxed">
-              To exercise these rights, visit your <Link to="/settings" className="text-lime-600 hover:text-lime-700 font-semibold">Settings</Link> page
-              or contact us at <a href="mailto:privacy@propequitylab.com.au" className="text-lime-600 hover:text-lime-700">privacy@propequitylab.com.au</a>.
+              To exercise these rights, visit your <Link to="/settings" className="text-emerald-600 hover:text-emerald-700 font-semibold">Settings</Link> page
+              or contact us at <a href="mailto:privacy@propequitylab.com.au" className="text-emerald-600 hover:text-emerald-700">privacy@propequitylab.com.au</a>.
             </p>
           </section>
 
@@ -203,8 +203,8 @@ const PrivacyPolicy = () => {
               If you have any questions about this privacy policy or our data practices, please contact us:
             </p>
             <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-              <p className="text-gray-700"><strong>Email:</strong> <a href="mailto:privacy@propequitylab.com.au" className="text-lime-600 hover:text-lime-700">privacy@propequitylab.com.au</a></p>
-              <p className="text-gray-700 mt-2"><strong>Data Protection Officer:</strong> <a href="mailto:dpo@propequitylab.com.au" className="text-lime-600 hover:text-lime-700">dpo@propequitylab.com.au</a></p>
+              <p className="text-gray-700"><strong>Email:</strong> <a href="mailto:privacy@propequitylab.com.au" className="text-emerald-600 hover:text-emerald-700">privacy@propequitylab.com.au</a></p>
+              <p className="text-gray-700 mt-2"><strong>Data Protection Officer:</strong> <a href="mailto:dpo@propequitylab.com.au" className="text-emerald-600 hover:text-emerald-700">dpo@propequitylab.com.au</a></p>
             </div>
           </section>
 
