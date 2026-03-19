@@ -63,9 +63,10 @@ jobs:
         run: npm install -g @railway/cli
 
       - name: Deploy to Railway
-        run: railway up --service propequitylab-backend --detach
+        run: railway up --detach
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_PROJECT_ID: 543ae501-9839-4bf3-afff-576af93edb01
 
   deploy-frontend:
     name: Deploy Frontend to Cloudflare Pages
