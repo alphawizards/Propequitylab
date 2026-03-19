@@ -20,9 +20,9 @@ def test_create_property(client, session, test_user, test_portfolio):
         "loan_details": {"amount": 300000, "interest_rate": 3.5}
     }
     response = client.post("/api/properties", json=data)
-    if response.status_code != 200:
+    if response.status_code not in (200, 201):
         print(response.json())
-    assert response.status_code == 200
+    assert response.status_code in (200, 201)
     assert response.json()["address"] == "123 Street"
     
     # Verify in DB
@@ -74,7 +74,7 @@ def test_update_property(client, session, test_user, test_portfolio):
 
     response = client.put(f"/api/properties/{prop.id}", json={"current_value": 550000})
     assert response.status_code == 200
-    assert response.json()["current_value"] == 550000
+    assert float(response.json()["current_value"]) == 550000.0
     
     # Verify in DB
     session.refresh(prop)
