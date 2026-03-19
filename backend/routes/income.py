@@ -158,8 +158,8 @@ async def update_income_source(
             detail="Income source not found or you don't have access"
         )
     
-    # Update fields (only those provided)
-    update_data = data.model_dump(exclude_unset=True)
+    # Update fields (only those provided) — mode='json' serializes Decimal values
+    update_data = data.model_dump(exclude_unset=True, mode='json')
     for key, value in update_data.items():
         setattr(source, key, value)
     

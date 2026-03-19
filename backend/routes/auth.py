@@ -123,7 +123,7 @@ async def register(
     try:
         await send_verification_email(data.email, data.name, verification_token)
     except Exception as e:
-        print(f"⚠️  Failed to send verification email: {e}")
+        print(f"[WARN] Failed to send verification email: {e}")
         # Don't fail registration if email fails
     
     return {
@@ -318,7 +318,7 @@ async def resend_verification(
     try:
         await send_verification_email(user.email, user.name, verification_token)
     except Exception as e:
-        print(f"⚠️  Failed to send verification email: {e}")
+        print(f"[WARN] Failed to send verification email: {e}")
     
     return {"message": "If the email exists, a verification link has been sent."}
 
@@ -361,7 +361,7 @@ async def request_password_reset(
     try:
         await send_password_reset_email(user.email, user.name, reset_token)
     except Exception as e:
-        print(f"⚠️  Failed to send password reset email: {e}")
+        print(f"[WARN] Failed to send password reset email: {e}")
     
     return {"message": "If the email exists, a password reset link has been sent."}
 

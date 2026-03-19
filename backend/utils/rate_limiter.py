@@ -28,13 +28,13 @@ if REDIS_URL and ENABLE_RATE_LIMITING:
             socket_connect_timeout=5,
             socket_timeout=5
         )
-        print("✓ Redis rate limiter initialized")
+        print("[OK] Redis rate limiter initialized")
     except ImportError:
-        print("⚠️  redis package not installed. Install with: pip install redis")
+        print("[WARN] redis package not installed. Install with: pip install redis")
         redis_client = None
     except Exception as e:
-        print(f"⚠️  Redis connection failed: {e}")
-        print("⚠️  Rate limiting will use in-memory fallback (not suitable for production)")
+        print(f"[WARN] Redis connection failed: {e}")
+        print("[WARN] Rate limiting will use in-memory fallback (not suitable for production)")
         redis_client = None
 else:
     print("WARNING: REDIS_URL not configured. Rate limiting using in-memory fallback.")
@@ -111,7 +111,7 @@ async def check_rate_limit(
             }
             
         except Exception as e:
-            print(f"⚠️  Redis error in rate limiter: {e}")
+            print(f"[WARN] Redis error in rate limiter: {e}")
             # Fall through to in-memory fallback
     
     # In-memory fallback (development only)
@@ -204,4 +204,4 @@ async def cleanup_redis():
     """Cleanup Redis connection on shutdown"""
     if redis_client:
         await redis_client.close()
-        print("✓ Redis connection closed")
+        print("[OK] Redis connection closed")

@@ -25,29 +25,6 @@ const AssetCard = ({ asset, onView, onEdit, onDelete }) => {
     ? ((gain / asset.purchase_value) * 100).toFixed(1)
     : 0;
 
-  const getAssetIcon = (type) => {
-    switch (type) {
-      case 'super':
-        return '🏦';
-      case 'shares':
-        return '📈';
-      case 'etf':
-        return '📊';
-      case 'crypto':
-        return '🪙';
-      case 'cash':
-        return '💵';
-      case 'bonds':
-        return '📜';
-      case 'managed_fund':
-        return '💼';
-      case 'term_deposit':
-        return '🔒';
-      default:
-        return '💰';
-    }
-  };
-
   const getAssetLabel = (type) => {
     const labels = {
       super: 'Superannuation',
@@ -75,11 +52,11 @@ const AssetCard = ({ asset, onView, onEdit, onDelete }) => {
   };
 
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow group">
+    <Card className="overflow-hidden hover:shadow-card-hover transition-all duration-150 hover:-translate-y-px group">
       {/* Asset Header */}
-      <div className="h-32 bg-gradient-to-br from-emerald-50 to-teal-100 relative">
+      <div className="h-32 bg-slate-50 relative border-b border-[#EAEAEA]">
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-5xl">{getAssetIcon(asset.type)}</span>
+          <TrendingUp className="w-12 h-12 text-slate-200" />
         </div>
 
         {/* Asset Type Badge */}
@@ -124,18 +101,18 @@ const AssetCard = ({ asset, onView, onEdit, onDelete }) => {
 
       <CardContent className="p-4">
         {/* Asset Name */}
-        <h3 className="font-semibold text-gray-900 truncate mb-1">{asset.name}</h3>
+        <h3 className="font-semibold text-[#111111] truncate mb-1">{asset.name}</h3>
         {asset.institution && (
-          <p className="text-sm text-gray-500 mb-3 truncate">{asset.institution}</p>
+          <p className="text-sm text-[#6B7280] mb-3 truncate">{asset.institution}</p>
         )}
 
         {/* Current Value */}
         <div className="mb-4">
-          <p className="text-2xl font-bold text-gray-900">
+          <p className="text-2xl font-semibold tabular-nums text-[#111111]">
             {formatCurrency(asset.current_value)}
           </p>
           {asset.purchase_value > 0 && gain !== 0 && (
-            <div className={`flex items-center gap-1 text-sm ${gain >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+            <div className={`flex items-center gap-1 text-sm ${gain >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
               <ArrowUpRight className={`w-3 h-3 ${gain < 0 ? 'rotate-90' : ''}`} />
               <span>{gain >= 0 ? '+' : ''}{formatCurrency(gain)} ({gainPercent}%)</span>
             </div>
@@ -145,29 +122,29 @@ const AssetCard = ({ asset, onView, onEdit, onDelete }) => {
         {/* Financials Grid */}
         <div className="grid grid-cols-2 gap-3 pt-3 border-t">
           <div>
-            <p className="text-xs text-gray-500">Expected Return</p>
-            <p className="font-semibold text-gray-900 flex items-center gap-1">
-              <TrendingUp className="w-3 h-3 text-green-500" />
+            <p className="text-xs text-[#6B7280]">Expected Return</p>
+            <p className="font-semibold text-[#111111] tabular-nums flex items-center gap-1">
+              <TrendingUp className="w-3 h-3 text-emerald-500" />
               {asset.expected_return}% p.a.
             </p>
           </div>
           <div>
-            <p className="text-xs text-gray-500">Owner</p>
-            <p className="font-semibold text-gray-900 capitalize">
+            <p className="text-xs text-[#6B7280]">Owner</p>
+            <p className="font-semibold text-[#111111] capitalize">
               {asset.owner === 'you' ? 'You' : asset.owner === 'partner' ? 'Partner' : 'Joint'}
             </p>
           </div>
           {asset.contributions?.amount > 0 && (
             <>
               <div>
-                <p className="text-xs text-gray-500">Contribution</p>
-                <p className="font-semibold text-gray-900">
+                <p className="text-xs text-[#6B7280]">Contribution</p>
+                <p className="font-semibold text-[#111111] tabular-nums">
                   ${asset.contributions.amount.toLocaleString()}
                 </p>
               </div>
               <div>
-                <p className="text-xs text-gray-500">Frequency</p>
-                <p className="font-semibold text-gray-900 capitalize">
+                <p className="text-xs text-[#6B7280]">Frequency</p>
+                <p className="font-semibold text-[#111111] capitalize">
                   {asset.contributions.frequency}
                 </p>
               </div>
@@ -175,8 +152,8 @@ const AssetCard = ({ asset, onView, onEdit, onDelete }) => {
           )}
           {asset.ticker && (
             <div className="col-span-2">
-              <p className="text-xs text-gray-500">Ticker / Units</p>
-              <p className="font-semibold text-gray-900">
+              <p className="text-xs text-[#6B7280]">Ticker / Units</p>
+              <p className="font-semibold text-[#111111]">
                 {asset.ticker} • {asset.units} units
               </p>
             </div>

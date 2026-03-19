@@ -11,6 +11,7 @@ import {
   Trash2,
   Calendar,
   Percent,
+  CreditCard,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -24,25 +25,6 @@ const LiabilityCard = ({ liability, onView, onEdit, onDelete }) => {
   const paidPercent = liability.original_amount > 0
     ? ((paidOff / liability.original_amount) * 100).toFixed(0)
     : 0;
-
-  const getLiabilityIcon = (type) => {
-    switch (type) {
-      case 'car_loan':
-        return '🚗';
-      case 'credit_card':
-        return '💳';
-      case 'hecs':
-        return '🎓';
-      case 'personal_loan':
-        return '💰';
-      case 'margin_loan':
-        return '📈';
-      case 'buy_now_pay_later':
-        return '🛝';
-      default:
-        return '💸';
-    }
-  };
 
   const getLiabilityLabel = (type) => {
     const labels = {
@@ -76,11 +58,11 @@ const LiabilityCard = ({ liability, onView, onEdit, onDelete }) => {
   }[liability.payment_frequency] || 1);
 
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow group">
+    <Card className="overflow-hidden hover:shadow-card-hover transition-all duration-150 hover:-translate-y-px group">
       {/* Liability Header */}
-      <div className="h-32 bg-gradient-to-br from-red-50 to-orange-100 relative">
+      <div className="h-32 bg-slate-50 relative border-b border-[#EAEAEA]">
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-5xl">{getLiabilityIcon(liability.type)}</span>
+          <CreditCard className="w-12 h-12 text-slate-200" />
         </div>
 
         {/* Liability Type Badge */}
@@ -125,17 +107,17 @@ const LiabilityCard = ({ liability, onView, onEdit, onDelete }) => {
 
       <CardContent className="p-4">
         {/* Liability Name */}
-        <h3 className="font-semibold text-gray-900 truncate mb-1">{liability.name}</h3>
+        <h3 className="font-semibold text-[#111111] truncate mb-1">{liability.name}</h3>
         {liability.lender && (
-          <p className="text-sm text-gray-500 mb-3 truncate">{liability.lender}</p>
+          <p className="text-sm text-[#6B7280] mb-3 truncate">{liability.lender}</p>
         )}
 
         {/* Current Balance */}
         <div className="mb-4">
-          <p className="text-2xl font-bold text-red-600">
+          <p className="text-2xl font-semibold tabular-nums text-red-500">
             {formatCurrency(liability.current_balance)}
           </p>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-[#6B7280]">
             of {formatCurrency(liability.original_amount)} original
           </p>
         </div>
@@ -143,8 +125,8 @@ const LiabilityCard = ({ liability, onView, onEdit, onDelete }) => {
         {/* Payoff Progress */}
         <div className="mb-4">
           <div className="flex justify-between text-sm mb-1">
-            <span className="text-gray-500">Paid Off</span>
-            <span className="font-medium text-green-600">{paidPercent}%</span>
+            <span className="text-[#6B7280]">Paid Off</span>
+            <span className="font-medium text-emerald-600">{paidPercent}%</span>
           </div>
           <Progress value={parseFloat(paidPercent)} className="h-2" />
         </div>
@@ -152,26 +134,26 @@ const LiabilityCard = ({ liability, onView, onEdit, onDelete }) => {
         {/* Financials Grid */}
         <div className="grid grid-cols-2 gap-3 pt-3 border-t">
           <div>
-            <p className="text-xs text-gray-500">Interest Rate</p>
-            <p className="font-semibold text-gray-900 flex items-center gap-1">
+            <p className="text-xs text-[#6B7280]">Interest Rate</p>
+            <p className="font-semibold text-[#111111] tabular-nums flex items-center gap-1">
               <Percent className="w-3 h-3 text-orange-500" />
               {liability.interest_rate}%
             </p>
           </div>
           <div>
-            <p className="text-xs text-gray-500">Monthly Payment</p>
-            <p className="font-semibold text-gray-900">
+            <p className="text-xs text-[#6B7280]">Monthly Payment</p>
+            <p className="font-semibold text-[#111111] tabular-nums">
               ${monthlyPayment.toFixed(0)}
             </p>
           </div>
           <div>
-            <p className="text-xs text-gray-500">Owner</p>
-            <p className="font-semibold text-gray-900 capitalize">
+            <p className="text-xs text-[#6B7280]">Owner</p>
+            <p className="font-semibold text-[#111111] capitalize">
               {liability.owner === 'you' ? 'You' : liability.owner === 'partner' ? 'Partner' : 'Joint'}
             </p>
           </div>
           <div>
-            <p className="text-xs text-gray-500">Strategy</p>
+            <p className="text-xs text-[#6B7280]">Strategy</p>
             <Badge className={`text-xs ${getStrategyBadgeColor(liability.payoff_strategy)}`}>
               {liability.payoff_strategy === 'aggressive' ? 'Aggressive' :
                 liability.payoff_strategy === 'custom' ? 'Custom' : 'Minimum'}

@@ -34,7 +34,7 @@ async def send_email(to: str, subject: str, html: str) -> bool:
     """
     if not RESEND_API_KEY:
         print(f"\n{'='*60}")
-        print(f"📧 EMAIL SIMULATION (No RESEND_API_KEY configured)")
+        print(f"[EMAIL] SIMULATION (No RESEND_API_KEY configured)")
         print(f"{'='*60}")
         print(f"To: {to}")
         print(f"Subject: {subject}")
@@ -52,10 +52,10 @@ async def send_email(to: str, subject: str, html: str) -> bool:
         }
         
         resend.Emails.send(params)
-        print(f"✓ Email sent to {to}: {subject}")
+        print(f"[OK] Email sent to {to}: {subject}")
         return True
     except Exception as e:
-        print(f"✗ Failed to send email to {to}: {e}")
+        print(f"[ERROR] Failed to send email to {to}: {e}")
         return False
 
 

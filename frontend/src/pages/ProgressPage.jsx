@@ -141,8 +141,8 @@ const ProgressPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Progress Tracking</h1>
-          <p className="text-muted-foreground">Monitor your financial journey over time</p>
+          <h1 className="text-2xl font-semibold text-[#111111]">Progress Tracking</h1>
+          <p className="text-[#6B7280]">Monitor your financial journey over time</p>
         </div>
         <div className="flex gap-3">
           <Button
@@ -157,7 +157,7 @@ const ProgressPage = () => {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
@@ -165,8 +165,8 @@ const ProgressPage = () => {
                 <DollarSign className="w-5 h-5 text-emerald-600" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Current Net Worth</p>
-                <p className="text-xl font-bold text-gray-900">
+                <p className="text-sm text-[#6B7280]">Current Net Worth</p>
+                <p className="text-xl font-semibold tabular-nums text-[#111111]">
                   {formatCurrency(dashboardData?.net_worth || 0)}
                 </p>
               </div>
@@ -176,18 +176,16 @@ const ProgressPage = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${growth.monthlyChange >= 0 ? 'bg-green-100' : 'bg-red-100'
-                }`}>
+              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${growth.monthlyChange >= 0 ? 'bg-emerald-100' : 'bg-red-100'}`}>
                 {growth.monthlyChange >= 0 ? (
-                  <ArrowUpRight className="w-5 h-5 text-green-600" />
+                  <ArrowUpRight className="w-5 h-5 text-emerald-600" />
                 ) : (
-                  <ArrowDownRight className="w-5 h-5 text-red-600" />
+                  <ArrowDownRight className="w-5 h-5 text-red-500" />
                 )}
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Monthly Change</p>
-                <p className={`text-xl font-bold ${growth.monthlyChange >= 0 ? 'text-green-600' : 'text-red-600'
-                  }`}>
+                <p className="text-sm text-[#6B7280]">Monthly Change</p>
+                <p className={`text-xl font-semibold tabular-nums ${growth.monthlyChange >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
                   {growth.monthlyChange >= 0 ? '+' : ''}{formatCurrency(growth.monthlyChange)}
                 </p>
               </div>
@@ -201,9 +199,8 @@ const ProgressPage = () => {
                 <TrendingUp className="w-5 h-5 text-blue-600" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Total Growth</p>
-                <p className={`text-xl font-bold ${growth.totalChange >= 0 ? 'text-green-600' : 'text-red-600'
-                  }`}>
+                <p className="text-sm text-[#6B7280]">Total Growth</p>
+                <p className={`text-xl font-semibold tabular-nums ${growth.totalChange >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
                   {growth.totalPercent >= 0 ? '+' : ''}{growth.totalPercent.toFixed(1)}%
                 </p>
               </div>
@@ -217,8 +214,8 @@ const ProgressPage = () => {
                 <Target className="w-5 h-5 text-orange-600" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">FIRE Progress</p>
-                <p className="text-xl font-bold text-orange-600">
+                <p className="text-sm text-[#6B7280]">FIRE Progress</p>
+                <p className="text-xl font-semibold tabular-nums text-orange-600">
                   {projectionData && projectionData.years_to_fire !== null
                     ? `${projectionData.years_to_fire} yrs`
                     : 'Calculating...'}
@@ -376,7 +373,7 @@ const ProgressPage = () => {
                   </ResponsiveContainer>
                 </>
               ) : (
-                <div className="h-80 flex items-center justify-center text-gray-500">
+                <div className="h-80 flex items-center justify-center text-[#6B7280]">
                   <p>Unable to calculate projection. Please add financial data first.</p>
                 </div>
               )}
@@ -395,18 +392,18 @@ const ProgressPage = () => {
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b">
-                        <th className="text-left py-3 px-4 font-medium text-gray-500">Year</th>
-                        <th className="text-left py-3 px-4 font-medium text-gray-500">Age</th>
-                        <th className="text-right py-3 px-4 font-medium text-gray-500">Net Worth</th>
-                        <th className="text-right py-3 px-4 font-medium text-gray-500">Savings</th>
-                        <th className="text-right py-3 px-4 font-medium text-gray-500">Returns</th>
-                        <th className="text-right py-3 px-4 font-medium text-gray-500">Withdrawals</th>
-                        <th className="text-left py-3 px-4 font-medium text-gray-500">Phase</th>
+                        <th className="text-left py-3 px-4 font-medium text-[#6B7280]">Year</th>
+                        <th className="text-left py-3 px-4 font-medium text-[#6B7280]">Age</th>
+                        <th className="text-right py-3 px-4 font-medium text-[#6B7280]">Net Worth</th>
+                        <th className="text-right py-3 px-4 font-medium text-[#6B7280]">Savings</th>
+                        <th className="text-right py-3 px-4 font-medium text-[#6B7280]">Returns</th>
+                        <th className="text-right py-3 px-4 font-medium text-[#6B7280]">Withdrawals</th>
+                        <th className="text-left py-3 px-4 font-medium text-[#6B7280]">Phase</th>
                       </tr>
                     </thead>
                     <tbody>
                       {projectionData.projections.slice(0, 30).map((row) => (
-                        <tr key={row.year} className="border-b hover:bg-gray-50">
+                        <tr key={row.year} className="border-b hover:bg-slate-50">
                           <td className="py-3 px-4">{row.year}</td>
                           <td className="py-3 px-4">{row.age}</td>
                           <td className="py-3 px-4 text-right font-medium">
@@ -435,7 +432,7 @@ const ProgressPage = () => {
                   </table>
                 </div>
               ) : (
-                <div className="h-40 flex items-center justify-center text-gray-500">
+                <div className="h-40 flex items-center justify-center text-[#6B7280]">
                   <p>Calculate a projection to see yearly breakdown.</p>
                 </div>
               )}

@@ -64,7 +64,7 @@ const ExpenseCard = ({ expense, onEdit, onDelete, onView }) => {
 
   return (
     <Card
-      className="hover:shadow-lg transition-shadow cursor-pointer group"
+      className="hover:shadow-card-hover transition-all duration-150 hover:-translate-y-px cursor-pointer group"
       data-testid={`expense-card-${expense.id}`}
     >
       <CardContent className="p-6">
@@ -74,7 +74,7 @@ const ExpenseCard = ({ expense, onEdit, onDelete, onView }) => {
               <Icon className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900 dark:text-white">{expense.name}</h3>
+              <h3 className="font-semibold text-[#111111] dark:text-white">{expense.name}</h3>
               <Badge variant="secondary" className={`mt-1 ${categoryInfo.color}`}>
                 {categoryInfo.label}
               </Badge>
@@ -102,25 +102,25 @@ const ExpenseCard = ({ expense, onEdit, onDelete, onView }) => {
 
         <div className="space-y-3">
           <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-500 dark:text-gray-400">Amount</span>
-            <span className="font-bold text-lg text-gray-900 dark:text-white">
+            <span className="text-sm text-[#6B7280] dark:text-gray-400">Amount</span>
+            <span className="font-semibold text-lg tabular-nums text-[#111111] dark:text-white">
               {formatCurrency(expense.amount)}{formatFrequency(expense.frequency)}
             </span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-500 dark:text-gray-400">Monthly</span>
+            <span className="text-sm text-[#6B7280] dark:text-gray-400">Monthly</span>
             <span className="text-gray-700 dark:text-gray-300">
               {formatCurrency(monthlyAmount)}
             </span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-500 dark:text-gray-400">In Retirement</span>
+            <span className="text-sm text-[#6B7280] dark:text-gray-400">In Retirement</span>
             <span className="text-purple-600 dark:text-purple-400 font-medium">
               {formatCurrency(retirementAmount)} ({expense.retirement_percentage}%)
             </span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-500 dark:text-gray-400">Inflation</span>
+            <span className="text-sm text-[#6B7280] dark:text-gray-400">Inflation</span>
             <span className="text-orange-600 dark:text-orange-400">
               +{expense.inflation_rate}%/yr
             </span>

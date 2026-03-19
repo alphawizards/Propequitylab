@@ -133,7 +133,7 @@ const SpendingPage = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this expense?')) return;
+    if (!window.confirm('Delete this expense?')) return;
     try {
       await api.deleteExpense(id);
       await fetchExpenses();
@@ -222,8 +222,8 @@ const SpendingPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Spending</h1>
-          <p className="text-gray-500 dark:text-gray-400">Track your expenses and plan for retirement</p>
+          <h1 className="text-2xl font-semibold text-[#111111] dark:text-white">Spending</h1>
+          <p className="text-[#6B7280] dark:text-gray-400">Track your expenses and plan for retirement</p>
         </div>
         <Button
           onClick={() => {
@@ -239,7 +239,7 @@ const SpendingPage = () => {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
@@ -247,8 +247,8 @@ const SpendingPage = () => {
                 <Receipt className="w-5 h-5 text-red-600 dark:text-red-400" />
               </div>
               <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Annual Expenses</p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white">{formatCurrency(totalAnnual)}</p>
+                <p className="text-sm text-[#6B7280] dark:text-gray-400">Annual Expenses</p>
+                <p className="text-xl font-semibold tabular-nums text-[#111111] dark:text-white">{formatCurrency(totalAnnual)}</p>
               </div>
             </div>
           </CardContent>
@@ -260,8 +260,8 @@ const SpendingPage = () => {
                 <TrendingDown className="w-5 h-5 text-orange-600 dark:text-orange-400" />
               </div>
               <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Monthly Expenses</p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white">{formatCurrency(totalMonthly)}</p>
+                <p className="text-sm text-[#6B7280] dark:text-gray-400">Monthly Expenses</p>
+                <p className="text-xl font-semibold tabular-nums text-[#111111] dark:text-white">{formatCurrency(totalMonthly)}</p>
               </div>
             </div>
           </CardContent>
@@ -273,8 +273,8 @@ const SpendingPage = () => {
                 <PiggyBank className="w-5 h-5 text-purple-600 dark:text-purple-400" />
               </div>
               <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Retirement Monthly</p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white">{formatCurrency(retirementMonthly)}</p>
+                <p className="text-sm text-[#6B7280] dark:text-gray-400">Retirement Monthly</p>
+                <p className="text-xl font-semibold tabular-nums text-[#111111] dark:text-white">{formatCurrency(retirementMonthly)}</p>
               </div>
             </div>
           </CardContent>
@@ -286,8 +286,8 @@ const SpendingPage = () => {
                 <Tag className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               </div>
               <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Categories</p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white">{uniqueCategories}</p>
+                <p className="text-sm text-[#6B7280] dark:text-gray-400">Categories</p>
+                <p className="text-xl font-semibold tabular-nums text-[#111111] dark:text-white">{uniqueCategories}</p>
               </div>
             </div>
           </CardContent>
@@ -363,8 +363,8 @@ const SpendingPage = () => {
             <div className="w-16 h-16 rounded-full bg-red-100 dark:bg-red-900 flex items-center justify-center mx-auto mb-4">
               <Receipt className="w-8 h-8 text-red-600 dark:text-red-400" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">No Expenses</h3>
-            <p className="text-gray-500 dark:text-gray-400 mb-4 max-w-md mx-auto">
+            <h3 className="text-lg font-semibold text-[#111111] dark:text-white mb-2">No Expenses</h3>
+            <p className="text-[#6B7280] dark:text-gray-400 mb-4 max-w-md mx-auto">
               Track your spending to understand your expenses and plan for retirement.
             </p>
             <Button

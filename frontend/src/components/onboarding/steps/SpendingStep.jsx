@@ -83,8 +83,8 @@ const SpendingStep = ({ data, updateData, onNext, isLoading }) => {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Spending</h1>
-        <p className="text-gray-600">Track your expenses to understand your savings rate.</p>
+        <h1 className="text-3xl font-semibold text-[#111111] mb-2">Your Spending</h1>
+        <p className="text-[#6B7280]">Track your expenses to understand your savings rate.</p>
       </div>
       
       {/* Spending Summary */}
@@ -92,8 +92,8 @@ const SpendingStep = ({ data, updateData, onNext, isLoading }) => {
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Total Annual Spending</p>
-              <p className="text-3xl font-bold text-gray-900">
+              <p className="text-sm text-[#6B7280]">Total Annual Spending</p>
+              <p className="text-3xl font-semibold tabular-nums text-[#111111]">
                 ${totalAnnualExpenses.toLocaleString()}
               </p>
             </div>
@@ -122,7 +122,7 @@ const SpendingStep = ({ data, updateData, onNext, isLoading }) => {
                   <Plus className="w-4 h-4 mr-2" />
                   <div className="text-left">
                     <p className="font-medium">{preset.name}</p>
-                    <p className="text-xs text-gray-500">${preset.amount}/{preset.frequency}</p>
+                    <p className="text-xs text-[#6B7280]">${preset.amount}/{preset.frequency}</p>
                   </div>
                 </Button>
               ))}
@@ -141,17 +141,17 @@ const SpendingStep = ({ data, updateData, onNext, isLoading }) => {
                 <CardContent className="p-4 flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
-                      <CategoryIcon className="w-5 h-5 text-gray-600" />
+                      <CategoryIcon className="w-5 h-5 text-[#6B7280]" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">{expense.name}</p>
-                      <p className="text-sm text-gray-500 capitalize">
+                      <p className="font-medium text-[#111111]">{expense.name}</p>
+                      <p className="text-sm text-[#6B7280] capitalize">
                         {expense.category} • {expense.frequency}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <p className="font-semibold text-gray-900">
+                    <p className="font-semibold text-[#111111]">
                       ${expense.amount.toLocaleString()}
                     </p>
                     <Button
@@ -251,7 +251,7 @@ const SpendingStep = ({ data, updateData, onNext, isLoading }) => {
       </Card>
       
       <div className="flex justify-between">
-        <Button variant="ghost" onClick={() => onNext()} className="text-gray-500">
+        <Button variant="ghost" onClick={() => onNext()} className="text-[#6B7280]">
           Skip for now
         </Button>
         <Button 

@@ -86,9 +86,10 @@ async def create_asset(
         )
     
     # Handle contributions JSON field
+    # Use mode='json' to serialize Decimal values to float-compatible types
     contributions_data = None
     if data.contributions:
-        contributions_data = data.contributions.model_dump() if hasattr(data.contributions, 'model_dump') else data.contributions
+        contributions_data = data.contributions.model_dump(mode='json') if hasattr(data.contributions, 'model_dump') else data.contributions
     
     # Create asset with user_id from authenticated user
     asset = Asset(
@@ -171,12 +172,12 @@ async def update_asset(
             detail="Asset not found or you don't have access"
         )
     
-    # Update fields (only those provided)
-    update_data = data.model_dump(exclude_unset=True)
+    # Update fields (only those provided) — mode='json' serializes Decimal values
+    update_data = data.model_dump(exclude_unset=True, mode='json')
     
     # Handle contributions JSON field
     if 'contributions' in update_data and update_data['contributions']:
-        update_data['contributions'] = update_data['contributions'].model_dump() if hasattr(update_data['contributions'], 'model_dump') else update_data['contributions']
+        update_data['contributions'] = update_data['contributions'].model_dump(mode='json') if hasattr(update_data['contributions'], 'model_dump') else update_data['contributions']
     
     for key, value in update_data.items():
         setattr(asset, key, value)

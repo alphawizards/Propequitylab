@@ -127,7 +127,7 @@ async def create_plan(
     # Handle modifications JSON field
     modifications_data = None
     if data.modifications:
-        modifications_data = [m.model_dump() if hasattr(m, 'model_dump') else m for m in data.modifications]
+        modifications_data = [m.model_dump(mode='json') if hasattr(m, 'model_dump') else m for m in data.modifications]
     
     # Create plan with user_id from authenticated user
     plan = Plan(
@@ -205,16 +205,16 @@ async def update_plan(
             detail="Plan not found or you don't have access"
         )
     
-    # Update fields (only those provided)
-    update_data = data.model_dump(exclude_unset=True)
+    # Update fields (only those provided) — mode='json' serializes Decimal values
+    update_data = data.model_dump(exclude_unset=True, mode='json')
     
     # Handle nested JSON objects
     if 'withdrawal_strategy' in update_data and update_data['withdrawal_strategy']:
-        update_data['withdrawal_strategy'] = update_data['withdrawal_strategy'].model_dump() if hasattr(update_data['withdrawal_strategy'], 'model_dump') else update_data['withdrawal_strategy']
+        update_data['withdrawal_strategy'] = update_data['withdrawal_strategy'].model_dump(mode='json') if hasattr(update_data['withdrawal_strategy'], 'model_dump') else update_data['withdrawal_strategy']
     if 'social_security' in update_data and update_data['social_security']:
-        update_data['social_security'] = update_data['social_security'].model_dump() if hasattr(update_data['social_security'], 'model_dump') else update_data['social_security']
+        update_data['social_security'] = update_data['social_security'].model_dump(mode='json') if hasattr(update_data['social_security'], 'model_dump') else update_data['social_security']
     if 'modifications' in update_data and update_data['modifications']:
-        update_data['modifications'] = [m.model_dump() if hasattr(m, 'model_dump') else m for m in update_data['modifications']]
+        update_data['modifications'] = [m.model_dump(mode='json') if hasattr(m, 'model_dump') else m for m in update_data['modifications']]
     
     for key, value in update_data.items():
         setattr(plan, key, value)

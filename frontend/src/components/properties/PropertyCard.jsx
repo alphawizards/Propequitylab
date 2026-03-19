@@ -35,26 +35,12 @@ const PropertyCard = ({ property, onView, onEdit, onDelete }) => {
     ? (annualRental / property.current_value * 100).toFixed(2)
     : 0;
 
-  const getPropertyTypeIcon = (type) => {
-    switch (type) {
-      case 'apartment':
-      case 'unit':
-        return '🏢';
-      case 'townhouse':
-        return '🏘️';
-      case 'villa':
-        return '🏡';
-      default:
-        return '🏠';
-    }
-  };
-
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow group">
+    <Card className="overflow-hidden hover:shadow-card-hover transition-all duration-150 hover:-translate-y-px group">
       {/* Property Image Placeholder */}
-      <div className="h-40 bg-gradient-to-br from-gray-100 to-gray-200 relative">
+      <div className="h-40 bg-slate-50 relative border-b border-[#EAEAEA]">
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-6xl">{getPropertyTypeIcon(property.property_type)}</span>
+          <Home className="w-12 h-12 text-slate-200" />
         </div>
         
         {/* Property Type Badge */}
@@ -92,14 +78,14 @@ const PropertyCard = ({ property, onView, onEdit, onDelete }) => {
       
       <CardContent className="p-4">
         {/* Address */}
-        <h3 className="font-semibold text-gray-900 truncate">{property.address}</h3>
-        <div className="flex items-center gap-1 text-sm text-gray-500 mb-3">
+        <h3 className="font-semibold text-[#111111] truncate">{property.address}</h3>
+        <div className="flex items-center gap-1 text-sm text-[#6B7280] mb-3">
           <MapPin className="w-3 h-3" />
           <span>{property.suburb}, {property.state} {property.postcode}</span>
         </div>
         
         {/* Features */}
-        <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
+        <div className="flex items-center gap-4 text-sm text-[#6B7280] mb-4">
           <div className="flex items-center gap-1">
             <Bed className="w-4 h-4" />
             <span>{property.bedrooms}</span>
@@ -117,26 +103,26 @@ const PropertyCard = ({ property, onView, onEdit, onDelete }) => {
         {/* Financials */}
         <div className="grid grid-cols-2 gap-3 pt-3 border-t">
           <div>
-            <p className="text-xs text-gray-500">Value</p>
-            <p className="font-semibold text-gray-900">
+            <p className="text-xs text-[#6B7280]">Value</p>
+            <p className="font-semibold text-[#111111] tabular-nums">
               ${(property.current_value / 1000).toFixed(0)}K
             </p>
           </div>
           <div>
-            <p className="text-xs text-gray-500">Equity</p>
-            <p className="font-semibold text-green-600">
+            <p className="text-xs text-[#6B7280]">Equity</p>
+            <p className="font-semibold text-emerald-600 tabular-nums">
               ${(equity / 1000).toFixed(0)}K
             </p>
           </div>
           <div>
-            <p className="text-xs text-gray-500">LVR</p>
-            <p className={`font-semibold ${ltv > 80 ? 'text-red-500' : 'text-gray-900'}`}>
+            <p className="text-xs text-[#6B7280]">LVR</p>
+            <p className={`font-semibold tabular-nums ${ltv > 80 ? 'text-red-500' : 'text-[#111111]'}`}>
               {ltv}%
             </p>
           </div>
           <div>
-            <p className="text-xs text-gray-500">Yield</p>
-            <p className="font-semibold text-gray-900 flex items-center gap-1">
+            <p className="text-xs text-[#6B7280]">Yield</p>
+            <p className="font-semibold text-[#111111] tabular-nums flex items-center gap-1">
               <TrendingUp className="w-3 h-3 text-green-500" />
               {grossYield}%
             </p>

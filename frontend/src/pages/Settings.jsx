@@ -194,19 +194,19 @@ const Settings = () => {
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-        <p className="text-gray-600 mt-2">Manage your account preferences and privacy settings</p>
+        <h1 className="text-2xl font-semibold text-[#111111]">Settings</h1>
+        <p className="text-[#6B7280] mt-2">Manage your account preferences and privacy settings</p>
       </div>
 
       {/* Profile Settings */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
+      <div className="bg-white rounded-lg border border-[#EAEAEA] p-6">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
             <User className="w-5 h-5 text-emerald-600" />
           </div>
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">Profile Information</h2>
-            <p className="text-sm text-gray-600">Update your personal details</p>
+            <h2 className="text-lg font-semibold text-[#111111]">Profile Information</h2>
+            <p className="text-sm text-[#6B7280]">Update your personal details</p>
           </div>
         </div>
 
@@ -300,14 +300,14 @@ const Settings = () => {
       </div>
 
       {/* Password Change */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
+      <div className="bg-white rounded-lg border border-[#EAEAEA] p-6">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
             <Lock className="w-5 h-5 text-blue-600" />
           </div>
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">Change Password</h2>
-            <p className="text-sm text-gray-600">Update your account password</p>
+            <h2 className="text-lg font-semibold text-[#111111]">Change Password</h2>
+            <p className="text-sm text-[#6B7280]">Update your account password</p>
           </div>
         </div>
 
@@ -377,24 +377,24 @@ const Settings = () => {
       </div>
 
       {/* Privacy & Data (GDPR) */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
+      <div className="bg-white rounded-lg border border-[#EAEAEA] p-6">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
             <Shield className="w-5 h-5 text-purple-600" />
           </div>
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">Privacy & Data</h2>
-            <p className="text-sm text-gray-600">Manage your data and privacy preferences</p>
+            <h2 className="text-lg font-semibold text-[#111111]">Privacy & Data</h2>
+            <p className="text-sm text-[#6B7280]">Manage your data and privacy preferences</p>
           </div>
         </div>
 
         <div className="space-y-4">
           {/* Data Export */}
-          <div className="p-4 border border-gray-200 rounded-lg">
+          <div className="p-4 border border-[#EAEAEA] rounded-lg">
             <div className="flex items-start justify-between">
               <div className="flex-1">
-                <h3 className="font-semibold text-gray-900 mb-1">Download Your Data</h3>
-                <p className="text-sm text-gray-600 mb-3">
+                <h3 className="font-semibold text-[#111111] mb-1">Download Your Data</h3>
+                <p className="text-sm text-[#6B7280] mb-3">
                   Export all your data in JSON format. Includes portfolios, properties, assets,
                   liabilities, income, and expenses.
                 </p>
@@ -458,8 +458,8 @@ const Settings = () => {
                 <AlertTriangle className="w-6 h-6 text-red-600" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900">Delete Account</h3>
-                <p className="text-sm text-gray-600">This action is permanent</p>
+                <h3 className="text-xl font-semibold text-[#111111]">Delete Account</h3>
+                <p className="text-sm text-[#6B7280]">This action is permanent</p>
               </div>
             </div>
 

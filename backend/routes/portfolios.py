@@ -123,8 +123,8 @@ async def update_portfolio(
             detail="Portfolio not found or you don't have access"
         )
     
-    # Update fields
-    update_data = data.model_dump(exclude_unset=True)
+    # Update fields — use mode='json' to serialize Decimal values in JSON columns
+    update_data = data.model_dump(exclude_unset=True, mode='json')
     for key, value in update_data.items():
         setattr(portfolio, key, value)
     

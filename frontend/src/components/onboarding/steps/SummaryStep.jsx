@@ -104,8 +104,8 @@ const SummaryStep = ({ data, onComplete, isLoading }) => {
         <div className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
           <Rocket className="w-10 h-10 text-emerald-600" />
         </div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">You're All Set!</h1>
-        <p className="text-gray-600">Here's a summary of your financial profile.</p>
+        <h1 className="text-3xl font-semibold text-[#111111] mb-2">You're All Set!</h1>
+        <p className="text-[#6B7280]">Here's a summary of your financial profile.</p>
       </div>
       
       {/* Progress indicator */}
@@ -114,11 +114,11 @@ const SummaryStep = ({ data, onComplete, isLoading }) => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <CheckCircle className="w-6 h-6 text-emerald-600" />
-              <span className="font-medium text-gray-900">
+              <span className="font-medium text-[#111111]">
                 {completedSections} of {sections.length} sections completed
               </span>
             </div>
-            <span className="text-sm text-gray-500">
+            <span className="text-sm text-[#6B7280]">
               You can always add more later
             </span>
           </div>
@@ -136,7 +136,7 @@ const SummaryStep = ({ data, onComplete, isLoading }) => {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-semibold text-gray-900">{section.title}</h3>
+                    <h3 className="font-semibold text-[#111111]">{section.title}</h3>
                     {section.complete ? (
                       <CheckCircle className="w-5 h-5 text-green-500" />
                     ) : (
@@ -146,8 +146,8 @@ const SummaryStep = ({ data, onComplete, isLoading }) => {
                   <div className="grid grid-cols-2 gap-2">
                     {section.items.map((item) => (
                       <div key={item.label}>
-                        <p className="text-xs text-gray-500">{item.label}</p>
-                        <p className="text-sm font-medium text-gray-900">{item.value}</p>
+                        <p className="text-xs text-[#6B7280]">{item.label}</p>
+                        <p className="text-sm font-medium text-[#111111]">{item.value}</p>
                       </div>
                     ))}
                   </div>
@@ -162,7 +162,7 @@ const SummaryStep = ({ data, onComplete, isLoading }) => {
       <Card className="mb-8 bg-gradient-to-br from-gray-900 to-gray-800 text-white border-0">
         <CardContent className="p-6">
           <h3 className="text-sm text-gray-400 mb-2">Current Net Worth (estimated)</h3>
-          <p className="text-4xl font-bold text-emerald-400">
+          <p className="text-4xl font-semibold tabular-nums text-emerald-400">
             ${(totalAssets - totalLiabilities).toLocaleString()}
           </p>
           <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-gray-700">

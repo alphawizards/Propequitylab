@@ -156,8 +156,8 @@ const ProjectionsPage = () => {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Financial Projections</h1>
-                    <p className="text-gray-500">
+                    <h1 className="text-2xl font-semibold text-[#111111]">Financial Projections</h1>
+                    <p className="text-[#6B7280]">
                         {years}-year forecast for your property portfolio
                     </p>
                 </div>
@@ -304,16 +304,16 @@ const ProjectionsPage = () => {
 
             {/* Summary Cards */}
             {currentData && finalData && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
                     <Card>
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-gray-500">Current Value</p>
-                                    <p className="text-2xl font-bold text-gray-900">
+                                    <p className="text-sm text-[#6B7280]">Current Value</p>
+                                    <p className="text-2xl font-semibold tabular-nums text-[#111111]">
                                         {formatCurrency(currentData.property_value)}
                                     </p>
-                                    <p className="text-sm text-green-600">
+                                    <p className="text-sm text-emerald-600">
                                         → {formatCurrency(finalData.property_value)} in {years}y
                                     </p>
                                 </div>
@@ -328,11 +328,11 @@ const ProjectionsPage = () => {
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-gray-500">Current Equity</p>
-                                    <p className="text-2xl font-bold text-emerald-600">
+                                    <p className="text-sm text-[#6B7280]">Current Equity</p>
+                                    <p className="text-2xl font-semibold tabular-nums text-emerald-600">
                                         {formatCurrency(currentData.equity)}
                                     </p>
-                                    <p className="text-sm text-green-600">
+                                    <p className="text-sm text-emerald-600">
                                         → {formatCurrency(finalData.equity)} in {years}y
                                     </p>
                                 </div>
@@ -347,11 +347,11 @@ const ProjectionsPage = () => {
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-gray-500">Current LVR</p>
-                                    <p className="text-2xl font-bold text-purple-600">
+                                    <p className="text-sm text-[#6B7280]">Current LVR</p>
+                                    <p className="text-2xl font-semibold tabular-nums text-purple-600">
                                         {formatPercentage(currentData.lvr)}
                                     </p>
-                                    <p className="text-sm text-green-600">
+                                    <p className="text-sm text-emerald-600">
                                         → {formatPercentage(finalData.lvr)} in {years}y
                                     </p>
                                 </div>
@@ -366,11 +366,11 @@ const ProjectionsPage = () => {
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-gray-500">Net Cashflow (Year 1)</p>
-                                    <p className={`text-2xl font-bold ${parseFloat(currentData.net_cashflow) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                    <p className="text-sm text-[#6B7280]">Net Cashflow (Year 1)</p>
+                                    <p className={`text-2xl font-semibold tabular-nums ${parseFloat(currentData.net_cashflow) >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
                                         {formatCurrency(currentData.net_cashflow)}
                                     </p>
-                                    <p className="text-sm text-gray-500">per year</p>
+                                    <p className="text-sm text-[#6B7280]">per year</p>
                                 </div>
                                 <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${parseFloat(currentData.net_cashflow) >= 0 ? 'bg-green-100' : 'bg-red-100'}`}>
                                     <Calendar className={`w-6 h-6 ${parseFloat(currentData.net_cashflow) >= 0 ? 'text-green-600' : 'text-red-600'}`} />
@@ -440,10 +440,10 @@ const ProjectionsPage = () => {
                 <Card className="p-12">
                     <div className="text-center">
                         <TrendingUp className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                        <h3 className="text-lg font-semibold text-[#111111] mb-2">
                             No projection data available
                         </h3>
-                        <p className="text-gray-500">
+                        <p className="text-[#6B7280]">
                             Add properties with loan and rental details to see projections
                         </p>
                     </div>
@@ -461,27 +461,27 @@ const ProjectionsPage = () => {
                             <table className="w-full text-sm">
                                 <thead>
                                     <tr className="border-b">
-                                        <th className="text-left py-3 px-2 text-gray-500">Year</th>
-                                        <th className="text-right py-3 px-2 text-gray-500">Value</th>
-                                        <th className="text-right py-3 px-2 text-gray-500">Debt</th>
-                                        <th className="text-right py-3 px-2 text-gray-500">Equity</th>
-                                        <th className="text-right py-3 px-2 text-gray-500">LVR</th>
-                                        <th className="text-right py-3 px-2 text-gray-500">Rent</th>
-                                        <th className="text-right py-3 px-2 text-gray-500">Expenses</th>
-                                        <th className="text-right py-3 px-2 text-gray-500">Cashflow</th>
+                                        <th className="text-left py-3 px-2 text-[#6B7280]">Year</th>
+                                        <th className="text-right py-3 px-2 text-[#6B7280]">Value</th>
+                                        <th className="text-right py-3 px-2 text-[#6B7280]">Debt</th>
+                                        <th className="text-right py-3 px-2 text-[#6B7280]">Equity</th>
+                                        <th className="text-right py-3 px-2 text-[#6B7280]">LVR</th>
+                                        <th className="text-right py-3 px-2 text-[#6B7280]">Rent</th>
+                                        <th className="text-right py-3 px-2 text-[#6B7280]">Expenses</th>
+                                        <th className="text-right py-3 px-2 text-[#6B7280]">Cashflow</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {projectionData.map((row, index) => (
-                                        <tr key={row.year} className={index % 2 === 0 ? 'bg-gray-50' : ''}>
+                                        <tr key={row.year} className={index % 2 === 0 ? 'bg-slate-50' : ''}>
                                             <td className="py-2 px-2 font-medium">{row.year}</td>
                                             <td className="py-2 px-2 text-right">{formatCurrency(row.property_value)}</td>
                                             <td className="py-2 px-2 text-right">{formatCurrency(row.total_debt)}</td>
-                                            <td className="py-2 px-2 text-right text-green-600">{formatCurrency(row.equity)}</td>
+                                            <td className="py-2 px-2 text-right text-emerald-600">{formatCurrency(row.equity)}</td>
                                             <td className="py-2 px-2 text-right">{formatPercentage(row.lvr)}</td>
                                             <td className="py-2 px-2 text-right">{formatCurrency(row.rental_income)}</td>
                                             <td className="py-2 px-2 text-right">{formatCurrency(row.expenses)}</td>
-                                            <td className={`py-2 px-2 text-right font-medium ${parseFloat(row.net_cashflow) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                            <td className={`py-2 px-2 text-right font-medium ${parseFloat(row.net_cashflow) >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
                                                 {formatCurrency(row.net_cashflow)}
                                             </td>
                                         </tr>

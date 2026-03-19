@@ -27,8 +27,8 @@ const AboutYouStep = ({ data, updateData, onNext, isLoading }) => {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Let's get to know you</h1>
-        <p className="text-gray-600">Tell us a bit about yourself to personalize your experience.</p>
+        <h1 className="text-3xl font-semibold text-[#111111] mb-2">Let's get to know you</h1>
+        <p className="text-[#6B7280]">Tell us a bit about yourself to personalize your experience.</p>
       </div>
       
       <form onSubmit={handleSubmit}>
@@ -55,12 +55,12 @@ const AboutYouStep = ({ data, updateData, onNext, isLoading }) => {
                   data.planning_type === 'individual' ? 'bg-emerald-600' : 'bg-gray-100'
                 }`}>
                   <User className={`w-6 h-6 ${
-                    data.planning_type === 'individual' ? 'text-white' : 'text-gray-500'
+                    data.planning_type === 'individual' ? 'text-white' : 'text-[#6B7280]'
                   }`} />
                 </div>
                 <div>
-                  <p className="font-semibold text-gray-900">Individual</p>
-                  <p className="text-sm text-gray-500">Planning for yourself</p>
+                  <p className="font-semibold text-[#111111]">Individual</p>
+                  <p className="text-sm text-[#6B7280]">Planning for yourself</p>
                 </div>
               </Label>
               
@@ -77,12 +77,12 @@ const AboutYouStep = ({ data, updateData, onNext, isLoading }) => {
                   data.planning_type === 'couple' ? 'bg-emerald-600' : 'bg-gray-100'
                 }`}>
                   <Users className={`w-6 h-6 ${
-                    data.planning_type === 'couple' ? 'text-white' : 'text-gray-500'
+                    data.planning_type === 'couple' ? 'text-white' : 'text-[#6B7280]'
                   }`} />
                 </div>
                 <div>
-                  <p className="font-semibold text-gray-900">Couple</p>
-                  <p className="text-sm text-gray-500">Planning together</p>
+                  <p className="font-semibold text-[#111111]">Couple</p>
+                  <p className="text-sm text-[#6B7280]">Planning together</p>
                 </div>
               </Label>
             </RadioGroup>

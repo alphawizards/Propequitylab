@@ -152,8 +152,8 @@ async def update_loan(
     """
     loan = _verify_loan_access(loan_id, current_user.id, session)
     
-    # Update fields
-    update_data = data.model_dump(exclude_unset=True)
+    # Update fields — mode='json' serializes Decimal values in JSON columns
+    update_data = data.model_dump(exclude_unset=True, mode='json')
     for key, value in update_data.items():
         setattr(loan, key, value)
     

@@ -64,8 +64,8 @@ const LiabilitiesStep = ({ data, updateData, onNext, isLoading }) => {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Liabilities</h1>
-        <p className="text-gray-600">Add any debts (excluding property loans) to get a complete picture.</p>
+        <h1 className="text-3xl font-semibold text-[#111111] mb-2">Your Liabilities</h1>
+        <p className="text-[#6B7280]">Add any debts (excluding property loans) to get a complete picture.</p>
       </div>
       
       {/* Liabilities Summary */}
@@ -73,8 +73,8 @@ const LiabilitiesStep = ({ data, updateData, onNext, isLoading }) => {
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Total Other Liabilities</p>
-              <p className="text-3xl font-bold text-gray-900">
+              <p className="text-sm text-[#6B7280]">Total Other Liabilities</p>
+              <p className="text-3xl font-semibold tabular-nums text-[#111111]">
                 ${totalLiabilities.toLocaleString()}
               </p>
             </div>
@@ -118,8 +118,8 @@ const LiabilitiesStep = ({ data, updateData, onNext, isLoading }) => {
                       <TypeIcon className="w-5 h-5 text-red-600" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">{liability.name}</p>
-                      <p className="text-sm text-gray-500">
+                      <p className="font-medium text-[#111111]">{liability.name}</p>
+                      <p className="text-sm text-[#6B7280]">
                         {LIABILITY_TYPES.find(t => t.value === liability.type)?.label || liability.type}
                         {liability.interest_rate > 0 && (
                           <> • {liability.interest_rate}% interest</>
@@ -251,7 +251,7 @@ const LiabilitiesStep = ({ data, updateData, onNext, isLoading }) => {
       </Card>
       
       <div className="flex justify-between">
-        <Button variant="ghost" onClick={() => onNext()} className="text-gray-500">
+        <Button variant="ghost" onClick={() => onNext()} className="text-[#6B7280]">
           Skip for now
         </Button>
         <Button 

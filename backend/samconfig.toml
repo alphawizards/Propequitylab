@@ -1,0 +1,18 @@
+# SAM CLI Configuration for PropEquityLab API
+# Run: sam deploy --guided (first time) or sam deploy (subsequent)
+
+version = 0.1
+
+[default.deploy.parameters]
+stack_name = "propequitylab-api"
+region = "ap-southeast-2"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+disable_rollback = false
+resolve_s3 = true
+
+# Parameter overrides - UPDATE THESE VALUES
+# parameter_overrides = "DatabaseUrl='postgresql://...' JwtSecret='your-secret' CorsOrigins='https://propequitylab.com,https://www.propequitylab.com'"
+
+[default.build.parameters]
+use_container = true

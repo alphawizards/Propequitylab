@@ -39,6 +39,6 @@ def init_sentry():
             attach_stacktrace=True,  # Include stack traces with all errors
         )
 
-        print(f"✅ Sentry initialized for environment: {environment}")
+        print(f"[OK] Sentry initialized for environment: {environment}")
     else:
-        print(f"⚠️  Sentry NOT initialized (environment: {environment})")
+        print(f"[WARN] Sentry NOT initialized (environment: {environment})")

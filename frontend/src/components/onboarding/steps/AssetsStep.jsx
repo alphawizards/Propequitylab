@@ -65,8 +65,8 @@ const AssetsStep = ({ data, updateData, onNext, isLoading }) => {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Assets</h1>
-        <p className="text-gray-600">Add your non-property assets like super, shares, and savings.</p>
+        <h1 className="text-3xl font-semibold text-[#111111] mb-2">Your Assets</h1>
+        <p className="text-[#6B7280]">Add your non-property assets like super, shares, and savings.</p>
       </div>
       
       {/* Assets Summary */}
@@ -74,8 +74,8 @@ const AssetsStep = ({ data, updateData, onNext, isLoading }) => {
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Total Other Assets</p>
-              <p className="text-3xl font-bold text-gray-900">
+              <p className="text-sm text-[#6B7280]">Total Other Assets</p>
+              <p className="text-3xl font-semibold tabular-nums text-[#111111]">
                 ${totalAssets.toLocaleString()}
               </p>
             </div>
@@ -109,8 +109,8 @@ const AssetsStep = ({ data, updateData, onNext, isLoading }) => {
                       <TypeIcon className="w-5 h-5 text-blue-600" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">{asset.name}</p>
-                      <p className="text-sm text-gray-500 capitalize">
+                      <p className="font-medium text-[#111111]">{asset.name}</p>
+                      <p className="text-sm text-[#6B7280] capitalize">
                         {ASSET_TYPES.find(t => t.value === asset.type)?.label || asset.type}
                         {asset.contributions?.amount > 0 && (
                           <> • +${asset.contributions.amount}/{asset.contributions.frequency}</>
@@ -119,7 +119,7 @@ const AssetsStep = ({ data, updateData, onNext, isLoading }) => {
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <p className="font-semibold text-gray-900">
+                    <p className="font-semibold text-[#111111]">
                       ${asset.current_value.toLocaleString()}
                     </p>
                     <Button
@@ -242,7 +242,7 @@ const AssetsStep = ({ data, updateData, onNext, isLoading }) => {
       </Card>
       
       <div className="flex justify-between">
-        <Button variant="ghost" onClick={() => onNext()} className="text-gray-500">
+        <Button variant="ghost" onClick={() => onNext()} className="text-[#6B7280]">
           Skip for now
         </Button>
         <Button 

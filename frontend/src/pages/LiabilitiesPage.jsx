@@ -64,7 +64,7 @@ const LiabilitiesPage = () => {
   };
 
   const handleDeleteLiability = async (liabilityId) => {
-    if (!window.confirm('Are you sure you want to delete this liability?')) return;
+    if (!window.confirm('Delete this liability?')) return;
     
     try {
       await api.deleteLiability(liabilityId);
@@ -131,7 +131,7 @@ const LiabilitiesPage = () => {
   if (!currentPortfolio) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <p className="text-muted-foreground">Please create a portfolio first.</p>
+        <p className="text-[#6B7280]">Please create a portfolio first.</p>
       </div>
     );
   }
@@ -141,8 +141,8 @@ const LiabilitiesPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Liabilities</h1>
-          <p className="text-muted-foreground">Manage your debts and loans</p>
+          <h1 className="text-2xl font-semibold text-[#111111]">Liabilities</h1>
+          <p className="text-[#6B7280]">Manage your debts and loans</p>
         </div>
         <Button
           onClick={handleAddLiability}
@@ -154,13 +154,13 @@ const LiabilitiesPage = () => {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total Debt</p>
-                <p className="text-2xl font-bold text-red-600">
+                <p className="text-sm text-[#6B7280]">Total Debt</p>
+                <p className="text-2xl font-semibold tabular-nums text-red-500">
                   ${(totals.totalBalance / 1000).toFixed(0)}K
                 </p>
               </div>
@@ -170,29 +170,29 @@ const LiabilitiesPage = () => {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total Paid Off</p>
-                <p className="text-2xl font-bold text-green-600">
+                <p className="text-sm text-[#6B7280]">Total Paid Off</p>
+                <p className="text-2xl font-semibold tabular-nums text-emerald-600">
                   ${(totalPaid / 1000).toFixed(0)}K
                 </p>
               </div>
-              <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                <TrendingDown className="w-5 h-5 text-green-600" />
+              <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
+                <TrendingDown className="w-5 h-5 text-emerald-600" />
               </div>
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Monthly Payments</p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-sm text-[#6B7280]">Monthly Payments</p>
+                <p className="text-2xl font-semibold tabular-nums text-[#111111]">
                   ${totals.monthlyPayments.toFixed(0)}
                 </p>
               </div>
@@ -202,13 +202,13 @@ const LiabilitiesPage = () => {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Avg Interest Rate</p>
-                <p className="text-2xl font-bold text-orange-600">
+                <p className="text-sm text-[#6B7280]">Avg Interest Rate</p>
+                <p className="text-2xl font-semibold tabular-nums text-orange-600">
                   {avgInterestRate}%
                 </p>
               </div>
@@ -251,10 +251,10 @@ const LiabilitiesPage = () => {
             <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
               <CreditCard className="w-8 h-8 text-gray-400" />
             </div>
-            <h3 className="text-lg font-semibold text-foreground mb-2">
+            <h3 className="text-lg font-semibold text-[#111111] mb-2">
               {searchQuery ? 'No liabilities found' : 'No liabilities yet'}
             </h3>
-            <p className="text-muted-foreground mb-6">
+            <p className="text-[#6B7280] mb-6">
               {searchQuery
                 ? 'Try adjusting your search'
                 : 'Track your debts to understand your full financial picture'}

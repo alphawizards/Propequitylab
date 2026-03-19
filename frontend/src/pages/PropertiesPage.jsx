@@ -4,9 +4,20 @@ import api from '../services/api';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Input } from '../components/ui/input';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '../components/ui/alert-dialog';
 import PropertyCard from '../components/properties/PropertyCard';
 import PropertyFormModal from '../components/properties/PropertyFormModal';
 import PropertyDetailsModal from '../components/properties/PropertyDetailsModal';
+import KPICard from '../components/dashboard/KPICard';
 import {
   Plus,
   Search,
@@ -26,6 +37,7 @@ const PropertiesPage = () => {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [editMode, setEditMode] = useState(false);
+  const [deleteConfirmId, setDeleteConfirmId] = useState(null);
 
   const fetchProperties = useCallback(async () => {
     if (!currentPortfolio?.id) return;
@@ -63,15 +75,20 @@ const PropertiesPage = () => {
     setIsDetailsOpen(true);
   };
 
-  const handleDeleteProperty = async (propertyId) => {
-    if (!window.confirm('Are you sure you want to delete this property?')) return;
+  const handleDeleteProperty = (propertyId) => {
+    setDeleteConfirmId(propertyId);
+  };
 
+  const confirmDelete = async () => {
+    if (!deleteConfirmId) return;
     try {
-      await api.deleteProperty(propertyId);
-      setProperties(prev => prev.filter(p => p.id !== propertyId));
+      await api.deleteProperty(deleteConfirmId);
+      setProperties(prev => prev.filter(p => p.id !== deleteConfirmId));
       refreshSummary();
     } catch (error) {
       console.error('Failed to delete property:', error);
+    } finally {
+      setDeleteConfirmId(null);
     }
   };
 
@@ -121,8 +138,8 @@ const PropertiesPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Properties</h1>
-          <p className="text-gray-500">Manage your property portfolio</p>
+          <h1 className="text-2xl font-semibold text-[#111111]">Properties</h1>
+          <p className="text-[#6B7280]">Manage your property portfolio</p>
         </div>
         <Button
           onClick={handleAddProperty}
@@ -134,68 +151,31 @@ const PropertiesPage = () => {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500">Total Properties</p>
-                <p className="text-2xl font-bold text-gray-900">{properties.length}</p>
-              </div>
-              <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                <Building className="w-5 h-5 text-blue-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500">Portfolio Value</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  ${(totals.totalValue / 1000000).toFixed(2)}M
-                </p>
-              </div>
-              <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                <Home className="w-5 h-5 text-green-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500">Total Equity</p>
-                <p className="text-2xl font-bold text-green-600">
-                  ${(totals.totalEquity / 1000000).toFixed(2)}M
-                </p>
-              </div>
-              <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-emerald-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500">Annual Rental</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  ${totals.annualRental.toLocaleString()}
-                </p>
-              </div>
-              <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-                <DollarSign className="w-5 h-5 text-purple-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <KPICard
+          title="Total Properties"
+          value={properties.length.toString()}
+          icon={Building}
+          variant="blue"
+        />
+        <KPICard
+          title="Portfolio Value"
+          value={`$${(totals.totalValue / 1000000).toFixed(2)}M`}
+          icon={Home}
+          variant="green"
+        />
+        <KPICard
+          title="Total Equity"
+          value={`$${(totals.totalEquity / 1000000).toFixed(2)}M`}
+          icon={TrendingUp}
+          variant="green"
+        />
+        <KPICard
+          title="Annual Rental"
+          value={`$${totals.annualRental.toLocaleString()}`}
+          icon={DollarSign}
+          variant="purple"
+        />
       </div>
 
       {/* Search & Filter */}
@@ -277,6 +257,26 @@ const PropertiesPage = () => {
         property={selectedProperty}
         onEdit={() => handleEditProperty(selectedProperty)}
       />
+
+      <AlertDialog open={!!deleteConfirmId} onOpenChange={(open) => !open && setDeleteConfirmId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete property?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently remove this property from your portfolio. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              className="bg-red-500 hover:bg-red-600 text-white"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

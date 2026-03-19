@@ -110,7 +110,7 @@ const IncomePage = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this income source?')) return;
+    if (!window.confirm('Delete this income source?')) return;
     try {
       await api.deleteIncomeSource(id);
       await fetchIncomeSources();
@@ -171,8 +171,8 @@ const IncomePage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Income Sources</h1>
-          <p className="text-gray-500 dark:text-gray-400">Manage your income streams and projections</p>
+          <h1 className="text-2xl font-semibold text-[#111111] dark:text-white">Income Sources</h1>
+          <p className="text-[#6B7280] dark:text-gray-400">Manage your income streams and projections</p>
         </div>
         <Button
           onClick={() => {
@@ -188,16 +188,16 @@ const IncomePage = () => {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900 flex items-center justify-center">
-                <DollarSign className="w-5 h-5 text-green-600 dark:text-green-400" />
+              <div className="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center">
+                <DollarSign className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
               </div>
               <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Annual Income</p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white">{formatCurrency(totalAnnual)}</p>
+                <p className="text-sm text-[#6B7280] dark:text-gray-400">Annual Income</p>
+                <p className="text-xl font-semibold tabular-nums text-[#111111] dark:text-white">{formatCurrency(totalAnnual)}</p>
               </div>
             </div>
           </CardContent>
@@ -209,8 +209,8 @@ const IncomePage = () => {
                 <DollarSign className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               </div>
               <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Monthly Income</p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white">{formatCurrency(totalMonthly)}</p>
+                <p className="text-sm text-[#6B7280] dark:text-gray-400">Monthly Income</p>
+                <p className="text-xl font-semibold tabular-nums text-[#111111] dark:text-white">{formatCurrency(totalMonthly)}</p>
               </div>
             </div>
           </CardContent>
@@ -222,8 +222,8 @@ const IncomePage = () => {
                 <TrendingUp className="w-5 h-5 text-purple-600 dark:text-purple-400" />
               </div>
               <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Avg Growth Rate</p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white">{avgGrowthRate.toFixed(1)}%</p>
+                <p className="text-sm text-[#6B7280] dark:text-gray-400">Avg Growth Rate</p>
+                <p className="text-xl font-semibold tabular-nums text-[#111111] dark:text-white">{avgGrowthRate.toFixed(1)}%</p>
               </div>
             </div>
           </CardContent>
@@ -235,8 +235,8 @@ const IncomePage = () => {
                 <Briefcase className="w-5 h-5 text-orange-600 dark:text-orange-400" />
               </div>
               <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Income Sources</p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white">{incomeSources.length}</p>
+                <p className="text-sm text-[#6B7280] dark:text-gray-400">Income Sources</p>
+                <p className="text-xl font-semibold tabular-nums text-[#111111] dark:text-white">{incomeSources.length}</p>
               </div>
             </div>
           </CardContent>
@@ -288,8 +288,8 @@ const IncomePage = () => {
             <div className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mx-auto mb-4">
               <DollarSign className="w-8 h-8 text-green-600 dark:text-green-400" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">No Income Sources</h3>
-            <p className="text-gray-500 dark:text-gray-400 mb-4 max-w-md mx-auto">
+            <h3 className="text-lg font-semibold text-[#111111] dark:text-white mb-2">No Income Sources</h3>
+            <p className="text-[#6B7280] dark:text-gray-400 mb-4 max-w-md mx-auto">
               Add your income sources to track your earnings and project future growth.
             </p>
             <Button

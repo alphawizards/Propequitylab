@@ -185,12 +185,12 @@ const DashboardNew = () => {
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
           <div>
             <p className="text-emerald-200 text-sm font-medium tracking-wide uppercase mb-2">Dashboard</p>
-            <h1 className="text-3xl lg:text-4xl font-bold tracking-tight">Welcome back, {firstName}</h1>
+            <h1 className="text-3xl lg:text-4xl font-semibold tracking-tight">Welcome back, {firstName}</h1>
             <p className="text-emerald-100/80 mt-2 text-base">Here is your financial snapshot</p>
           </div>
           <div className="text-left lg:text-right">
             <p className="text-emerald-200 text-xs font-medium tracking-wide uppercase mb-1">Net Worth</p>
-            <p className="text-4xl lg:text-5xl font-bold tracking-tight font-mono">{formatCurrency(data.net_worth)}</p>
+            <p className="text-4xl lg:text-5xl font-semibold tracking-tight tabular-nums">{formatCurrency(data.net_worth)}</p>
           </div>
         </div>
       </div>
@@ -284,7 +284,7 @@ const DashboardNew = () => {
                 <div key={item.label} className="group">
                   <div className="flex items-center justify-between mb-1.5">
                     <span className="text-sm text-zinc-600">{item.label}</span>
-                    <span className="text-sm font-medium text-zinc-900 font-mono">{formatCurrency(item.value)}</span>
+                    <span className="text-sm font-medium text-zinc-900 tabular-nums">{formatCurrency(item.value)}</span>
                   </div>
                   <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                     <div
@@ -318,7 +318,7 @@ const DashboardNew = () => {
                 <div key={item.label} className="group">
                   <div className="flex items-center justify-between mb-1.5">
                     <span className="text-sm text-zinc-600">{item.label}</span>
-                    <span className="text-sm font-medium text-zinc-900 font-mono">{formatCurrency(item.value)}</span>
+                    <span className="text-sm font-medium text-zinc-900 tabular-nums">{formatCurrency(item.value)}</span>
                   </div>
                   <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                     <div

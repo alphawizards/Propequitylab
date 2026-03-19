@@ -1,0 +1,103 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: PropEquityLab API - Lambda + API Gateway (Free Tier)
+
+Parameters:
+  Environment:
+    Type: String
+    Default: production
+  DatabaseUrl:
+    Type: String
+    NoEcho: true
+  JwtSecretKey:
+    Type: String
+    NoEcho: true
+  CorsOrigins:
+    Type: String
+    Default: "https://propequitylab.com,https://www.propequitylab.com"
+  FrontendUrl:
+    Type: String
+    Default: "https://propequitylab.com"
+  FromEmail:
+    Type: String
+    Default: "Propequitylab <onboarding@resend.dev>"
+  ResendApiKey:
+    Type: String
+    NoEcho: true
+    Default: ""
+  SentryDsn:
+    Type: String
+    NoEcho: true
+    Default: ""
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 512
+    Runtime: python3.11
+    Architectures:
+      - x86_64
+    Environment:
+      Variables:
+        ENVIRONMENT: !Ref Environment
+        DATABASE_URL: !Ref DatabaseUrl
+        JWT_SECRET_KEY: !Ref JwtSecretKey
+        CORS_ORIGINS: !Ref CorsOrigins
+        FRONTEND_URL: !Ref FrontendUrl
+        FROM_EMAIL: !Ref FromEmail
+        RESEND_API_KEY: !Ref ResendApiKey
+        SENTRY_DSN: !Ref SentryDsn
+
+Resources:
+  PropEquityLabFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: propequitylab-api
+      Handler: server.handler
+      CodeUri: .
+      Description: PropEquityLab FastAPI application
+      Events:
+        ApiGatewayRoot:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref PropEquityLabHttpApi
+            Path: /{proxy+}
+            Method: ANY
+        ApiGatewayRootPath:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref PropEquityLabHttpApi
+            Path: /
+            Method: ANY
+      Policies:
+        - AWSLambdaBasicExecutionRole
+
+  PropEquityLabHttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: $default
+      CorsConfiguration:
+        AllowOrigins:
+          - "https://propequitylab.com"
+          - "https://www.propequitylab.com"
+        AllowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - PATCH
+          - HEAD
+          - OPTIONS
+        AllowHeaders:
+          - Content-Type
+          - Authorization
+        AllowCredentials: true
+        MaxAge: 86400
+
+Outputs:
+  ApiEndpoint:
+    Description: API Gateway endpoint URL
+    Value: !Sub "https://${PropEquityLabHttpApi}.execute-api.${AWS::Region}.amazonaws.com"
+  FunctionArn:
+    Description: Lambda Function ARN
+    Value: !GetAtt PropEquityLabFunction.Arn

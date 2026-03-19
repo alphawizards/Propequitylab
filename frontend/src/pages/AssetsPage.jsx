@@ -64,7 +64,7 @@ const AssetsPage = () => {
   };
 
   const handleDeleteAsset = async (assetId) => {
-    if (!window.confirm('Are you sure you want to delete this asset?')) return;
+    if (!window.confirm('Delete this asset?')) return;
     
     try {
       await api.deleteAsset(assetId);
@@ -128,7 +128,7 @@ const AssetsPage = () => {
   if (!currentPortfolio) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <p className="text-muted-foreground">Please create a portfolio first.</p>
+        <p className="text-[#6B7280]">Please create a portfolio first.</p>
       </div>
     );
   }
@@ -138,8 +138,8 @@ const AssetsPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Assets</h1>
-          <p className="text-muted-foreground">Manage your investment assets</p>
+          <h1 className="text-2xl font-semibold text-[#111111]">Assets</h1>
+          <p className="text-[#6B7280]">Manage your investment assets</p>
         </div>
         <Button
           onClick={handleAddAsset}
@@ -151,13 +151,13 @@ const AssetsPage = () => {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total Assets</p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-sm text-[#6B7280]">Total Assets</p>
+                <p className="text-2xl font-semibold tabular-nums text-[#111111]">
                   ${(totals.totalValue / 1000).toFixed(0)}K
                 </p>
               </div>
@@ -167,29 +167,29 @@ const AssetsPage = () => {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total Gain/Loss</p>
-                <p className={`text-2xl font-bold ${totals.totalGain >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                <p className="text-sm text-[#6B7280]">Total Gain/Loss</p>
+                <p className={`text-2xl font-semibold tabular-nums ${totals.totalGain >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
                   {totals.totalGain >= 0 ? '+' : ''}${(totals.totalGain / 1000).toFixed(0)}K
                 </p>
               </div>
-              <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-green-600" />
+              <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 text-emerald-600" />
               </div>
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Annual Contributions</p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-sm text-[#6B7280]">Annual Contributions</p>
+                <p className="text-2xl font-semibold tabular-nums text-[#111111]">
                   ${totals.annualContributions.toLocaleString()}
                 </p>
               </div>
@@ -199,13 +199,13 @@ const AssetsPage = () => {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Avg Expected Return</p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-sm text-[#6B7280]">Avg Expected Return</p>
+                <p className="text-2xl font-semibold tabular-nums text-[#111111]">
                   {avgExpectedReturn}%
                 </p>
               </div>
@@ -248,10 +248,10 @@ const AssetsPage = () => {
             <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
               <Wallet className="w-8 h-8 text-gray-400" />
             </div>
-            <h3 className="text-lg font-semibold text-foreground mb-2">
+            <h3 className="text-lg font-semibold text-[#111111] mb-2">
               {searchQuery ? 'No assets found' : 'No assets yet'}
             </h3>
-            <p className="text-muted-foreground mb-6">
+            <p className="text-[#6B7280] mb-6">
               {searchQuery
                 ? 'Try adjusting your search'
                 : 'Add your first asset to start tracking your wealth'}

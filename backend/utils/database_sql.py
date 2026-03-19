@@ -26,16 +26,40 @@ if not DATABASE_URL:
 if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
-# Create engine with connection pooling
-engine = create_engine(
-    DATABASE_URL,
-    pool_size=POOL_SIZE,
-    max_overflow=MAX_OVERFLOW,
-    pool_timeout=POOL_TIMEOUT,
-    pool_pre_ping=True,  # Verify connections before using
-    echo=False,  # Set to True for SQL query logging (debug mode)
-    poolclass=QueuePool
-)
+# Create engine - use different settings for SQLite vs PostgreSQL
+if DATABASE_URL.startswith("sqlite"):
+    from sqlalchemy.pool import StaticPool
+    import json
+    from decimal import Decimal
+
+    class DecimalEncoder(json.JSONEncoder):
+        def default(self, obj):
+            if isinstance(obj, Decimal):
+                return float(obj)
+            return super().default(obj)
+
+    def _decimal_json_serializer(obj):
+        return json.dumps(obj, cls=DecimalEncoder)
+
+    engine = create_engine(
+        DATABASE_URL,
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+        echo=False,
+        json_serializer=_decimal_json_serializer,
+    )
+    logger.info("Using SQLite database for local development")
+else:
+    # Create engine with connection pooling (PostgreSQL)
+    engine = create_engine(
+        DATABASE_URL,
+        pool_size=POOL_SIZE,
+        max_overflow=MAX_OVERFLOW,
+        pool_timeout=POOL_TIMEOUT,
+        pool_pre_ping=True,  # Verify connections before using
+        echo=False,  # Set to True for SQL query logging (debug mode)
+        poolclass=QueuePool
+    )
 
 def create_db_and_tables():
     """
