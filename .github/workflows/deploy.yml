@@ -51,23 +51,6 @@ jobs:
           ENVIRONMENT: test
         run: python -m pytest tests/ -v --tb=short
 
-  deploy-backend:
-    name: Deploy Backend to Railway
-    needs: test-backend
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install Railway CLI
-        run: npm install -g @railway/cli
-
-      - name: Deploy to Railway
-        run: railway up --detach
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-          RAILWAY_PROJECT_ID: 543ae501-9839-4bf3-afff-576af93edb01
-
   deploy-frontend:
     name: Deploy Frontend to Cloudflare Pages
     needs: test-backend
