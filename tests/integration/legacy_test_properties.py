@@ -20,9 +20,7 @@ def test_create_property(client, session, test_user, test_portfolio):
         "loan_details": {"amount": 300000, "interest_rate": 3.5}
     }
     response = client.post("/api/properties", json=data)
-    if response.status_code not in (200, 201):
-        print(response.json())
-    assert response.status_code in (200, 201)
+    assert response.status_code == 201, response.json()
     assert response.json()["address"] == "123 Street"
     
     # Verify in DB
