@@ -14,7 +14,7 @@ def test_asset_crud(client, test_portfolio):
         "is_active": True
     }
     response = client.post("/api/assets", json=asset_data)
-    assert response.status_code in (200, 201), response.json()
+    assert response.status_code == 201, response.json()
     asset_id = response.json()["id"]
 
     # Get by Portfolio
