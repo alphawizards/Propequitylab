@@ -58,8 +58,8 @@ async def create_portfolio(
         user_id=current_user.id,
         name=data.name,
         type=data.type,
-        settings=data.settings if data.settings else {},
-        goal_settings=data.goal_settings if data.goal_settings else {},
+        settings=data.settings.model_dump(mode='json') if data.settings else {},
+        goal_settings=data.goal_settings.model_dump(mode='json') if data.goal_settings else {},
         created_at=datetime.utcnow(),
         updated_at=datetime.utcnow()
     )
