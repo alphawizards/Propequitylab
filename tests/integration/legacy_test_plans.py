@@ -1,8 +1,4 @@
 
-import pytest
-from sqlmodel import select
-from models.plan import Plan
-
 def test_plan_crud(client, test_portfolio):
     # Create
     data = {

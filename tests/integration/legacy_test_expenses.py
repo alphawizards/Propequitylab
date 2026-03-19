@@ -1,8 +1,4 @@
 
-import pytest
-from sqlmodel import select
-from models.expense import Expense
-
 def test_expense_crud(client, test_portfolio):
     # Create
     data = {

@@ -1,8 +1,4 @@
 
-import pytest
-from sqlmodel import select
-from models.income import IncomeSource
-
 def test_income_crud(client, test_portfolio):
     # Create
     data = {

@@ -1,8 +1,4 @@
 
-import pytest
-from sqlmodel import select
-from models.liability import Liability
-
 def test_liability_crud(client, test_portfolio):
     # Create
     data = {
