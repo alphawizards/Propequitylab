@@ -23,20 +23,6 @@ export const setClerkTokenGetter = (getter) => {
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 
-// Token refresh state
-let isRefreshing = false;
-let failedQueue = [];
-
-const processQueue = (error, token = null) => {
-  failedQueue.forEach((prom) => {
-    if (error) {
-      prom.reject(error);
-    } else {
-      prom.resolve(token);
-    }
-  });
-  failedQueue = [];
-};
 
 // Create Axios instance
 const apiClient = axios.create({
@@ -47,7 +33,7 @@ const apiClient = axios.create({
   },
 });
 
-// Request interceptor - Attach auth token (Clerk-first, localStorage fallback)
+// Request interceptor - Attach Clerk auth token
 apiClient.interceptors.request.use(
   async (config) => {
     let token = null;
@@ -55,11 +41,8 @@ apiClient.interceptors.request.use(
       try {
         token = await clerkTokenGetter();
       } catch (e) {
-        // Clerk token fetch failed, fall through to localStorage
+        // Clerk token fetch failed
       }
-    }
-    if (!token) {
-      token = localStorage.getItem('access_token');
     }
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -69,54 +52,13 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor - Handle 401 and token refresh
+// Response interceptor - Handle 401 (Clerk session expired)
 apiClient.interceptors.response.use(
   (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      if (originalRequest.url?.includes('/auth/login') ||
-        originalRequest.url?.includes('/auth/register')) {
-        return Promise.reject(error);
-      }
-      if (isRefreshing) {
-        return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        })
-          .then((token) => {
-            originalRequest.headers.Authorization = `Bearer ${token}`;
-            return apiClient(originalRequest);
-          })
-          .catch((err) => Promise.reject(err));
-      }
-      originalRequest._retry = true;
-      isRefreshing = true;
-      try {
-        const refreshToken = localStorage.getItem('refresh_token');
-        if (!refreshToken) {
-          throw new Error('No refresh token available');
-        }
-        const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {
-          refresh_token: refreshToken,
-        });
-        const { access_token, refresh_token: newRefreshToken } = response.data;
-        localStorage.setItem('access_token', access_token);
-        if (newRefreshToken) {
-          localStorage.setItem('refresh_token', newRefreshToken);
-        }
-        originalRequest.headers.Authorization = `Bearer ${access_token}`;
-        apiClient.defaults.headers.common.Authorization = `Bearer ${access_token}`;
-        processQueue(null, access_token);
-        return apiClient(originalRequest);
-      } catch (refreshError) {
-        processQueue(refreshError, null);
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        window.location.href = '/login';
-        return Promise.reject(refreshError);
-      } finally {
-        isRefreshing = false;
-      }
+  (error) => {
+    if (error.response?.status === 401) {
+      // Clerk session expired — redirect to login
+      window.location.href = '/login';
     }
     return Promise.reject(error);
   }
@@ -126,75 +68,8 @@ apiClient.interceptors.response.use(
 // Auth API Functions
 // ============================================================================
 
-export const login = async (email, password) => {
-  const response = await apiClient.post('/auth/login', { email, password });
-  const { access_token, refresh_token, user } = response.data;
-  localStorage.setItem('access_token', access_token);
-  localStorage.setItem('refresh_token', refresh_token);
-  apiClient.defaults.headers.common.Authorization = `Bearer ${access_token}`;
-  return response.data;
-};
-
-export const register = async (userData) => {
-  const response = await apiClient.post('/auth/register', userData);
-  const { access_token, refresh_token } = response.data;
-  if (access_token) {
-    localStorage.setItem('access_token', access_token);
-  }
-  if (refresh_token) {
-    localStorage.setItem('refresh_token', refresh_token);
-  }
-  if (access_token) {
-    apiClient.defaults.headers.common.Authorization = `Bearer ${access_token}`;
-  }
-  return response.data;
-};
-
-export const logout = async () => {
-  try {
-    await apiClient.post('/auth/logout');
-  } catch (error) {
-    console.warn('Logout request failed:', error.message);
-  } finally {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    delete apiClient.defaults.headers.common.Authorization;
-  }
-};
-
 export const getProfile = async () => {
   const response = await apiClient.get('/auth/me');
-  return response.data;
-};
-
-export const requestPasswordReset = async (email) => {
-  const response = await apiClient.post('/auth/request-password-reset', { email });
-  return response.data;
-};
-
-export const resetPassword = async (token, newPassword) => {
-  const response = await apiClient.post('/auth/reset-password', {
-    token,
-    new_password: newPassword,
-  });
-  return response.data;
-};
-
-export const verifyEmail = async (token) => {
-  const response = await apiClient.get(`/auth/verify-email?token=${token}`);
-  return response.data;
-};
-
-export const resendVerification = async (email) => {
-  const response = await apiClient.post('/auth/resend-verification', { email });
-  return response.data;
-};
-
-export const updatePassword = async (currentPassword, newPassword) => {
-  const response = await apiClient.post('/auth/change-password', {
-    current_password: currentPassword,
-    new_password: newPassword,
-  });
   return response.data;
 };
 
@@ -219,9 +94,9 @@ export const getDataSummary = async () => {
   return response.data;
 };
 
-export const deleteAccount = async (password) => {
+export const deleteAccount = async (confirmation) => {
   const response = await apiClient.delete('/gdpr/delete-account', {
-    data: { password },
+    data: { confirmation },
   });
   return response.data;
 };
@@ -583,16 +458,8 @@ export const getLiabilityTypes = async () => {
 
 const api = {
   // Auth
-  login,
-  register,
-  logout,
   getProfile,
-  requestPasswordReset,    // FIXED: was missing from default export
-  resetPassword,           // FIXED: was missing from default export
-  updatePassword,          // FIXED: was missing from default export
-  updateProfile,           // FIXED: was missing from default export
-  verifyEmail,
-  resendVerification,
+  updateProfile,
   
   // Portfolios
   getPortfolios,

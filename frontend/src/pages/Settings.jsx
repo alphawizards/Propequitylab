@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useClerk } from '@clerk/clerk-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -12,16 +13,15 @@ import {
   Trash2,
   AlertTriangle,
   Loader2,
-  CheckCircle2,
-  MapPin,
-  DollarSign,
   Shield,
+  ExternalLink,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import * as api from '../services/api';
 
 const Settings = () => {
-  const { user, logout, refreshUser } = useAuth();
+  const { user, logout } = useAuth();
+  const { openUserProfile } = useClerk();
   const navigate = useNavigate();
 
   // Profile state
@@ -33,20 +33,11 @@ const Settings = () => {
   });
   const [profileLoading, setProfileLoading] = useState(false);
 
-  // Password state
-  const [passwordData, setPasswordData] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: '',
-  });
-  const [passwordLoading, setPasswordLoading] = useState(false);
-
   // Data export state
   const [exportLoading, setExportLoading] = useState(false);
 
   // Account deletion state
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deletePassword, setDeletePassword] = useState('');
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
   const [deleteAcknowledge, setDeleteAcknowledge] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -72,52 +63,11 @@ const Settings = () => {
 
     try {
       await api.updateProfile(profileData);
-      await refreshUser();
       toast.success('Profile updated successfully');
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Failed to update profile');
     } finally {
       setProfileLoading(false);
-    }
-  };
-
-  // ============================================================================
-  // Password Change
-  // ============================================================================
-
-  const handlePasswordChange = async (e) => {
-    e.preventDefault();
-
-    if (!passwordData.currentPassword || !passwordData.newPassword) {
-      toast.error('Please fill in all password fields');
-      return;
-    }
-
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      toast.error('New passwords do not match');
-      return;
-    }
-
-    if (passwordData.newPassword.length < 8) {
-      toast.error('Password must be at least 8 characters');
-      return;
-    }
-
-    if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])/.test(passwordData.newPassword)) {
-      toast.error('Password must contain uppercase, lowercase, number, and special character');
-      return;
-    }
-
-    setPasswordLoading(true);
-
-    try {
-      await api.updatePassword(passwordData.currentPassword, passwordData.newPassword);
-      toast.success('Password changed successfully');
-      setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
-    } catch (error) {
-      toast.error(error.response?.data?.detail || 'Failed to change password');
-    } finally {
-      setPasswordLoading(false);
     }
   };
 
@@ -154,11 +104,6 @@ const Settings = () => {
   // ============================================================================
 
   const handleDeleteAccount = async () => {
-    if (!deletePassword) {
-      toast.error('Please enter your password');
-      return;
-    }
-
     if (deleteConfirmText !== 'DELETE') {
       toast.error('Please type DELETE to confirm');
       return;
@@ -172,7 +117,7 @@ const Settings = () => {
     setDeleteLoading(true);
 
     try {
-      const result = await api.deleteAccount(deletePassword);
+      const result = await api.deleteAccount('DELETE');
 
       toast.success('Account deleted successfully');
 
@@ -299,81 +244,35 @@ const Settings = () => {
         </form>
       </div>
 
-      {/* Password Change */}
+      {/* Security & Account Management (Clerk) */}
       <div className="bg-white rounded-lg border border-[#EAEAEA] p-6">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
             <Lock className="w-5 h-5 text-blue-600" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-[#111111]">Change Password</h2>
-            <p className="text-sm text-[#6B7280]">Update your account password</p>
+            <h2 className="text-lg font-semibold text-[#111111]">Security & Account</h2>
+            <p className="text-sm text-[#6B7280]">Manage your password, MFA, and connected accounts</p>
           </div>
         </div>
 
-        <form onSubmit={handlePasswordChange} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="currentPassword">Current Password</Label>
-              <Input
-                id="currentPassword"
-                type="password"
-                value={passwordData.currentPassword}
-                onChange={(e) =>
-                  setPasswordData({ ...passwordData, currentPassword: e.target.value })
-                }
-                className="h-10"
-                placeholder="Enter current password"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="newPassword">New Password</Label>
-              <Input
-                id="newPassword"
-                type="password"
-                value={passwordData.newPassword}
-                onChange={(e) =>
-                  setPasswordData({ ...passwordData, newPassword: e.target.value })
-                }
-                className="h-10"
-                placeholder="Enter new password"
-              />
-              <p className="text-xs text-gray-500">
-                Must be 8+ characters with uppercase, lowercase, number, and special character
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm New Password</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                value={passwordData.confirmPassword}
-                onChange={(e) =>
-                  setPasswordData({ ...passwordData, confirmPassword: e.target.value })
-                }
-                className="h-10"
-                placeholder="Confirm new password"
-              />
-            </div>
+        <div className="p-4 border border-[#EAEAEA] rounded-lg flex items-start justify-between gap-4">
+          <div>
+            <h3 className="font-semibold text-[#111111] mb-1">Password & Security Settings</h3>
+            <p className="text-sm text-[#6B7280]">
+              Change your password, enable two-factor authentication, and manage connected accounts
+              via the secure Clerk account portal.
+            </p>
           </div>
-
           <Button
-            type="submit"
-            disabled={passwordLoading}
-            className="bg-blue-500 hover:bg-blue-600 text-white"
+            onClick={() => openUserProfile()}
+            variant="outline"
+            className="shrink-0 border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-300"
           >
-            {passwordLoading ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Changing Password...
-              </>
-            ) : (
-              'Change Password'
-            )}
+            <ExternalLink className="w-4 h-4 mr-2" />
+            Manage Account
           </Button>
-        </form>
+        </div>
       </div>
 
       {/* Privacy & Data (GDPR) */}
@@ -477,18 +376,6 @@ const Settings = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="deletePassword">Confirm Password</Label>
-                <Input
-                  id="deletePassword"
-                  type="password"
-                  value={deletePassword}
-                  onChange={(e) => setDeletePassword(e.target.value)}
-                  placeholder="Enter your password"
-                  className="h-10"
-                />
-              </div>
-
-              <div className="space-y-2">
                 <Label htmlFor="deleteConfirm">
                   Type <span className="font-bold">DELETE</span> to confirm
                 </Label>
@@ -520,7 +407,6 @@ const Settings = () => {
               <Button
                 onClick={() => {
                   setShowDeleteModal(false);
-                  setDeletePassword('');
                   setDeleteConfirmText('');
                   setDeleteAcknowledge(false);
                 }}
