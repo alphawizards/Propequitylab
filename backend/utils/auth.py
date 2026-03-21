@@ -356,3 +356,14 @@ def create_token_response(user: User) -> dict:
             "onboarding_completed": user.onboarding_completed
         }
     }
+
+
+# ---------------------------------------------------------------------------
+# Clerk auth override
+# When CLERK_JWKS_URL is set, replace get_current_user with the Clerk version.
+# All route files that do `from utils.auth import get_current_user` automatically
+# get Clerk-based auth. Unset CLERK_JWKS_URL to roll back to local JWT auth.
+# ---------------------------------------------------------------------------
+import os as _os
+if _os.getenv("CLERK_JWKS_URL"):
+    from utils.clerk_auth import get_current_user  # noqa: F811 — intentional override

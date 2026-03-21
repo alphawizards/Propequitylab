@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from 'react';
 import './App.css';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
+import { ClerkProvider } from '@clerk/clerk-react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { UserProvider, useUser } from './context/UserContext';
 import { PortfolioProvider } from './context/PortfolioContext';
@@ -33,6 +34,8 @@ import { Toaster } from './components/ui/toaster';
 import * as Sentry from '@sentry/react';
 import ErrorFallback from './components/ErrorBoundary';
 import CookieBanner from './components/CookieBanner';
+
+const PUBLISHABLE_KEY = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
 
 // Lazy load WelcomeModal to reduce initial bundle size
 const WelcomeModal = lazy(() => import('./components/onboarding/WelcomeModal'));
@@ -179,24 +182,26 @@ function AppRoutes() {
 function App() {
   return (
     <BrowserRouter>
-      <ThemeProvider>
-        <Sentry.ErrorBoundary fallback={ErrorFallback} showDialog>
-          <HelmetProvider>
-            <AuthProvider>
-              <UserProvider>
-                <PortfolioProvider>
-                  <div className="App">
-                    <AppRoutes />
-                    <WelcomeModalWrapper />
-                    <Toaster />
-                    <CookieBanner />
-                  </div>
-                </PortfolioProvider>
-              </UserProvider>
-            </AuthProvider>
-          </HelmetProvider>
-        </Sentry.ErrorBoundary>
-      </ThemeProvider>
+      <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+        <ThemeProvider>
+          <Sentry.ErrorBoundary fallback={ErrorFallback} showDialog>
+            <HelmetProvider>
+              <AuthProvider>
+                <UserProvider>
+                  <PortfolioProvider>
+                    <div className="App">
+                      <AppRoutes />
+                      <WelcomeModalWrapper />
+                      <Toaster />
+                      <CookieBanner />
+                    </div>
+                  </PortfolioProvider>
+                </UserProvider>
+              </AuthProvider>
+            </HelmetProvider>
+          </Sentry.ErrorBoundary>
+        </ThemeProvider>
+      </ClerkProvider>
     </BrowserRouter>
   );
 }

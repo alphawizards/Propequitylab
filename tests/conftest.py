@@ -25,6 +25,9 @@ from models.expense import Expense
 from models.asset import Asset
 from models.liability import Liability
 from models.plan import Plan
+from models.account import Account
+from models.account_membership import AccountMembership
+from models.subscription import Subscription
 
 # Import the app and dependency
 from backend.server import app
@@ -76,6 +79,7 @@ def test_user_fixture(session: Session) -> User:
         is_verified=True,
         onboarding_completed=True,
         onboarding_step=8,
+        clerk_user_id="test_clerk_user_id",
         created_at=datetime.utcnow(),
         updated_at=datetime.utcnow(),
     )
@@ -105,6 +109,53 @@ def test_portfolio_fixture(session: Session, test_user: User) -> Portfolio:
     session.commit()
     session.refresh(portfolio)
     return portfolio
+
+
+@pytest.fixture(name="test_account")
+def test_account_fixture(session: Session, test_user: User) -> Account:
+    """
+    Create a test Account, AccountMembership (owner), and Subscription (free)
+    linked to the test user. Returns the Account instance.
+    """
+    import uuid
+    from datetime import datetime
+
+    account = Account(
+        id=str(uuid.uuid4()),
+        name="Test User's Account",
+        owner_user_id=test_user.id,
+        created_at=datetime.utcnow(),
+        updated_at=datetime.utcnow(),
+    )
+    session.add(account)
+    session.commit()
+    session.refresh(account)
+
+    membership = AccountMembership(
+        id=str(uuid.uuid4()),
+        account_id=account.id,
+        user_id=test_user.id,
+        role="owner",
+        status="active",
+        created_at=datetime.utcnow(),
+        updated_at=datetime.utcnow(),
+    )
+    session.add(membership)
+
+    subscription = Subscription(
+        id=str(uuid.uuid4()),
+        account_id=account.id,
+        provider="stripe",
+        plan_key="free",
+        status="active",
+        created_at=datetime.utcnow(),
+        updated_at=datetime.utcnow(),
+    )
+    session.add(subscription)
+
+    session.commit()
+    session.refresh(account)
+    return account
 
 
 @pytest.fixture(name="auth_token")

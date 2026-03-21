@@ -50,6 +50,12 @@ from models.financials import (
     PropertyDraft,
 )
 
+# Import Clerk/Stripe billing models (Group B)
+from models.account import Account
+from models.account_membership import AccountMembership
+from models.subscription import Subscription
+from models.webhook_event import WebhookEvent
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config

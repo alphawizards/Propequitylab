@@ -13,6 +13,14 @@
 
 import axios from 'axios';
 
+// Clerk token bridge — injected by AuthContext on mount
+let clerkTokenGetter = null;
+
+/** Called by AuthContext to register Clerk's getToken function. */
+export const setClerkTokenGetter = (getter) => {
+  clerkTokenGetter = getter;
+};
+
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 
 // Token refresh state
@@ -39,10 +47,20 @@ const apiClient = axios.create({
   },
 });
 
-// Request interceptor - Add auth token to requests
+// Request interceptor - Attach auth token (Clerk-first, localStorage fallback)
 apiClient.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('access_token');
+  async (config) => {
+    let token = null;
+    if (clerkTokenGetter) {
+      try {
+        token = await clerkTokenGetter();
+      } catch (e) {
+        // Clerk token fetch failed, fall through to localStorage
+      }
+    }
+    if (!token) {
+      token = localStorage.getItem('access_token');
+    }
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

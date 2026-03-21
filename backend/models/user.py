@@ -60,6 +60,9 @@ class User(SQLModel, table=True):
     # Subscription
     subscription_tier: str = Field(default="free", max_length=50)
 
+    # Clerk Integration
+    clerk_user_id: Optional[str] = Field(default=None, unique=True, index=True, max_length=255)
+
     # GDPR - Account Deletion
     deleted_at: Optional[datetime] = Field(default=None)
     is_active: bool = Field(default=True)
@@ -117,6 +120,7 @@ class UserResponse(SQLModel):
     onboarding_step: int
     subscription_tier: str
     is_verified: bool
+    clerk_user_id: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 

@@ -4,8 +4,9 @@ Handles data export, account deletion, and data access requests
 """
 
 from datetime import datetime, timedelta
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 import json
+import os
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import JSONResponse
@@ -22,6 +23,8 @@ from models.expense import Expense
 from utils.auth import get_current_user, verify_password
 from utils.database_sql import get_session
 
+# Clerk is active when CLERK_JWKS_URL is set in the environment
+CLERK_JWKS_URL = os.getenv("CLERK_JWKS_URL")
 
 router = APIRouter(prefix="/gdpr", tags=["GDPR"])
 
@@ -31,7 +34,10 @@ router = APIRouter(prefix="/gdpr", tags=["GDPR"])
 # ============================================================================
 
 class DeleteAccountRequest(BaseModel):
-    password: str
+    # Required for legacy JWT mode; optional when Clerk is active
+    password: Optional[str] = None
+    # Required in Clerk mode — caller must pass the string "DELETE" to confirm
+    confirmation: Optional[str] = None
 
 
 # ============================================================================
@@ -288,12 +294,29 @@ async def delete_account(
     4. Hard delete after 30 days (handled by scheduled job)
     """
     try:
-        # Verify password for security
-        if not verify_password(request.password, current_user.hashed_password):
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Incorrect password"
-            )
+        # Verify identity — strategy depends on whether Clerk is active
+        clerk_mode = CLERK_JWKS_URL and current_user.clerk_user_id
+
+        if clerk_mode:
+            # Clerk manages passwords; require an explicit "DELETE" confirmation
+            # string instead of a password to prevent accidental deletion.
+            if request.confirmation != "DELETE":
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Confirmation must be the string DELETE"
+                )
+        else:
+            # Legacy JWT mode: verify password against local hash
+            if not request.password:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Password is required"
+                )
+            if not verify_password(request.password, current_user.password_hash):
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Incorrect password"
+                )
 
         # Soft delete: Mark account for deletion
         current_user.deleted_at = datetime.utcnow()

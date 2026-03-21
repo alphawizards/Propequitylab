@@ -35,6 +35,9 @@ from routes.loans import router as loans_router
 from routes.valuations import router as valuations_router
 from routes.scenarios import router as scenarios_router
 
+# Clerk webhook ingestion
+from routes.clerk_webhooks import router as clerk_webhooks_router
+
 # Load environment variables
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -122,6 +125,9 @@ api_router.include_router(loans_router)
 api_router.include_router(valuations_router)
 api_router.include_router(scenarios_router)
 
+# Clerk webhook ingestion
+api_router.include_router(clerk_webhooks_router)
+
 app.include_router(api_router)
 
 
@@ -182,11 +188,11 @@ async def add_security_headers(request: Request, call_next):
     # Content-Security-Policy (CSP)
     response.headers["Content-Security-Policy"] = (
         "default-src 'self'; "
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
-        "style-src 'self' 'unsafe-inline'; "
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev https://clerk.propequitylab.com; "
+        "style-src 'self' 'unsafe-inline' https://*.clerk.accounts.dev https://clerk.propequitylab.com; "
         "img-src 'self' data: https:; "
         "font-src 'self' data:; "
-        "connect-src 'self' http://localhost:3000 http://127.0.0.1:3000 http://localhost:8000 http://127.0.0.1:8000 https://propequitylab.com https://propequitylab.pages.dev https://h3nhfwgxgf.ap-southeast-2.awsapprunner.com https://*.awsapprunner.com; "
+        "connect-src 'self' http://localhost:3000 http://127.0.0.1:3000 http://localhost:8000 http://127.0.0.1:8000 https://propequitylab.com https://propequitylab.pages.dev https://h3nhfwgxgf.ap-southeast-2.awsapprunner.com https://*.awsapprunner.com https://*.clerk.accounts.dev https://clerk.propequitylab.com; "
         "frame-ancestors 'none';"
     )
     

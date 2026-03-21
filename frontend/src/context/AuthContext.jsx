@@ -1,175 +1,75 @@
 /**
- * AuthContext - Authentication State Management
- * Provides authentication state and methods throughout the app
+ * AuthContext - Clerk adapter
+ *
+ * Thin wrapper over Clerk's hooks that preserves the exact same exported
+ * interface as the previous JWT-based implementation so all consumer files
+ * (ProtectedRoute, RootRedirect, WelcomeModalWrapper, settings pages, etc.)
+ * continue to work without modification.
+ *
+ * Exported interface:
+ *   user          - { id, email, name, is_verified } | null
+ *   isAuthenticated - boolean
+ *   loading       - boolean (true while Clerk is hydrating)
+ *   login()       - no-op (Clerk's <SignIn> component handles this)
+ *   register()    - no-op (Clerk's <SignUp> component handles this)
+ *   logout()      - calls Clerk signOut()
  */
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { login as apiLogin, register as apiRegister, logout as apiLogout, getProfile } from '../services/api';
+import { createContext, useContext, useEffect } from 'react';
+import { useUser, useAuth as useClerkAuth, useClerk } from '@clerk/clerk-react';
+import { setClerkTokenGetter } from '../services/api';
 import { setUserContext } from '../utils/sentry';
 
 const AuthContext = createContext(null);
 
-/**
- * AuthProvider Component
- *
- * Provides authentication state and functions to the entire app.
- * Handles JWT token management, user state, and authentication flows.
- *
- * Critical Security Features:
- * - Token validation on app load via GET /api/auth/me
- * - Automatic token refresh via api.js interceptor
- * - Secure token storage in localStorage
- */
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const { user: clerkUser, isLoaded, isSignedIn } = useUser();
+  const { getToken } = useClerkAuth();
+  const { signOut } = useClerk();
 
-  /**
-   * Initialize authentication state on app load
-   *
-   * CRITICAL SECURITY: This checks for a stored token and validates it
-   * by calling GET /api/auth/me. This prevents invalid/expired tokens
-   * from being trusted.
-   */
+  // Wire Clerk's getToken into the api.js interceptor so every Axios request
+  // automatically receives a valid Bearer token without touching localStorage.
   useEffect(() => {
-    const initAuth = async () => {
-      const token = localStorage.getItem('access_token');
+    if (isLoaded && isSignedIn && getToken) {
+      setClerkTokenGetter(() => getToken());
 
-      if (!token) {
-        setLoading(false);
-        return;
+      // Set Sentry user context using the existing setUserContext utility
+      if (clerkUser) {
+        setUserContext({
+          id: clerkUser.id,
+          email: clerkUser.primaryEmailAddress?.emailAddress ?? '',
+          name: clerkUser.fullName ?? '',
+        });
       }
-
-      try {
-        // Verify token is valid by fetching user profile
-        const userData = await getProfile();
-        setUser(userData);
-        setIsAuthenticated(true);
-        // Set user context for Sentry error tracking
-        setUserContext(userData);
-      } catch (error) {
-        // Token invalid or expired - clear it
-        console.warn('Token validation failed:', error.message);
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        setUser(null);
-        setIsAuthenticated(false);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    initAuth();
-  }, []);
-
-  /**
-   * Login user with email and password
-   *
-   * @param {string} email - User email
-   * @param {string} password - User password
-   * @returns {Promise<{success: boolean, error?: string}>}
-   */
-  const login = async (email, password) => {
-    try {
-      setLoading(true);
-      const data = await apiLogin(email, password);
-
-      setUser(data.user);
-      setIsAuthenticated(true);
-      // Set user context for Sentry error tracking
-      setUserContext(data.user);
-
-      return { success: true };
-    } catch (error) {
-      console.error('Login error:', error);
-
-      // Extract user-friendly error message
-      let message = 'Invalid email or password';
-
-      if (error.response?.data?.detail) {
-        message = error.response.data.detail;
-      } else if (error.message) {
-        message = error.message;
-      }
-
-      return { success: false, error: message };
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  /**
-   * Register new user
-   *
-   * @param {object} userData - User registration data
-   * @returns {Promise<{success: boolean, error?: string}>}
-   */
-  const register = async (userData) => {
-    try {
-      setLoading(true);
-      const data = await apiRegister(userData);
-
-      if (data.access_token) {
-        setUser(data.user);
-        setIsAuthenticated(true);
-        setUserContext(data.user);
-        return { success: true };
-      } else {
-        return { success: true, emailVerificationRequired: true };
-      }
-    } catch (error) {
-      console.error('Registration error:', error);
-
-      // Extract user-friendly error message
-      let message = 'Registration failed. Please try again.';
-
-      if (error.response?.data?.detail) {
-        message = error.response.data.detail;
-      } else if (error.message) {
-        message = error.message;
-      }
-
-      return { success: false, error: message };
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  /**
-   * Logout user
-   *
-   * CRITICAL SECURITY: Always clear state even if API call fails.
-   * This ensures user is logged out locally even if backend logout fails.
-   */
-  const logout = async () => {
-    try {
-      await apiLogout();
-    } catch (error) {
-      console.error('Logout error:', error);
-    } finally {
-      // Always clear state regardless of API call success
-      setUser(null);
-      setIsAuthenticated(false);
-      // Clear user context in Sentry
+    } else if (isLoaded && !isSignedIn) {
+      setClerkTokenGetter(null);
       setUserContext(null);
     }
-  };
+  }, [isLoaded, isSignedIn, getToken, clerkUser]);
+
+  // Shape user to match the legacy { id, email, name, is_verified } contract
+  const user = clerkUser
+    ? {
+        id: clerkUser.id,
+        email: clerkUser.primaryEmailAddress?.emailAddress ?? '',
+        name: clerkUser.fullName ?? '',
+        is_verified:
+          clerkUser.primaryEmailAddress?.verification?.status === 'verified',
+      }
+    : null;
 
   const value = {
     user,
-    isAuthenticated,
-    loading,
-    login,
-    register,
-    logout,
+    isAuthenticated: !!isSignedIn,
+    loading: !isLoaded,
+    // login/register are handled by Clerk's hosted UI components.
+    // Kept as no-ops so any legacy call sites do not throw.
+    login: async () => {},
+    register: async () => {},
+    logout: () => signOut(),
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 /**
@@ -177,9 +77,6 @@ export const AuthProvider = ({ children }) => {
  *
  * Access authentication state and functions from any component.
  * Must be used within AuthProvider.
- *
- * @returns {object} Authentication context value
- * @throws {Error} If used outside AuthProvider
  */
 export const useAuth = () => {
   const context = useContext(AuthContext);
