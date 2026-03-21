@@ -36,8 +36,8 @@ class User(SQLModel, table=True):
     
     # Authentication
     email: str = Field(unique=True, index=True, max_length=255)
-    password_hash: str = Field(max_length=255)
-    is_verified: bool = Field(default=False)
+    password_hash: Optional[str] = Field(default=None, max_length=255)
+    is_verified: bool = Field(default=True)
     verification_token: Optional[str] = Field(default=None, max_length=255)
     reset_token: Optional[str] = Field(default=None, max_length=255)
     reset_token_expires: Optional[datetime] = Field(default=None)
@@ -77,8 +77,9 @@ class User(SQLModel, table=True):
 class UserCreate(SQLModel):
     """User creation request"""
     email: EmailStr
-    password: str
     name: str
+    password: Optional[str] = None
+    clerk_user_id: Optional[str] = None
     date_of_birth: Optional[str] = None
     planning_type: str = "individual"
     country: str = "Australia"
