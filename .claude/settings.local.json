@@ -37,7 +37,8 @@
       "mcp__jcodemunch__index_repo",
       "Bash(npm install:*)",
       "Bash(cmd //c \"py --version\" 2>&1)",
-      "Bash(powershell -Command \"Set-Location 'C:\\\\Users\\\\ckr_4\\\\01 Web Projects\\\\Propequitylab\\\\backend'; py -m pytest tests/ -v --tb=short 2>&1 | Select-Object -First 80\")"
+      "Bash(powershell -Command \"Set-Location 'C:\\\\Users\\\\ckr_4\\\\01 Web Projects\\\\Propequitylab\\\\backend'; py -m pytest tests/ -v --tb=short 2>&1 | Select-Object -First 80\")",
+      "Bash(npx wrangler:*)"
     ]
   }
 }
