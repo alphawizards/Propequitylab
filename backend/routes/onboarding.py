@@ -230,6 +230,299 @@ async def reset_onboarding(
     return {"message": "Onboarding reset successfully"}
 
 
+@router.post("/load-demo-data")
+async def load_demo_data(
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    """
+    Load a comprehensive demo dataset for the current user.
+
+    Wipes any existing portfolio data and replaces with:
+    - 1 Investment Property (Sydney house with loan + rental)
+    - 3 Assets (Super, Car, ETF)
+    - 2 Liabilities (Car Loan, Credit Card)
+    - 1 Income (Salary)
+    - 6 Expenses (Mortgage, Groceries, Car, Utilities, Insurance, Entertainment)
+    - 1 FIRE Plan
+
+    Safe to call even if portfolio already exists — existing data is cleared first.
+    ⚠️ Data Isolation: Only affects the authenticated user's data
+    """
+    try:
+        # Get existing portfolio or create one
+        portfolio = session.exec(
+            select(Portfolio).where(Portfolio.user_id == current_user.id)
+        ).first()
+
+        if portfolio:
+            # Wipe existing data so demo is clean
+            for model in [Property, IncomeSource, Expense, Asset, Liability]:
+                existing = session.exec(
+                    select(model).where(model.portfolio_id == portfolio.id)
+                ).all()
+                for row in existing:
+                    session.delete(row)
+            session.commit()
+        else:
+            portfolio = Portfolio(
+                id=str(uuid.uuid4()),
+                user_id=current_user.id,
+                name="My Portfolio",
+                type="actual",
+                settings={},
+                goal_settings={
+                    "fire_target": 2000000,
+                    "target_retirement_age": 55,
+                    "withdrawal_rate": 4.0,
+                },
+                created_at=datetime.utcnow(),
+                updated_at=datetime.utcnow(),
+            )
+            session.add(portfolio)
+            session.commit()
+            session.refresh(portfolio)
+
+        # Also import Plan model for demo plan
+        from models.plan import Plan
+
+        # Wipe existing plans
+        existing_plans = session.exec(
+            select(Plan).where(Plan.portfolio_id == portfolio.id)
+        ).all()
+        for p in existing_plans:
+            session.delete(p)
+        session.commit()
+
+        # ── Property ──────────────────────────────────────────────
+        prop = Property(
+            id=str(uuid.uuid4()),
+            user_id=current_user.id,
+            portfolio_id=portfolio.id,
+            address="14 Wentworth Avenue",
+            suburb="Surry Hills",
+            state="NSW",
+            postcode="2010",
+            country="Australia",
+            property_type="House",
+            bedrooms=3,
+            bathrooms=2,
+            car_spaces=1,
+            land_size=Decimal("310"),
+            building_size=Decimal("180"),
+            purchase_price=Decimal("880000"),
+            purchase_date=date(2020, 8, 12),
+            current_value=Decimal("950000"),
+            status="Owned",
+            loan_details={
+                "amount": 760000,
+                "interest_rate": 6.25,
+                "loan_type": "interest_only",
+                "loan_term": 30,
+                "lender": "Commonwealth Bank",
+                "offset_balance": 32000,
+            },
+            rental_details={
+                "is_rented": True,
+                "income": 750,
+                "frequency": "weekly",
+                "vacancy_rate": 2.0,
+            },
+            expenses={
+                "strata": 0,
+                "council_rates": 1900,
+                "water_rates": 800,
+                "insurance": 1400,
+                "maintenance": 2500,
+                "property_management": 3600,
+                "land_tax": 1200,
+            },
+            growth_assumptions={
+                "capital_growth_rate": 5.5,
+                "rental_growth_rate": 3.0,
+            },
+            created_at=datetime.utcnow(),
+            updated_at=datetime.utcnow(),
+        )
+        session.add(prop)
+
+        # ── Assets ────────────────────────────────────────────────
+        assets_data = [
+            dict(
+                name="AustralianSuper",
+                type="super",
+                owner="you",
+                institution="AustralianSuper",
+                current_value=Decimal("185000"),
+                purchase_value=Decimal("95000"),
+                purchase_date=date(2015, 1, 1),
+                growth_rate=Decimal("8.0"),
+            ),
+            dict(
+                name="Toyota RAV4 2022",
+                type="other",
+                owner="you",
+                institution=None,
+                current_value=Decimal("45000"),
+                purchase_value=Decimal("58000"),
+                purchase_date=date(2022, 3, 15),
+                growth_rate=Decimal("-15.0"),
+            ),
+            dict(
+                name="Vanguard VAS ETF",
+                type="etf",
+                owner="you",
+                institution="Vanguard",
+                current_value=Decimal("28000"),
+                purchase_value=Decimal("20000"),
+                purchase_date=date(2021, 6, 1),
+                growth_rate=Decimal("7.5"),
+            ),
+        ]
+        for a in assets_data:
+            asset = Asset(
+                id=str(uuid.uuid4()),
+                user_id=current_user.id,
+                portfolio_id=portfolio.id,
+                created_at=datetime.utcnow(),
+                updated_at=datetime.utcnow(),
+                **a,
+            )
+            session.add(asset)
+
+        # ── Liabilities ───────────────────────────────────────────
+        liabilities_data = [
+            dict(
+                name="Car Loan — Toyota RAV4",
+                type="car_loan",
+                owner="you",
+                lender="Westpac",
+                original_amount=Decimal("52000"),
+                current_balance=Decimal("38000"),
+                interest_rate=Decimal("7.49"),
+                minimum_payment=Decimal("850"),
+                payment_frequency="Monthly",
+                start_date=date(2022, 3, 15),
+            ),
+            dict(
+                name="ANZ Visa Credit Card",
+                type="credit_card",
+                owner="you",
+                lender="ANZ",
+                original_amount=Decimal("10000"),
+                current_balance=Decimal("4200"),
+                interest_rate=Decimal("19.99"),
+                minimum_payment=Decimal("126"),
+                payment_frequency="Monthly",
+                start_date=date(2019, 5, 1),
+            ),
+        ]
+        for l in liabilities_data:
+            liability = Liability(
+                id=str(uuid.uuid4()),
+                user_id=current_user.id,
+                portfolio_id=portfolio.id,
+                created_at=datetime.utcnow(),
+                updated_at=datetime.utcnow(),
+                **l,
+            )
+            session.add(liability)
+
+        # ── Income ────────────────────────────────────────────────
+        income = IncomeSource(
+            id=str(uuid.uuid4()),
+            user_id=current_user.id,
+            portfolio_id=portfolio.id,
+            name="Primary Salary",
+            type="salary",
+            owner="you",
+            amount=Decimal("120000"),
+            frequency="Annual",
+            growth_rate=Decimal("3.0"),
+            start_date=date(2020, 1, 1),
+            created_at=datetime.utcnow(),
+            updated_at=datetime.utcnow(),
+        )
+        session.add(income)
+
+        # ── Expenses ──────────────────────────────────────────────
+        expenses_data = [
+            ("Mortgage (PPOR)", "Housing",      Decimal("2800"), "Monthly"),
+            ("Groceries",       "Food",          Decimal("1000"), "Monthly"),
+            ("Car Loan",        "Transport",     Decimal("850"),  "Monthly"),
+            ("Utilities",       "Utilities",     Decimal("300"),  "Monthly"),
+            ("Insurance",       "Insurance",     Decimal("350"),  "Monthly"),
+            ("Entertainment",   "Entertainment", Decimal("400"),  "Monthly"),
+        ]
+        for name, category, amount, frequency in expenses_data:
+            expense = Expense(
+                id=str(uuid.uuid4()),
+                user_id=current_user.id,
+                portfolio_id=portfolio.id,
+                name=name,
+                category=category,
+                amount=amount,
+                frequency=frequency,
+                start_date=date(2024, 1, 1),
+                created_at=datetime.utcnow(),
+                updated_at=datetime.utcnow(),
+            )
+            session.add(expense)
+
+        # ── FIRE Plan ─────────────────────────────────────────────
+        plan = Plan(
+            id=str(uuid.uuid4()),
+            user_id=current_user.id,
+            portfolio_id=portfolio.id,
+            name="FIRE by 55",
+            description="Retire at 55 with $80k passive income from property and investments.",
+            type="fire",
+            retirement_age=55,
+            life_expectancy=90,
+            target_passive_income=Decimal("80000"),
+            target_withdrawal_rate=Decimal("4.0"),
+            inflation_rate=Decimal("2.5"),
+            is_baseline=True,
+            created_at=datetime.utcnow(),
+            updated_at=datetime.utcnow(),
+        )
+        session.add(plan)
+
+        # Mark onboarding complete
+        user = session.exec(select(User).where(User.id == current_user.id)).first()
+        if user:
+            if hasattr(user, "onboarding_completed"):
+                user.onboarding_completed = True
+            if hasattr(user, "onboarding_step"):
+                user.onboarding_step = 8
+            user.updated_at = datetime.utcnow()
+            session.add(user)
+
+        session.commit()
+        logger.info("Demo data loaded for user: %s", current_user.id)
+
+        return {
+            "message": "Demo data loaded successfully!",
+            "summary": {
+                "portfolio": portfolio.name,
+                "properties": 1,
+                "assets": 3,
+                "liabilities": 2,
+                "income_sources": 1,
+                "expenses": len(expenses_data),
+                "plans": 1,
+            },
+        }
+
+    except Exception as e:
+        session.rollback()
+        logger.error("Failed to load demo data for user %s: %s", current_user.id, str(e))
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to load demo data: {str(e)}",
+        )
+
+
 @router.post("/seed-sample-data")
 async def seed_sample_data(
     current_user: User = Depends(get_current_user),
