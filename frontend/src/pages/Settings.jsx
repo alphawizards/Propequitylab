@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useUser } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 import { useClerk } from '@clerk/clerk-react';
 import { Button } from '../components/ui/button';
@@ -20,18 +21,20 @@ import { toast } from 'sonner';
 import * as api from '../services/api';
 
 const Settings = () => {
-  const { user, logout } = useAuth();
+  const { user: authUser, logout } = useAuth();
+  const { user: userContextUser, updateUser } = useUser();
   const { openUserProfile } = useClerk();
   const navigate = useNavigate();
 
-  // Profile state
+  // Profile state - prefer userContextUser (full profile) over authUser (limited)
   const [profileData, setProfileData] = useState({
-    name: user?.name || '',
-    country: user?.country || 'Australia',
-    state: user?.state || 'NSW',
-    currency: user?.currency || 'AUD',
+    name: '',
+    country: 'Australia',
+    state: 'NSW',
+    currency: 'AUD',
   });
   const [profileLoading, setProfileLoading] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(true);
 
   // Data export state
   const [exportLoading, setExportLoading] = useState(false);
@@ -57,13 +60,35 @@ const Settings = () => {
   // Profile Update
   // ============================================================================
 
+  // Load profile data from user context on mount
+  useEffect(() => {
+    if (userContextUser && initialLoad) {
+      setProfileData({
+        name: userContextUser.name || authUser?.name || '',
+        country: userContextUser.country || 'Australia',
+        state: userContextUser.state || 'NSW',
+        currency: userContextUser.currency || 'AUD',
+      });
+      setInitialLoad(false);
+    }
+  }, [userContextUser, authUser, initialLoad]);
+
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
     setProfileLoading(true);
 
     try {
-      await api.updateProfile(profileData);
+      const updated = await api.updateProfile(profileData);
       toast.success('Profile updated successfully');
+      // Update user context with new data
+      if (updateUser) {
+        updateUser({
+          name: updated.name,
+          country: updated.country,
+          state: updated.state,
+          currency: updated.currency,
+        });
+      }
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Failed to update profile');
     } finally {
@@ -171,7 +196,7 @@ const Settings = () => {
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
-                value={user?.email || ''}
+                value={authUser?.email || userContextUser?.email || ''}
                 disabled
                 className="h-10 bg-gray-50"
               />

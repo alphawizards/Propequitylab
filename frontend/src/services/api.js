@@ -183,6 +183,11 @@ export const seedSampleData = async () => {
   return response.data;
 };
 
+export const loadDemoData = async () => {
+  const response = await apiClient.post('/onboarding/load-demo-data');
+  return response.data;
+};
+
 // ============================================================================
 // Dashboard API Functions
 // ============================================================================

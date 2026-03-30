@@ -27,7 +27,7 @@ from models.financials import (
     PortfolioProjectionResponse,
 )
 from utils.database_sql import get_session
-from utils.auth import get_current_user
+from utils.clerk_auth import get_current_user
 from utils.calculations import (
     calculate_property_value,
     calculate_property_equity,

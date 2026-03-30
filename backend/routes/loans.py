@@ -23,7 +23,7 @@ from models.financials import (
     InterestRateForecast,
 )
 from utils.database_sql import get_session
-from utils.auth import get_current_user
+from utils.clerk_auth import get_current_user
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/loans", tags=["loans"])

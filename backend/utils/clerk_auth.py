@@ -42,7 +42,8 @@ def _get_jwks_client() -> PyJWKClient:
     if _jwks_client is None:
         if not CLERK_JWKS_URL:
             raise RuntimeError("CLERK_JWKS_URL environment variable is not set")
-        _jwks_client = PyJWKClient(CLERK_JWKS_URL)
+        # Cache keys for 1 hour to avoid JWKS endpoint rate limits
+        _jwks_client = PyJWKClient(CLERK_JWKS_URL, cache_keys=True, lifespan=3600)
     return _jwks_client
 
 

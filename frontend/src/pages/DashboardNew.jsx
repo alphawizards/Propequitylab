@@ -11,6 +11,7 @@ import PortfolioSnapshotWidget from '../components/dashboard/PortfolioSnapshotWi
 import PropertyCashflowsWidget from '../components/dashboard/PropertyCashflowsWidget';
 import BorrowingWidget from '../components/dashboard/BorrowingWidget';
 import { formatCurrency } from '../utils/formatCurrency';
+import { useToast } from '../hooks/use-toast';
 import {
   Home,
   TrendingUp,
@@ -23,6 +24,8 @@ import {
   RefreshCw,
   Camera,
   ArrowRight,
+  Sparkles,
+  Loader2,
 } from 'lucide-react';
 
 // Skeleton loader component — avoids generic spinner
@@ -55,14 +58,16 @@ const DashboardSkeleton = () => (
 
 const DashboardNew = () => {
   const navigate = useNavigate();
-  const { currentPortfolio, createPortfolio } = usePortfolio();
+  const { currentPortfolio, createPortfolio, fetchPortfolios } = usePortfolio();
   const { user } = useUser();
+  const { toast } = useToast();
   const [dashboardData, setDashboardData] = useState(null);
   const [netWorthHistory, setNetWorthHistory] = useState([]);
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [historyLoading, setHistoryLoading] = useState(true);
   const [snapshotLoading, setSnapshotLoading] = useState(false);
+  const [demoLoading, setDemoLoading] = useState(false);
   const [dataVersion, setDataVersion] = useState(0);
 
   const fetchDashboardData = async () => {
@@ -107,6 +112,26 @@ const DashboardNew = () => {
       setProperties(propsWithCashflow);
     } catch (error) {
       console.error('Failed to fetch properties:', error);
+    }
+  };
+
+  const handleLoadDemo = async () => {
+    setDemoLoading(true);
+    try {
+      await api.loadDemoData();
+      await fetchPortfolios();
+      toast({ title: 'Demo data loaded!', description: 'Your portfolio has been populated with sample data.' });
+      // Reload dashboard data
+      setLoading(true);
+      setHistoryLoading(true);
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: error.response?.data?.detail || 'Failed to load demo data.',
+        variant: 'destructive',
+      });
+    } finally {
+      setDemoLoading(false);
     }
   };
 
@@ -384,6 +409,29 @@ const DashboardNew = () => {
             </button>
           ))}
         </div>
+      </div>
+
+      {/* Demo Data — subtle card at the bottom */}
+      <div className="rounded-xl border border-dashed border-[#EAEAEA] bg-slate-50/50 p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <div className="flex-1">
+          <p className="text-sm font-medium text-zinc-700">Load Sample Data</p>
+          <p className="text-xs text-zinc-400 mt-0.5">
+            Populate your portfolio with a demo property, car, ETF, super, liabilities, income, and expenses — great for exploring the app.
+          </p>
+        </div>
+        <Button
+          onClick={handleLoadDemo}
+          disabled={demoLoading}
+          variant="outline"
+          size="sm"
+          className="shrink-0 border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-150 active:scale-[0.98]"
+        >
+          {demoLoading ? (
+            <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Loading...</>
+          ) : (
+            <><Sparkles className="w-4 h-4 mr-2" />Load Demo Data</>
+          )}
+        </Button>
       </div>
     </div>
   );

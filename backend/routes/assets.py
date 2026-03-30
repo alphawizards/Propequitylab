@@ -15,7 +15,7 @@ from models.asset import Asset, AssetCreate, AssetUpdate, ASSET_TYPES
 from models.portfolio import Portfolio
 from models.user import User
 from utils.database_sql import get_session
-from utils.auth import get_current_user
+from utils.clerk_auth import get_current_user
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/assets", tags=["assets"])

@@ -36,6 +36,9 @@ import ErrorFallback from './components/ErrorBoundary';
 import CookieBanner from './components/CookieBanner';
 
 const PUBLISHABLE_KEY = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
+if (!PUBLISHABLE_KEY) {
+  throw new Error("Missing REACT_APP_CLERK_PUBLISHABLE_KEY environment variable");
+}
 
 // Lazy load WelcomeModal to reduce initial bundle size
 const WelcomeModal = lazy(() => import('./components/onboarding/WelcomeModal'));
@@ -108,8 +111,8 @@ function AppRoutes() {
   return (
     <Routes>
       {/* Public routes */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+      <Route path="/login/*" element={<Login />} />
+      <Route path="/register/*" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/verify-email" element={<VerifyEmail />} />
@@ -182,8 +185,8 @@ function AppRoutes() {
 function App() {
   return (
     <BrowserRouter>
-      <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
-        <ThemeProvider>
+      <ThemeProvider>
+        <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
           <Sentry.ErrorBoundary fallback={ErrorFallback} showDialog>
             <HelmetProvider>
               <AuthProvider>
@@ -200,8 +203,8 @@ function App() {
               </AuthProvider>
             </HelmetProvider>
           </Sentry.ErrorBoundary>
-        </ThemeProvider>
-      </ClerkProvider>
+        </ClerkProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

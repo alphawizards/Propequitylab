@@ -20,7 +20,7 @@ from models.asset import Asset
 from models.liability import Liability
 from models.plan import Plan
 from utils.database_sql import get_session
-from utils.auth import get_current_user
+from utils.clerk_auth import get_current_user
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/portfolios", tags=["portfolios"])
@@ -232,33 +232,48 @@ async def get_portfolio_summary(
         )
     
     # Calculate totals for properties
-    properties_stmt = select(Property).where(Property.portfolio_id == portfolio_id)
+    properties_stmt = select(Property).where(
+        Property.portfolio_id == portfolio_id,
+        Property.user_id == current_user.id
+    )
     properties = session.exec(properties_stmt).all()
-    
+
     total_property_value = sum(prop.current_value or Decimal(0) for prop in properties)
     total_property_equity = sum(
         (prop.current_value or Decimal(0)) - (Decimal(str(prop.loan_details.get("amount", 0))) if prop.loan_details else Decimal(0))
         for prop in properties
     )
     total_rental_income = sum(Decimal(str(prop.rental_details.get("income", 0))) if prop.rental_details else Decimal(0) for prop in properties)
-    
+
     # Calculate totals for assets
-    assets_stmt = select(Asset).where(Asset.portfolio_id == portfolio_id)
+    assets_stmt = select(Asset).where(
+        Asset.portfolio_id == portfolio_id,
+        Asset.user_id == current_user.id
+    )
     assets = session.exec(assets_stmt).all()
     total_assets = sum(asset.current_value or Decimal(0) for asset in assets)
-    
+
     # Calculate totals for liabilities
-    liabilities_stmt = select(Liability).where(Liability.portfolio_id == portfolio_id)
+    liabilities_stmt = select(Liability).where(
+        Liability.portfolio_id == portfolio_id,
+        Liability.user_id == current_user.id
+    )
     liabilities = session.exec(liabilities_stmt).all()
     total_liabilities = sum(liability.current_balance or Decimal(0) for liability in liabilities)
-    
+
     # Calculate totals for income
-    income_stmt = select(IncomeSource).where(IncomeSource.portfolio_id == portfolio_id)
+    income_stmt = select(IncomeSource).where(
+        IncomeSource.portfolio_id == portfolio_id,
+        IncomeSource.user_id == current_user.id
+    )
     incomes = session.exec(income_stmt).all()
     total_income = sum(income.amount or Decimal(0) for income in incomes)
-    
+
     # Calculate totals for expenses
-    expense_stmt = select(Expense).where(Expense.portfolio_id == portfolio_id)
+    expense_stmt = select(Expense).where(
+        Expense.portfolio_id == portfolio_id,
+        Expense.user_id == current_user.id
+    )
     expenses = session.exec(expense_stmt).all()
     total_expenses = sum(expense.amount or Decimal(0) for expense in expenses)
     

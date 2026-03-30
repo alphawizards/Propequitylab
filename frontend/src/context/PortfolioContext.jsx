@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { useAuth } from '@clerk/clerk-react';
 import api from '../services/api';
 
 const PortfolioContext = createContext(null);
@@ -8,6 +9,7 @@ export const PortfolioProvider = ({ children }) => {
   const [currentPortfolio, setCurrentPortfolio] = useState(null);
   const [loading, setLoading] = useState(true);
   const [summary, setSummary] = useState(null);
+  const { isLoaded, isSignedIn } = useAuth();
 
   // Fetch portfolios on mount
   const fetchPortfolios = useCallback(async () => {
@@ -15,7 +17,7 @@ export const PortfolioProvider = ({ children }) => {
       setLoading(true);
       const data = await api.getPortfolios();
       setPortfolios(data);
-      
+
       // Set first portfolio as current if none selected
       if (data.length > 0 && !currentPortfolio) {
         setCurrentPortfolio(data[0]);
@@ -27,9 +29,14 @@ export const PortfolioProvider = ({ children }) => {
     }
   }, [currentPortfolio]);
 
+  // Only fetch once Clerk is loaded and user is signed in
   useEffect(() => {
-    fetchPortfolios();
-  }, []);
+    if (isLoaded && isSignedIn) {
+      fetchPortfolios();
+    } else if (isLoaded && !isSignedIn) {
+      setLoading(false);
+    }
+  }, [isLoaded, isSignedIn]);
 
   // Fetch summary when current portfolio changes
   useEffect(() => {

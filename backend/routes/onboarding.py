@@ -20,7 +20,7 @@ from models.expense import Expense
 from models.asset import Asset
 from models.liability import Liability
 from utils.database_sql import get_session
-from utils.auth import get_current_user
+from utils.clerk_auth import get_current_user
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/onboarding", tags=["onboarding"])
@@ -519,7 +519,7 @@ async def load_demo_data(
         logger.error("Failed to load demo data for user %s: %s", current_user.id, str(e))
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to load demo data: {str(e)}",
+            detail="An internal error occurred",
         )
 
 
@@ -816,5 +816,5 @@ async def seed_sample_data(
         logger.error(f"Failed to seed sample data for user {current_user.id}: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to load demo data: {str(e)}"
+            detail="An internal error occurred"
         )

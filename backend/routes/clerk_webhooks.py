@@ -75,13 +75,16 @@ async def handle_clerk_webhook(
     # Read raw body for signature verification
     body = await request.body()
 
-    # Verify signature if secret is configured
-    if CLERK_WEBHOOK_SECRET:
-        svix_id = request.headers.get("svix-id", "")
-        svix_timestamp = request.headers.get("svix-timestamp", "")
-        svix_signature = request.headers.get("svix-signature", "")
-        if svix_id:
-            _verify_clerk_webhook(body, svix_id, svix_timestamp, svix_signature)
+    # Verify signature - required, not optional
+    if not CLERK_WEBHOOK_SECRET:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Webhook secret not configured"
+        )
+    svix_id = request.headers.get("svix-id", "")
+    svix_timestamp = request.headers.get("svix-timestamp", "")
+    svix_signature = request.headers.get("svix-signature", "")
+    _verify_clerk_webhook(body, svix_id, svix_timestamp, svix_signature)
 
     payload = await request.json()
     event_type: str = payload.get("type", "")
