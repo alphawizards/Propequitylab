@@ -223,11 +223,11 @@ test.describe('API security — protected endpoints return 401', () => {
   // portfolio-scoped — use /portfolio/{id} paths which still return 401 first.
   const protectedEndpoints = [
     '/portfolios',
-    '/dashboard/summary',
-    '/assets/portfolio/00000000-0000-0000-0000-000000000000',
-    '/liabilities/portfolio/00000000-0000-0000-0000-000000000000',
-    '/income/portfolio/00000000-0000-0000-0000-000000000000',
-    '/plans/portfolio/00000000-0000-0000-0000-000000000000',
+    '/properties/portfolio/nonexistent-id',
+    '/assets/portfolio/nonexistent-id',
+    '/liabilities/portfolio/nonexistent-id',
+    '/income/portfolio/nonexistent-id',
+    '/plans/portfolio/nonexistent-id',
   ];
 
   for (const endpoint of protectedEndpoints) {
