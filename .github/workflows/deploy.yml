@@ -1,19 +1,16 @@
 name: Deploy PropEquityLab
-
-# ─── Deployment Architecture ─────────────────────────────────────────────────
-# Backend:  Railway auto-deploys on push to main via its GitHub integration.
-#           There is intentionally no deploy-backend job here.
-#           See: https://docs.railway.app/guides/github-autodeploys
+# ─── Deployment Architecture ─────────────────────────────────────────────
+# Backend: Railway auto-deploys on push to main via its GitHub integration.
+#          There is intentionally no deploy-backend job here.
+#          See: https://docs.railway.app/guides/github-autodeploys
 #
 # Frontend: Cloudflare Pages deployment is handled by the deploy-frontend job below.
 # ─────────────────────────────────────────────────────────────────────────────
-
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
-
 env:
   PYTHON_VERSION: '3.11'
   NODE_VERSION: '24'
@@ -76,6 +73,9 @@ jobs:
 
       - name: Install and build
         working-directory: ./frontend
+        env:
+          REACT_APP_CLERK_PUBLISHABLE_KEY: ${{ secrets.REACT_APP_CLERK_PUBLISHABLE_KEY }}
+          REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
         run: |
           npm ci
           npm run build
