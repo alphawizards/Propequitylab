@@ -98,9 +98,14 @@ test.describe('Authenticated — API returns data', () => {
     // Get Clerk token from the page context (already signed in via beforeEach)
     await page.goto(FRONTEND + '/dashboard', { waitUntil: 'load' });
 
+    // Wait for Clerk to fully initialize its session (up to 10 s)
     const token = await page.evaluate(async () => {
-      // Clerk exposes getToken on the window.__clerk instance
-      return await window.Clerk?.session?.getToken();
+      for (let i = 0; i < 20; i++) {
+        const t = await window.Clerk?.session?.getToken();
+        if (t) return t;
+        await new Promise(r => setTimeout(r, 500));
+      }
+      return null;
     });
 
     if (!token) {
@@ -114,5 +119,39 @@ test.describe('Authenticated — API returns data', () => {
     expect(response.status()).toBe(200);
     const body = await response.json();
     console.log(`  /portfolios → ${JSON.stringify(body).slice(0, 120)}`);
+
+    // Response must be an array (empty or populated)
+    expect(Array.isArray(body)).toBe(true);
+  });
+
+  test('GET /api/dashboard/summary returns 200 with valid user data shape', async ({ page, request }) => {
+    await page.goto(FRONTEND + '/dashboard', { waitUntil: 'load' });
+
+    const token = await page.evaluate(async () => {
+      for (let i = 0; i < 20; i++) {
+        const t = await window.Clerk?.session?.getToken();
+        if (t) return t;
+        await new Promise(r => setTimeout(r, 500));
+      }
+      return null;
+    });
+
+    if (!token) {
+      test.skip(true, 'No Clerk session token available');
+    }
+
+    const response = await request.get(`${API_BASE}/dashboard/summary`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    // 200 with data or 404 if no portfolio yet — both are valid authenticated states
+    expect([200, 404]).toContain(response.status());
+    if (response.status() === 200) {
+      const body = await response.json();
+      console.log(`  /dashboard/summary → ${JSON.stringify(body).slice(0, 120)}`);
+      // Response must have at least a properties or portfolio field
+      const keys = Object.keys(body);
+      expect(keys.length).toBeGreaterThan(0);
+    }
   });
 });

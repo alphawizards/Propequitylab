@@ -7,7 +7,7 @@ import uuid
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select, func
 from typing import List
-from datetime import datetime
+from datetime import datetime, timezone
 from decimal import Decimal
 import logging
 
@@ -60,8 +60,8 @@ async def create_portfolio(
         type=data.type,
         settings=data.settings.model_dump(mode='json') if data.settings else {},
         goal_settings=data.goal_settings.model_dump(mode='json') if data.goal_settings else {},
-        created_at=datetime.utcnow(),
-        updated_at=datetime.utcnow()
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc)
     )
     
     session.add(portfolio)
@@ -128,7 +128,7 @@ async def update_portfolio(
     for key, value in update_data.items():
         setattr(portfolio, key, value)
     
-    portfolio.updated_at = datetime.utcnow()
+    portfolio.updated_at = datetime.now(timezone.utc)
     
     session.add(portfolio)
     session.commit()

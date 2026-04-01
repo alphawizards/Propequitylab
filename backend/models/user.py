@@ -7,7 +7,7 @@ from sqlmodel import SQLModel, Field, Column
 from sqlalchemy import JSON
 from pydantic import EmailStr
 from typing import Optional
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 
 
@@ -68,8 +68,8 @@ class User(SQLModel, table=True):
     is_active: bool = Field(default=True)
 
     # Timestamps
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 # Pydantic models for API requests/responses

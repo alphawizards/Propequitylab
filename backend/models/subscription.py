@@ -1,7 +1,7 @@
 """Subscription model — mirrors Stripe subscription state per account."""
 
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 from sqlmodel import Field, SQLModel
@@ -23,8 +23,8 @@ class Subscription(SQLModel, table=True):
     status: str = Field(default="active", max_length=50)
     current_period_start: Optional[datetime] = Field(default=None)
     current_period_end: Optional[datetime] = Field(default=None)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class SubscriptionCreate(SQLModel):

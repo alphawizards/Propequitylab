@@ -1,7 +1,7 @@
 """Account model — represents a billable workspace/household."""
 
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 from sqlmodel import Field, SQLModel
@@ -17,8 +17,8 @@ class Account(SQLModel, table=True):
     )
     name: str = Field(max_length=255)
     owner_user_id: str = Field(foreign_key="users.id", index=True, max_length=50)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class AccountCreate(SQLModel):

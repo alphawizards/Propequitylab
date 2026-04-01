@@ -6,7 +6,7 @@ Asset Routes - SQL-Based with Authentication & Data Isolation
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 from typing import List
-from datetime import datetime
+from datetime import datetime, timezone
 from decimal import Decimal
 import logging
 import uuid
@@ -108,8 +108,8 @@ async def create_asset(
         ticker=data.ticker,
         units=data.units,
         tax_environment=data.tax_environment,
-        created_at=datetime.utcnow(),
-        updated_at=datetime.utcnow()
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc)
     )
     
     # CORRECT WRITE FLOW: add -> commit -> refresh
@@ -182,7 +182,7 @@ async def update_asset(
     for key, value in update_data.items():
         setattr(asset, key, value)
     
-    asset.updated_at = datetime.utcnow()
+    asset.updated_at = datetime.now(timezone.utc)
     
     # CORRECT WRITE FLOW: add -> commit -> refresh
     session.add(asset)

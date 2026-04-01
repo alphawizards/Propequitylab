@@ -1,5 +1,13 @@
 name: Deploy PropEquityLab
 
+# ─── Deployment Architecture ─────────────────────────────────────────────────
+# Backend:  Railway auto-deploys on push to main via its GitHub integration.
+#           There is intentionally no deploy-backend job here.
+#           See: https://docs.railway.app/guides/github-autodeploys
+#
+# Frontend: Cloudflare Pages deployment is handled by the deploy-frontend job below.
+# ─────────────────────────────────────────────────────────────────────────────
+
 on:
   push:
     branches: [main]

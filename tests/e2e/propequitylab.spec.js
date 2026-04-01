@@ -13,9 +13,9 @@
 
 const { test, expect, request } = require('@playwright/test');
 
-const FRONTEND = 'https://propequitylab.com';
-const API_BASE = 'https://api.propequitylab.com/api';
-const API_DOCS = 'https://api.propequitylab.com/docs';
+const FRONTEND = process.env.PLAYWRIGHT_FRONTEND_URL || 'https://propequitylab.com';
+const API_BASE = process.env.PLAYWRIGHT_API_URL || 'https://api.propequitylab.com/api';
+const API_DOCS = API_BASE.replace(/\/api$/, '') + '/docs';
 const SCREENSHOT_DIR = 'tests/e2e/screenshots';
 
 // ---------------------------------------------------------------------------

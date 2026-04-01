@@ -13,7 +13,7 @@ Usage: activated when CLERK_JWKS_URL env var is set (see utils/auth.py condition
 import os
 import logging
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 import jwt
@@ -110,8 +110,8 @@ def _provision_user(session: Session, clerk_user_id: str, email: str, name: str)
         name=name or email.split("@")[0],
         clerk_user_id=clerk_user_id,
         is_verified=True,
-        created_at=datetime.utcnow(),
-        updated_at=datetime.utcnow(),
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc),
     )
     session.add(user)
     session.commit()
@@ -191,7 +191,7 @@ async def get_current_user(
         ).first()
         if user:
             user.clerk_user_id = clerk_user_id
-            user.updated_at = datetime.utcnow()
+            user.updated_at = datetime.now(timezone.utc)
             session.add(user)
             session.commit()
             session.refresh(user)

@@ -8,7 +8,7 @@ import uuid
 from sqlmodel import SQLModel, Field, Column
 from sqlalchemy import DECIMAL, JSON
 from typing import Optional, List
-from datetime import datetime
+from datetime import datetime, timezone
 from decimal import Decimal
 
 
@@ -65,8 +65,8 @@ class Plan(SQLModel, table=True):
     projected_fire_year: Optional[str] = Field(default=None, max_length=10)
     
     # Metadata
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 # Pydantic models for API requests/responses

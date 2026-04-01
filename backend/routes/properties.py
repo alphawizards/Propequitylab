@@ -6,7 +6,7 @@ Property Routes - SQL-Based with Authentication & Data Isolation (GOLDEN MASTER)
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 from typing import List
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 import logging
 import uuid
 
@@ -104,8 +104,8 @@ async def create_property(
         rental_details=data.rental_details.model_dump(mode='json') if data.rental_details else {},
         expenses=data.expenses.model_dump(mode='json') if data.expenses else {},
         growth_assumptions=data.growth_assumptions.model_dump(mode='json') if data.growth_assumptions else {},
-        created_at=datetime.utcnow(),
-        updated_at=datetime.utcnow()
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc)
     )
     
     # CORRECT WRITE FLOW: add -> commit -> refresh
@@ -173,7 +173,7 @@ async def update_property(
     for key, value in update_data.items():
         setattr(property_obj, key, value)
     
-    property_obj.updated_at = datetime.utcnow()
+    property_obj.updated_at = datetime.now(timezone.utc)
     
     # CORRECT WRITE FLOW: add -> commit -> refresh
     session.add(property_obj)

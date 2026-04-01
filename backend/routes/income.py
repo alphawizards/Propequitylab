@@ -6,7 +6,7 @@ Income Routes - SQL-Based with Authentication & Data Isolation
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 from typing import List
-from datetime import datetime
+from datetime import datetime, timezone
 from decimal import Decimal
 import logging
 import uuid
@@ -94,8 +94,8 @@ async def create_income_source(
         end_date=data.end_date,
         end_age=data.end_age,
         is_taxable=data.is_taxable,
-        created_at=datetime.utcnow(),
-        updated_at=datetime.utcnow()
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc)
     )
     
     # CORRECT WRITE FLOW: add -> commit -> refresh
@@ -163,7 +163,7 @@ async def update_income_source(
     for key, value in update_data.items():
         setattr(source, key, value)
     
-    source.updated_at = datetime.utcnow()
+    source.updated_at = datetime.now(timezone.utc)
     
     # CORRECT WRITE FLOW: add -> commit -> refresh
     session.add(source)

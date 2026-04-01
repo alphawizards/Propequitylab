@@ -7,7 +7,7 @@ Extended database schema for property portfolio financial forecasting.
 from sqlmodel import SQLModel, Field, Column, Relationship
 from sqlalchemy import DECIMAL, JSON, Enum as SAEnum, Index
 from typing import Optional, List
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 from decimal import Decimal
 from enum import Enum
 
@@ -105,8 +105,8 @@ class Loan(SQLModel, table=True):
     
     # Timestamps
     start_date: date = Field(default_factory=date.today)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class ExtraRepayment(SQLModel, table=True):
@@ -125,7 +125,7 @@ class ExtraRepayment(SQLModel, table=True):
     start_date: date
     end_date: Optional[date] = Field(default=None)
     
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class LumpSumPayment(SQLModel, table=True):
@@ -142,7 +142,7 @@ class LumpSumPayment(SQLModel, table=True):
     payment_date: date
     description: str = Field(default="", max_length=500)
     
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class InterestRateForecast(SQLModel, table=True):
@@ -158,7 +158,7 @@ class InterestRateForecast(SQLModel, table=True):
     effective_date: date
     interest_rate: Decimal = Field(sa_column=Column(DECIMAL(5, 2)))  # Percentage
     
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 # ============================================================================
@@ -181,7 +181,7 @@ class PropertyValuation(SQLModel, table=True):
     # Optional source/type of valuation
     valuation_source: str = Field(default="manual", max_length=100)  # manual, bank, api
     
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class GrowthRatePeriod(SQLModel, table=True):
@@ -198,7 +198,7 @@ class GrowthRatePeriod(SQLModel, table=True):
     end_year: Optional[int] = Field(default=None)  # None = ongoing
     growth_rate: Decimal = Field(sa_column=Column(DECIMAL(5, 2)))  # Percentage
     
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 # ============================================================================
@@ -231,7 +231,7 @@ class RentalIncome(SQLModel, table=True):
     start_date: date
     end_date: Optional[date] = Field(default=None)
     
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 # ============================================================================
@@ -264,7 +264,7 @@ class ExpenseLog(SQLModel, table=True):
     start_date: date
     end_date: Optional[date] = Field(default=None)
     
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class DepreciationSchedule(SQLModel, table=True):
@@ -281,7 +281,7 @@ class DepreciationSchedule(SQLModel, table=True):
     building_depreciation: Decimal = Field(sa_column=Column(DECIMAL(12, 2)))
     plant_and_equipment: Decimal = Field(sa_column=Column(DECIMAL(12, 2)))
     
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class CapitalExpenditure(SQLModel, table=True):
@@ -302,7 +302,7 @@ class CapitalExpenditure(SQLModel, table=True):
     # Optional: link to depreciation impact
     adds_to_cost_base: bool = Field(default=True)
     
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 # ============================================================================
@@ -323,7 +323,7 @@ class PropertyUsagePeriod(SQLModel, table=True):
     start_date: date
     end_date: Optional[date] = Field(default=None)  # None = ongoing
     
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class PropertyOwnership(SQLModel, table=True):
@@ -346,7 +346,7 @@ class PropertyOwnership(SQLModel, table=True):
         max_length=50
     )
     
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 # ============================================================================
@@ -370,8 +370,8 @@ class PropertyDraft(SQLModel, table=True):
     current_step: int = Field(default=1)
     
     # Timestamps
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 # ============================================================================

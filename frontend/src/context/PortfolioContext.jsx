@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { useAuth } from '@clerk/clerk-react';
+import { useAuth } from './AuthContext';
 import api from '../services/api';
 
 const PortfolioContext = createContext(null);
@@ -7,14 +7,14 @@ const PortfolioContext = createContext(null);
 export const PortfolioProvider = ({ children }) => {
   const [portfolios, setPortfolios] = useState([]);
   const [currentPortfolio, setCurrentPortfolio] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [portfoliosLoading, setPortfoliosLoading] = useState(true);
   const [summary, setSummary] = useState(null);
-  const { isLoaded, isSignedIn } = useAuth();
+  const { loading: authLoading, isAuthenticated } = useAuth();
 
   // Fetch portfolios on mount
   const fetchPortfolios = useCallback(async () => {
     try {
-      setLoading(true);
+      setPortfoliosLoading(true);
       const data = await api.getPortfolios();
       setPortfolios(data);
 
@@ -25,18 +25,18 @@ export const PortfolioProvider = ({ children }) => {
     } catch (error) {
       console.error('Failed to fetch portfolios:', error);
     } finally {
-      setLoading(false);
+      setPortfoliosLoading(false);
     }
   }, [currentPortfolio]);
 
-  // Only fetch once Clerk is loaded and user is signed in
+  // Only fetch once auth is resolved and user is signed in
   useEffect(() => {
-    if (isLoaded && isSignedIn) {
+    if (!authLoading && isAuthenticated) {
       fetchPortfolios();
-    } else if (isLoaded && !isSignedIn) {
-      setLoading(false);
+    } else if (!authLoading && !isAuthenticated) {
+      setPortfoliosLoading(false);
     }
-  }, [isLoaded, isSignedIn]);
+  }, [authLoading, isAuthenticated]);
 
   // Fetch summary when current portfolio changes
   useEffect(() => {
@@ -80,7 +80,7 @@ export const PortfolioProvider = ({ children }) => {
   const value = {
     portfolios,
     currentPortfolio,
-    loading,
+    loading: portfoliosLoading,
     summary,
     fetchPortfolios,
     createPortfolio,

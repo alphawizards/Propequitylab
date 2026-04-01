@@ -59,8 +59,6 @@ logger.info(f"CORS allowed origins: {ALLOWED_ORIGINS}")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan manager"""
-    logger.info("Starting up Zapiio API (Serverless Fintech Stack)...")
-
     # Initialize Sentry error monitoring (must be first)
     init_sentry()
 
@@ -98,7 +96,7 @@ async def health_check():
 
     return {
         "status": "healthy" if db_healthy else "degraded",
-        "stack": "PostgreSQL + App Runner",
+        "stack": "PostgreSQL + Railway",
         "components": {
             "database": "connected" if db_healthy else "disconnected",
             "api": "running"
@@ -129,50 +127,13 @@ api_router.include_router(clerk_webhooks_router)
 app.include_router(api_router)
 
 
-# Security Headers Middleware
-# @app.middleware("http")
-# async def add_security_headers(request: Request, call_next):
-#     # Handle Actual Request
-#     response = await call_next(request)
-#     
-#     # Strict-Transport-Security (HSTS)
-#     response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
-#     
-#     # Content-Security-Policy (CSP)
-#     response.headers["Content-Security-Policy"] = (
-#         "default-src 'self'; "
-#         "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
-#         "style-src 'self' 'unsafe-inline'; "
-#         "img-src 'self' data: https:; "
-#         "font-src 'self' data:; "
-#         "connect-src 'self' http://localhost:3000 http://127.0.0.1:3000 http://localhost:8000 http://127.0.0.1:8000 https://propequitylab.com https://propequitylab.pages.dev https://h3nhfwgxgf.ap-southeast-2.awsapprunner.com https://*.awsapprunner.com; "
-#         "frame-ancestors 'none';"
-#     )
-#     
-#     # X-Frame-Options
-#     response.headers["X-Frame-Options"] = "DENY"
-#     
-#     # X-Content-Type-Options
-#     response.headers["X-Content-Type-Options"] = "nosniff"
-#     
-#     # X-XSS-Protection
-#     response.headers["X-XSS-Protection"] = "1; mode=block"
-#     
-#     # Referrer-Policy
-#     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
-#     
-#     # Permissions-Policy
-#     response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()"
-#     
-#     return response
-
 # Standard CORS Middleware (Handles Preflight & Error Responses correctly)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 
 # Security Headers Middleware
@@ -190,7 +151,7 @@ async def add_security_headers(request: Request, call_next):
         "style-src 'self' 'unsafe-inline' https://*.clerk.accounts.dev https://clerk.propequitylab.com; "
         "img-src 'self' data: https:; "
         "font-src 'self' data:; "
-        "connect-src 'self' http://localhost:3000 http://127.0.0.1:3000 http://localhost:8000 http://127.0.0.1:8000 https://propequitylab.com https://propequitylab.pages.dev https://h3nhfwgxgf.ap-southeast-2.awsapprunner.com https://*.awsapprunner.com https://*.clerk.accounts.dev https://clerk.propequitylab.com; "
+        "connect-src 'self' http://localhost:3000 http://127.0.0.1:3000 http://localhost:8000 http://127.0.0.1:8000 https://propequitylab.com https://propequitylab.pages.dev https://*.clerk.accounts.dev https://clerk.propequitylab.com; "
         "frame-ancestors 'none';"
     )
     

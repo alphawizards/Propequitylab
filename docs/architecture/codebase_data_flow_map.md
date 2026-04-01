@@ -18,12 +18,12 @@ graph TD
     end
 
     subgraph "Network Layer"
-        API -->|HTTPS / JWT| LB[Load Balancer / Reverse Proxy]
+        API -->|HTTPS / Clerk Bearer JWT| LB[Load Balancer / Reverse Proxy]
     end
 
     subgraph "Backend Layer (FastAPI)"
         LB -->|Request| MAIN[server.py]
-        MAIN -->|Auth Middleware| SEC[Security / JWT Utils]
+        MAIN -->|Auth Middleware| SEC[clerk_auth.py — JWKS verification]
         SEC -->|Validated Request| RT[App Routes / Controllers]
         RT -->|Logic / Math| UTIL[Financial Utils / Math]
         RT -->|SQLModel| DB[(PostgreSQL Database)]
@@ -46,18 +46,27 @@ graph TD
 ### A. Authentication & Security Flow
 How we ensure only the right eyes see the right data.
 
+Auth stack: **Clerk Core 2 SDK** — `@clerk/clerk-react` v5. The backend verifies Clerk-issued RS256 JWTs against Clerk's JWKS endpoint (`clerk_auth.py`). Legacy HS256 JWT mode is available when `CLERK_JWKS_URL` is unset.
+
 ```mermaid
 sequenceDiagram
     participant User
     participant Frontend
-    participant AuthRoute
+    participant Clerk
+    participant Backend
     participant DB
-    
-    User->>Frontend: Enter Credentials
-    Frontend->>AuthRoute: POST /api/auth/login
-    AuthRoute->>DB: Verify User
-    DB-->>AuthRoute: User Record
-    AuthRoute->>AuthRoute: Generate JWT (Access + Refresh)
+
+    User->>Frontend: Sign in (Clerk <SignIn> widget)
+    Frontend->>Clerk: Credential exchange
+    Clerk-->>Frontend: RS256 JWT session token
+    Frontend->>Backend: API request + Authorization: Bearer <token>
+    Backend->>Clerk: Verify JWT via JWKS (cached 1h)
+    Clerk-->>Backend: Public key / valid
+    Backend->>DB: Lookup user by clerk_user_id
+    DB-->>Backend: User record (auto-provisioned on first sign-in)
+    Backend-->>Frontend: JSON response
+
+    Note over Backend,DB: On first sign-in: auto-provisions User + Account + Subscription
     AuthRoute-->>Frontend: Set-Cookie (httpOnly) / Token JSON
     Frontend->>Frontend: Store Auth State (AuthContext)
 ```

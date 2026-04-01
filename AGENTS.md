@@ -1,60 +1,68 @@
-﻿# PropEquityLab — Agent Team
+# PropEquityLab — Agent Team
 
-## 🎭 Available Specialist Agents
+## Available Specialist Agents
 
 Located in `.claude/agents/` — these are specialized AI personas for project tasks.
 
 ### Engineering
 | Agent | File | Use For |
 |-------|------|---------|
-| **Backend Architect** | `engineering-backend-architect.md` | FastAPI, PostgreSQL, API design, scaling |
-| **Frontend Developer** | `engineering-frontend-developer.md` | React, shadcn, responsive UI, performance |
-| **DevOps Automator** | `engineering-devops-automator.md` | AWS App Runner, Cloudflare Pages, CI/CD |
-| **Security Engineer** | `engineering-security-engineer.md` | Auth, GDPR, OWASP, penetration testing |
-| **Code Reviewer** | `engineering-code-reviewer.md` | PR review, code quality, best practices |
+| **Fullstack Developer** | `fullstack-developer.md` | End-to-end feature work, FastAPI + React, debugging |
+| **DevOps Engineer** | `devops-engineer.md` | Railway, Cloudflare Pages, CI/CD pipelines |
+| **Deployment Engineer** | `deployment-engineer.md` | Releases, env config, production deployments |
+| **Database Architect** | `database-architect.md` | PostgreSQL/Neon schema, Alembic migrations, query optimization |
 
-### Testing
+### QA / Testing
 | Agent | File | Use For |
 |-------|------|---------|
-| **API Tester** | `testing-api-tester.md` | Endpoint testing, load testing, security validation |
+| **Bowser QA Agent** | `bowser-qa-agent.md` | Chrome-based browser automation QA |
+| **Claude Bowser Agent** | `claude-bowser-agent.md` | Observable browser automation |
+| **Playwright Bowser Agent** | `playwright-bowser-agent.md` | Headless Playwright test automation |
 
-### Product
+### Meta / Utilities
 | Agent | File | Use For |
 |-------|------|---------|
-| **Product Manager** | `product-manager.md` | Feature prioritization, roadmap, user stories |
+| **Meta Agent** | `meta-agent.md` | Orchestrating other agents |
+| **Work Completion Summary** | `work-completion-summary.md` | Generating session summaries |
+| **LLM/AI Research** | `llm-ai-agents-and-eng-research.md` | Research into AI/LLM patterns |
 
-## 🚀 How to Use
+## How to Use
 
 Activate any agent by mentioning their role:
 
-> "As Backend Architect, review the property projection API"
+> "As Fullstack Developer, implement the property projection endpoint"
 
-> "As API Tester, run comprehensive tests on the auth endpoints"
+> "As DevOps Engineer, fix the Railway deployment pipeline"
 
-> "As Product Manager, prioritize the next sprint features"
+> "As Database Architect, optimize the portfolio dashboard query"
 
-> "As DevOps Automator, set up the Cloudflare Pages deployment"
+> "As Playwright Bowser Agent, run E2E auth tests"
 
-## 📋 Current Project Priorities
+## Current Project Priorities (2026-04-01)
 
-1. **Backend Architect** — Fix property creation schema, optimize queries
-2. **API Tester** — Achieve 95%+ endpoint coverage with Playwright
-3. **Frontend Developer** — Connect React frontend to local backend
-4. **DevOps Automator** — Configure Cloudflare Pages auto-deploy
-5. **Security Engineer** — Audit auth flow, verify GDPR compliance
+1. **Fullstack Developer** — Verify Clerk auth flow end-to-end (sign-up → dashboard)
+2. **Playwright Bowser Agent** — Build E2E test suite covering auth + core flows
+3. **DevOps Engineer** — Confirm Railway backend + Cloudflare Pages are healthy
+4. **Database Architect** — Verify Alembic migrations applied on Neon, add composite indexes
 
-## 🔧 Quick Commands
+## Quick Commands
 
 ```bash
-# Run all API tests (API Tester workflow)
-cd backend && python -m pytest tests/ -v
+# Run backend tests
+cd backend && python -m pytest tests/ -v --tb=short
 
-# Check backend health (Backend Architect)
+# Check backend health
 curl http://localhost:8000/api/health
 
-# Build frontend (Frontend Developer)
-cd frontend && npm run build
+# Start frontend dev server
+cd frontend && npm start
 
-# Deploy to Cloudflare (DevOps Automator)
+# Deploy frontend to Cloudflare Pages
 cd frontend && npx wrangler pages deploy build
+
+# Run Playwright E2E tests
+npx playwright test
+
+# Check Railway deployment
+railway status
 ```

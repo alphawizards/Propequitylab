@@ -8,7 +8,7 @@ Track historical property valuations for accurate projections.
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 from typing import List
-from datetime import datetime
+from datetime import datetime, timezone
 from decimal import Decimal
 import logging
 
@@ -63,7 +63,7 @@ async def create_valuation(
         valuation_date=data.valuation_date,
         value=data.value,
         valuation_source=data.valuation_source,
-        created_at=datetime.utcnow(),
+        created_at=datetime.now(timezone.utc),
     )
     
     session.add(valuation)
@@ -77,7 +77,7 @@ async def create_valuation(
     if not latest or data.valuation_date >= latest.valuation_date:
         property_obj.current_value = data.value
         property_obj.last_valuation_date = data.valuation_date
-        property_obj.updated_at = datetime.utcnow()
+        property_obj.updated_at = datetime.now(timezone.utc)
         session.add(property_obj)
     
     session.commit()

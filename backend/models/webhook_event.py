@@ -1,7 +1,7 @@
 """WebhookEvent model — idempotency log for Clerk and Stripe webhooks."""
 
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 from sqlalchemy import Column, JSON
@@ -21,7 +21,7 @@ class WebhookEvent(SQLModel, table=True):
     event_type: str = Field(max_length=255)
     payload: Optional[dict] = Field(default=None, sa_column=Column(JSON))
     processed: bool = Field(default=False)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class WebhookEventResponse(SQLModel):

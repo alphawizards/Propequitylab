@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 from pydantic import BaseModel
 from typing import List, Optional, Dict
-from datetime import datetime
+from datetime import datetime, timezone
 from decimal import Decimal
 import logging
 import uuid
@@ -247,7 +247,7 @@ async def create_net_worth_snapshot(
         id=str(uuid.uuid4()),
         user_id=current_user.id,
         portfolio_id=portfolio_id,
-        date=datetime.utcnow().date(),
+        date=datetime.now(timezone.utc).date(),
         total_assets=Decimal(str(summary.total_assets)),
         total_liabilities=Decimal(str(summary.total_liabilities)),
         net_worth=Decimal(str(summary.net_worth)),

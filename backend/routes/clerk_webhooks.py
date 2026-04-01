@@ -38,7 +38,7 @@ def _verify_clerk_webhook(
     Returns True if signature is valid. Raises HTTPException on invalid signature.
     """
     try:
-        from svix.webhooks import Webhook
+        from svix.webhooks import Webhook, WebhookVerificationError
 
         wh = Webhook(CLERK_WEBHOOK_SECRET)
         wh.verify(
@@ -50,7 +50,7 @@ def _verify_clerk_webhook(
             },
         )
         return True
-    except Exception:
+    except WebhookVerificationError:
         logger.warning("Clerk webhook signature verification failed")
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -164,10 +164,10 @@ def _handle_user_created(session: Session, clerk_user_id: str, data: dict) -> No
         session.exec(select(User).where(User.email == email)).first() if email else None
     )
     if user:
-        from datetime import datetime
+        from datetime import datetime, timezone
 
         user.clerk_user_id = clerk_user_id
-        user.updated_at = datetime.utcnow()
+        user.updated_at = datetime.now(timezone.utc)
         session.add(user)
         session.commit()
         logger.info(
@@ -191,7 +191,7 @@ def _handle_user_updated(session: Session, clerk_user_id: str, data: dict) -> No
     if not user:
         return
 
-    from datetime import datetime
+    from datetime import datetime, timezone
 
     # Sync primary email
     email_addresses = data.get("email_addresses", [])
@@ -209,7 +209,7 @@ def _handle_user_updated(session: Session, clerk_user_id: str, data: dict) -> No
     if new_name and new_name != user.name:
         user.name = new_name
 
-    user.updated_at = datetime.utcnow()
+    user.updated_at = datetime.now(timezone.utc)
     session.add(user)
     session.commit()
     logger.info("Synced user %s from Clerk update webhook", user.id)
@@ -226,9 +226,9 @@ def _handle_user_deleted(session: Session, clerk_user_id: str) -> None:
     if not user:
         return
 
-    from datetime import datetime
+    from datetime import datetime, timezone
 
-    user.deleted_at = datetime.utcnow()
+    user.deleted_at = datetime.now(timezone.utc)
     user.is_active = False
     session.add(user)
     session.commit()

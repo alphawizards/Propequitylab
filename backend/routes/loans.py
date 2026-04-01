@@ -8,7 +8,7 @@ Supports multiple loans per property with detailed tracking.
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 from typing import List
-from datetime import datetime
+from datetime import datetime, timezone
 import logging
 
 from models.property import Property
@@ -96,8 +96,8 @@ async def create_loan(
         offset_balance=data.offset_balance,
         security_property_id=data.security_property_id,
         start_date=data.start_date or datetime.now().date(),
-        created_at=datetime.utcnow(),
-        updated_at=datetime.utcnow(),
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc),
     )
     
     session.add(loan)
@@ -157,7 +157,7 @@ async def update_loan(
     for key, value in update_data.items():
         setattr(loan, key, value)
     
-    loan.updated_at = datetime.utcnow()
+    loan.updated_at = datetime.now(timezone.utc)
     
     session.add(loan)
     session.commit()
@@ -226,7 +226,7 @@ async def add_extra_repayment(
         frequency=Frequency(frequency),
         start_date=dt.strptime(start_date, "%Y-%m-%d").date(),
         end_date=dt.strptime(end_date, "%Y-%m-%d").date() if end_date else None,
-        created_at=datetime.utcnow(),
+        created_at=datetime.now(timezone.utc),
     )
     
     session.add(repayment)
@@ -258,7 +258,7 @@ async def add_lump_sum_payment(
         amount=Decimal(str(amount)),
         payment_date=dt.strptime(payment_date, "%Y-%m-%d").date(),
         description=description,
-        created_at=datetime.utcnow(),
+        created_at=datetime.now(timezone.utc),
     )
     
     session.add(payment)

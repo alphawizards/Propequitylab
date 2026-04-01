@@ -3,7 +3,7 @@ GDPR Compliance Routes
 Handles data export, account deletion, and data access requests
 """
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, Any
 import json
 import logging
@@ -84,7 +84,7 @@ async def export_user_data(
 
         # Build complete data export
         export_data = {
-            "export_date": datetime.utcnow().isoformat(),
+            "export_date": datetime.now(timezone.utc).isoformat(),
             "user_profile": {
                 "id": str(current_user.id),
                 "email": current_user.email,
@@ -184,7 +184,7 @@ async def export_user_data(
         return JSONResponse(
             content=export_data,
             headers={
-                "Content-Disposition": f'attachment; filename="zapiio-data-export-{datetime.utcnow().strftime("%Y%m%d")}.json"'
+                "Content-Disposition": f'attachment; filename="zapiio-data-export-{datetime.now(timezone.utc).strftime("%Y%m%d")}.json"'
             }
         )
 
@@ -300,7 +300,7 @@ async def delete_account(
             )
 
         # Soft delete: Mark account for deletion
-        current_user.deleted_at = datetime.utcnow()
+        current_user.deleted_at = datetime.now(timezone.utc)
         current_user.is_active = False
 
         # Anonymize personal data immediately
@@ -314,7 +314,7 @@ async def delete_account(
 
         return {
             "message": "Account scheduled for deletion",
-            "deletion_date": (datetime.utcnow() + timedelta(days=30)).isoformat(),
+            "deletion_date": (datetime.now(timezone.utc) + timedelta(days=30)).isoformat(),
             "details": "Your account has been deactivated and personal data anonymized. All data will be permanently deleted in 30 days. To recover your account within this period, contact support@zapiio.com"
         }
 

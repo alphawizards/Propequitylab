@@ -50,5 +50,12 @@ module.exports = defineConfig({
       },
       dependencies: ['auth-setup'],
     },
+
+    // 4. Clerk auth lifecycle — sign-in, token, provisioning, sign-out
+    {
+      name: 'clerk-auth-flow',
+      testMatch: 'tests/e2e/clerk-auth-flow.spec.js',
+      use: { ...devices['Desktop Chrome'] },
+    },
   ],
 });

@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 from pydantic import BaseModel
 from typing import Optional, Dict, Any
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 from decimal import Decimal
 import uuid
 import logging
@@ -117,7 +117,7 @@ async def save_onboarding_step(
         user.onboarding_step = new_step
     update_fields['onboarding_step'] = new_step
     
-    user.updated_at = datetime.utcnow()
+    user.updated_at = datetime.now(timezone.utc)
     
     # CORRECT WRITE FLOW: add -> commit -> refresh
     session.add(user)
@@ -152,7 +152,7 @@ async def complete_onboarding(
         user.onboarding_completed = True
     if hasattr(user, 'onboarding_step'):
         user.onboarding_step = 8
-    user.updated_at = datetime.utcnow()
+    user.updated_at = datetime.now(timezone.utc)
     
     session.add(user)
     session.commit()
@@ -186,7 +186,7 @@ async def skip_onboarding(
         user.onboarding_completed = True
     if hasattr(user, 'onboarding_step'):
         user.onboarding_step = -1  # -1 indicates skipped
-    user.updated_at = datetime.utcnow()
+    user.updated_at = datetime.now(timezone.utc)
     
     session.add(user)
     session.commit()
@@ -220,7 +220,7 @@ async def reset_onboarding(
         user.onboarding_completed = False
     if hasattr(user, 'onboarding_step'):
         user.onboarding_step = 0
-    user.updated_at = datetime.utcnow()
+    user.updated_at = datetime.now(timezone.utc)
     
     session.add(user)
     session.commit()
@@ -276,8 +276,8 @@ async def load_demo_data(
                     "target_retirement_age": 55,
                     "withdrawal_rate": 4.0,
                 },
-                created_at=datetime.utcnow(),
-                updated_at=datetime.utcnow(),
+                created_at=datetime.now(timezone.utc),
+                updated_at=datetime.now(timezone.utc),
             )
             session.add(portfolio)
             session.commit()
@@ -341,8 +341,8 @@ async def load_demo_data(
                 "capital_growth_rate": 5.5,
                 "rental_growth_rate": 3.0,
             },
-            created_at=datetime.utcnow(),
-            updated_at=datetime.utcnow(),
+            created_at=datetime.now(timezone.utc),
+            updated_at=datetime.now(timezone.utc),
         )
         session.add(prop)
 
@@ -384,8 +384,8 @@ async def load_demo_data(
                 id=str(uuid.uuid4()),
                 user_id=current_user.id,
                 portfolio_id=portfolio.id,
-                created_at=datetime.utcnow(),
-                updated_at=datetime.utcnow(),
+                created_at=datetime.now(timezone.utc),
+                updated_at=datetime.now(timezone.utc),
                 **a,
             )
             session.add(asset)
@@ -422,8 +422,8 @@ async def load_demo_data(
                 id=str(uuid.uuid4()),
                 user_id=current_user.id,
                 portfolio_id=portfolio.id,
-                created_at=datetime.utcnow(),
-                updated_at=datetime.utcnow(),
+                created_at=datetime.now(timezone.utc),
+                updated_at=datetime.now(timezone.utc),
                 **l,
             )
             session.add(liability)
@@ -440,8 +440,8 @@ async def load_demo_data(
             frequency="Annual",
             growth_rate=Decimal("3.0"),
             start_date=date(2020, 1, 1),
-            created_at=datetime.utcnow(),
-            updated_at=datetime.utcnow(),
+            created_at=datetime.now(timezone.utc),
+            updated_at=datetime.now(timezone.utc),
         )
         session.add(income)
 
@@ -464,8 +464,8 @@ async def load_demo_data(
                 amount=amount,
                 frequency=frequency,
                 start_date=date(2024, 1, 1),
-                created_at=datetime.utcnow(),
-                updated_at=datetime.utcnow(),
+                created_at=datetime.now(timezone.utc),
+                updated_at=datetime.now(timezone.utc),
             )
             session.add(expense)
 
@@ -483,8 +483,8 @@ async def load_demo_data(
             target_withdrawal_rate=Decimal("4.0"),
             inflation_rate=Decimal("2.5"),
             is_baseline=True,
-            created_at=datetime.utcnow(),
-            updated_at=datetime.utcnow(),
+            created_at=datetime.now(timezone.utc),
+            updated_at=datetime.now(timezone.utc),
         )
         session.add(plan)
 
@@ -495,7 +495,7 @@ async def load_demo_data(
                 user.onboarding_completed = True
             if hasattr(user, "onboarding_step"):
                 user.onboarding_step = 8
-            user.updated_at = datetime.utcnow()
+            user.updated_at = datetime.now(timezone.utc)
             session.add(user)
 
         session.commit()
@@ -564,8 +564,8 @@ async def seed_sample_data(
                 "target_retirement_age": 55,
                 "withdrawal_rate": 4.0
             },
-            created_at=datetime.utcnow(),
-            updated_at=datetime.utcnow()
+            created_at=datetime.now(timezone.utc),
+            updated_at=datetime.now(timezone.utc)
         )
         session.add(portfolio)
         session.commit()
@@ -618,8 +618,8 @@ async def seed_sample_data(
                 "capital_growth_rate": 5.0,
                 "rental_growth_rate": 3.0
             },
-            created_at=datetime.utcnow(),
-            updated_at=datetime.utcnow()
+            created_at=datetime.now(timezone.utc),
+            updated_at=datetime.now(timezone.utc)
         )
         session.add(property1)
 
@@ -670,8 +670,8 @@ async def seed_sample_data(
                 "capital_growth_rate": 6.0,
                 "rental_growth_rate": 3.5
             },
-            created_at=datetime.utcnow(),
-            updated_at=datetime.utcnow()
+            created_at=datetime.now(timezone.utc),
+            updated_at=datetime.now(timezone.utc)
         )
         session.add(property2)
 
@@ -686,8 +686,8 @@ async def seed_sample_data(
             amount=Decimal("145000"),
             frequency="Annual",
             start_date=date(2020, 1, 1),
-            created_at=datetime.utcnow(),
-            updated_at=datetime.utcnow()
+            created_at=datetime.now(timezone.utc),
+            updated_at=datetime.now(timezone.utc)
         )
         session.add(income1)
 
@@ -702,8 +702,8 @@ async def seed_sample_data(
             amount=Decimal("95000"),
             frequency="Annual",
             start_date=date(2020, 1, 1),
-            created_at=datetime.utcnow(),
-            updated_at=datetime.utcnow()
+            created_at=datetime.now(timezone.utc),
+            updated_at=datetime.now(timezone.utc)
         )
         session.add(income2)
 
@@ -727,8 +727,8 @@ async def seed_sample_data(
                 frequency=exp_data["frequency"],
                 category=exp_data["category"],
                 start_date=date(2024, 1, 1),
-                created_at=datetime.utcnow(),
-                updated_at=datetime.utcnow()
+                created_at=datetime.now(timezone.utc),
+                updated_at=datetime.now(timezone.utc)
             )
             session.add(expense)
 
@@ -744,8 +744,8 @@ async def seed_sample_data(
             purchase_value=Decimal("95000"),
             purchase_date=date(2019, 5, 10),
             growth_rate=Decimal("7.5"),
-            created_at=datetime.utcnow(),
-            updated_at=datetime.utcnow()
+            created_at=datetime.now(timezone.utc),
+            updated_at=datetime.now(timezone.utc)
         )
         session.add(asset1)
 
@@ -761,8 +761,8 @@ async def seed_sample_data(
             purchase_value=Decimal("200000"),
             purchase_date=date(2015, 1, 1),
             growth_rate=Decimal("8.0"),
-            created_at=datetime.utcnow(),
-            updated_at=datetime.utcnow()
+            created_at=datetime.now(timezone.utc),
+            updated_at=datetime.now(timezone.utc)
         )
         session.add(asset2)
 
@@ -780,8 +780,8 @@ async def seed_sample_data(
             minimum_payment=Decimal("1100"),
             payment_frequency="Monthly",
             start_date=date(2023, 2, 1),
-            created_at=datetime.utcnow(),
-            updated_at=datetime.utcnow()
+            created_at=datetime.now(timezone.utc),
+            updated_at=datetime.now(timezone.utc)
         )
         session.add(liability1)
 
@@ -792,7 +792,7 @@ async def seed_sample_data(
                 user.onboarding_completed = True
             if hasattr(user, 'onboarding_step'):
                 user.onboarding_step = 8
-            user.updated_at = datetime.utcnow()
+            user.updated_at = datetime.now(timezone.utc)
             session.add(user)
 
         session.commit()

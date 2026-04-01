@@ -8,15 +8,12 @@ python-dotenv>=1.0.1
 sqlmodel>=0.0.14
 psycopg2-binary>=2.9.9
 alembic>=1.13.0
-# Database - MongoDB (for migration only)
-pymongo==4.5.0
 pydantic>=2.6.4
 email-validator>=2.2.0
 PyJWT[crypto]>=2.10.0
 bcrypt==4.1.3
 passlib>=1.7.4
 tzdata>=2024.2
-motor==3.3.1
 pytest>=8.0.0
 black>=24.1.1
 isort>=5.13.2

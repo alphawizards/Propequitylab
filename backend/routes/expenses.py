@@ -6,7 +6,7 @@ Expense Routes - SQL-Based with Authentication & Data Isolation
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 from typing import List
-from datetime import datetime
+from datetime import datetime, timezone
 from decimal import Decimal
 import logging
 import uuid
@@ -167,8 +167,8 @@ async def create_expense(
         end_date=data.end_date,
         retirement_percentage=data.retirement_percentage,
         is_tax_deductible=data.is_tax_deductible,
-        created_at=datetime.utcnow(),
-        updated_at=datetime.utcnow()
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc)
     )
     
     # CORRECT WRITE FLOW: add -> commit -> refresh
@@ -236,7 +236,7 @@ async def update_expense(
     for key, value in update_data.items():
         setattr(expense, key, value)
     
-    expense.updated_at = datetime.utcnow()
+    expense.updated_at = datetime.now(timezone.utc)
     
     # CORRECT WRITE FLOW: add -> commit -> refresh
     session.add(expense)

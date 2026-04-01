@@ -45,7 +45,6 @@ Ensure all the following secrets are correctly set for the `main` branch deploym
 | Secret Name | Purpose | Example / Note |
 | :--- | :--- | :--- |
 | `DATABASE_URL` | Neon.tech Connection String | Required for Backend |
-| `JWT_SECRET` | Auth Token Secret | Required for Backend |
 | `CORS_ORIGINS` | Allowed Domains | `https://propequitylab.com,https://propequitylab.pages.dev` |
 | `SENTRY_DSN` | Backend Error Tracking | From Sentry Backend Project |
 | `REACT_APP_SENTRY_DSN` | Frontend Error Tracking | From Sentry Frontend Project |

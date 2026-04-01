@@ -1,7 +1,7 @@
 """AccountMembership model — links users to accounts with roles."""
 
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Optional
 
@@ -27,8 +27,8 @@ class AccountMembership(SQLModel, table=True):
     user_id: str = Field(foreign_key="users.id", index=True, max_length=50)
     role: str = Field(default="owner", max_length=50)
     status: str = Field(default="active", max_length=50)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class AccountMembershipCreate(SQLModel):

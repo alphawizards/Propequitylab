@@ -6,7 +6,7 @@ Plan Routes - SQL-Based with Authentication & Data Isolation
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 from typing import List, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 from decimal import Decimal
 from pydantic import BaseModel
 import logging
@@ -141,8 +141,8 @@ async def create_plan(
         target_equity=data.target_equity,
         target_passive_income=data.target_passive_income,
         modifications=modifications_data,
-        created_at=datetime.utcnow(),
-        updated_at=datetime.utcnow()
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc)
     )
     
     # CORRECT WRITE FLOW: add -> commit -> refresh
@@ -219,7 +219,7 @@ async def update_plan(
     for key, value in update_data.items():
         setattr(plan, key, value)
     
-    plan.updated_at = datetime.utcnow()
+    plan.updated_at = datetime.now(timezone.utc)
     
     # CORRECT WRITE FLOW: add -> commit -> refresh
     session.add(plan)

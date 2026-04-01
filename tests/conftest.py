@@ -7,6 +7,7 @@ import pytest
 import sys
 import os
 from typing import Generator
+from datetime import datetime, timezone
 
 # Add project paths
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -69,8 +70,7 @@ def session_fixture(engine) -> Generator[Session, None, None]:
 def test_user_fixture(session: Session) -> User:
     """Create a test user in the database"""
     import uuid
-    from datetime import datetime
-    
+
     user = User(
         id=str(uuid.uuid4()),
         email="test@example.com",
@@ -81,8 +81,8 @@ def test_user_fixture(session: Session) -> User:
         onboarding_completed=True,
         onboarding_step=8,
         clerk_user_id="test_clerk_user_id",
-        created_at=datetime.utcnow(),
-        updated_at=datetime.utcnow(),
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc),
     )
     session.add(user)
     session.commit()
@@ -94,8 +94,7 @@ def test_user_fixture(session: Session) -> User:
 def test_portfolio_fixture(session: Session, test_user: User) -> Portfolio:
     """Create a test portfolio for the test user"""
     import uuid
-    from datetime import datetime
-    
+
     portfolio = Portfolio(
         id=str(uuid.uuid4()),
         user_id=test_user.id,
@@ -103,8 +102,8 @@ def test_portfolio_fixture(session: Session, test_user: User) -> Portfolio:
         type="personal",
         settings={},
         goal_settings={},
-        created_at=datetime.utcnow(),
-        updated_at=datetime.utcnow(),
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc),
     )
     session.add(portfolio)
     session.commit()
@@ -119,14 +118,13 @@ def test_account_fixture(session: Session, test_user: User) -> Account:
     linked to the test user. Returns the Account instance.
     """
     import uuid
-    from datetime import datetime
 
     account = Account(
         id=str(uuid.uuid4()),
         name="Test User's Account",
         owner_user_id=test_user.id,
-        created_at=datetime.utcnow(),
-        updated_at=datetime.utcnow(),
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc),
     )
     session.add(account)
     session.commit()
@@ -138,8 +136,8 @@ def test_account_fixture(session: Session, test_user: User) -> Account:
         user_id=test_user.id,
         role="owner",
         status="active",
-        created_at=datetime.utcnow(),
-        updated_at=datetime.utcnow(),
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc),
     )
     session.add(membership)
 
@@ -149,14 +147,85 @@ def test_account_fixture(session: Session, test_user: User) -> Account:
         provider="stripe",
         plan_key="free",
         status="active",
-        created_at=datetime.utcnow(),
-        updated_at=datetime.utcnow(),
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc),
     )
     session.add(subscription)
 
     session.commit()
     session.refresh(account)
     return account
+
+
+@pytest.fixture(name="other_user")
+def other_user_fixture(session: Session) -> User:
+    """Create a second user for IDOR isolation tests"""
+    import uuid
+
+    user = User(
+        id=str(uuid.uuid4()),
+        email="other@example.com",
+        name="Other User",
+        password_hash="$2b$12$other_hashed_password",
+        is_active=True,
+        is_verified=True,
+        onboarding_completed=True,
+        onboarding_step=8,
+        clerk_user_id="other_clerk_user_id",
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc),
+    )
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+    return user
+
+
+@pytest.fixture(name="other_portfolio")
+def other_portfolio_fixture(session: Session, other_user: User) -> Portfolio:
+    """Create a portfolio owned by other_user"""
+    import uuid
+
+    portfolio = Portfolio(
+        id=str(uuid.uuid4()),
+        user_id=other_user.id,
+        name="Other User's Portfolio",
+        type="personal",
+        settings={},
+        goal_settings={},
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc),
+    )
+    session.add(portfolio)
+    session.commit()
+    session.refresh(portfolio)
+    return portfolio
+
+
+@pytest.fixture(name="other_client")
+def other_client_fixture(
+    session: Session,
+    other_user: User,
+) -> Generator[TestClient, None, None]:
+    """
+    TestClient authenticated as other_user.
+    Use alongside client/test_user to write IDOR tests:
+      other_client tries to access test_user's resources → should get 404.
+    """
+    def get_session_override():
+        yield session
+
+    def get_current_user_override():
+        return other_user
+
+    app.dependency_overrides[get_session] = get_session_override
+    app.dependency_overrides[get_current_user] = get_current_user_override
+
+    client = TestClient(app)
+
+    yield client
+
+    app.dependency_overrides.clear()
 
 
 @pytest.fixture(name="auth_token")

@@ -4,7 +4,7 @@ Handles JWT tokens, password hashing, and user authentication
 """
 
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 import secrets
 import re
@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 # Configuration from environment variables
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
-if not JWT_SECRET_KEY:
+if not JWT_SECRET_KEY and not os.getenv("CLERK_JWKS_URL"):
     raise RuntimeError("JWT_SECRET_KEY environment variable is required")
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
@@ -121,9 +121,9 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
     to_encode = data.copy()
     
     if expires_delta:
-        expire = datetime.utcnow() + expires_delta
+        expire = datetime.now(timezone.utc) + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     
     to_encode.update({
         "exp": expire,
@@ -145,7 +145,7 @@ def create_refresh_token(data: dict) -> str:
         Encoded JWT refresh token string
     """
     to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
+    expire = datetime.now(timezone.utc) + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
     
     to_encode.update({
         "exp": expire,

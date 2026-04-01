@@ -8,7 +8,7 @@ Create, manage, and compare "what-if" scenario portfolios.
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select, func
 from typing import List, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 from decimal import Decimal
 import uuid
 import logging
@@ -442,7 +442,7 @@ async def update_scenario(
     if scenario_description is not None:
         scenario.scenario_description = scenario_description
     
-    scenario.updated_at = datetime.utcnow()
+    scenario.updated_at = datetime.now(timezone.utc)
     session.add(scenario)
     session.commit()
     session.refresh(scenario)

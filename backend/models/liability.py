@@ -8,7 +8,7 @@ import uuid
 from sqlmodel import SQLModel, Field, Column
 from sqlalchemy import DECIMAL
 from typing import Optional
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 from decimal import Decimal
 
 
@@ -56,8 +56,8 @@ class Liability(SQLModel, table=True):
     # Metadata
     notes: str = Field(default="", max_length=2000)
     is_active: bool = Field(default=True)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 # Pydantic models for API requests/responses
