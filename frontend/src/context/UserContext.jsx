@@ -30,7 +30,8 @@ export const UserProvider = ({ children }) => {
   // Fetch onboarding status when authenticated
   useEffect(() => {
     const fetchOnboardingStatus = async () => {
-      if (!isAuthenticated || authLoading) {
+      if (authLoading) return;
+      if (!isAuthenticated) {
         setLoading(false);
         return;
       }
