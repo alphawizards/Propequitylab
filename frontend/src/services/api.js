@@ -53,13 +53,20 @@ apiClient.interceptors.request.use(
 );
 
 // Response interceptor - Handle 401 (Clerk session expired)
+//
+// IMPORTANT: Do NOT hard-redirect to /login here.  A hard redirect causes an
+// infinite loop when Clerk is still hydrating: the onboarding-status fetch
+// fires before the Bearer token is ready, gets a 401, the interceptor pushes
+// the user to /login, Clerk immediately sees a signed-in session and redirects
+// back to /, RootRedirect fires another fetch, and the cycle repeats.
+//
+// Instead we just reject the promise so the caller's catch() block runs.  The
+// auth-aware React routing (RootRedirect / ProtectedRoute) will handle the
+// redirect to /login if Clerk truly has no active session.
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      // Clerk session expired — redirect to login
-      window.location.href = '/login';
-    }
+    // Let callers handle 401s themselves — do not force a page reload.
     return Promise.reject(error);
   }
 );
