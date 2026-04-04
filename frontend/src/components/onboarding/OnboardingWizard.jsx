@@ -76,19 +76,24 @@ const OnboardingWizard = () => {
   };
 
   const handleNext = async () => {
+    // Welcome step (0) collects no data — advance immediately without an API call
+    if (currentStep === 0) {
+      setCurrentStep(1);
+      return;
+    }
+
     setIsLoading(true);
     try {
-      // Save step data to backend
       await api.saveOnboardingStep(currentStep, { data: wizardData });
-      
-      if (currentStep < STEPS.length - 1) {
-        setCurrentStep(prev => prev + 1);
-      }
     } catch (error) {
       console.error('Failed to save step:', error);
-    } finally {
-      setIsLoading(false);
+      // Don't block the user — all data is persisted on final completion
     }
+
+    if (currentStep < STEPS.length - 1) {
+      setCurrentStep(prev => prev + 1);
+    }
+    setIsLoading(false);
   };
 
   const handleBack = () => {
@@ -226,6 +231,7 @@ const OnboardingWizard = () => {
           onComplete={handleComplete}
           isLoading={isLoading}
           portfolioId={currentPortfolio?.id}
+          goToStep={setCurrentStep}
         />
       </main>
     </div>

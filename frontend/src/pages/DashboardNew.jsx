@@ -227,8 +227,6 @@ const DashboardNew = () => {
           value={formatCurrency(data.total_assets)}
           icon={PiggyBank}
           variant="green"
-          trend="up"
-          trendValue="+5.2% this month"
         />
         <KPICard
           title="Total Liabilities"
@@ -381,7 +379,6 @@ const DashboardNew = () => {
           <BorrowingWidget
             data={{
               lvr: data.total_assets > 0 ? ((Number(data.liability_breakdown?.property_loans) || 0) / (Number(data.asset_breakdown?.properties) || 1)) * 100 : 0,
-              borrowing_capacity: 800000,
               used_capacity: Number(data.liability_breakdown?.property_loans) || 0,
             }}
           />

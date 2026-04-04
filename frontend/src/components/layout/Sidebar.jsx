@@ -17,9 +17,6 @@ import {
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { usePortfolio } from '../../context/PortfolioContext';
-import { Card, CardContent } from '../ui/card';
-import { Badge } from '../ui/badge';
-import { Progress } from '../ui/progress';
 
 const Sidebar = () => {
   const location = useLocation();
@@ -146,25 +143,6 @@ const Sidebar = () => {
           <NavItem key={item.href} item={item} />
         ))}
       </nav>
-
-      {/* Confidence Score Widget */}
-      <div className="px-4 pb-4">
-        <Card className="bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-[#111111]">Confidence Score</span>
-              <Badge className="bg-emerald-500 text-white hover:bg-emerald-600">HIGH</Badge>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="flex-1">
-                <Progress value={84} className="h-2" />
-              </div>
-              <span className="text-2xl font-semibold tabular-nums text-emerald-600">84%</span>
-            </div>
-            <p className="text-xs text-[#6B7280] mt-2">Based on data quality</p>
-          </CardContent>
-        </Card>
-      </div>
 
       {/* View Projections Button */}
       <div className="px-4 pb-4">

@@ -43,22 +43,11 @@ const BorrowingWidget = ({ data }) => {
           {/* Capacity Section */}
           <div className="pt-3 border-t border-gray-200">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-muted-foreground">Capacity Used</span>
-              <span className="text-sm font-semibold text-foreground">{capacityPercent.toFixed(0)}%</span>
+              <span className="text-sm text-muted-foreground">Borrowing Capacity</span>
             </div>
-            <Progress
-              value={Math.min(capacityPercent, 100)}
-              className="h-2"
-              indicatorClassName="bg-blue-500"
-            />
-            <div className="flex justify-between mt-2">
-              <span className="text-xs text-muted-foreground">
-                Used: ${(usedCapacity / 1000).toFixed(0)}K
-              </span>
-              <span className="text-xs text-muted-foreground">
-                Total: ${(borrowingCapacity / 1000).toFixed(0)}K
-              </span>
-            </div>
+            <p className="text-xs text-muted-foreground">
+              Add properties and income to calculate your available borrowing capacity.
+            </p>
           </div>
         </div>
       </CardContent>

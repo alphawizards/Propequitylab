@@ -21,6 +21,7 @@ const EXPENSE_CATEGORIES = [
 ];
 
 const SpendingStep = ({ data, updateData, onNext, isLoading }) => {
+  const [addError, setAddError] = useState('');
   const [newExpense, setNewExpense] = useState({
     name: '',
     category: 'housing',
@@ -30,21 +31,16 @@ const SpendingStep = ({ data, updateData, onNext, isLoading }) => {
   });
 
   const addExpense = () => {
-    if (newExpense.name && newExpense.amount) {
-      updateData({
-        expenses: [
-          ...data.expenses,
-          { ...newExpense, id: Date.now(), amount: parseFloat(newExpense.amount) },
-        ],
-      });
-      setNewExpense({
-        name: '',
-        category: 'housing',
-        amount: '',
-        frequency: 'monthly',
-        retirement_percentage: 100,
-      });
-    }
+    if (!newExpense.name.trim()) { setAddError('Name is required'); return; }
+    if (!newExpense.amount || parseFloat(newExpense.amount) <= 0) { setAddError('Amount must be greater than 0'); return; }
+    setAddError('');
+    updateData({
+      expenses: [
+        ...data.expenses,
+        { ...newExpense, id: Date.now(), amount: parseFloat(newExpense.amount) },
+      ],
+    });
+    setNewExpense({ name: '', category: 'housing', amount: '', frequency: 'monthly', retirement_percentage: 100 });
   };
 
   const removeExpense = (id) => {
@@ -239,6 +235,7 @@ const SpendingStep = ({ data, updateData, onNext, isLoading }) => {
             </div>
           </div>
           
+          {addError && <p className="text-xs text-red-600">{addError}</p>}
           <Button
             onClick={addExpense}
             variant="outline"

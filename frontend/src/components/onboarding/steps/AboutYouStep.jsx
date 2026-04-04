@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '../../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
 import { Input } from '../../ui/input';
@@ -19,8 +19,35 @@ const AUSTRALIAN_STATES = [
 ];
 
 const AboutYouStep = ({ data, updateData, onNext, isLoading }) => {
+  const [errors, setErrors] = useState({});
+
+  const validate = () => {
+    const newErrors = {};
+    if (!data.name?.trim()) newErrors.name = 'Name is required';
+    if (!data.date_of_birth) {
+      newErrors.date_of_birth = 'Date of birth is required';
+    } else if (new Date(data.date_of_birth) >= new Date()) {
+      newErrors.date_of_birth = 'Date of birth must be in the past';
+    }
+    if (data.planning_type === 'couple') {
+      if (!data.partner_name?.trim()) newErrors.partner_name = 'Partner name is required';
+      if (!data.partner_dob) {
+        newErrors.partner_dob = 'Partner date of birth is required';
+      } else if (new Date(data.partner_dob) >= new Date()) {
+        newErrors.partner_dob = 'Partner date of birth must be in the past';
+      }
+    }
+    return newErrors;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    const newErrors = validate();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+    setErrors({});
     onNext();
   };
 
@@ -102,8 +129,10 @@ const AboutYouStep = ({ data, updateData, onNext, isLoading }) => {
                   value={data.name}
                   onChange={(e) => updateData({ name: e.target.value })}
                   placeholder="Enter your name"
-                  className="mt-1"
+                  className={`mt-1 ${errors.name ? 'border-red-500' : ''}`}
+                  required
                 />
+                {errors.name && <p className="text-xs text-red-600 mt-1">{errors.name}</p>}
               </div>
               <div>
                 <Label htmlFor="dob">Date of Birth</Label>
@@ -112,8 +141,10 @@ const AboutYouStep = ({ data, updateData, onNext, isLoading }) => {
                   type="date"
                   value={data.date_of_birth}
                   onChange={(e) => updateData({ date_of_birth: e.target.value })}
-                  className="mt-1"
+                  className={`mt-1 ${errors.date_of_birth ? 'border-red-500' : ''}`}
+                  required
                 />
+                {errors.date_of_birth && <p className="text-xs text-red-600 mt-1">{errors.date_of_birth}</p>}
               </div>
             </div>
             
@@ -126,8 +157,10 @@ const AboutYouStep = ({ data, updateData, onNext, isLoading }) => {
                     value={data.partner_name}
                     onChange={(e) => updateData({ partner_name: e.target.value })}
                     placeholder="Enter partner's name"
-                    className="mt-1"
+                    className={`mt-1 ${errors.partner_name ? 'border-red-500' : ''}`}
+                    required
                   />
+                  {errors.partner_name && <p className="text-xs text-red-600 mt-1">{errors.partner_name}</p>}
                 </div>
                 <div>
                   <Label htmlFor="partner_dob">Partner's Date of Birth</Label>
@@ -136,8 +169,10 @@ const AboutYouStep = ({ data, updateData, onNext, isLoading }) => {
                     type="date"
                     value={data.partner_dob}
                     onChange={(e) => updateData({ partner_dob: e.target.value })}
-                    className="mt-1"
+                    className={`mt-1 ${errors.partner_dob ? 'border-red-500' : ''}`}
+                    required
                   />
+                  {errors.partner_dob && <p className="text-xs text-red-600 mt-1">{errors.partner_dob}</p>}
                 </div>
               </div>
             )}

@@ -16,6 +16,7 @@ const INCOME_TYPES = [
 ];
 
 const IncomeStep = ({ data, updateData, onNext, isLoading }) => {
+  const [addError, setAddError] = useState('');
   const [newIncome, setNewIncome] = useState({
     name: '',
     type: 'salary',
@@ -26,22 +27,16 @@ const IncomeStep = ({ data, updateData, onNext, isLoading }) => {
   });
 
   const addIncome = () => {
-    if (newIncome.name && newIncome.amount) {
-      updateData({
-        income_sources: [
-          ...data.income_sources,
-          { ...newIncome, id: Date.now(), amount: parseFloat(newIncome.amount) },
-        ],
-      });
-      setNewIncome({
-        name: '',
-        type: 'salary',
-        amount: '',
-        frequency: 'annual',
-        growth_rate: 3,
-        owner: 'you',
-      });
-    }
+    if (!newIncome.name.trim()) { setAddError('Name is required'); return; }
+    if (!newIncome.amount || parseFloat(newIncome.amount) <= 0) { setAddError('Amount must be greater than 0'); return; }
+    setAddError('');
+    updateData({
+      income_sources: [
+        ...data.income_sources,
+        { ...newIncome, id: Date.now(), amount: parseFloat(newIncome.amount) },
+      ],
+    });
+    setNewIncome({ name: '', type: 'salary', amount: '', frequency: 'annual', growth_rate: 3, owner: 'you' });
   };
 
   const removeIncome = (id) => {
@@ -202,6 +197,7 @@ const IncomeStep = ({ data, updateData, onNext, isLoading }) => {
             </div>
           </div>
           
+          {addError && <p className="text-xs text-red-600">{addError}</p>}
           <Button
             onClick={addIncome}
             variant="outline"

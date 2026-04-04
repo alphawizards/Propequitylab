@@ -18,6 +18,7 @@ const ASSET_TYPES = [
 ];
 
 const AssetsStep = ({ data, updateData, onNext, isLoading }) => {
+  const [addError, setAddError] = useState('');
   const [newAsset, setNewAsset] = useState({
     name: '',
     type: 'super',
@@ -28,30 +29,24 @@ const AssetsStep = ({ data, updateData, onNext, isLoading }) => {
   });
 
   const addAsset = () => {
-    if (newAsset.name && newAsset.current_value) {
-      updateData({
-        other_assets: [
-          ...data.other_assets,
-          {
-            ...newAsset,
-            id: Date.now(),
-            current_value: parseFloat(newAsset.current_value),
-            contributions: {
-              amount: parseFloat(newAsset.contribution_amount) || 0,
-              frequency: newAsset.contribution_frequency,
-            },
+    if (!newAsset.name.trim()) { setAddError('Name is required'); return; }
+    if (!newAsset.current_value || parseFloat(newAsset.current_value) <= 0) { setAddError('Current value must be greater than 0'); return; }
+    setAddError('');
+    updateData({
+      other_assets: [
+        ...data.other_assets,
+        {
+          ...newAsset,
+          id: Date.now(),
+          current_value: parseFloat(newAsset.current_value),
+          contributions: {
+            amount: parseFloat(newAsset.contribution_amount) || 0,
+            frequency: newAsset.contribution_frequency,
           },
-        ],
-      });
-      setNewAsset({
-        name: '',
-        type: 'super',
-        current_value: '',
-        expected_return: 7,
-        contribution_amount: '',
-        contribution_frequency: 'monthly',
-      });
-    }
+        },
+      ],
+    });
+    setNewAsset({ name: '', type: 'super', current_value: '', expected_return: 7, contribution_amount: '', contribution_frequency: 'monthly' });
   };
 
   const removeAsset = (id) => {
@@ -230,6 +225,7 @@ const AssetsStep = ({ data, updateData, onNext, isLoading }) => {
             </div>
           </div>
           
+          {addError && <p className="text-xs text-red-600">{addError}</p>}
           <Button
             onClick={addAsset}
             variant="outline"

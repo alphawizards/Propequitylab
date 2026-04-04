@@ -4,21 +4,24 @@ import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
 import { Input } from '../../ui/input';
 import { Label } from '../../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/select';
-import { Plus, Trash2, CreditCard, Car, GraduationCap, Wallet, AlertCircle } from 'lucide-react';
+import { Plus, Trash2, CreditCard, Car, GraduationCap, Wallet, AlertCircle, Home, TrendingUp } from 'lucide-react';
 
 const LIABILITY_TYPES = [
+  { value: 'mortgage', label: 'Mortgage (PPOR)', icon: Home },
   { value: 'car_loan', label: 'Car Loan', icon: Car },
   { value: 'credit_card', label: 'Credit Card', icon: CreditCard },
   { value: 'hecs', label: 'HECS/HELP', icon: GraduationCap },
   { value: 'personal_loan', label: 'Personal Loan', icon: Wallet },
+  { value: 'margin_loan', label: 'Margin Loan', icon: TrendingUp },
   { value: 'buy_now_pay_later', label: 'Buy Now Pay Later', icon: CreditCard },
   { value: 'other', label: 'Other Debt', icon: AlertCircle },
 ];
 
 const LiabilitiesStep = ({ data, updateData, onNext, isLoading }) => {
+  const [addError, setAddError] = useState('');
   const [newLiability, setNewLiability] = useState({
     name: '',
-    type: 'credit_card',
+    type: 'mortgage',
     original_amount: '',
     current_balance: '',
     interest_rate: '',
@@ -27,30 +30,23 @@ const LiabilitiesStep = ({ data, updateData, onNext, isLoading }) => {
   });
 
   const addLiability = () => {
-    if (newLiability.name && newLiability.current_balance) {
-      updateData({
-        liabilities: [
-          ...data.liabilities,
-          {
-            ...newLiability,
-            id: Date.now(),
-            original_amount: parseFloat(newLiability.original_amount) || parseFloat(newLiability.current_balance),
-            current_balance: parseFloat(newLiability.current_balance),
-            interest_rate: parseFloat(newLiability.interest_rate) || 0,
-            minimum_payment: parseFloat(newLiability.minimum_payment) || 0,
-          },
-        ],
-      });
-      setNewLiability({
-        name: '',
-        type: 'credit_card',
-        original_amount: '',
-        current_balance: '',
-        interest_rate: '',
-        minimum_payment: '',
-        payment_frequency: 'monthly',
-      });
-    }
+    if (!newLiability.name.trim()) { setAddError('Name is required'); return; }
+    if (!newLiability.current_balance || parseFloat(newLiability.current_balance) <= 0) { setAddError('Current balance must be greater than 0'); return; }
+    setAddError('');
+    updateData({
+      liabilities: [
+        ...data.liabilities,
+        {
+          ...newLiability,
+          id: Date.now(),
+          original_amount: parseFloat(newLiability.original_amount) || parseFloat(newLiability.current_balance),
+          current_balance: parseFloat(newLiability.current_balance),
+          interest_rate: parseFloat(newLiability.interest_rate) || 0,
+          minimum_payment: parseFloat(newLiability.minimum_payment) || 0,
+        },
+      ],
+    });
+    setNewLiability({ name: '', type: 'mortgage', original_amount: '', current_balance: '', interest_rate: '', minimum_payment: '', payment_frequency: 'monthly' });
   };
 
   const removeLiability = (id) => {
@@ -65,7 +61,7 @@ const LiabilitiesStep = ({ data, updateData, onNext, isLoading }) => {
     <div className="max-w-2xl mx-auto">
       <div className="text-center mb-8">
         <h1 className="text-3xl font-semibold text-[#111111] mb-2">Your Liabilities</h1>
-        <p className="text-[#6B7280]">Add any debts (excluding property loans) to get a complete picture.</p>
+        <p className="text-[#6B7280]">Add your personal debts. Investment property loans will be linked when you add properties.</p>
       </div>
       
       {/* Liabilities Summary */}
@@ -89,8 +85,7 @@ const LiabilitiesStep = ({ data, updateData, onNext, isLoading }) => {
       <Card className="mb-6 border-blue-200 bg-blue-50">
         <CardContent className="p-4">
           <p className="text-sm text-gray-700">
-            <strong>Note:</strong> Property loans are linked to properties and will be added 
-            when you add properties from the dashboard.
+            <strong>Note:</strong> Investment property loans are linked to each property and will be captured when you add properties from the dashboard.
           </p>
         </CardContent>
       </Card>
@@ -239,6 +234,7 @@ const LiabilitiesStep = ({ data, updateData, onNext, isLoading }) => {
             </div>
           </div>
           
+          {addError && <p className="text-xs text-red-600">{addError}</p>}
           <Button
             onClick={addLiability}
             variant="outline"
