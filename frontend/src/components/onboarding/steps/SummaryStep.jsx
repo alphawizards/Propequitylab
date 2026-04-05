@@ -196,7 +196,7 @@ const SummaryStep = ({ data, onComplete, isLoading, goToStep }) => {
           className="bg-emerald-600 text-white hover:bg-emerald-700 px-12 py-6 text-lg"
           disabled={isLoading}
         >
-          {isLoading ? 'Setting up...' : 'Go to Dashboard'}
+          {isLoading ? 'Completing...' : 'Complete Setup'}
         </Button>
       </div>
     </div>

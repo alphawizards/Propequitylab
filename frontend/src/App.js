@@ -28,6 +28,7 @@ import SpendingPage from './pages/SpendingPage';
 import Settings from './pages/Settings';
 import OnboardingWizard from './components/onboarding/OnboardingWizard';
 import { MortgageCalculatorPage } from './pages/calculators/MortgageCalculatorPage';
+import LandingPage from './pages/LandingPage';
 import ProjectionsPage from './pages/ProjectionsPage';
 import ScenarioDashboardPage from './pages/ScenarioDashboardPage';
 import { Toaster } from './components/ui/toaster';
@@ -94,9 +95,9 @@ const RootRedirect = () => {
     );
   }
 
-  // Redirect to login if not authenticated
+  // Show landing page for unauthenticated users
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <LandingPage />;
   }
 
   // Redirect to onboarding if not completed

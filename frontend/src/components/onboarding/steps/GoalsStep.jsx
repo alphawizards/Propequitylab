@@ -87,7 +87,7 @@ const GoalsStep = ({ data, updateData, onNext, isLoading }) => {
             
             {/* Quick presets */}
             <div className="flex flex-wrap gap-2">
-              {[1000000, 2000000, 5000000, 10000000].map((amount) => (
+              {[1000000, 2000000, 4000000, 5000000, 10000000].map((amount) => (
                 <Button
                   key={amount}
                   variant="outline"

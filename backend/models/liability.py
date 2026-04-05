@@ -28,7 +28,7 @@ class Liability(SQLModel, table=True):
     
     # Basic Info
     name: str = Field(max_length=255)
-    type: str = Field(max_length=50)  # car_loan, credit_card, hecs, personal_loan, margin_loan, other
+    type: str = Field(max_length=50)  # mortgage, investment_loan, car_loan, credit_card, hecs, personal_loan, margin_loan, buy_now_pay_later, other
     owner: str = Field(default="you", max_length=50)  # you, partner, joint
     lender: str = Field(default="", max_length=255)
     
@@ -124,6 +124,8 @@ class LiabilityResponse(SQLModel):
 
 # Liability types for reference
 LIABILITY_TYPES = [
+    "mortgage",
+    "investment_loan",
     "car_loan",
     "credit_card",
     "hecs",           # HECS-HELP student loan

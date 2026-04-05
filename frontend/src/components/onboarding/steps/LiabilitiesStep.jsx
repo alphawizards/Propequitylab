@@ -4,10 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
 import { Input } from '../../ui/input';
 import { Label } from '../../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/select';
-import { Plus, Trash2, CreditCard, Car, GraduationCap, Wallet, AlertCircle, Home, TrendingUp } from 'lucide-react';
+import { Plus, Trash2, CreditCard, Car, GraduationCap, Wallet, AlertCircle, Home, TrendingUp, Building } from 'lucide-react';
 
 const LIABILITY_TYPES = [
   { value: 'mortgage', label: 'Mortgage (PPOR)', icon: Home },
+  { value: 'investment_loan', label: 'Investment Property Loan', icon: Building },
   { value: 'car_loan', label: 'Car Loan', icon: Car },
   { value: 'credit_card', label: 'Credit Card', icon: CreditCard },
   { value: 'hecs', label: 'HECS/HELP', icon: GraduationCap },
