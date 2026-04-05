@@ -13,6 +13,16 @@ import BorrowingWidget from '../components/dashboard/BorrowingWidget';
 import { formatCurrency } from '../utils/formatCurrency';
 import { useToast } from '../hooks/use-toast';
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '../components/ui/alert-dialog';
+import {
   Home,
   TrendingUp,
   TrendingDown,
@@ -68,6 +78,7 @@ const DashboardNew = () => {
   const [historyLoading, setHistoryLoading] = useState(true);
   const [snapshotLoading, setSnapshotLoading] = useState(false);
   const [demoLoading, setDemoLoading] = useState(false);
+  const [showDemoConfirm, setShowDemoConfirm] = useState(false);
   const [dataVersion, setDataVersion] = useState(0);
   const [createLoading, setCreateLoading] = useState(false);
 
@@ -116,13 +127,15 @@ const DashboardNew = () => {
     }
   };
 
-  const handleLoadDemo = async () => {
+  const handleLoadDemo = () => setShowDemoConfirm(true);
+
+  const executeDemoLoad = async () => {
+    setShowDemoConfirm(false);
     setDemoLoading(true);
     try {
       await api.loadDemoData();
       await fetchPortfolios();
       toast({ title: 'Demo data loaded!', description: 'Your portfolio has been populated with sample data.' });
-      // Reload dashboard data
       setLoading(true);
       setHistoryLoading(true);
     } catch (error) {
@@ -427,6 +440,29 @@ const DashboardNew = () => {
           ))}
         </div>
       </div>
+
+      {/* Confirmation dialog for destructive demo data load */}
+      <AlertDialog open={showDemoConfirm} onOpenChange={setShowDemoConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Replace existing data?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Loading demo data will <strong>permanently delete</strong> all your current properties,
+              assets, liabilities, income, expenses, and plans, then replace them with sample data.
+              This cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={executeDemoLoad}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              Yes, replace with demo data
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Demo Data — subtle card at the bottom */}
       <div className="rounded-xl border border-dashed border-[#EAEAEA] bg-slate-50/50 p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
