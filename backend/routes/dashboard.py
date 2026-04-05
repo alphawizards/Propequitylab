@@ -152,11 +152,18 @@ async def get_dashboard_summary(
     total_liabilities = property_loans + float(sum((l.current_balance or Decimal(0)) for l in liabilities))
     net_worth = total_assets - total_liabilities
     
-    # Calculate monthly income/expenses
+    # Calculate monthly income/expenses — must match all frequency variants stored in DB
     def to_monthly(amount, frequency):
         if amount is None:
             return 0
-        multipliers = {'weekly': 4.33, 'fortnightly': 2.17, 'monthly': 1, 'annual': 1/12}
+        multipliers = {
+            'weekly': 52 / 12, 'Weekly': 52 / 12,
+            'fortnightly': 26 / 12, 'Fortnightly': 26 / 12,
+            'monthly': 1, 'Monthly': 1,
+            'quarterly': 1 / 3, 'Quarterly': 1 / 3,
+            'annual': 1 / 12, 'annually': 1 / 12, 'Annually': 1 / 12,
+            'one_time': 0, 'OneTime': 0,
+        }
         return float(amount) * multipliers.get(frequency, 1)
     
     monthly_income = sum(to_monthly(i.amount, i.frequency) for i in income_sources)

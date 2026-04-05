@@ -18,16 +18,16 @@ export const PortfolioProvider = ({ children }) => {
       const data = await api.getPortfolios();
       setPortfolios(data);
 
-      // Set first portfolio as current if none selected
-      if (data.length > 0 && !currentPortfolio) {
-        setCurrentPortfolio(data[0]);
+      // Use functional form so we never close over stale currentPortfolio
+      if (data.length > 0) {
+        setCurrentPortfolio(prev => prev ?? data[0]);
       }
     } catch (error) {
       console.error('Failed to fetch portfolios:', error);
     } finally {
       setPortfoliosLoading(false);
     }
-  }, [currentPortfolio]);
+  }, []);
 
   // Only fetch once auth is resolved and user is signed in
   useEffect(() => {

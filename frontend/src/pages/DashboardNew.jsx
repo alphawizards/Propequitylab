@@ -80,15 +80,18 @@ const DashboardNew = () => {
   const [demoLoading, setDemoLoading] = useState(false);
   const [showDemoConfirm, setShowDemoConfirm] = useState(false);
   const [dataVersion, setDataVersion] = useState(0);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [createLoading, setCreateLoading] = useState(false);
 
   const fetchDashboardData = async () => {
+    setLoading(true);
     try {
       const data = await api.getDashboardSummary(currentPortfolio?.id);
       setDashboardData(data);
       setDataVersion(v => v + 1);
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
+      toast({ title: 'Failed to load dashboard', description: 'Please try refreshing.', variant: 'destructive' });
     } finally {
       setLoading(false);
     }
@@ -136,8 +139,8 @@ const DashboardNew = () => {
       await api.loadDemoData();
       await fetchPortfolios();
       toast({ title: 'Demo data loaded!', description: 'Your portfolio has been populated with sample data.' });
-      setLoading(true);
-      setHistoryLoading(true);
+      // Increment trigger so the useEffect re-fires even if currentPortfolio?.id is unchanged
+      setRefreshTrigger(v => v + 1);
     } catch (error) {
       toast({
         title: 'Error',
@@ -171,7 +174,7 @@ const DashboardNew = () => {
       setLoading(false);
       setHistoryLoading(false);
     }
-  }, [currentPortfolio?.id]);
+  }, [currentPortfolio?.id, refreshTrigger]);
 
   // Show create portfolio prompt if no portfolio exists
   if (!currentPortfolio && !loading) {
