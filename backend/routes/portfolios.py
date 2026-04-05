@@ -7,7 +7,7 @@ import uuid
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select, func
 from typing import List
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from decimal import Decimal
 import logging
 
@@ -221,7 +221,6 @@ def _compute_goal_year(goal_settings: Optional[dict], date_of_birth: Optional[st
     if target_age is None:
         return None
     try:
-        from datetime import date
         birth_year = int(date_of_birth[:4])
         current_year = date.today().year
         current_age = current_year - birth_year
