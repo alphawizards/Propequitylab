@@ -21,6 +21,7 @@ from models.liability import Liability
 from models.plan import Plan
 from utils.database_sql import get_session
 from utils.clerk_auth import get_current_user
+from utils.calculations import annualize_amount
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/portfolios", tags=["portfolios"])
@@ -261,43 +262,62 @@ async def get_portfolio_summary(
     liabilities = session.exec(liabilities_stmt).all()
     total_liabilities = sum(liability.current_balance or Decimal(0) for liability in liabilities)
 
-    # Calculate totals for income
+    # Annualise income sources
     income_stmt = select(IncomeSource).where(
         IncomeSource.portfolio_id == portfolio_id,
         IncomeSource.user_id == current_user.id
     )
     incomes = session.exec(income_stmt).all()
-    total_income = sum(income.amount or Decimal(0) for income in incomes)
+    total_income = sum(
+        annualize_amount(income.amount or Decimal(0), income.frequency or "monthly")
+        for income in incomes
+    )
 
-    # Calculate totals for expenses
+    # Annualise expenses
     expense_stmt = select(Expense).where(
         Expense.portfolio_id == portfolio_id,
         Expense.user_id == current_user.id
     )
     expenses = session.exec(expense_stmt).all()
-    total_expenses = sum(expense.amount or Decimal(0) for expense in expenses)
-    
+    total_expenses = sum(
+        annualize_amount(expense.amount or Decimal(0), expense.frequency or "monthly")
+        for expense in expenses
+    )
+
+    # Annualise rental income (treat rental_details["income"] as monthly by default)
+    total_rental_income = sum(
+        annualize_amount(
+            Decimal(str(prop.rental_details.get("income", 0))) if prop.rental_details else Decimal(0),
+            prop.rental_details.get("frequency", "monthly") if prop.rental_details else "monthly"
+        )
+        for prop in properties
+    )
+
+    # Calculate property debt (total loan amounts)
+    total_property_debt = sum(
+        Decimal(str(prop.loan_details.get("amount", 0))) if prop.loan_details else Decimal(0)
+        for prop in properties
+    )
+
     # Calculate net worth
-    net_worth = total_property_value + total_assets - total_liabilities
-    
-    # Calculate cashflow
-    monthly_cashflow = total_rental_income + total_income - total_expenses
-    
+    net_worth = total_property_value + total_assets - total_liabilities - total_property_debt
+
+    # Calculate annual cashflow (rental income + other income - expenses)
+    annual_cashflow = total_rental_income + total_income - total_expenses
+
     summary = PortfolioSummary(
         portfolio_id=portfolio_id,
-        portfolio_name=portfolio.name,
-        total_property_value=total_property_value,
-        total_property_equity=total_property_equity,
-        total_rental_income=total_rental_income,
+        properties_count=len(properties),
+        total_value=total_property_value,
+        total_debt=total_property_debt,
+        total_equity=total_property_equity,
         total_assets=total_assets,
         total_liabilities=total_liabilities,
-        total_income=total_income,
-        total_expenses=total_expenses,
         net_worth=net_worth,
-        monthly_cashflow=monthly_cashflow,
-        property_count=len(properties),
-        asset_count=len(assets),
-        liability_count=len(liabilities)
+        annual_income=total_rental_income + total_income,
+        annual_expenses=total_expenses,
+        annual_cashflow=annual_cashflow,
+        goal_year=portfolio.goal_settings.get("target_year") if portfolio.goal_settings else None,
     )
     
     return summary
