@@ -240,10 +240,7 @@ async def get_portfolio_summary(
     properties = session.exec(properties_stmt).all()
 
     total_property_value = sum(prop.current_value or Decimal(0) for prop in properties)
-    total_property_equity = sum(
-        (prop.current_value or Decimal(0)) - (Decimal(str(prop.loan_details.get("amount", 0))) if prop.loan_details else Decimal(0))
-        for prop in properties
-    )
+
     # Calculate totals for assets
     assets_stmt = select(Asset).where(
         Asset.portfolio_id == portfolio_id,
