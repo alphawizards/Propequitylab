@@ -69,6 +69,7 @@ const DashboardNew = () => {
   const [snapshotLoading, setSnapshotLoading] = useState(false);
   const [demoLoading, setDemoLoading] = useState(false);
   const [dataVersion, setDataVersion] = useState(0);
+  const [createLoading, setCreateLoading] = useState(false);
 
   const fetchDashboardData = async () => {
     try {
@@ -172,11 +173,30 @@ const DashboardNew = () => {
             Create your first portfolio to start tracking property investments and financial goals.
           </p>
           <Button
-            onClick={() => createPortfolio('My Portfolio', 'actual')}
+            onClick={async () => {
+              setCreateLoading(true);
+              try {
+                await createPortfolio('My Portfolio', 'actual');
+                toast({ title: 'Portfolio created', description: 'Your portfolio is ready to go.' });
+              } catch (error) {
+                toast({
+                  title: 'Failed to create portfolio',
+                  description: error.response?.data?.detail || 'Something went wrong. Please try again.',
+                  variant: 'destructive',
+                });
+              } finally {
+                setCreateLoading(false);
+              }
+            }}
+            disabled={createLoading}
             className="bg-emerald-600 text-white hover:bg-emerald-700 transition-all duration-300 active:scale-[0.98]"
           >
-            <Plus className="w-4 h-4 mr-2" />
-            Create Portfolio
+            {createLoading ? (
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            ) : (
+              <Plus className="w-4 h-4 mr-2" />
+            )}
+            {createLoading ? 'Creating...' : 'Create Portfolio'}
           </Button>
         </div>
       </div>
