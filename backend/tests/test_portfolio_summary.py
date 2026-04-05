@@ -252,8 +252,8 @@ class TestPortfolioSummaryValues:
     def test_annual_income_combines_rental_and_other(self, engine, user_a):
         pid = _full_portfolio(engine, user_a)
         r = _call_summary(engine, user_a, pid)
-        # IncomeSource: 5000/month × 12 = 60,000; rental: 2000/month × 12 = 24,000
-        assert r.annual_income == Decimal("84000")
+        # rental: 2000/week × 52 = 104,000; IncomeSource: 5000/month × 12 = 60,000
+        assert r.annual_income == Decimal("164000")
 
     def test_annual_expenses(self, engine, user_a):
         pid = _full_portfolio(engine, user_a)
@@ -264,8 +264,8 @@ class TestPortfolioSummaryValues:
     def test_annual_cashflow_equals_income_minus_expenses(self, engine, user_a):
         pid = _full_portfolio(engine, user_a)
         r = _call_summary(engine, user_a, pid)
-        # 84,000 - 12,000 = 72,000
-        assert r.annual_cashflow == Decimal("72000")
+        # 164,000 - 12,000 = 152,000
+        assert r.annual_cashflow == Decimal("152000")
 
     def test_properties_count(self, engine, user_a):
         pid = _full_portfolio(engine, user_a)

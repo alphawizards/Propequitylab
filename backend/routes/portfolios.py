@@ -244,8 +244,6 @@ async def get_portfolio_summary(
         (prop.current_value or Decimal(0)) - (Decimal(str(prop.loan_details.get("amount", 0))) if prop.loan_details else Decimal(0))
         for prop in properties
     )
-    total_rental_income = sum(Decimal(str(prop.rental_details.get("income", 0))) if prop.rental_details else Decimal(0) for prop in properties)
-
     # Calculate totals for assets
     assets_stmt = select(Asset).where(
         Asset.portfolio_id == portfolio_id,
@@ -284,11 +282,11 @@ async def get_portfolio_summary(
         for expense in expenses
     )
 
-    # Annualise rental income (treat rental_details["income"] as monthly by default)
+    # Annualise rental income (treat rental_details["income"] as weekly by default (RentalDetails model default))
     total_rental_income = sum(
         annualize_amount(
             Decimal(str(prop.rental_details.get("income", 0))) if prop.rental_details else Decimal(0),
-            prop.rental_details.get("frequency", "monthly") if prop.rental_details else "monthly"
+            prop.rental_details.get("frequency", "weekly") if prop.rental_details else "weekly"
         )
         for prop in properties
     )
