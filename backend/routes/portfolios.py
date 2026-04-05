@@ -297,18 +297,24 @@ async def get_portfolio_summary(
         for prop in properties
     )
 
-    # Calculate net worth
-    net_worth = total_property_value + total_assets - total_liabilities - total_property_debt
+    # Total portfolio value = properties + other assets
+    total_value = total_property_value + total_assets
 
-    # Calculate annual cashflow (rental income + other income - expenses)
+    # Total equity = total portfolio value minus property debt
+    total_equity = total_value - total_property_debt
+
+    # Net worth = total equity minus non-property liabilities
+    net_worth = total_equity - total_liabilities
+
+    # Annual cashflow
     annual_cashflow = total_rental_income + total_income - total_expenses
 
     summary = PortfolioSummary(
         portfolio_id=portfolio_id,
         properties_count=len(properties),
-        total_value=total_property_value,
+        total_value=total_value,
         total_debt=total_property_debt,
-        total_equity=total_property_equity,
+        total_equity=total_equity,
         total_assets=total_assets,
         total_liabilities=total_liabilities,
         net_worth=net_worth,
@@ -317,5 +323,5 @@ async def get_portfolio_summary(
         annual_cashflow=annual_cashflow,
         goal_year=portfolio.goal_settings.get("target_year") if portfolio.goal_settings else None,
     )
-    
+
     return summary

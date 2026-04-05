@@ -220,7 +220,8 @@ class TestPortfolioSummaryValues:
     def test_total_value(self, engine, user_a):
         pid = _full_portfolio(engine, user_a)
         r = _call_summary(engine, user_a, pid)
-        assert r.total_value == Decimal("500000")
+        # property (500k) + asset (10k) = total portfolio value
+        assert r.total_value == Decimal("510000")
 
     def test_total_debt_is_loan_amount_not_equity(self, engine, user_a):
         """total_debt must reflect the actual loan balance, not equity."""
@@ -231,7 +232,8 @@ class TestPortfolioSummaryValues:
     def test_total_equity(self, engine, user_a):
         pid = _full_portfolio(engine, user_a)
         r = _call_summary(engine, user_a, pid)
-        assert r.total_equity == Decimal("100000")  # 500k - 400k
+        # total_value (510k) - total_debt (400k)
+        assert r.total_equity == Decimal("110000")
 
     def test_total_assets(self, engine, user_a):
         pid = _full_portfolio(engine, user_a)
