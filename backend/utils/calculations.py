@@ -20,12 +20,21 @@ from enum import Enum
 
 # Frequency multipliers for annualization
 FREQUENCY_MULTIPLIERS = {
+    # Title case (original, kept for backwards compat)
     "Weekly": Decimal("52"),
     "Fortnightly": Decimal("26"),
     "Monthly": Decimal("12"),
     "Quarterly": Decimal("4"),
     "Annually": Decimal("1"),
     "OneTime": Decimal("1"),
+    # Lowercase (stored in DB by IncomeSource and Expense models)
+    "weekly": Decimal("52"),
+    "fortnightly": Decimal("26"),
+    "monthly": Decimal("12"),
+    "quarterly": Decimal("4"),
+    "annually": Decimal("1"),
+    "annual": Decimal("1"),   # IncomeSource default is "annual" not "annually"
+    "one_time": Decimal("1"),
 }
 
 # Currency precision

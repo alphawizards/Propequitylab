@@ -586,5 +586,34 @@ class TestEdgeCases:
         assert len(cashflow_str.split(".")[-1]) <= 2  # Max 2 decimal places
 
 
+class TestAnnualizeAmountLowercaseFrequency:
+    """annualize_amount must accept the lowercase frequency strings stored in the DB."""
+
+    def test_monthly_lowercase(self):
+        result = annualize_amount(Decimal("1000"), "monthly")
+        assert result == Decimal("12000")
+
+    def test_weekly_lowercase(self):
+        result = annualize_amount(Decimal("1000"), "weekly")
+        assert result == Decimal("52000")
+
+    def test_fortnightly_lowercase(self):
+        result = annualize_amount(Decimal("1000"), "fortnightly")
+        assert result == Decimal("26000")
+
+    def test_annual_lowercase(self):
+        # DB stores "annual" not "annually"
+        result = annualize_amount(Decimal("1000"), "annual")
+        assert result == Decimal("1000")
+
+    def test_annually_titlecase_still_works(self):
+        result = annualize_amount(Decimal("1000"), "Annually")
+        assert result == Decimal("1000")
+
+    def test_quarterly_lowercase(self):
+        result = annualize_amount(Decimal("1000"), "quarterly")
+        assert result == Decimal("4000")
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
