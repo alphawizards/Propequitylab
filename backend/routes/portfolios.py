@@ -11,6 +11,8 @@ from datetime import datetime, timezone
 from decimal import Decimal
 import logging
 
+from typing import Optional
+
 from models.portfolio import Portfolio, PortfolioCreate, PortfolioUpdate, PortfolioSummary
 from models.user import User
 from models.property import Property
@@ -208,6 +210,26 @@ async def delete_portfolio(
     return {"message": "Portfolio deleted successfully"}
 
 
+def _compute_goal_year(goal_settings: Optional[dict], date_of_birth: Optional[str]) -> Optional[str]:
+    """Compute the target retirement calendar year from goal_settings and user DOB.
+
+    Returns None if either target_retirement_age or date_of_birth is missing/invalid.
+    """
+    if not goal_settings or not date_of_birth:
+        return None
+    target_age = goal_settings.get("target_retirement_age")
+    if target_age is None:
+        return None
+    try:
+        from datetime import date
+        birth_year = int(date_of_birth[:4])
+        current_year = date.today().year
+        current_age = current_year - birth_year
+        return str(current_year + (int(target_age) - current_age))
+    except (ValueError, TypeError):
+        return None
+
+
 @router.get("/{portfolio_id}/summary", response_model=PortfolioSummary)
 async def get_portfolio_summary(
     portfolio_id: str,
@@ -318,7 +340,7 @@ async def get_portfolio_summary(
         annual_income=total_rental_income + total_income,
         annual_expenses=total_expenses,
         annual_cashflow=annual_cashflow,
-        goal_year=portfolio.goal_settings.get("target_year") if portfolio.goal_settings else None,
+        goal_year=_compute_goal_year(portfolio.goal_settings, current_user.date_of_birth),
     )
 
     return summary

@@ -274,6 +274,50 @@ class TestPortfolioSummaryValues:
         r = _call_summary(engine, user_a, pid)
         assert r.properties_count == 1
 
+    def test_goal_year_computed_from_retirement_age_and_dob(self, engine):
+        """goal_year should reflect target_retirement_age + user DOB."""
+        from datetime import date as dt
+        user = make_user("goal")
+        user.date_of_birth = "1990-01-01"
+        with Session(engine) as s:
+            pid = str(uuid.uuid4())
+            s.add(Portfolio(
+                id=pid,
+                user_id=user.id,
+                name="Goal Portfolio",
+                type="actual",
+                goal_settings={"target_retirement_age": 55, "fire_target": 2000000},
+            ))
+            s.commit()
+        r = _call_summary(engine, user, pid)
+        current_year = dt.today().year
+        current_age = current_year - 1990
+        expected_year = str(current_year + (55 - current_age))
+        assert r.goal_year == expected_year
+
+    def test_goal_year_none_when_no_goal_settings(self, engine, user_a):
+        """goal_year is None when portfolio has no goal_settings."""
+        pid = _empty_portfolio(engine, user_a)
+        r = _call_summary(engine, user_a, pid)
+        assert r.goal_year is None
+
+    def test_goal_year_none_when_no_dob(self, engine):
+        """goal_year is None when user has no date_of_birth."""
+        user = make_user("nodob")
+        user.date_of_birth = None
+        with Session(engine) as s:
+            pid = str(uuid.uuid4())
+            s.add(Portfolio(
+                id=pid,
+                user_id=user.id,
+                name="No DOB Portfolio",
+                type="actual",
+                goal_settings={"target_retirement_age": 65},
+            ))
+            s.commit()
+        r = _call_summary(engine, user, pid)
+        assert r.goal_year is None
+
 
 # ---------------------------------------------------------------------------
 # Tests: data isolation
