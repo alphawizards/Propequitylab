@@ -485,7 +485,8 @@ const api = {
   skipOnboarding,
   resetOnboarding,
   seedSampleData,
-  
+  loadDemoData,
+
   // Dashboard
   getDashboardSummary,
   getNet_worth_history: getNetWorthHistory,

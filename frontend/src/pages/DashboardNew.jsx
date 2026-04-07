@@ -190,11 +190,13 @@ const DashboardNew = () => {
           </p>
           <Button
             onClick={async () => {
+              console.log('[CreatePortfolio] button clicked');
               setCreateLoading(true);
               try {
                 await createPortfolio('My Portfolio', 'actual');
                 toast({ title: 'Portfolio created', description: 'Your portfolio is ready to go.' });
               } catch (error) {
+                console.error('[CreatePortfolio] failed:', error);
                 toast({
                   title: 'Failed to create portfolio',
                   description: error.response?.data?.detail || 'Something went wrong. Please try again.',
