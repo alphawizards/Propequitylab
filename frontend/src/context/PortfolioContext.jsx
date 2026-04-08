@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useAuth } from './AuthContext';
+import { useAuth as useClerkAuth } from '@clerk/clerk-react';
 import api from '../services/api';
 
 const PortfolioContext = createContext(null);
@@ -10,6 +11,7 @@ export const PortfolioProvider = ({ children }) => {
   const [portfoliosLoading, setPortfoliosLoading] = useState(true);
   const [summary, setSummary] = useState(null);
   const { loading: authLoading, isAuthenticated } = useAuth();
+  const { getToken } = useClerkAuth();
 
   // Fetch portfolios on mount
   const fetchPortfolios = useCallback(async () => {
@@ -29,14 +31,15 @@ export const PortfolioProvider = ({ children }) => {
     }
   }, []);
 
-  // Only fetch once auth is resolved and user is signed in
+  // Only fetch once auth is resolved, user is signed in, and Clerk's getToken
+  // is wired into the Axios interceptor (avoids the 401 race condition).
   useEffect(() => {
-    if (!authLoading && isAuthenticated) {
+    if (!authLoading && isAuthenticated && getToken) {
       fetchPortfolios();
     } else if (!authLoading && !isAuthenticated) {
       setPortfoliosLoading(false);
     }
-  }, [authLoading, isAuthenticated]);
+  }, [authLoading, isAuthenticated, getToken]);
 
   // Fetch summary when current portfolio changes
   useEffect(() => {
@@ -55,6 +58,9 @@ export const PortfolioProvider = ({ children }) => {
   }, [currentPortfolio?.id]);
 
   const createPortfolio = async (name, type = 'actual') => {
+    if (!getToken) {
+      throw new Error('Authentication not ready. Please try again.');
+    }
     try {
       const newPortfolio = await api.createPortfolio({ name, type });
       setPortfolios(prev => [...prev, newPortfolio]);
@@ -71,6 +77,7 @@ export const PortfolioProvider = ({ children }) => {
   };
 
   const refreshSummary = async () => {
+    if (!getToken) return;
     if (currentPortfolio?.id) {
       const data = await api.getPortfolioSummary(currentPortfolio.id);
       setSummary(data);
