@@ -11,13 +11,15 @@ Usage: activated when CLERK_JWKS_URL env var is set (see utils/auth.py condition
 """
 
 import os
+import time
 import logging
 import uuid
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Any, Optional
 
 import jwt
-from jwt import PyJWKClient
+import requests as http_requests
+from jwt.algorithms import RSAAlgorithm
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlmodel import Session, select
@@ -27,29 +29,52 @@ from utils.database_sql import get_session
 
 logger = logging.getLogger(__name__)
 
-CLERK_JWKS_URL = os.getenv("CLERK_JWKS_URL")
 CLERK_ISSUER = os.getenv("CLERK_ISSUER")
 CLERK_SECRET_KEY = os.getenv("CLERK_SECRET_KEY")
 
 security = HTTPBearer()
 
-# Module-level singleton — caches JWKS public keys to avoid rate limiting
-_jwks_client: Optional[PyJWKClient] = None
+# In-memory JWKS key cache: {kid: public_key}, expires after 1 hour
+_key_cache: dict[str, Any] = {}
+_key_cache_expiry: float = 0
 
 
-def _get_jwks_client() -> PyJWKClient:
-    """Return cached PyJWKClient, creating it on first call."""
-    global _jwks_client
-    if _jwks_client is None:
-        if not CLERK_JWKS_URL:
-            raise RuntimeError("CLERK_JWKS_URL environment variable is not set")
-        # Pass secret key as auth header when using api.clerk.com/v1/jwks
-        headers = {}
-        if CLERK_SECRET_KEY and "api.clerk.com" in CLERK_JWKS_URL:
-            headers["Authorization"] = f"Bearer {CLERK_SECRET_KEY}"
-        # Cache keys for 1 hour to avoid JWKS endpoint rate limits
-        _jwks_client = PyJWKClient(CLERK_JWKS_URL, cache_keys=True, lifespan=3600, headers=headers)
-    return _jwks_client
+def _get_signing_key(kid: str) -> Any:
+    """Fetch the RSA public key for the given kid from Clerk's backend API.
+
+    Uses a 1-hour in-memory cache to avoid repeated JWKS fetches.
+    Always uses requests (not urllib) so the Authorization header is sent correctly.
+    """
+    global _key_cache, _key_cache_expiry
+
+    if time.time() < _key_cache_expiry and kid in _key_cache:
+        return _key_cache[kid]
+
+    if not CLERK_SECRET_KEY:
+        raise RuntimeError("CLERK_SECRET_KEY environment variable is not set")
+
+    response = http_requests.get(
+        "https://api.clerk.com/v1/jwks",
+        headers={"Authorization": f"Bearer {CLERK_SECRET_KEY}"},
+        timeout=10,
+    )
+    response.raise_for_status()
+
+    jwks = response.json()
+    _key_cache = {
+        k["kid"]: RSAAlgorithm.from_jwk(k)
+        for k in jwks.get("keys", [])
+    }
+    _key_cache_expiry = time.time() + 3600
+
+    if kid not in _key_cache:
+        logger.error("kid %s not found in Clerk JWKS (available: %s)", kid, list(_key_cache))
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+        )
+
+    return _key_cache[kid]
 
 
 def _verify_clerk_token(token: str) -> dict:
@@ -66,17 +91,20 @@ def _verify_clerk_token(token: str) -> dict:
         HTTPException 401 on any verification failure.
     """
     try:
-        jwks_client = _get_jwks_client()
-        signing_key = jwks_client.get_signing_key_from_jwt(token)
+        header = jwt.get_unverified_header(token)
+        kid = header.get("kid")
+        public_key = _get_signing_key(kid)
         payload = jwt.decode(
             token,
-            signing_key.key,
+            public_key,
             algorithms=["RS256"],
             issuer=CLERK_ISSUER,
             # audience is not set by default in Clerk JWTs; skip aud verification
             options={"verify_aud": False},
         )
         return payload
+    except HTTPException:
+        raise
     except jwt.ExpiredSignatureError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
