@@ -29,6 +29,7 @@ logger = logging.getLogger(__name__)
 
 CLERK_JWKS_URL = os.getenv("CLERK_JWKS_URL")
 CLERK_ISSUER = os.getenv("CLERK_ISSUER")
+CLERK_SECRET_KEY = os.getenv("CLERK_SECRET_KEY")
 
 security = HTTPBearer()
 
@@ -42,8 +43,12 @@ def _get_jwks_client() -> PyJWKClient:
     if _jwks_client is None:
         if not CLERK_JWKS_URL:
             raise RuntimeError("CLERK_JWKS_URL environment variable is not set")
+        # Pass secret key as auth header when using api.clerk.com/v1/jwks
+        headers = {}
+        if CLERK_SECRET_KEY and "api.clerk.com" in CLERK_JWKS_URL:
+            headers["Authorization"] = f"Bearer {CLERK_SECRET_KEY}"
         # Cache keys for 1 hour to avoid JWKS endpoint rate limits
-        _jwks_client = PyJWKClient(CLERK_JWKS_URL, cache_keys=True, lifespan=3600)
+        _jwks_client = PyJWKClient(CLERK_JWKS_URL, cache_keys=True, lifespan=3600, headers=headers)
     return _jwks_client
 
 
