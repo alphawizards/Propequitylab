@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }) => {
   // automatically receives a valid Bearer token without touching localStorage.
   useEffect(() => {
     if (isLoaded && isSignedIn && getToken) {
-      setClerkTokenGetter(() => getToken());
+      setClerkTokenGetter(() => getToken({ template: 'backend' }));
 
       // Set Sentry user context using the existing setUserContext utility
       if (clerkUser) {
