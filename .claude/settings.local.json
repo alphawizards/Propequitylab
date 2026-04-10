@@ -38,7 +38,17 @@
       "Bash(npm install:*)",
       "Bash(cmd //c \"py --version\" 2>&1)",
       "Bash(powershell -Command \"Set-Location 'C:\\\\Users\\\\ckr_4\\\\01 Web Projects\\\\Propequitylab\\\\backend'; py -m pytest tests/ -v --tb=short 2>&1 | Select-Object -First 80\")",
-      "Bash(npx wrangler:*)"
+      "Bash(npx wrangler:*)",
+      "Bash(PYTHON=\"/c/Users/ckr_4/AppData/Local/Programs/Python/Python313/python.exe\")",
+      "Bash(\"$PYTHON\" -m alembic revision --autogenerate -m \"add_clerk_user_id_to_users\")",
+      "Bash(npm show:*)",
+      "WebFetch(domain:docs.railway.com)",
+      "WebFetch(domain:developers.cloudflare.com)",
+      "mcp__jcodemunch__list_repos",
+      "Bash(railway variable:*)",
+      "mcp__jcodemunch__resolve_repo",
+      "mcp__jcodemunch__search_symbols",
+      "Bash(cmd //c \"backend\\\\venv\\\\Scripts\\\\python.exe -m pytest tests/backend_test.py -v --tb=short -q 2>&1\")"
     ]
   }
 }

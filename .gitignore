@@ -103,3 +103,16 @@ android-sdk/
 # System/Accidental Artifacts
 .auth/
 **/nul
+
+# Playwright and Test Artifacts
+test-results/
+test.db
+tests/e2e/playwright-report/
+tests/e2e/results.xml
+tests/e2e/screenshots/
+.playwright-cli/
+
+# Root Screenshots and Logs
+*.png
+logs.*.json
+.omx/
