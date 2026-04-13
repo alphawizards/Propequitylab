@@ -71,7 +71,9 @@ def create_db_and_tables():
         logger.info("✓ Database tables created successfully")
     except Exception as e:
         logger.error(f"✗ Failed to create database tables: {e}")
-        raise
+        # Don't raise — let the server start even if DB is cold at deploy time.
+        # The health endpoint will reflect DB status; individual requests will
+        # fail gracefully until the DB warms up.
 
 def get_session():
     """

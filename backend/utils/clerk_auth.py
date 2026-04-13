@@ -32,6 +32,10 @@ logger = logging.getLogger(__name__)
 CLERK_ISSUER = os.getenv("CLERK_ISSUER")
 CLERK_SECRET_KEY = os.getenv("CLERK_SECRET_KEY")
 
+# Public JWKS endpoint — contains all instance signing keys including JWT template keys.
+# No authentication required; derived from the issuer URL.
+_CLERK_JWKS_URL = f"{CLERK_ISSUER}/.well-known/jwks.json" if CLERK_ISSUER else None
+
 security = HTTPBearer()
 
 # In-memory JWKS key cache: {kid: public_key}, expires after 1 hour
@@ -40,24 +44,21 @@ _key_cache_expiry: float = 0
 
 
 def _get_signing_key(kid: str) -> Any:
-    """Fetch the RSA public key for the given kid from Clerk's backend API.
+    """Fetch the RSA public key for the given kid from Clerk's public JWKS endpoint.
 
     Uses a 1-hour in-memory cache to avoid repeated JWKS fetches.
-    Always uses requests (not urllib) so the Authorization header is sent correctly.
+    Uses the instance JWKS URL (not api.clerk.com/v1/jwks) because that is the
+    endpoint that includes the instance signing key used for JWT template tokens.
     """
     global _key_cache, _key_cache_expiry
 
     if time.time() < _key_cache_expiry and kid in _key_cache:
         return _key_cache[kid]
 
-    if not CLERK_SECRET_KEY:
-        raise RuntimeError("CLERK_SECRET_KEY environment variable is not set")
+    if not _CLERK_JWKS_URL:
+        raise RuntimeError("CLERK_ISSUER environment variable is not set")
 
-    response = http_requests.get(
-        "https://api.clerk.com/v1/jwks",
-        headers={"Authorization": f"Bearer {CLERK_SECRET_KEY}"},
-        timeout=10,
-    )
+    response = http_requests.get(_CLERK_JWKS_URL, timeout=10)
     response.raise_for_status()
 
     jwks = response.json()
