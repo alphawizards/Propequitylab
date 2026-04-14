@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 # Configuration from environment variables
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
-if not JWT_SECRET_KEY and not os.getenv("CLERK_JWKS_URL"):
+if not JWT_SECRET_KEY and not os.getenv("CLERK_ISSUER"):
     raise RuntimeError("JWT_SECRET_KEY environment variable is required")
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
@@ -362,10 +362,10 @@ def create_token_response(user: User) -> dict:
 
 # ---------------------------------------------------------------------------
 # Clerk auth override
-# When CLERK_JWKS_URL is set, replace get_current_user with the Clerk version.
+# When CLERK_ISSUER is set, replace get_current_user with the Clerk version.
 # All route files that do `from utils.auth import get_current_user` automatically
-# get Clerk-based auth. Unset CLERK_JWKS_URL to roll back to local JWT auth.
+# get Clerk-based auth. Unset CLERK_ISSUER to roll back to local JWT auth.
 # ---------------------------------------------------------------------------
 import os as _os
-if _os.getenv("CLERK_JWKS_URL"):
+if _os.getenv("CLERK_ISSUER"):
     from utils.clerk_auth import get_current_user  # noqa: F811 — intentional override

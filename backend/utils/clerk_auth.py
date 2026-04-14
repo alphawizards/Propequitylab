@@ -7,7 +7,7 @@ This module provides a Clerk-aware get_current_user dependency that:
 3. Handles soft migration (existing users linked by email on first Clerk sign-in)
 4. Auto-provisions new users with Account + Membership + Subscription records
 
-Usage: activated when CLERK_JWKS_URL env var is set (see utils/auth.py conditional import).
+Usage: activated when CLERK_ISSUER env var is set (see utils/auth.py conditional import).
 """
 
 import os

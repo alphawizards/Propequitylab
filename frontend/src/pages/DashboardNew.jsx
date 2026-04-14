@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePortfolio } from '../context/PortfolioContext';
 import { useUser } from '../context/UserContext';
+import CreatePortfolioDialog from '../components/portfolios/CreatePortfolioDialog';
 import api from '../services/api';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -81,7 +82,7 @@ const DashboardNew = () => {
   const [showDemoConfirm, setShowDemoConfirm] = useState(false);
   const [dataVersion, setDataVersion] = useState(0);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-  const [createLoading, setCreateLoading] = useState(false);
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
 
   const fetchDashboardData = async () => {
     setLoading(true);
@@ -179,45 +180,42 @@ const DashboardNew = () => {
   // Show create portfolio prompt if no portfolio exists
   if (!currentPortfolio && !loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh]">
-        <div className="text-center max-w-md">
-          <div className="w-20 h-20 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-6">
-            <Building className="w-10 h-10 text-emerald-600" />
-          </div>
-          <h2 className="text-2xl font-bold text-zinc-900 mb-2 tracking-tight">Welcome to PropEquityLab</h2>
-          <p className="text-zinc-500 mb-6 leading-relaxed">
-            Create your first portfolio to start tracking property investments and financial goals.
-          </p>
-          <Button
-            onClick={async () => {
-              console.log('[CreatePortfolio] button clicked');
-              setCreateLoading(true);
-              try {
-                await createPortfolio('My Portfolio', 'actual');
-                toast({ title: 'Portfolio created', description: 'Your portfolio is ready to go.' });
-              } catch (error) {
-                console.error('[CreatePortfolio] failed:', error);
-                toast({
-                  title: 'Failed to create portfolio',
-                  description: error.response?.data?.detail || 'Something went wrong. Please try again.',
-                  variant: 'destructive',
-                });
-              } finally {
-                setCreateLoading(false);
-              }
-            }}
-            disabled={createLoading}
-            className="bg-emerald-600 text-white hover:bg-emerald-700 transition-all duration-300 active:scale-[0.98]"
-          >
-            {createLoading ? (
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-            ) : (
+      <>
+        <div className="flex flex-col items-center justify-center min-h-[60vh]">
+          <div className="text-center max-w-md">
+            <div className="w-20 h-20 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-6">
+              <Building className="w-10 h-10 text-emerald-600" />
+            </div>
+            <h2 className="text-2xl font-bold text-zinc-900 mb-2 tracking-tight">Welcome to PropEquityLab</h2>
+            <p className="text-zinc-500 mb-6 leading-relaxed">
+              Create your first portfolio to start tracking property investments and financial goals.
+            </p>
+            <Button
+              onClick={() => setShowCreateDialog(true)}
+              className="bg-emerald-600 text-white hover:bg-emerald-700 transition-all duration-300 active:scale-[0.98]"
+            >
               <Plus className="w-4 h-4 mr-2" />
-            )}
-            {createLoading ? 'Creating...' : 'Create Portfolio'}
-          </Button>
+              Create Portfolio
+            </Button>
+          </div>
         </div>
-      </div>
+        <CreatePortfolioDialog
+          open={showCreateDialog}
+          onOpenChange={setShowCreateDialog}
+          onSubmit={async (name, type) => {
+            await createPortfolio(name, type);
+            toast({ title: 'Portfolio created', description: 'Your portfolio is ready to go.' });
+          }}
+          onError={(error) => {
+            const status = error.response?.status;
+            const description =
+              status === 401 ? 'Please sign in again.' :
+              status === 500 ? 'Server error. Please try again later.' :
+              'Something went wrong. Please try again.';
+            toast({ title: 'Failed to create portfolio', description, variant: 'destructive' });
+          }}
+        />
+      </>
     );
   }
 

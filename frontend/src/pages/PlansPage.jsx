@@ -17,6 +17,7 @@ import {
   Flame,
   Sparkles,
   Zap,
+  Home,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -125,7 +126,7 @@ const PlanCard = ({ plan, onEdit, onDelete, onView }) => {
 };
 
 const PlansPage = () => {
-  const { currentPortfolio } = usePortfolio();
+  const { currentPortfolio, loading: portfolioLoading } = usePortfolio();
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showFormModal, setShowFormModal] = useState(false);
@@ -135,7 +136,7 @@ const PlansPage = () => {
   const [dashboardData, setDashboardData] = useState(null);
 
   const fetchPlans = async () => {
-    if (!currentPortfolio?.id) return;
+    if (!currentPortfolio?.id) { setLoading(false); return; }
     try {
       const data = await api.getPlans(currentPortfolio.id);
       setPlans(data);
@@ -204,6 +205,17 @@ const PlansPage = () => {
     setSelectedPlan(plan);
     setShowDetailsModal(true);
   };
+
+  if (!portfolioLoading && !currentPortfolio) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <Home className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <p className="text-gray-500">Please create a portfolio first.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

@@ -15,6 +15,7 @@ import {
   ArrowDownRight,
   RefreshCw,
   Download,
+  Home,
 } from 'lucide-react';
 import {
   AreaChart,
@@ -47,7 +48,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 const ProgressPage = () => {
-  const { currentPortfolio } = usePortfolio();
+  const { currentPortfolio, loading: portfolioLoading } = usePortfolio();
   const [loading, setLoading] = useState(true);
   const [netWorthHistory, setNetWorthHistory] = useState([]);
   const [dashboardData, setDashboardData] = useState(null);
@@ -55,7 +56,7 @@ const ProgressPage = () => {
   const [projectionLoading, setProjectionLoading] = useState(false);
 
   const fetchData = async () => {
-    if (!currentPortfolio?.id) return;
+    if (!currentPortfolio?.id) { setLoading(false); return; }
     setLoading(true);
     try {
       const [history, dashboard] = await Promise.all([
@@ -127,6 +128,17 @@ const ProgressPage = () => {
   };
 
   const growth = calculateGrowth();
+
+  if (!portfolioLoading && !currentPortfolio) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <Home className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <p className="text-gray-500">Please create a portfolio first.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
