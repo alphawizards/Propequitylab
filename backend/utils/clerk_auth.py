@@ -58,7 +58,11 @@ def _get_signing_key(kid: str) -> Any:
     if not _CLERK_JWKS_URL:
         raise RuntimeError("CLERK_ISSUER environment variable is not set")
 
-    response = http_requests.get(_CLERK_JWKS_URL, timeout=10)
+    # Cloudflare blocks default Python user agents. We must spoof a browser.
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    }
+    response = http_requests.get(_CLERK_JWKS_URL, headers=headers, timeout=10)
     response.raise_for_status()
 
     jwks = response.json()
