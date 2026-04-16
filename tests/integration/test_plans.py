@@ -25,7 +25,7 @@ def test_plan_crud(client, test_portfolio):
 
     # Delete
     response = client.delete(f"/api/plans/{item_id}")
-    assert response.status_code == 200
+    assert response.status_code == 204
 
     # Verify gone
     response = client.get(f"/api/plans/portfolio/{test_portfolio.id}")

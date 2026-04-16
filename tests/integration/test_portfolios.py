@@ -91,7 +91,7 @@ def test_delete_portfolio(client, session, test_user):
     session.commit()
 
     response = client.delete(f"/api/portfolios/{p1.id}")
-    assert response.status_code == 200
+    assert response.status_code == 204
 
     # Verify DB
     assert session.get(Portfolio, p1.id) is None

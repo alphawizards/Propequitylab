@@ -97,7 +97,7 @@ def test_delete_property(client, session, test_user, test_portfolio):
     session.refresh(prop)
 
     response = client.delete(f"/api/properties/{prop.id}")
-    assert response.status_code == 200
+    assert response.status_code == 204
     
     # Verify in DB
     assert session.get(Property, prop.id) is None

@@ -29,7 +29,7 @@ def test_asset_crud(client, test_portfolio):
 
     # Delete
     response = client.delete(f"/api/assets/{asset_id}")
-    assert response.status_code == 200
+    assert response.status_code == 204
 
     # Verify gone
     response = client.get(f"/api/assets/portfolio/{test_portfolio.id}")

@@ -25,7 +25,7 @@ def test_liability_crud(client, test_portfolio):
 
     # Delete
     response = client.delete(f"/api/liabilities/{item_id}")
-    assert response.status_code == 200
+    assert response.status_code == 204
 
     # Verify gone
     response = client.get(f"/api/liabilities/portfolio/{test_portfolio.id}")
