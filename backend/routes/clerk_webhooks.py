@@ -78,8 +78,8 @@ async def handle_clerk_webhook(
     # Verify signature - required, not optional
     if not CLERK_WEBHOOK_SECRET:
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Webhook secret not configured"
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Webhook service unavailable: signing secret not configured",
         )
     svix_id = request.headers.get("svix-id", "")
     svix_timestamp = request.headers.get("svix-timestamp", "")

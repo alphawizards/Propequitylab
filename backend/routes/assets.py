@@ -3,7 +3,7 @@ Asset Routes - SQL-Based with Authentication & Data Isolation
 ⚠️ CRITICAL: All queries include .where(Asset.user_id == current_user.id) for data isolation
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlmodel import Session, select
 from typing import List
 from datetime import datetime, timezone
@@ -15,15 +15,16 @@ from models.asset import Asset, AssetCreate, AssetUpdate, ASSET_TYPES
 from models.portfolio import Portfolio
 from models.user import User
 from utils.database_sql import get_session
-from utils.clerk_auth import get_current_user
+from utils.auth import get_current_user
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/assets", tags=["assets"])
 
 
-@router.get("/types")
+# Intentionally public — returns static enum values only, no user data exposed.
+@router.get("/types", tags=["public"])
 async def get_asset_types():
-    """Get list of asset types (static data, no auth required)"""
+    """Get list of asset types (static data, no auth required)."""
     return {"types": ASSET_TYPES}
 
 
@@ -222,4 +223,4 @@ async def delete_asset(
     session.commit()
     
     logger.info(f"Asset deleted: {asset_id} by user: {current_user.id}")
-    return {"message": "Asset deleted successfully"}
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

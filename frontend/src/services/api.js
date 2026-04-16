@@ -27,7 +27,7 @@ const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api
 // Create Axios instance
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 30000,
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -229,7 +229,7 @@ export const getPropertyProjections = async (propertyId, options = {}) => {
   if (options.expenseGrowthOverride) params.append('expense_growth_override', options.expenseGrowthOverride);
   if (options.interestRateOffset) params.append('interest_rate_offset', options.interestRateOffset);
   if (options.assetGrowthOverride) params.append('asset_growth_override', options.assetGrowthOverride);
-  const response = await apiClient.get(`/projections/${propertyId}?${params.toString()}`);
+  const response = await apiClient.get(`/projections/${propertyId}?${params.toString()}`, { timeout: 60000 });
   return response.data;
 };
 
@@ -239,7 +239,7 @@ export const getPortfolioProjections = async (portfolioId, options = {}) => {
   if (options.expenseGrowthOverride) params.append('expense_growth_override', options.expenseGrowthOverride);
   if (options.interestRateOffset) params.append('interest_rate_offset', options.interestRateOffset);
   if (options.assetGrowthOverride) params.append('asset_growth_override', options.assetGrowthOverride);
-  const response = await apiClient.get(`/projections/portfolio/${portfolioId}?${params.toString()}`);
+  const response = await apiClient.get(`/projections/portfolio/${portfolioId}?${params.toString()}`, { timeout: 60000 });
   return response.data;
 };
 
@@ -362,7 +362,7 @@ export const deletePlan = async (planId) => {
  * @returns {Promise<object>} Plan projection data
  */
 export const getPlanProjections = async (planId) => {
-  const response = await apiClient.get(`/plans/${planId}/projections`);
+  const response = await apiClient.get(`/plans/${planId}/projections`, { timeout: 60000 });
   return response.data;
 };
 
@@ -624,11 +624,11 @@ const api = {
   
   // Loan Extra Repayments & Lump Sum
   addExtraRepayment: async (loanId, data) => {
-    const response = await apiClient.post(`/loans/${loanId}/extra-repayment`, null, { params: data });
+    const response = await apiClient.post(`/loans/${loanId}/extra-repayments`, data);
     return response.data;
   },
   addLumpSumPayment: async (loanId, data) => {
-    const response = await apiClient.post(`/loans/${loanId}/lump-sum`, null, { params: data });
+    const response = await apiClient.post(`/loans/${loanId}/lump-sum`, data);
     return response.data;
   },
   

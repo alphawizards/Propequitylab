@@ -3,7 +3,7 @@ Income Routes - SQL-Based with Authentication & Data Isolation
 ⚠️ CRITICAL: All queries include .where(IncomeSource.user_id == current_user.id) for data isolation
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlmodel import Session, select
 from typing import List
 from datetime import datetime, timezone
@@ -15,7 +15,7 @@ from models.income import IncomeSource, IncomeSourceCreate, IncomeSourceUpdate
 from models.portfolio import Portfolio
 from models.user import User
 from utils.database_sql import get_session
-from utils.clerk_auth import get_current_user
+from utils.auth import get_current_user
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/income", tags=["income"])
@@ -203,4 +203,4 @@ async def delete_income_source(
     session.commit()
     
     logger.info(f"Income source deleted: {income_id} by user: {current_user.id}")
-    return {"message": "Income source deleted successfully"}
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

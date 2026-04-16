@@ -31,6 +31,7 @@ logger = logging.getLogger(__name__)
 
 CLERK_ISSUER = os.getenv("CLERK_ISSUER")
 CLERK_SECRET_KEY = os.getenv("CLERK_SECRET_KEY")
+CLERK_JWT_AUDIENCE = os.getenv("CLERK_JWT_AUDIENCE")
 
 # Public JWKS endpoint — contains all instance signing keys including JWT template keys.
 # No authentication required; derived from the issuer URL.
@@ -99,14 +100,22 @@ def _verify_clerk_token(token: str) -> dict:
         header = jwt.get_unverified_header(token)
         kid = header.get("kid")
         public_key = _get_signing_key(kid)
-        payload = jwt.decode(
-            token,
-            public_key,
-            algorithms=["RS256"],
-            issuer=CLERK_ISSUER,
-            # audience is not set by default in Clerk JWTs; skip aud verification
-            options={"verify_aud": False},
-        )
+        decode_kwargs: dict = {
+            "algorithms": ["RS256"],
+            "issuer": CLERK_ISSUER,
+        }
+        if CLERK_JWT_AUDIENCE:
+            decode_kwargs["audience"] = CLERK_JWT_AUDIENCE
+        else:
+            # TODO: set CLERK_JWT_AUDIENCE env var to the Clerk instance URL or app ID
+            # to enable audience verification. Skipping for now — Clerk session tokens
+            # do not include an `aud` claim by default unless a JWT template configures it.
+            logger.warning(
+                "CLERK_JWT_AUDIENCE is not set — audience verification is disabled. "
+                "Set CLERK_JWT_AUDIENCE to the expected audience value to harden token validation."
+            )
+            decode_kwargs["options"] = {"verify_aud": False}
+        payload = jwt.decode(token, public_key, **decode_kwargs)
         return payload
     except HTTPException:
         raise

@@ -258,28 +258,28 @@ def calculate_remaining_balance(
     if years_elapsed >= total_term_years:
         return Decimal("0")
     
-    # Calculate monthly rate
-    monthly_rate = rate / Decimal("100") / Decimal("12")
-    
-    if monthly_rate <= 0:
+    # Calculate monthly interest rate
+    monthly_interest_rate = rate / Decimal("100") / Decimal("12")
+
+    if monthly_interest_rate <= 0:
         # No interest: simple linear paydown
         monthly_principal = original_principal / (Decimal(str(total_term_years)) * Decimal("12"))
         months_elapsed = Decimal(str(years_elapsed)) * Decimal("12")
         remaining = original_principal - (monthly_principal * months_elapsed)
         return round_currency(max(Decimal("0"), remaining))
-    
+
     # Calculate monthly payment (amortization formula)
     total_months = Decimal(str(total_term_years)) * Decimal("12")
-    one_plus_r = Decimal("1") + monthly_rate
+    one_plus_r = Decimal("1") + monthly_interest_rate
     one_plus_r_to_n = one_plus_r ** int(total_months)
-    
-    monthly_payment = original_principal * (monthly_rate * one_plus_r_to_n) / (one_plus_r_to_n - Decimal("1"))
-    
+
+    monthly_payment = original_principal * (monthly_interest_rate * one_plus_r_to_n) / (one_plus_r_to_n - Decimal("1"))
+
     # Calculate remaining balance formula: B = A(1 + r)^n - P[(1 + r)^n - 1] / r
     months_elapsed = Decimal(str(years_elapsed)) * Decimal("12")
     one_plus_r_elapsed = one_plus_r ** int(months_elapsed)
-    
-    balance = (original_principal * one_plus_r_elapsed) - (monthly_payment * (one_plus_r_elapsed - Decimal("1")) / monthly_rate)
+
+    balance = (original_principal * one_plus_r_elapsed) - (monthly_payment * (one_plus_r_elapsed - Decimal("1")) / monthly_interest_rate)
     
     return round_currency(max(Decimal("0"), balance))
 

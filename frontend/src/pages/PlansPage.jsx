@@ -56,7 +56,7 @@ const PlanCard = ({ plan, onEdit, onDelete, onView }) => {
               <Icon className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-semibold text-[#111111]">{plan.name}</h3>
+              <h3 className="font-semibold text-[#111111] dark:text-white">{plan.name}</h3>
               <Badge variant="secondary" className={`mt-1 ${typeInfo.color}`}>
                 {typeInfo.label}
               </Badge>
@@ -91,8 +91,8 @@ const PlanCard = ({ plan, onEdit, onDelete, onView }) => {
 
         <div className="grid grid-cols-2 gap-4 pt-4 border-t border-[#EAEAEA]">
           <div>
-            <p className="text-xs text-[#6B7280]">Retirement Age</p>
-            <p className="text-lg font-semibold tabular-nums text-[#111111]">{plan.retirement_age}</p>
+            <p className="text-xs text-[#6B7280] dark:text-gray-400">Retirement Age</p>
+            <p className="text-lg font-semibold tabular-nums text-[#111111] dark:text-white">{plan.retirement_age}</p>
           </div>
           <div>
             <p className="text-xs text-[#6B7280]">Target Net Worth</p>
@@ -101,14 +101,14 @@ const PlanCard = ({ plan, onEdit, onDelete, onView }) => {
             </p>
           </div>
           <div>
-            <p className="text-xs text-[#6B7280]">Passive Income Goal</p>
-            <p className="text-lg font-semibold tabular-nums text-[#111111]">
+            <p className="text-xs text-[#6B7280] dark:text-gray-400">Passive Income Goal</p>
+            <p className="text-lg font-semibold tabular-nums text-[#111111] dark:text-white">
               {plan.target_passive_income > 0 ? `${formatCurrency(plan.target_passive_income)}/yr` : 'Not set'}
             </p>
           </div>
           <div>
-            <p className="text-xs text-[#6B7280]">Withdrawal Rate</p>
-            <p className="text-lg font-semibold tabular-nums text-[#111111]">{plan.target_withdrawal_rate || 4}%</p>
+            <p className="text-xs text-[#6B7280] dark:text-gray-400">Withdrawal Rate</p>
+            <p className="text-lg font-semibold tabular-nums text-[#111111] dark:text-white">{plan.target_withdrawal_rate || 4}%</p>
           </div>
         </div>
 
@@ -230,8 +230,8 @@ const PlansPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold text-[#111111]">Financial Plans</h1>
-          <p className="text-[#6B7280]">Create and manage your FIRE plans and scenarios</p>
+          <h1 className="text-2xl font-semibold text-[#111111] dark:text-white">Financial Plans</h1>
+          <p className="text-[#6B7280] dark:text-gray-400">Create and manage your FIRE plans and scenarios</p>
         </div>
         <div className="flex gap-3">
           <Button
@@ -266,8 +266,8 @@ const PlansPage = () => {
                 <Target className="w-5 h-5 text-emerald-600" />
               </div>
               <div>
-                <p className="text-sm text-[#6B7280]">Total Plans</p>
-                <p className="text-xl font-semibold tabular-nums text-[#111111]">{plans.length}</p>
+                <p className="text-sm text-[#6B7280] dark:text-gray-400">Total Plans</p>
+                <p className="text-xl font-semibold tabular-nums text-[#111111] dark:text-white">{plans.length}</p>
               </div>
             </div>
           </CardContent>
@@ -279,8 +279,8 @@ const PlansPage = () => {
                 <DollarSign className="w-5 h-5 text-emerald-600" />
               </div>
               <div>
-                <p className="text-sm text-[#6B7280]">Current Net Worth</p>
-                <p className="text-xl font-semibold tabular-nums text-[#111111]">
+                <p className="text-sm text-[#6B7280] dark:text-gray-400">Current Net Worth</p>
+                <p className="text-xl font-semibold tabular-nums text-[#111111] dark:text-white">
                   {formatCurrency(dashboardData?.net_worth || 0)}
                 </p>
               </div>
@@ -294,8 +294,8 @@ const PlansPage = () => {
                 <TrendingUp className="w-5 h-5 text-blue-600" />
               </div>
               <div>
-                <p className="text-sm text-[#6B7280]">Monthly Savings</p>
-                <p className="text-xl font-semibold tabular-nums text-[#111111]">
+                <p className="text-sm text-[#6B7280] dark:text-gray-400">Monthly Savings</p>
+                <p className="text-xl font-semibold tabular-nums text-[#111111] dark:text-white">
                   {formatCurrency(dashboardData?.monthly_cashflow || 0)}
                 </p>
               </div>
@@ -309,8 +309,8 @@ const PlansPage = () => {
                 <Flame className="w-5 h-5 text-orange-600" />
               </div>
               <div>
-                <p className="text-sm text-[#6B7280]">Savings Rate</p>
-                <p className="text-xl font-semibold tabular-nums text-[#111111]">
+                <p className="text-sm text-[#6B7280] dark:text-gray-400">Savings Rate</p>
+                <p className="text-xl font-semibold tabular-nums text-[#111111] dark:text-white">
                   {(dashboardData?.savings_rate || 0).toFixed(0)}%
                 </p>
               </div>
@@ -326,8 +326,8 @@ const PlansPage = () => {
             <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
               <Target className="w-8 h-8 text-emerald-600" />
             </div>
-            <h3 className="text-lg font-semibold text-[#111111] mb-2">No Plans Yet</h3>
-            <p className="text-[#6B7280] mb-4 max-w-md mx-auto">
+            <h3 className="text-lg font-semibold text-[#111111] dark:text-white mb-2">No Plans Yet</h3>
+            <p className="text-[#6B7280] dark:text-gray-400 mb-4 max-w-md mx-auto">
               Create your first financial plan to start tracking your path to financial independence.
             </p>
             <Button

@@ -22,7 +22,7 @@ from models.asset import Asset
 from models.liability import Liability
 from models.income import IncomeSource
 from models.expense import Expense
-from utils.clerk_auth import get_current_user
+from utils.auth import get_current_user
 from utils.database_sql import get_session
 
 router = APIRouter(prefix="/gdpr", tags=["GDPR"])
@@ -115,7 +115,6 @@ async def export_user_data(
                     "purchase_price": float(prop.purchase_price) if prop.purchase_price else None,
                     "purchase_date": prop.purchase_date.isoformat() if prop.purchase_date else None,
                     "current_value": float(prop.current_value) if prop.current_value else None,
-                    "land_value": float(prop.land_value) if prop.land_value else None,
                     "notes": prop.notes,
                     "created_at": prop.created_at.isoformat() if prop.created_at else None,
                 }
@@ -126,8 +125,8 @@ async def export_user_data(
                     "id": str(a.id),
                     "portfolio_id": str(a.portfolio_id) if a.portfolio_id else None,
                     "name": a.name,
-                    "asset_type": a.asset_type,
-                    "value": float(a.value) if a.value else None,
+                    "asset_type": a.type,
+                    "value": float(a.current_value) if a.current_value else None,
                     "notes": a.notes,
                     "created_at": a.created_at.isoformat() if a.created_at else None,
                 }
@@ -138,8 +137,8 @@ async def export_user_data(
                     "id": str(l.id),
                     "portfolio_id": str(l.portfolio_id) if l.portfolio_id else None,
                     "name": l.name,
-                    "liability_type": l.liability_type,
-                    "amount": float(l.amount) if l.amount else None,
+                    "liability_type": l.type,
+                    "amount": float(l.current_balance) if l.current_balance else None,
                     "interest_rate": float(l.interest_rate) if l.interest_rate else None,
                     "notes": l.notes,
                     "created_at": l.created_at.isoformat() if l.created_at else None,
@@ -150,8 +149,8 @@ async def export_user_data(
                 {
                     "id": str(i.id),
                     "portfolio_id": str(i.portfolio_id) if i.portfolio_id else None,
-                    "source_name": i.source_name,
-                    "income_type": i.income_type,
+                    "source_name": i.name,
+                    "income_type": i.type,
                     "amount": float(i.amount) if i.amount else None,
                     "frequency": i.frequency,
                     "notes": i.notes,
@@ -166,7 +165,7 @@ async def export_user_data(
                     "category": e.category,
                     "amount": float(e.amount) if e.amount else None,
                     "frequency": e.frequency,
-                    "description": e.description,
+                    "name": e.name,
                     "created_at": e.created_at.isoformat() if e.created_at else None,
                 }
                 for e in expenses
@@ -184,7 +183,7 @@ async def export_user_data(
         return JSONResponse(
             content=export_data,
             headers={
-                "Content-Disposition": f'attachment; filename="zapiio-data-export-{datetime.now(timezone.utc).strftime("%Y%m%d")}.json"'
+                "Content-Disposition": f'attachment; filename="propequitylab-data-export-{datetime.now(timezone.utc).strftime("%Y%m%d")}.json"'
             }
         )
 
@@ -299,12 +298,25 @@ async def delete_account(
                 detail="Confirmation must be the string DELETE"
             )
 
-        # Soft delete: Mark account for deletion
+        # Hard delete all financial data immediately (GDPR Art. 17 — Right to Erasure)
+        for record in session.exec(select(Expense).where(Expense.user_id == current_user.id)).all():
+            session.delete(record)
+        for record in session.exec(select(IncomeSource).where(IncomeSource.user_id == current_user.id)).all():
+            session.delete(record)
+        for record in session.exec(select(Asset).where(Asset.user_id == current_user.id)).all():
+            session.delete(record)
+        for record in session.exec(select(Liability).where(Liability.user_id == current_user.id)).all():
+            session.delete(record)
+        for record in session.exec(select(Property).where(Property.user_id == current_user.id)).all():
+            session.delete(record)
+        for record in session.exec(select(Portfolio).where(Portfolio.user_id == current_user.id)).all():
+            session.delete(record)
+        session.flush()
+
+        # Soft delete: Mark account for deletion and anonymize PII
         current_user.deleted_at = datetime.now(timezone.utc)
         current_user.is_active = False
-
-        # Anonymize personal data immediately
-        current_user.email = f"deleted-{current_user.id}@zapiio.deleted"
+        current_user.email = f"deleted-{current_user.id}@propequitylab.deleted"
         current_user.name = "Deleted User"
         current_user.country = None
         current_user.state = None
@@ -315,7 +327,7 @@ async def delete_account(
         return {
             "message": "Account scheduled for deletion",
             "deletion_date": (datetime.now(timezone.utc) + timedelta(days=30)).isoformat(),
-            "details": "Your account has been deactivated and personal data anonymized. All data will be permanently deleted in 30 days. To recover your account within this period, contact support@zapiio.com"
+            "details": "Your account has been deactivated and personal data anonymized. All data will be permanently deleted in 30 days. To recover your account within this period, contact support@propequitylab.com"
         }
 
     except HTTPException:

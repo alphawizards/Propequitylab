@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { useAuth } from './AuthContext';
 import { useAuth as useClerkAuth } from '@clerk/clerk-react';
 import api from '../services/api';
@@ -57,7 +57,7 @@ export const PortfolioProvider = ({ children }) => {
     fetchSummary();
   }, [currentPortfolio?.id]);
 
-  const createPortfolio = async (name, type = 'actual') => {
+  const createPortfolio = useCallback(async (name, type = 'actual') => {
     if (!getToken) {
       throw new Error('Authentication not ready. Please try again.');
     }
@@ -70,21 +70,21 @@ export const PortfolioProvider = ({ children }) => {
       console.error('Failed to create portfolio:', error);
       throw error;
     }
-  };
+  }, [getToken]);
 
-  const selectPortfolio = (portfolio) => {
+  const selectPortfolio = useCallback((portfolio) => {
     setCurrentPortfolio(portfolio);
-  };
+  }, []);
 
-  const refreshSummary = async () => {
+  const refreshSummary = useCallback(async () => {
     if (!getToken) return;
     if (currentPortfolio?.id) {
       const data = await api.getPortfolioSummary(currentPortfolio.id);
       setSummary(data);
     }
-  };
+  }, [getToken, currentPortfolio?.id]);
 
-  const value = {
+  const value = useMemo(() => ({
     portfolios,
     currentPortfolio,
     loading: portfoliosLoading,
@@ -93,7 +93,7 @@ export const PortfolioProvider = ({ children }) => {
     createPortfolio,
     selectPortfolio,
     refreshSummary,
-  };
+  }), [portfolios, currentPortfolio, portfoliosLoading, summary, fetchPortfolios, createPortfolio, selectPortfolio, refreshSummary]);
 
   return (
     <PortfolioContext.Provider value={value}>

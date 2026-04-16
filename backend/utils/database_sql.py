@@ -61,9 +61,10 @@ try:
     else:
         engine = create_engine(
             DATABASE_URL,
-            pool_size=POOL_SIZE,
-            max_overflow=MAX_OVERFLOW,
+            pool_size=5,
+            max_overflow=10,
             pool_timeout=POOL_TIMEOUT,
+            pool_recycle=300,
             pool_pre_ping=True,
             echo=False,
             poolclass=QueuePool,

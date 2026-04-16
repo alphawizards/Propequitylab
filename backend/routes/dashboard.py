@@ -13,6 +13,7 @@ import logging
 import uuid
 
 from models.net_worth import NetWorthSnapshot, AssetBreakdown, LiabilityBreakdown
+from utils.calculations import annualize_amount
 from models.portfolio import Portfolio
 from models.property import Property
 from models.asset import Asset
@@ -21,22 +22,22 @@ from models.income import IncomeSource
 from models.expense import Expense
 from models.user import User
 from utils.database_sql import get_session
-from utils.clerk_auth import get_current_user
+from utils.auth import get_current_user
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 
 
 class DashboardSummary(BaseModel):
-    net_worth: float = 0
-    total_assets: float = 0
-    total_liabilities: float = 0
+    net_worth: Decimal = Decimal("0")
+    total_assets: Decimal = Decimal("0")
+    total_liabilities: Decimal = Decimal("0")
     asset_breakdown: AssetBreakdown
     liability_breakdown: LiabilityBreakdown
-    monthly_income: float = 0
-    monthly_expenses: float = 0
-    monthly_cashflow: float = 0
-    savings_rate: float = 0
+    monthly_income: Decimal = Decimal("0")
+    monthly_expenses: Decimal = Decimal("0")
+    monthly_cashflow: Decimal = Decimal("0")
+    savings_rate: Decimal = Decimal("0")
     properties_count: int = 0
 
 
@@ -152,24 +153,18 @@ async def get_dashboard_summary(
     total_liabilities = property_loans + float(sum((l.current_balance or Decimal(0)) for l in liabilities))
     net_worth = total_assets - total_liabilities
     
-    # Calculate monthly income/expenses — must match all frequency variants stored in DB
-    def to_monthly(amount, frequency):
-        if amount is None:
-            return 0
-        multipliers = {
-            'weekly': 52 / 12, 'Weekly': 52 / 12,
-            'fortnightly': 26 / 12, 'Fortnightly': 26 / 12,
-            'monthly': 1, 'Monthly': 1,
-            'quarterly': 1 / 3, 'Quarterly': 1 / 3,
-            'annual': 1 / 12, 'annually': 1 / 12, 'Annually': 1 / 12,
-            'one_time': 0, 'OneTime': 0,
-        }
-        return float(amount) * multipliers.get(frequency, 1)
-    
+    # Calculate monthly income/expenses using canonical annualize_amount then divide by 12
+    ONE_TIME_FREQUENCIES = {"one_time", "OneTime", "one-time", "One Time"}
+
+    def to_monthly(amount, frequency) -> Decimal:
+        if amount is None or frequency in ONE_TIME_FREQUENCIES:
+            return Decimal("0")
+        return annualize_amount(Decimal(str(amount)), frequency) / Decimal("12")
+
     monthly_income = sum(to_monthly(i.amount, i.frequency) for i in income_sources)
     monthly_expenses = sum(to_monthly(e.amount, e.frequency) for e in expenses)
     monthly_cashflow = monthly_income - monthly_expenses
-    savings_rate = (monthly_cashflow / monthly_income * 100) if monthly_income > 0 else 0
+    savings_rate = (monthly_cashflow / monthly_income * 100) if monthly_income > 0 else Decimal("0")
     
     return DashboardSummary(
         net_worth=net_worth,

@@ -17,10 +17,11 @@ import {
   Shield,
   ExternalLink,
 } from 'lucide-react';
-import { toast } from 'sonner';
+import { useToast } from '../hooks/use-toast';
 import * as api from '../services/api';
 
 const Settings = () => {
+  const { toast } = useToast();
   const { user: authUser, logout } = useAuth();
   const { user: userContextUser, updateUser } = useUser();
   const { openUserProfile } = useClerk();
@@ -79,7 +80,7 @@ const Settings = () => {
 
     try {
       const updated = await api.updateProfile(profileData);
-      toast.success('Profile updated successfully');
+      toast({ title: 'Profile updated successfully' });
       // Update user context with new data
       if (updateUser) {
         updateUser({
@@ -90,7 +91,7 @@ const Settings = () => {
         });
       }
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Failed to update profile');
+      toast({ variant: 'destructive', title: error.response?.data?.detail || 'Failed to update profile' });
     } finally {
       setProfileLoading(false);
     }
@@ -116,9 +117,9 @@ const Settings = () => {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
 
-      toast.success('Data exported successfully');
+      toast({ title: 'Data exported successfully' });
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Failed to export data');
+      toast({ variant: 'destructive', title: error.response?.data?.detail || 'Failed to export data' });
     } finally {
       setExportLoading(false);
     }
@@ -130,12 +131,12 @@ const Settings = () => {
 
   const handleDeleteAccount = async () => {
     if (deleteConfirmText !== 'DELETE') {
-      toast.error('Please type DELETE to confirm');
+      toast({ variant: 'destructive', title: 'Please type DELETE to confirm' });
       return;
     }
 
     if (!deleteAcknowledge) {
-      toast.error('Please acknowledge that this action is permanent');
+      toast({ variant: 'destructive', title: 'Please acknowledge that this action is permanent' });
       return;
     }
 
@@ -144,7 +145,7 @@ const Settings = () => {
     try {
       const result = await api.deleteAccount('DELETE');
 
-      toast.success('Account deleted successfully');
+      toast({ title: 'Account deleted successfully' });
 
       // Log out and redirect
       setTimeout(async () => {
@@ -156,7 +157,7 @@ const Settings = () => {
         });
       }, 2000);
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Failed to delete account');
+      toast({ variant: 'destructive', title: error.response?.data?.detail || 'Failed to delete account' });
       setDeleteLoading(false);
     }
   };
@@ -164,19 +165,19 @@ const Settings = () => {
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-[#111111]">Settings</h1>
-        <p className="text-[#6B7280] mt-2">Manage your account preferences and privacy settings</p>
+        <h1 className="text-2xl font-semibold text-[#111111] dark:text-white">Settings</h1>
+        <p className="text-[#6B7280] dark:text-gray-400 mt-2">Manage your account preferences and privacy settings</p>
       </div>
 
       {/* Profile Settings */}
-      <div className="bg-white rounded-lg border border-[#EAEAEA] p-6">
+      <div className="bg-white dark:bg-gray-900 rounded-lg border border-[#EAEAEA] dark:border-gray-700 p-6">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-            <User className="w-5 h-5 text-emerald-600" />
+          <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/40 rounded-lg flex items-center justify-center">
+            <User className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-[#111111]">Profile Information</h2>
-            <p className="text-sm text-[#6B7280]">Update your personal details</p>
+            <h2 className="text-lg font-semibold text-[#111111] dark:text-white">Profile Information</h2>
+            <p className="text-sm text-[#6B7280] dark:text-gray-400">Update your personal details</p>
           </div>
         </div>
 
@@ -270,21 +271,21 @@ const Settings = () => {
       </div>
 
       {/* Security & Account Management (Clerk) */}
-      <div className="bg-white rounded-lg border border-[#EAEAEA] p-6">
+      <div className="bg-white dark:bg-gray-900 rounded-lg border border-[#EAEAEA] dark:border-gray-700 p-6">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-            <Lock className="w-5 h-5 text-blue-600" />
+          <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/40 rounded-lg flex items-center justify-center">
+            <Lock className="w-5 h-5 text-blue-600 dark:text-blue-400" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-[#111111]">Security & Account</h2>
-            <p className="text-sm text-[#6B7280]">Manage your password, MFA, and connected accounts</p>
+            <h2 className="text-lg font-semibold text-[#111111] dark:text-white">Security & Account</h2>
+            <p className="text-sm text-[#6B7280] dark:text-gray-400">Manage your password, MFA, and connected accounts</p>
           </div>
         </div>
 
-        <div className="p-4 border border-[#EAEAEA] rounded-lg flex items-start justify-between gap-4">
+        <div className="p-4 border border-[#EAEAEA] dark:border-gray-700 rounded-lg flex items-start justify-between gap-4">
           <div>
-            <h3 className="font-semibold text-[#111111] mb-1">Password & Security Settings</h3>
-            <p className="text-sm text-[#6B7280]">
+            <h3 className="font-semibold text-[#111111] dark:text-white mb-1">Password & Security Settings</h3>
+            <p className="text-sm text-[#6B7280] dark:text-gray-400">
               Change your password, enable two-factor authentication, and manage connected accounts
               via the secure Clerk account portal.
             </p>
@@ -301,24 +302,24 @@ const Settings = () => {
       </div>
 
       {/* Privacy & Data (GDPR) */}
-      <div className="bg-white rounded-lg border border-[#EAEAEA] p-6">
+      <div className="bg-white dark:bg-gray-900 rounded-lg border border-[#EAEAEA] dark:border-gray-700 p-6">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-            <Shield className="w-5 h-5 text-purple-600" />
+          <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/40 rounded-lg flex items-center justify-center">
+            <Shield className="w-5 h-5 text-purple-600 dark:text-purple-400" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-[#111111]">Privacy & Data</h2>
-            <p className="text-sm text-[#6B7280]">Manage your data and privacy preferences</p>
+            <h2 className="text-lg font-semibold text-[#111111] dark:text-white">Privacy & Data</h2>
+            <p className="text-sm text-[#6B7280] dark:text-gray-400">Manage your data and privacy preferences</p>
           </div>
         </div>
 
         <div className="space-y-4">
           {/* Data Export */}
-          <div className="p-4 border border-[#EAEAEA] rounded-lg">
+          <div className="p-4 border border-[#EAEAEA] dark:border-gray-700 rounded-lg">
             <div className="flex items-start justify-between">
               <div className="flex-1">
-                <h3 className="font-semibold text-[#111111] mb-1">Download Your Data</h3>
-                <p className="text-sm text-[#6B7280] mb-3">
+                <h3 className="font-semibold text-[#111111] dark:text-white mb-1">Download Your Data</h3>
+                <p className="text-sm text-[#6B7280] dark:text-gray-400 mb-3">
                   Export all your data in JSON format. Includes portfolios, properties, assets,
                   liabilities, income, and expenses.
                 </p>

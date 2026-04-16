@@ -5,7 +5,7 @@ Create, manage, and compare "what-if" scenario portfolios.
 ⚠️ CRITICAL: All queries include user_id filter for data isolation
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlmodel import Session, select, func
 from typing import List, Optional
 from datetime import datetime, timezone
@@ -25,7 +25,7 @@ from models.financials import (
 )
 from models.user import User
 from utils.database_sql import get_session
-from utils.clerk_auth import get_current_user
+from utils.auth import get_current_user
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/scenarios", tags=["scenarios"])
@@ -35,8 +35,8 @@ MAX_SCENARIOS_PRO = 3
 
 
 def generate_id() -> str:
-    """Generate a short UUID for IDs"""
-    return str(uuid.uuid4())[:8]
+    """Generate a unique ID from UUID hex (16 chars to minimise collision probability)"""
+    return uuid.uuid4().hex[:16]
 
 
 async def check_scenario_limit(user: User, session: Session) -> None:
@@ -111,7 +111,10 @@ async def deep_copy_portfolio(
     
     # Copy Properties
     old_properties = session.exec(
-        select(Property).where(Property.portfolio_id == source_portfolio.id)
+        select(Property).where(
+            Property.portfolio_id == source_portfolio.id,
+            Property.user_id == user.id,
+        )
     ).all()
     
     for old_prop in old_properties:
@@ -226,7 +229,7 @@ async def deep_copy_portfolio(
     
     # Copy Portfolio-level records
     # Assets
-    for old_rec in session.exec(select(Asset).where(Asset.portfolio_id == source_portfolio.id)).all():
+    for old_rec in session.exec(select(Asset).where(Asset.portfolio_id == source_portfolio.id, Asset.user_id == user.id)).all():
         new_rec = Asset(
             id=generate_id(),
             user_id=user.id,
@@ -244,7 +247,7 @@ async def deep_copy_portfolio(
         session.add(new_rec)
     
     # Liabilities
-    for old_rec in session.exec(select(Liability).where(Liability.portfolio_id == source_portfolio.id)).all():
+    for old_rec in session.exec(select(Liability).where(Liability.portfolio_id == source_portfolio.id, Liability.user_id == user.id)).all():
         new_rec = Liability(
             id=generate_id(),
             user_id=user.id,
@@ -264,7 +267,7 @@ async def deep_copy_portfolio(
         session.add(new_rec)
     
     # Income
-    for old_rec in session.exec(select(IncomeSource).where(IncomeSource.portfolio_id == source_portfolio.id)).all():
+    for old_rec in session.exec(select(IncomeSource).where(IncomeSource.portfolio_id == source_portfolio.id, IncomeSource.user_id == user.id)).all():
         new_rec = IncomeSource(
             id=generate_id(),
             user_id=user.id,
@@ -282,7 +285,7 @@ async def deep_copy_portfolio(
         session.add(new_rec)
     
     # Expenses
-    for old_rec in session.exec(select(Expense).where(Expense.portfolio_id == source_portfolio.id)).all():
+    for old_rec in session.exec(select(Expense).where(Expense.portfolio_id == source_portfolio.id, Expense.user_id == user.id)).all():
         new_rec = Expense(
             id=generate_id(),
             user_id=user.id,
@@ -450,7 +453,7 @@ async def update_scenario(
     return scenario
 
 
-@router.delete("/{scenario_id}")
+@router.delete("/{scenario_id}", status_code=204)
 async def delete_scenario(
     scenario_id: str,
     current_user: User = Depends(get_current_user),
@@ -505,7 +508,7 @@ async def delete_scenario(
     session.commit()
     
     logger.info(f"Deleted scenario {scenario_id}")
-    return {"message": "Scenario deleted successfully"}
+    return Response(status_code=204)
 
 
 @router.get("/{scenario_id}/compare")
@@ -535,7 +538,10 @@ async def compare_scenario(
     
     # Get source portfolio
     source = session.exec(
-        select(Portfolio).where(Portfolio.id == scenario.source_portfolio_id)
+        select(Portfolio).where(
+            Portfolio.id == scenario.source_portfolio_id,
+            Portfolio.user_id == current_user.id,
+        )
     ).first()
     
     if not source:

@@ -5,13 +5,14 @@ Supports multiple loans per property with detailed tracking.
 ⚠️ CRITICAL: All queries include user access verification for data isolation
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlmodel import Session, select
-from typing import List
+from pydantic import BaseModel
+from typing import List, Optional
 from datetime import datetime, timezone
+from decimal import Decimal
 import logging
 
-from models.property import Property
 from models.user import User
 from models.financials import (
     Loan,
@@ -23,27 +24,25 @@ from models.financials import (
     InterestRateForecast,
 )
 from utils.database_sql import get_session
-from utils.clerk_auth import get_current_user
+from utils.auth import get_current_user
+from utils.property_access import verify_property_access
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/loans", tags=["loans"])
 
 
-def _verify_property_access(property_id: str, user_id: str, session: Session) -> Property:
-    """Verify user has access to the property."""
-    statement = select(Property).where(
-        Property.id == property_id,
-        Property.user_id == user_id
-    )
-    property_obj = session.exec(statement).first()
-    
-    if not property_obj:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Property not found or you don't have access"
-        )
-    
-    return property_obj
+class ExtraRepaymentCreate(BaseModel):
+    amount: Decimal
+    frequency: str
+    start_date: str
+    end_date: Optional[str] = None
+
+
+class LumpSumCreate(BaseModel):
+    amount: Decimal
+    payment_date: str
+    description: str = ""
+
 
 
 def _verify_loan_access(loan_id: int, user_id: str, session: Session) -> Loan:
@@ -57,7 +56,7 @@ def _verify_loan_access(loan_id: int, user_id: str, session: Session) -> Loan:
         )
     
     # Verify property ownership
-    _verify_property_access(loan.property_id, user_id, session)
+    verify_property_access(loan.property_id, user_id, session)
     
     return loan
 
@@ -74,11 +73,11 @@ async def create_loan(
     Supports multiple loans per property with different structures.
     """
     # Verify property access
-    _verify_property_access(data.property_id, current_user.id, session)
+    verify_property_access(data.property_id, current_user.id, session)
     
     # Verify security property access if specified
     if data.security_property_id:
-        _verify_property_access(data.security_property_id, current_user.id, session)
+        verify_property_access(data.security_property_id, current_user.id, session)
     
     # Create loan
     loan = Loan(
@@ -118,7 +117,7 @@ async def get_property_loans(
     Get all loans for a property.
     """
     # Verify property access
-    _verify_property_access(property_id, current_user.id, session)
+    verify_property_access(property_id, current_user.id, session)
     
     # Get loans
     statement = select(Loan).where(Loan.property_id == property_id)
@@ -167,7 +166,7 @@ async def update_loan(
     return loan
 
 
-@router.delete("/{loan_id}")
+@router.delete("/{loan_id}", status_code=204)
 async def delete_loan(
     loan_id: int,
     current_user: User = Depends(get_current_user),
@@ -192,9 +191,9 @@ async def delete_loan(
     # Delete loan
     session.delete(loan)
     session.commit()
-    
+
     logger.info(f"Loan deleted: {loan_id}")
-    return {"message": "Loan deleted successfully"}
+    return Response(status_code=204)
 
 
 # ============================================================================
@@ -204,28 +203,24 @@ async def delete_loan(
 @router.post("/{loan_id}/extra-repayments")
 async def add_extra_repayment(
     loan_id: int,
-    amount: float,
-    frequency: str,
-    start_date: str,
-    end_date: str = None,
+    body: ExtraRepaymentCreate,
     current_user: User = Depends(get_current_user),
     session: Session = Depends(get_session)
 ):
     """
     Add a recurring extra repayment schedule to a loan.
     """
-    from decimal import Decimal
     from datetime import datetime as dt
     from models.financials import Frequency
-    
+
     loan = _verify_loan_access(loan_id, current_user.id, session)
-    
+
     repayment = ExtraRepayment(
         loan_id=loan_id,
-        amount=Decimal(str(amount)),
-        frequency=Frequency(frequency),
-        start_date=dt.strptime(start_date, "%Y-%m-%d").date(),
-        end_date=dt.strptime(end_date, "%Y-%m-%d").date() if end_date else None,
+        amount=body.amount,
+        frequency=Frequency(body.frequency),
+        start_date=dt.strptime(body.start_date, "%Y-%m-%d").date(),
+        end_date=dt.strptime(body.end_date, "%Y-%m-%d").date() if body.end_date else None,
         created_at=datetime.now(timezone.utc),
     )
     
@@ -239,25 +234,22 @@ async def add_extra_repayment(
 @router.post("/{loan_id}/lump-sum")
 async def add_lump_sum_payment(
     loan_id: int,
-    amount: float,
-    payment_date: str,
-    description: str = "",
+    body: LumpSumCreate,
     current_user: User = Depends(get_current_user),
     session: Session = Depends(get_session)
 ):
     """
     Add a one-time lump sum payment to a loan.
     """
-    from decimal import Decimal
     from datetime import datetime as dt
-    
+
     loan = _verify_loan_access(loan_id, current_user.id, session)
-    
+
     payment = LumpSumPayment(
         loan_id=loan_id,
-        amount=Decimal(str(amount)),
-        payment_date=dt.strptime(payment_date, "%Y-%m-%d").date(),
-        description=description,
+        amount=body.amount,
+        payment_date=dt.strptime(body.payment_date, "%Y-%m-%d").date(),
+        description=body.description,
         created_at=datetime.now(timezone.utc),
     )
     

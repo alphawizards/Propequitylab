@@ -27,7 +27,7 @@ from models.financials import (
     PortfolioProjectionResponse,
 )
 from utils.database_sql import get_session
-from utils.clerk_auth import get_current_user
+from utils.auth import get_current_user
 from utils.calculations import (
     calculate_property_value,
     calculate_property_equity,
@@ -344,12 +344,72 @@ async def get_portfolio_projections(
         )
     
     current_year = datetime.now().year
-    
-    # Generate projections for each property
+
+    # Pre-fetch all related data for all properties in one query each (fixes N+1)
+    property_ids = [p.id for p in properties]
+
+    all_loans = session.exec(select(Loan).where(Loan.property_id.in_(property_ids))).all()
+    all_valuations = session.exec(select(PropertyValuation).where(PropertyValuation.property_id.in_(property_ids))).all()
+    all_growth_rates = session.exec(select(GrowthRatePeriod).where(GrowthRatePeriod.property_id.in_(property_ids))).all()
+    all_rental_incomes = session.exec(select(RentalIncome).where(RentalIncome.property_id.in_(property_ids))).all()
+    all_expenses = session.exec(select(ExpenseLog).where(ExpenseLog.property_id.in_(property_ids))).all()
+    all_depreciation = session.exec(select(DepreciationSchedule).where(DepreciationSchedule.property_id.in_(property_ids))).all()
+
+    # Build lookup dicts keyed by property_id
+    def _build_property_data(property_id: str) -> dict:
+        loans = [l for l in all_loans if l.property_id == property_id]
+        valuations = [v for v in all_valuations if v.property_id == property_id]
+        growth_rates = [g for g in all_growth_rates if g.property_id == property_id]
+        rental_incomes = [r for r in all_rental_incomes if r.property_id == property_id]
+        expenses = [e for e in all_expenses if e.property_id == property_id]
+        depreciation = [d for d in all_depreciation if d.property_id == property_id]
+
+        return {
+            "loans": [
+                {
+                    "original_amount": loan.original_amount,
+                    "current_amount": loan.current_amount,
+                    "interest_rate": loan.interest_rate,
+                    "loan_structure": loan.loan_structure.value if hasattr(loan.loan_structure, 'value') else loan.loan_structure,
+                    "remaining_term_years": loan.remaining_term_years,
+                    "repayment_frequency": loan.repayment_frequency.value if hasattr(loan.repayment_frequency, 'value') else loan.repayment_frequency,
+                    "offset_balance": loan.offset_balance,
+                }
+                for loan in loans
+            ],
+            "valuations": [
+                {"valuation_date": val.valuation_date, "value": val.value}
+                for val in valuations
+            ],
+            "growth_rates": [
+                {"start_year": gr.start_year, "end_year": gr.end_year, "growth_rate": gr.growth_rate}
+                for gr in growth_rates
+            ],
+            "rental_incomes": [
+                {
+                    "amount": ri.amount,
+                    "frequency": ri.frequency.value if hasattr(ri.frequency, 'value') else ri.frequency,
+                    "growth_rate": ri.growth_rate,
+                    "vacancy_weeks_per_year": ri.vacancy_weeks_per_year,
+                }
+                for ri in rental_incomes
+            ],
+            "expenses": [
+                {
+                    "amount": exp.amount,
+                    "frequency": exp.frequency.value if hasattr(exp.frequency, 'value') else exp.frequency,
+                    "growth_rate": exp.growth_rate,
+                }
+                for exp in expenses
+            ],
+            "depreciation": depreciation,
+        }
+
+    # Generate projections for each property using pre-fetched data
     property_projections = []
-    
+
     for property_obj in properties:
-        property_data = _get_property_data(property_obj.id, session)
+        property_data = _build_property_data(property_obj.id)
         projections = _generate_property_projections(
             property_obj,
             property_data,
@@ -358,7 +418,7 @@ async def get_portfolio_projections(
             interest_rate_offset,
             asset_growth_override
         )
-        
+
         property_projections.append(PropertyProjectionResponse(
             property_id=property_obj.id,
             property_address=property_obj.address,

@@ -65,6 +65,7 @@ const ProjectionsPage = () => {
             setProperties(data);
         } catch (err) {
             console.error('Failed to fetch properties:', err);
+            setError(err.response?.data?.detail || 'Failed to load properties.');
         }
     }, [currentPortfolio?.id]);
 
@@ -144,7 +145,7 @@ const ProjectionsPage = () => {
             <div className="hidden xl:block fixed right-4 top-24 w-72 z-10">
                 <ScenarioListPanel
                     portfolioId={currentPortfolio?.id}
-                    userTier="pro" // TODO: Get from user context
+                    userTier="free" // TODO: wire to subscription plan from UserContext
                     onSelectScenario={(scenario) => {
                         navigate(`/scenarios/${scenario.id}/dashboard`);
                     }}
@@ -156,8 +157,8 @@ const ProjectionsPage = () => {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-semibold text-[#111111]">Financial Projections</h1>
-                    <p className="text-[#6B7280]">
+                    <h1 className="text-2xl font-semibold text-[#111111] dark:text-white">Financial Projections</h1>
+                    <p className="text-[#6B7280] dark:text-gray-400">
                         {years}-year forecast for your property portfolio
                     </p>
                 </div>
@@ -309,8 +310,8 @@ const ProjectionsPage = () => {
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-[#6B7280]">Current Value</p>
-                                    <p className="text-2xl font-semibold tabular-nums text-[#111111]">
+                                    <p className="text-sm text-[#6B7280] dark:text-gray-400">Current Value</p>
+                                    <p className="text-2xl font-semibold tabular-nums text-[#111111] dark:text-white">
                                         {formatCurrency(currentData.property_value)}
                                     </p>
                                     <p className="text-sm text-emerald-600">
@@ -366,11 +367,11 @@ const ProjectionsPage = () => {
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-[#6B7280]">Net Cashflow (Year 1)</p>
+                                    <p className="text-sm text-[#6B7280] dark:text-gray-400">Net Cashflow (Year 1)</p>
                                     <p className={`text-2xl font-semibold tabular-nums ${parseFloat(currentData.net_cashflow) >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
                                         {formatCurrency(currentData.net_cashflow)}
                                     </p>
-                                    <p className="text-sm text-[#6B7280]">per year</p>
+                                    <p className="text-sm text-[#6B7280] dark:text-gray-400">per year</p>
                                 </div>
                                 <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${parseFloat(currentData.net_cashflow) >= 0 ? 'bg-green-100' : 'bg-red-100'}`}>
                                     <Calendar className={`w-6 h-6 ${parseFloat(currentData.net_cashflow) >= 0 ? 'text-green-600' : 'text-red-600'}`} />
@@ -440,10 +441,10 @@ const ProjectionsPage = () => {
                 <Card className="p-12">
                     <div className="text-center">
                         <TrendingUp className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                        <h3 className="text-lg font-semibold text-[#111111] mb-2">
+                        <h3 className="text-lg font-semibold text-[#111111] dark:text-white mb-2">
                             No projection data available
                         </h3>
-                        <p className="text-[#6B7280]">
+                        <p className="text-[#6B7280] dark:text-gray-400">
                             Add properties with loan and rental details to see projections
                         </p>
                     </div>
@@ -461,26 +462,26 @@ const ProjectionsPage = () => {
                             <table className="w-full text-sm">
                                 <thead>
                                     <tr className="border-b">
-                                        <th className="text-left py-3 px-2 text-[#6B7280]">Year</th>
-                                        <th className="text-right py-3 px-2 text-[#6B7280]">Value</th>
-                                        <th className="text-right py-3 px-2 text-[#6B7280]">Debt</th>
-                                        <th className="text-right py-3 px-2 text-[#6B7280]">Equity</th>
-                                        <th className="text-right py-3 px-2 text-[#6B7280]">LVR</th>
-                                        <th className="text-right py-3 px-2 text-[#6B7280]">Rent</th>
-                                        <th className="text-right py-3 px-2 text-[#6B7280]">Expenses</th>
-                                        <th className="text-right py-3 px-2 text-[#6B7280]">Cashflow</th>
+                                        <th className="text-left py-3 px-2 text-[#6B7280] dark:text-gray-400">Year</th>
+                                        <th className="text-right py-3 px-2 text-[#6B7280] dark:text-gray-400">Value</th>
+                                        <th className="text-right py-3 px-2 text-[#6B7280] dark:text-gray-400">Debt</th>
+                                        <th className="text-right py-3 px-2 text-[#6B7280] dark:text-gray-400">Equity</th>
+                                        <th className="text-right py-3 px-2 text-[#6B7280] dark:text-gray-400">LVR</th>
+                                        <th className="text-right py-3 px-2 text-[#6B7280] dark:text-gray-400">Rent</th>
+                                        <th className="text-right py-3 px-2 text-[#6B7280] dark:text-gray-400">Expenses</th>
+                                        <th className="text-right py-3 px-2 text-[#6B7280] dark:text-gray-400">Cashflow</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {projectionData.map((row, index) => (
-                                        <tr key={row.year} className={index % 2 === 0 ? 'bg-slate-50' : ''}>
-                                            <td className="py-2 px-2 font-medium">{row.year}</td>
-                                            <td className="py-2 px-2 text-right">{formatCurrency(row.property_value)}</td>
-                                            <td className="py-2 px-2 text-right">{formatCurrency(row.total_debt)}</td>
+                                        <tr key={row.year} className={index % 2 === 0 ? 'bg-slate-50 dark:bg-gray-800/50' : ''}>
+                                            <td className="py-2 px-2 font-medium dark:text-white">{row.year}</td>
+                                            <td className="py-2 px-2 text-right dark:text-gray-300">{formatCurrency(row.property_value)}</td>
+                                            <td className="py-2 px-2 text-right dark:text-gray-300">{formatCurrency(row.total_debt)}</td>
                                             <td className="py-2 px-2 text-right text-emerald-600">{formatCurrency(row.equity)}</td>
-                                            <td className="py-2 px-2 text-right">{formatPercentage(row.lvr)}</td>
-                                            <td className="py-2 px-2 text-right">{formatCurrency(row.rental_income)}</td>
-                                            <td className="py-2 px-2 text-right">{formatCurrency(row.expenses)}</td>
+                                            <td className="py-2 px-2 text-right dark:text-gray-300">{formatPercentage(row.lvr)}</td>
+                                            <td className="py-2 px-2 text-right dark:text-gray-300">{formatCurrency(row.rental_income)}</td>
+                                            <td className="py-2 px-2 text-right dark:text-gray-300">{formatCurrency(row.expenses)}</td>
                                             <td className={`py-2 px-2 text-right font-medium ${parseFloat(row.net_cashflow) >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
                                                 {formatCurrency(row.net_cashflow)}
                                             </td>

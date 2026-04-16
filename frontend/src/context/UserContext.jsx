@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef, useMemo } from 'react';
 import api from '../services/api';
 import { useAuth } from './AuthContext';
 import { useAuth as useClerkAuth } from '@clerk/clerk-react';
@@ -40,7 +40,9 @@ export const UserProvider = ({ children }) => {
   // isAuthenticated flips to true but clerkTokenGetter is still null in api.js.
   const { getToken } = useClerkAuth();
 
-  const [user, setUser] = useState(authUser);
+  // profileExtras holds mutable profile fields (name, country, state, currency, etc.)
+  // fetched from the backend. Auth identity always comes from AuthContext.
+  const [profileExtras, setProfileExtras] = useState({});
   const [loading, setLoading] = useState(true);
   const [onboardingStatus, setOnboardingStatus] = useState({
     completed: false,
@@ -55,12 +57,9 @@ export const UserProvider = ({ children }) => {
   // Guard against re-fetching when deps change multiple times during hydration
   const fetchedRef = useRef(false);
 
-  // Update user when authUser changes
-  useEffect(() => {
-    if (authUser) {
-      setUser(authUser);
-    }
-  }, [authUser]);
+  // Derive user by merging auth identity with mutable profile extras.
+  // authUser is the single source of truth for id/email/is_verified.
+  const user = authUser ? { ...authUser, ...profileExtras } : null;
 
   // Fetch onboarding status ONLY when:
   //   1. Clerk has finished hydrating (authLoading === false)
@@ -102,7 +101,7 @@ export const UserProvider = ({ children }) => {
           currentStep: response.current_step,
         });
         if (response.user) {
-          setUser(prev => ({ ...prev, ...response.user }));
+          setProfileExtras(prev => ({ ...prev, ...response.user }));
         }
       } catch (error) {
         console.error('Failed to fetch onboarding status:', error);
@@ -120,14 +119,14 @@ export const UserProvider = ({ children }) => {
   }, [isAuthenticated, authLoading, authUser, getToken]);
 
   const updateUser = (updates) => {
-    setUser(prev => ({ ...prev, ...updates }));
+    setProfileExtras(prev => ({ ...prev, ...updates }));
   };
 
   const completeOnboarding = async () => {
     try {
       await api.completeOnboarding();
       setOnboardingStatus({ completed: true, currentStep: 8 });
-      setUser(prev => ({ ...prev, onboarding_completed: true }));
+      setProfileExtras(prev => ({ ...prev, onboarding_completed: true }));
     } catch (error) {
       console.error('Failed to complete onboarding:', error);
     }
@@ -137,7 +136,7 @@ export const UserProvider = ({ children }) => {
     try {
       await api.skipOnboarding();
       setOnboardingStatus({ completed: true, currentStep: -1 });
-      setUser(prev => ({ ...prev, onboarding_completed: true }));
+      setProfileExtras(prev => ({ ...prev, onboarding_completed: true }));
     } catch (error) {
       console.error('Failed to skip onboarding:', error);
     }
@@ -147,7 +146,7 @@ export const UserProvider = ({ children }) => {
     try {
       await api.resetOnboarding();
       setOnboardingStatus({ completed: false, currentStep: 0 });
-      setUser(prev => ({ ...prev, onboarding_completed: false, onboarding_step: 0 }));
+      setProfileExtras(prev => ({ ...prev, onboarding_completed: false, onboarding_step: 0 }));
     } catch (error) {
       console.error('Failed to reset onboarding:', error);
     }
@@ -163,7 +162,7 @@ export const UserProvider = ({ children }) => {
     setHasSeenWelcome(false);
   };
 
-  const value = {
+  const value = useMemo(() => ({
     user,
     userId: user?.id,
     loading: loading || authLoading,
@@ -176,7 +175,8 @@ export const UserProvider = ({ children }) => {
     markWelcomeSeen,
     resetWelcome,
     isDevMode: false,
-  };
+  }), [user, loading, authLoading, onboardingStatus, updateUser, completeOnboarding, skipOnboarding, resetOnboarding, hasSeenWelcome, markWelcomeSeen, resetWelcome]);
+  // note: `user` is derived from authUser + profileExtras, so changes to either will re-compute it and re-run useMemo
 
   return (
     <UserContext.Provider value={value}>

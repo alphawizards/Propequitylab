@@ -70,20 +70,6 @@ export const initSentry = () => {
           return null;
         }
 
-        // Add user information if available
-        const userStr = localStorage.getItem('user');
-        if (userStr) {
-          try {
-            const user = JSON.parse(userStr);
-            event.user = {
-              id: user.id,
-              email: user.email,
-            };
-          } catch (e) {
-            // Ignore parse errors
-          }
-        }
-
         return event;
       },
     });
@@ -108,11 +94,7 @@ export const captureError = (error, context = {}) => {
  */
 export const setUserContext = (user) => {
   if (user) {
-    Sentry.setUser({
-      id: user.id,
-      email: user.email,
-      username: user.name,
-    });
+    Sentry.setUser({ id: user.id });
   } else {
     Sentry.setUser(null);
   }

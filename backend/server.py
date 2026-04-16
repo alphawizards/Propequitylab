@@ -6,6 +6,7 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 import os
+import time
 import sentry_sdk
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 import logging
@@ -54,7 +55,7 @@ limiter = Limiter(key_func=get_remote_address, default_limits=["100/minute"])
 # Get allowed origins from environment
 ALLOWED_ORIGINS = os.environ.get('CORS_ORIGINS', 'http://localhost:3000').split(',')
 ALLOWED_ORIGINS = [origin.strip() for origin in ALLOWED_ORIGINS]
-logger.info(f"CORS allowed origins: {ALLOWED_ORIGINS}")
+logger.debug(f"CORS allowed origins: {ALLOWED_ORIGINS}")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -85,20 +86,39 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 api_router = APIRouter(prefix="/api")
 
+# TTL cache for DB health check — re-ping at most every 30 seconds
+_db_health_cache: dict = {"healthy": True, "expires_at": 0.0}
+
+def _check_db_health() -> bool:
+    now = time.monotonic()
+    if now < _db_health_cache["expires_at"]:
+        return _db_health_cache["healthy"]
+    result = test_connection()
+    _db_health_cache["healthy"] = result
+    _db_health_cache["expires_at"] = now + 30.0
+    return result
+
+
 @api_router.get("/health")
 @api_router.head("/health")
 async def health_check():
     """
     Health check endpoint with database connectivity status.
     Returns overall health status and individual component statuses.
+    DB ping is cached for 30 seconds to avoid hammering the connection pool.
     """
-    db_healthy = test_connection()
+    db_healthy = _check_db_health()
 
+    if not db_healthy:
+        return Response(
+            content='{"status":"degraded","components":{"database":"disconnected","api":"running"}}',
+            status_code=503,
+            media_type="application/json"
+        )
     return {
-        "status": "healthy" if db_healthy else "degraded",
-        "stack": "PostgreSQL + Railway",
+        "status": "healthy",
         "components": {
-            "database": "connected" if db_healthy else "disconnected",
+            "database": "connected",
             "api": "running"
         }
     }

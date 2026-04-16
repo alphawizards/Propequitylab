@@ -13,7 +13,7 @@ const MainLayout = ({ title = 'Dashboard', subtitle, rightPanel }) => {
       </div>
 
       {/* 2. Main Content Area (Fluid Center) */}
-      <div className="flex-1 flex flex-col min-w-0 bg-background">
+      <div className="flex-1 flex flex-col min-w-0 bg-background pt-14 md:pt-0">
         {/* Header (Sticky Top) */}
         <Header title={title} subtitle={subtitle} />
 

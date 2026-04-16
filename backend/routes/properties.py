@@ -3,7 +3,7 @@ Property Routes - SQL-Based with Authentication & Data Isolation (GOLDEN MASTER)
 ⚠️ CRITICAL: All queries include .where(Property.user_id == current_user.id) for data isolation
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlmodel import Session, select
 from typing import List
 from datetime import datetime, date, timezone
@@ -14,7 +14,7 @@ from models.property import Property, PropertyCreate, PropertyUpdate
 from models.portfolio import Portfolio
 from models.user import User
 from utils.database_sql import get_session
-from utils.clerk_auth import get_current_user
+from utils.auth import get_current_user
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/properties", tags=["properties"])
@@ -184,7 +184,7 @@ async def update_property(
     return property_obj
 
 
-@router.delete("/{property_id}")
+@router.delete("/{property_id}", status_code=204)
 async def delete_property(
     property_id: str,
     current_user: User = Depends(get_current_user),
@@ -213,4 +213,4 @@ async def delete_property(
     session.commit()
     
     logger.info(f"Property deleted: {property_id} by user: {current_user.id}")
-    return {"message": "Property deleted successfully"}
+    return Response(status_code=204)

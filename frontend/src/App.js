@@ -10,27 +10,6 @@ import { ThemeProvider } from './context/ThemeContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import MainLayout from './components/layout/MainLayout';
 import DashboardLayout from './components/layout/DashboardLayout';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
-import VerifyEmail from './pages/VerifyEmail';
-import PrivacyPolicy from './pages/legal/PrivacyPolicy';
-import TermsOfService from './pages/legal/TermsOfService';
-import DashboardNew from './pages/DashboardNew';
-import PropertiesPage from './pages/PropertiesPage';
-import AssetsPage from './pages/AssetsPage';
-import LiabilitiesPage from './pages/LiabilitiesPage';
-import PlansPage from './pages/PlansPage';
-import ProgressPage from './pages/ProgressPage';
-import IncomePage from './pages/IncomePage';
-import SpendingPage from './pages/SpendingPage';
-import Settings from './pages/Settings';
-import OnboardingWizard from './components/onboarding/OnboardingWizard';
-import { MortgageCalculatorPage } from './pages/calculators/MortgageCalculatorPage';
-import LandingPage from './pages/LandingPage';
-import ProjectionsPage from './pages/ProjectionsPage';
-import ScenarioDashboardPage from './pages/ScenarioDashboardPage';
 import { Toaster } from './components/ui/toaster';
 import * as Sentry from '@sentry/react';
 import ErrorFallback from './components/ErrorBoundary';
@@ -41,8 +20,35 @@ if (!PUBLISHABLE_KEY) {
   throw new Error("Missing REACT_APP_CLERK_PUBLISHABLE_KEY environment variable");
 }
 
-// Lazy load WelcomeModal to reduce initial bundle size
+// Lazy-loaded page components — split into separate chunks
+const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
+const VerifyEmail = lazy(() => import('./pages/VerifyEmail'));
+const PrivacyPolicy = lazy(() => import('./pages/legal/PrivacyPolicy'));
+const TermsOfService = lazy(() => import('./pages/legal/TermsOfService'));
+const DashboardNew = lazy(() => import('./pages/DashboardNew'));
+const PropertiesPage = lazy(() => import('./pages/PropertiesPage'));
+const AssetsPage = lazy(() => import('./pages/AssetsPage'));
+const LiabilitiesPage = lazy(() => import('./pages/LiabilitiesPage'));
+const PlansPage = lazy(() => import('./pages/PlansPage'));
+const ProgressPage = lazy(() => import('./pages/ProgressPage'));
+const IncomePage = lazy(() => import('./pages/IncomePage'));
+const SpendingPage = lazy(() => import('./pages/SpendingPage'));
+const Settings = lazy(() => import('./pages/Settings'));
+const OnboardingWizard = lazy(() => import('./components/onboarding/OnboardingWizard'));
+const MortgageCalculatorPage = lazy(() => import('./pages/calculators/MortgageCalculatorPage').then(m => ({ default: m.MortgageCalculatorPage })));
+const LandingPage = lazy(() => import('./pages/LandingPage'));
+const ProjectionsPage = lazy(() => import('./pages/ProjectionsPage'));
+const ScenarioDashboardPage = lazy(() => import('./pages/ScenarioDashboardPage'));
 const WelcomeModal = lazy(() => import('./components/onboarding/WelcomeModal'));
+
+const PageSpinner = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <div className="animate-spin h-8 w-8 border-4 border-emerald-500 border-t-transparent rounded-full" />
+  </div>
+);
 
 // Placeholder pages - will be implemented in later phases
 const PlaceholderPage = ({ title }) => (
@@ -67,13 +73,11 @@ const WelcomeModalWrapper = () => {
   if (!shouldShowWelcome) return null;
 
   return (
-    <Suspense fallback={null}>
-      <WelcomeModal
-        isOpen={shouldShowWelcome}
-        onClose={markWelcomeSeen}
-        onComplete={markWelcomeSeen}
-      />
-    </Suspense>
+    <WelcomeModal
+      isOpen={shouldShowWelcome}
+      onClose={markWelcomeSeen}
+      onComplete={markWelcomeSeen}
+    />
   );
 };
 
@@ -110,6 +114,7 @@ const RootRedirect = () => {
 
 function AppRoutes() {
   return (
+    <Suspense fallback={<PageSpinner />}>
     <Routes>
       {/* Public routes */}
       <Route path="/login/*" element={<Login />} />
@@ -180,6 +185,7 @@ function AppRoutes() {
         <Route path="/help" element={<PlaceholderPage title="Help Center" />} />
       </Route>
     </Routes>
+    </Suspense>
   );
 }
 
@@ -195,7 +201,7 @@ function App() {
                   <PortfolioProvider>
                     <div className="App">
                       <AppRoutes />
-                      <WelcomeModalWrapper />
+                      <Suspense fallback={null}><WelcomeModalWrapper /></Suspense>
                       <Toaster />
                       <CookieBanner />
                     </div>

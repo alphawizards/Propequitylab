@@ -76,7 +76,6 @@ const DashboardNew = () => {
   const [netWorthHistory, setNetWorthHistory] = useState([]);
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [historyLoading, setHistoryLoading] = useState(true);
   const [snapshotLoading, setSnapshotLoading] = useState(false);
   const [demoLoading, setDemoLoading] = useState(false);
   const [showDemoConfirm, setShowDemoConfirm] = useState(false);
@@ -84,50 +83,37 @@ const DashboardNew = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
 
-  const fetchDashboardData = async () => {
+  const computeCashflow = (props) => props.map(p => {
+    const rentFreqToAnnual = { weekly: 52, fortnightly: 26, monthly: 12 };
+    const monthlyRent = p.rental_details?.income
+      ? Number(p.rental_details.income) * (rentFreqToAnnual[p.rental_details.frequency] ?? 12) / 12
+      : 0;
+    const monthlyExpenses = p.expenses
+      ? Object.values(p.expenses).reduce((sum, v) => sum + (Number(v) || 0), 0) / 12
+      : 0;
+    const loanAmount = Number(p.loan_details?.amount) || 0;
+    const interestRate = (Number(p.loan_details?.interest_rate) || 6) / 100;
+    const monthlyLoanPayment = loanAmount > 0 ? (loanAmount * interestRate / 12) : 0;
+    return { ...p, cashflow: monthlyRent - monthlyExpenses - monthlyLoanPayment };
+  });
+
+  const fetchAllDashboardData = async () => {
     setLoading(true);
     try {
-      const data = await api.getDashboardSummary(currentPortfolio?.id);
+      const [data, history, props] = await Promise.all([
+        api.getDashboardSummary(currentPortfolio?.id),
+        api.getNetWorthHistory(currentPortfolio?.id, 12),
+        api.getProperties(currentPortfolio?.id),
+      ]);
       setDashboardData(data);
       setDataVersion(v => v + 1);
+      setNetWorthHistory(history);
+      setProperties(computeCashflow(props));
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
       toast({ title: 'Failed to load dashboard', description: 'Please try refreshing.', variant: 'destructive' });
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchNetWorthHistory = async () => {
-    try {
-      const history = await api.getNetWorthHistory(currentPortfolio?.id, 12);
-      setNetWorthHistory(history);
-    } catch (error) {
-      console.error('Failed to fetch net worth history:', error);
-    } finally {
-      setHistoryLoading(false);
-    }
-  };
-
-  const fetchProperties = async () => {
-    try {
-      const props = await api.getProperties(currentPortfolio?.id);
-      const propsWithCashflow = props.map(p => {
-        const monthlyRent = p.rental_details?.income
-          ? (p.rental_details.frequency === 'weekly' ? p.rental_details.income * 52 / 12 : Number(p.rental_details.income))
-          : 0;
-        const monthlyExpenses = p.expenses
-          ? Object.values(p.expenses).reduce((sum, v) => sum + (Number(v) || 0), 0) / 12
-          : 0;
-        const loanAmount = Number(p.loan_details?.amount) || 0;
-        const interestRate = (Number(p.loan_details?.interest_rate) || 6) / 100;
-        const monthlyLoanPayment = loanAmount > 0 ? (loanAmount * interestRate / 12) : 0;
-        const cashflow = monthlyRent - monthlyExpenses - monthlyLoanPayment;
-        return { ...p, cashflow };
-      });
-      setProperties(propsWithCashflow);
-    } catch (error) {
-      console.error('Failed to fetch properties:', error);
     }
   };
 
@@ -142,6 +128,7 @@ const DashboardNew = () => {
       toast({ title: 'Demo data loaded!', description: 'Your portfolio has been populated with sample data.' });
       // Increment trigger so the useEffect re-fires even if currentPortfolio?.id is unchanged
       setRefreshTrigger(v => v + 1);
+      // Note: fetchAllDashboardData will be called by the useEffect above
     } catch (error) {
       toast({
         title: 'Error',
@@ -158,7 +145,8 @@ const DashboardNew = () => {
     setSnapshotLoading(true);
     try {
       await api.createSnapshot(currentPortfolio.id);
-      await fetchNetWorthHistory();
+      const history = await api.getNetWorthHistory(currentPortfolio?.id, 12);
+      setNetWorthHistory(history);
     } catch (error) {
       console.error('Failed to create snapshot:', error);
     } finally {
@@ -168,12 +156,9 @@ const DashboardNew = () => {
 
   useEffect(() => {
     if (currentPortfolio?.id) {
-      fetchDashboardData();
-      fetchNetWorthHistory();
-      fetchProperties();
+      fetchAllDashboardData();
     } else {
       setLoading(false);
-      setHistoryLoading(false);
     }
   }, [currentPortfolio?.id, refreshTrigger]);
 
@@ -186,8 +171,8 @@ const DashboardNew = () => {
             <div className="w-20 h-20 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-6">
               <Building className="w-10 h-10 text-emerald-600" />
             </div>
-            <h2 className="text-2xl font-bold text-zinc-900 mb-2 tracking-tight">Welcome to PropEquityLab</h2>
-            <p className="text-zinc-500 mb-6 leading-relaxed">
+            <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-2 tracking-tight">Welcome to PropEquityLab</h2>
+            <p className="text-zinc-500 dark:text-zinc-400 mb-6 leading-relaxed">
               Create your first portfolio to start tracking property investments and financial goals.
             </p>
             <Button
@@ -289,7 +274,7 @@ const DashboardNew = () => {
         {/* Net Worth Chart — Takes 2 columns */}
         <div className="lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-[#6B7280]">Financial History</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-[#6B7280] dark:text-gray-400">Financial History</h3>
             <Button
               onClick={handleCreateSnapshot}
               disabled={snapshotLoading || !currentPortfolio?.id}
@@ -305,13 +290,13 @@ const DashboardNew = () => {
               Snapshot
             </Button>
           </div>
-          <div className="rounded-xl border border-[#EAEAEA] bg-white p-6 shadow-card">
-            <NetWorthChart data={netWorthHistory} loading={historyLoading} />
+          <div className="rounded-xl border border-[#EAEAEA] dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-card">
+            <NetWorthChart data={netWorthHistory} loading={loading} />
           </div>
         </div>
 
         {/* Asset Allocation — 1 column */}
-        <div className="rounded-xl border border-[#EAEAEA] bg-white p-6 shadow-card">
+        <div className="rounded-xl border border-[#EAEAEA] dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-card">
           <h3 className="text-sm font-semibold uppercase tracking-wide text-[#6B7280] mb-4">Asset Allocation</h3>
           <AssetAllocationChart
             key={`assets-${dataVersion}`}
@@ -327,7 +312,7 @@ const DashboardNew = () => {
         <div>
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp className="w-5 h-5 text-emerald-600" />
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-[#6B7280]">Assets</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-[#6B7280] dark:text-gray-400">Assets</h3>
           </div>
           <div className="space-y-3">
             {[
@@ -342,8 +327,8 @@ const DashboardNew = () => {
               return (
                 <div key={item.label} className="group">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-sm text-zinc-600">{item.label}</span>
-                    <span className="text-sm font-medium text-zinc-900 tabular-nums">{formatCurrency(item.value)}</span>
+                    <span className="text-sm text-zinc-600 dark:text-zinc-400">{item.label}</span>
+                    <span className="text-sm font-medium text-zinc-900 dark:text-white tabular-nums">{formatCurrency(item.value)}</span>
                   </div>
                   <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                     <div
@@ -361,7 +346,7 @@ const DashboardNew = () => {
         <div>
           <div className="flex items-center gap-2 mb-4">
             <TrendingDown className="w-5 h-5 text-red-500" />
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-[#6B7280]">Liabilities</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-[#6B7280] dark:text-gray-400">Liabilities</h3>
           </div>
           <div className="space-y-3">
             {[
@@ -376,8 +361,8 @@ const DashboardNew = () => {
               return (
                 <div key={item.label} className="group">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-sm text-zinc-600">{item.label}</span>
-                    <span className="text-sm font-medium text-zinc-900 tabular-nums">{formatCurrency(item.value)}</span>
+                    <span className="text-sm text-zinc-600 dark:text-zinc-400">{item.label}</span>
+                    <span className="text-sm font-medium text-zinc-900 dark:text-white tabular-nums">{formatCurrency(item.value)}</span>
                   </div>
                   <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                     <div
@@ -434,10 +419,10 @@ const DashboardNew = () => {
             <button
               key={action.label}
               onClick={() => navigate(action.href)}
-              className="group flex items-center gap-3 p-4 rounded-lg border border-[#EAEAEA] bg-white hover:bg-slate-50 hover:border-slate-300 transition-all duration-150 active:scale-[0.98] text-left"
+              className="group flex items-center gap-3 p-4 rounded-lg border border-[#EAEAEA] dark:border-gray-700 bg-white dark:bg-gray-900 hover:bg-slate-50 dark:hover:bg-gray-800 hover:border-slate-300 transition-all duration-150 active:scale-[0.98] text-left"
             >
               <action.icon className="w-5 h-5 text-[#6B7280] group-hover:text-emerald-600 transition-colors" />
-              <span className="text-sm font-medium text-[#111111]">{action.label}</span>
+              <span className="text-sm font-medium text-[#111111] dark:text-white">{action.label}</span>
               <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-emerald-500 ml-auto transition-all group-hover:translate-x-0.5" />
             </button>
           ))}
@@ -468,10 +453,10 @@ const DashboardNew = () => {
       </AlertDialog>
 
       {/* Demo Data — subtle card at the bottom */}
-      <div className="rounded-xl border border-dashed border-[#EAEAEA] bg-slate-50/50 p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+      <div className="rounded-xl border border-dashed border-[#EAEAEA] dark:border-gray-700 bg-slate-50/50 dark:bg-gray-900/50 p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <div className="flex-1">
-          <p className="text-sm font-medium text-zinc-700">Load Sample Data</p>
-          <p className="text-xs text-zinc-400 mt-0.5">
+          <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Load Sample Data</p>
+          <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-0.5">
             Populate your portfolio with a demo property, car, ETF, super, liabilities, income, and expenses — great for exploring the app.
           </p>
         </div>

@@ -3,12 +3,12 @@ Plan Routes - SQL-Based with Authentication & Data Isolation
 ⚠️ CRITICAL: All queries include .where(Plan.user_id == current_user.id) for data isolation
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlmodel import Session, select
 from typing import List, Optional
 from datetime import datetime, timezone
 from decimal import Decimal
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 import logging
 import uuid
 
@@ -21,7 +21,7 @@ from models.income import IncomeSource
 from models.expense import Expense
 from models.user import User
 from utils.database_sql import get_session
-from utils.clerk_auth import get_current_user
+from utils.auth import get_current_user
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/plans", tags=["plans"])
@@ -30,22 +30,22 @@ router = APIRouter(prefix="/plans", tags=["plans"])
 class ProjectionInput(BaseModel):
     current_net_worth: float = 0
     annual_savings: float = 0
-    expected_return: float = 7.0  # percent
-    inflation_rate: float = 2.5  # percent
-    withdrawal_rate: float = 4.0  # percent
-    current_age: int = 35
-    retirement_age: int = 55
-    life_expectancy: int = 95
+    expected_return: float = Field(default=7.0, ge=-100.0, le=100.0)
+    inflation_rate: float = Field(default=2.5, ge=0.0, le=50.0)
+    withdrawal_rate: float = Field(default=4.0, ge=0.0, le=100.0)
+    current_age: int = Field(default=35, ge=0, le=120)
+    retirement_age: int = Field(default=55, ge=0, le=120)
+    life_expectancy: int = Field(default=95, ge=1, le=120)
     target_net_worth: Optional[float] = None
 
 
 class ProjectionYear(BaseModel):
     year: int
     age: int
-    net_worth: float
-    annual_savings: float
-    investment_returns: float
-    withdrawals: float
+    net_worth: Decimal
+    annual_savings: Decimal
+    investment_returns: Decimal
+    withdrawals: Decimal
     phase: str  # accumulation, retirement
 
 
@@ -53,11 +53,11 @@ class ProjectionResult(BaseModel):
     years_to_fire: Optional[int]
     fire_age: Optional[int]
     fire_year: Optional[int]
-    fire_number: float
+    fire_number: Decimal
     success_probability: float
     projections: List[ProjectionYear]
-    final_net_worth: float
-    total_withdrawals: float
+    final_net_worth: Decimal
+    total_withdrawals: Decimal
 
 
 @router.get("/types")
@@ -230,7 +230,7 @@ async def update_plan(
     return plan
 
 
-@router.delete("/{plan_id}")
+@router.delete("/{plan_id}", status_code=204)
 async def delete_plan(
     plan_id: str,
     current_user: User = Depends(get_current_user),
@@ -257,14 +257,19 @@ async def delete_plan(
     # Delete plan
     session.delete(plan)
     session.commit()
-    
+
     logger.info(f"Plan deleted: {plan_id} by user: {current_user.id}")
-    return {"message": "Plan deleted successfully"}
+    return Response(status_code=204)
 
 
 @router.post("/project", response_model=ProjectionResult)
-async def calculate_projection(data: ProjectionInput):
+async def calculate_projection(
+    data: ProjectionInput,
+    current_user: User = Depends(get_current_user),
+):
     """Calculate financial projections based on input parameters (pure calculation, no DB)"""
+    if data.life_expectancy - data.current_age > 100:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Age range too large")
     current_year = datetime.now().year
     nominal_return = data.expected_return / 100
     inflation = data.inflation_rate / 100

@@ -4,7 +4,7 @@ Portfolio Routes - SQL-Based with Authentication & Data Isolation
 """
 
 import uuid
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlmodel import Session, select, func
 from typing import List
 from datetime import date, datetime, timezone
@@ -21,8 +21,9 @@ from models.expense import Expense
 from models.asset import Asset
 from models.liability import Liability
 from models.plan import Plan
+from models.financials import Loan, PropertyValuation, RentalIncome
 from utils.database_sql import get_session
-from utils.clerk_auth import get_current_user
+from utils.auth import get_current_user
 from utils.calculations import annualize_amount
 
 logger = logging.getLogger(__name__)
@@ -141,7 +142,7 @@ async def update_portfolio(
     return portfolio
 
 
-@router.delete("/{portfolio_id}")
+@router.delete("/{portfolio_id}", status_code=204)
 async def delete_portfolio(
     portfolio_id: str,
     current_user: User = Depends(get_current_user),
@@ -166,9 +167,17 @@ async def delete_portfolio(
         )
     
     # Delete related data (all with data isolation checks via portfolio_id)
-    # Properties
+    # Properties and their sub-records (Loan, PropertyValuation, RentalIncome)
     properties_stmt = select(Property).where(Property.portfolio_id == portfolio_id)
     properties = session.exec(properties_stmt).all()
+    property_ids = [p.id for p in properties]
+    if property_ids:
+        for loan in session.exec(select(Loan).where(Loan.property_id.in_(property_ids))).all():
+            session.delete(loan)
+        for val in session.exec(select(PropertyValuation).where(PropertyValuation.property_id.in_(property_ids))).all():
+            session.delete(val)
+        for ri in session.exec(select(RentalIncome).where(RentalIncome.property_id.in_(property_ids))).all():
+            session.delete(ri)
     for prop in properties:
         session.delete(prop)
     
@@ -205,9 +214,9 @@ async def delete_portfolio(
     # Delete portfolio
     session.delete(portfolio)
     session.commit()
-    
+
     logger.info(f"Portfolio deleted: {portfolio_id} by user: {current_user.id}")
-    return {"message": "Portfolio deleted successfully"}
+    return Response(status_code=204)
 
 
 def _compute_goal_year(goal_settings: Optional[dict], date_of_birth: Optional[str]) -> Optional[str]:

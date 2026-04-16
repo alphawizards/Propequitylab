@@ -20,7 +20,7 @@ from models.expense import Expense
 from models.asset import Asset
 from models.liability import Liability
 from utils.database_sql import get_session
-from utils.clerk_auth import get_current_user
+from utils.auth import get_current_user
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/onboarding", tags=["onboarding"])
@@ -36,6 +36,47 @@ class OnboardingStatus(BaseModel):
 class OnboardingStepData(BaseModel):
     step: int
     data: Dict[str, Any]
+
+
+class PartnerDetails(BaseModel):
+    """Validated schema for partner_details stored on the User record."""
+    name: Optional[str] = None
+    date_of_birth: Optional[str] = None
+    income: Optional[Decimal] = None
+
+
+def _mark_onboarding_complete(session: Session, user_id: str) -> None:
+    """Mark the user's onboarding as complete (step=8). Shared by seeding endpoints."""
+    user = session.exec(select(User).where(User.id == user_id)).first()
+    if user:
+        if hasattr(user, "onboarding_completed"):
+            user.onboarding_completed = True
+        if hasattr(user, "onboarding_step"):
+            user.onboarding_step = 8
+        user.updated_at = datetime.now(timezone.utc)
+        session.add(user)
+
+
+def _add_expenses(
+    session: Session,
+    user_id: str,
+    portfolio_id: str,
+    expenses_data: list,
+) -> None:
+    """Insert a list of expense tuples (name, category, amount, frequency) into the session."""
+    for name, category, amount, frequency in expenses_data:
+        session.add(Expense(
+            id=str(uuid.uuid4()),
+            user_id=user_id,
+            portfolio_id=portfolio_id,
+            name=name,
+            category=category,
+            amount=amount,
+            frequency=frequency,
+            start_date=date(2024, 1, 1),
+            created_at=datetime.now(timezone.utc),
+            updated_at=datetime.now(timezone.utc),
+        ))
 
 
 @router.get("/status", response_model=OnboardingStatus)
@@ -94,27 +135,26 @@ async def save_onboarding_step(
         if 'name' in data.data:
             user.name = data.data['name']
             update_fields['name'] = data.data['name']
-        if 'date_of_birth' in data.data and hasattr(user, 'date_of_birth'):
+        if 'date_of_birth' in data.data:
             user.date_of_birth = data.data['date_of_birth']
             update_fields['date_of_birth'] = data.data['date_of_birth']
-        if 'planning_type' in data.data and hasattr(user, 'planning_type'):
+        if 'planning_type' in data.data:
             user.planning_type = data.data['planning_type']
             update_fields['planning_type'] = data.data['planning_type']
-        if 'country' in data.data and hasattr(user, 'country'):
+        if 'country' in data.data:
             user.country = data.data['country']
             update_fields['country'] = data.data['country']
-        if 'state' in data.data and hasattr(user, 'state'):
+        if 'state' in data.data:
             user.state = data.data['state']
             update_fields['state'] = data.data['state']
-        if 'partner_details' in data.data and hasattr(user, 'partner_details'):
-            user.partner_details = data.data['partner_details']
-            update_fields['partner_details'] = data.data['partner_details']
-    
+        if 'partner_details' in data.data:
+            validated = PartnerDetails.model_validate(data.data['partner_details'])
+            user.partner_details = validated.model_dump(mode='json')
+            update_fields['partner_details'] = user.partner_details
+
     # Update step progress
-    current_step = getattr(user, 'onboarding_step', 0) or 0
-    new_step = max(step, current_step)
-    if hasattr(user, 'onboarding_step'):
-        user.onboarding_step = new_step
+    new_step = max(step, user.onboarding_step or 0)
+    user.onboarding_step = new_step
     update_fields['onboarding_step'] = new_step
     
     user.updated_at = datetime.now(timezone.utc)
@@ -454,20 +494,7 @@ async def load_demo_data(
             ("Insurance",       "Insurance",     Decimal("350"),  "Monthly"),
             ("Entertainment",   "Entertainment", Decimal("400"),  "Monthly"),
         ]
-        for name, category, amount, frequency in expenses_data:
-            expense = Expense(
-                id=str(uuid.uuid4()),
-                user_id=current_user.id,
-                portfolio_id=portfolio.id,
-                name=name,
-                category=category,
-                amount=amount,
-                frequency=frequency,
-                start_date=date(2024, 1, 1),
-                created_at=datetime.now(timezone.utc),
-                updated_at=datetime.now(timezone.utc),
-            )
-            session.add(expense)
+        _add_expenses(session, current_user.id, portfolio.id, expenses_data)
 
         # ── FIRE Plan ─────────────────────────────────────────────
         plan = Plan(
@@ -488,16 +515,7 @@ async def load_demo_data(
         )
         session.add(plan)
 
-        # Mark onboarding complete
-        user = session.exec(select(User).where(User.id == current_user.id)).first()
-        if user:
-            if hasattr(user, "onboarding_completed"):
-                user.onboarding_completed = True
-            if hasattr(user, "onboarding_step"):
-                user.onboarding_step = 8
-            user.updated_at = datetime.now(timezone.utc)
-            session.add(user)
-
+        _mark_onboarding_complete(session, current_user.id)
         session.commit()
         logger.info("Demo data loaded for user: %s", current_user.id)
 
@@ -709,28 +727,14 @@ async def seed_sample_data(
 
         # 6. Create Expenses
         expenses_data = [
-            {"name": "Mortgage (PPOR)", "amount": 3200, "frequency": "Monthly", "category": "Housing"},
-            {"name": "Groceries", "amount": 1200, "frequency": "Monthly", "category": "Food"},
-            {"name": "Utilities", "amount": 350, "frequency": "Monthly", "category": "Housing"},
-            {"name": "Insurance (Health/Life)", "amount": 450, "frequency": "Monthly", "category": "Insurance"},
-            {"name": "Transport", "amount": 600, "frequency": "Monthly", "category": "Transport"},
-            {"name": "Entertainment", "amount": 400, "frequency": "Monthly", "category": "Lifestyle"},
+            ("Mortgage (PPOR)",        "Housing",   Decimal("3200"), "Monthly"),
+            ("Groceries",              "Food",       Decimal("1200"), "Monthly"),
+            ("Utilities",              "Housing",    Decimal("350"),  "Monthly"),
+            ("Insurance (Health/Life)","Insurance",  Decimal("450"),  "Monthly"),
+            ("Transport",              "Transport",  Decimal("600"),  "Monthly"),
+            ("Entertainment",          "Lifestyle",  Decimal("400"),  "Monthly"),
         ]
-
-        for exp_data in expenses_data:
-            expense = Expense(
-                id=str(uuid.uuid4()),
-                user_id=current_user.id,
-                portfolio_id=portfolio.id,
-                name=exp_data["name"],
-                amount=Decimal(str(exp_data["amount"])),
-                frequency=exp_data["frequency"],
-                category=exp_data["category"],
-                start_date=date(2024, 1, 1),
-                created_at=datetime.now(timezone.utc),
-                updated_at=datetime.now(timezone.utc)
-            )
-            session.add(expense)
+        _add_expenses(session, current_user.id, portfolio.id, expenses_data)
 
         # 7. Create Asset: ETF Portfolio
         asset1 = Asset(
@@ -785,16 +789,7 @@ async def seed_sample_data(
         )
         session.add(liability1)
 
-        # Mark onboarding as complete
-        user = session.exec(select(User).where(User.id == current_user.id)).first()
-        if user:
-            if hasattr(user, 'onboarding_completed'):
-                user.onboarding_completed = True
-            if hasattr(user, 'onboarding_step'):
-                user.onboarding_step = 8
-            user.updated_at = datetime.now(timezone.utc)
-            session.add(user)
-
+        _mark_onboarding_complete(session, current_user.id)
         session.commit()
 
         logger.info(f"Sample data seeded successfully for user: {current_user.id}")

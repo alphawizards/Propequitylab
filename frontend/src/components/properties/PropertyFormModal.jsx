@@ -110,6 +110,7 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
   const [formData, setFormData] = useState(defaultFormData);
   const [activeTab, setActiveTab] = useState('details');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (property && editMode) {
@@ -160,7 +161,24 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.address.trim()) newErrors.address = 'Address is required';
+    const price = parseFloat(formData.purchase_price);
+    if (!formData.purchase_price || isNaN(price) || price <= 0) {
+      newErrors.purchase_price = 'Purchase price must be greater than 0';
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async () => {
+    if (!validate()) {
+      // Switch to the relevant tab if the invalid field is not visible
+      if (errors.purchase_price && activeTab !== 'purchase') setActiveTab('purchase');
+      else if (errors.address && activeTab !== 'details') setActiveTab('details');
+      return;
+    }
     setIsSubmitting(true);
     try {
       const propertyData = {
@@ -256,10 +274,11 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
                 <Label>Street Address *</Label>
                 <Input
                   value={formData.address}
-                  onChange={(e) => handleChange('address', e.target.value)}
+                  onChange={(e) => { handleChange('address', e.target.value); if (errors.address) setErrors(prev => ({ ...prev, address: undefined })); }}
                   placeholder="e.g., 42 Harbour Street"
-                  className="mt-1"
+                  className={`mt-1 ${errors.address ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
                 />
+                {errors.address && <p className="text-xs text-red-600 mt-1">{errors.address}</p>}
               </div>
               
               <div className="grid grid-cols-3 gap-4">
@@ -378,10 +397,11 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
                 <Input
                   type="number"
                   value={formData.purchase_price}
-                  onChange={(e) => handleChange('purchase_price', e.target.value)}
+                  onChange={(e) => { handleChange('purchase_price', e.target.value); if (errors.purchase_price) setErrors(prev => ({ ...prev, purchase_price: undefined })); }}
                   placeholder="850000"
-                  className="mt-1"
+                  className={`mt-1 ${errors.purchase_price ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
                 />
+                {errors.purchase_price && <p className="text-xs text-red-600 mt-1">{errors.purchase_price}</p>}
               </div>
               <div>
                 <Label>Purchase Date *</Label>
@@ -728,7 +748,7 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
           <Button
             onClick={handleSubmit}
             className="bg-emerald-600 text-white hover:bg-emerald-700"
-            disabled={isSubmitting || !formData.address || !formData.suburb || !formData.purchase_price}
+            disabled={isSubmitting}
           >
             {isSubmitting ? 'Saving...' : editMode ? 'Update Property' : 'Add Property'}
           </Button>

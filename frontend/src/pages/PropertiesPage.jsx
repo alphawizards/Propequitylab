@@ -32,6 +32,7 @@ const PropertiesPage = () => {
   const { currentPortfolio, refreshSummary } = usePortfolio();
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
@@ -44,10 +45,12 @@ const PropertiesPage = () => {
 
     try {
       setLoading(true);
+      setError(null);
       const data = await api.getProperties(currentPortfolio.id);
       setProperties(data);
-    } catch (error) {
-      console.error('Failed to fetch properties:', error);
+    } catch (err) {
+      console.error('Failed to fetch properties:', err);
+      setError(err.response?.data?.detail || 'Failed to load properties. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -138,8 +141,8 @@ const PropertiesPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-[#111111]">Properties</h1>
-          <p className="text-[#6B7280]">Manage your property portfolio</p>
+          <h1 className="text-2xl font-semibold text-[#111111] dark:text-white">Properties</h1>
+          <p className="text-[#6B7280] dark:text-gray-400">Manage your property portfolio</p>
         </div>
         <Button
           onClick={handleAddProperty}
@@ -196,6 +199,13 @@ const PropertiesPage = () => {
         </Button>
       </div>
 
+      {/* Error state */}
+      {error && (
+        <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+          {error}
+        </div>
+      )}
+
       {/* Properties Grid */}
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -209,10 +219,10 @@ const PropertiesPage = () => {
             <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
               <Home className="w-8 h-8 text-gray-400" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
               {searchQuery ? 'No properties found' : 'No properties yet'}
             </h3>
-            <p className="text-gray-500 mb-6">
+            <p className="text-gray-500 dark:text-gray-400 mb-6">
               {searchQuery
                 ? 'Try adjusting your search'
                 : 'Add your first property to start tracking your portfolio'}
