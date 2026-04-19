@@ -73,12 +73,12 @@ export function MortgageCalculatorPage() {
         </script>
       </Helmet>
 
-      <div className="min-h-screen bg-gray-50 py-12 px-4">
+      <div className="min-h-screen bg-background py-12 px-4">
         <MortgageCalculator />
 
         {/* Rich SEO Content Below Calculator */}
         <div className="max-w-4xl mx-auto mt-16 space-y-8">
-          <article className="prose lg:prose-xl max-w-none bg-white rounded-lg p-8">
+          <article className="prose lg:prose-xl max-w-none bg-card rounded-lg p-8">
             <h2>Understanding Mortgage Calculators in Australia</h2>
             <p>
               A mortgage calculator is an essential tool for anyone looking to buy property in Australia.
@@ -96,28 +96,28 @@ export function MortgageCalculatorPage() {
             <h3>Key Terms Explained</h3>
             <dl className="space-y-4">
               <div>
-                <dt className="font-bold text-gray-900">Principal:</dt>
-                <dd className="text-gray-700 ml-4">The original amount you borrow from the lender.</dd>
+                <dt className="font-bold text-foreground">Principal:</dt>
+                <dd className="text-muted-foreground ml-4">The original amount you borrow from the lender.</dd>
               </div>
 
               <div>
-                <dt className="font-bold text-gray-900">Interest Rate:</dt>
-                <dd className="text-gray-700 ml-4">The annual percentage charged by the lender, typically expressed as a comparison rate in Australia.</dd>
+                <dt className="font-bold text-foreground">Interest Rate:</dt>
+                <dd className="text-muted-foreground ml-4">The annual percentage charged by the lender, typically expressed as a comparison rate in Australia.</dd>
               </div>
 
               <div>
-                <dt className="font-bold text-gray-900">LVR (Loan-to-Value Ratio):</dt>
-                <dd className="text-gray-700 ml-4">Your loan amount divided by the property value, expressed as a percentage.</dd>
+                <dt className="font-bold text-foreground">LVR (Loan-to-Value Ratio):</dt>
+                <dd className="text-muted-foreground ml-4">Your loan amount divided by the property value, expressed as a percentage.</dd>
               </div>
 
               <div>
-                <dt className="font-bold text-gray-900">LMI (Lenders Mortgage Insurance):</dt>
-                <dd className="text-gray-700 ml-4">Insurance required when your LVR exceeds 80%, protecting the lender if you default.</dd>
+                <dt className="font-bold text-foreground">LMI (Lenders Mortgage Insurance):</dt>
+                <dd className="text-muted-foreground ml-4">Insurance required when your LVR exceeds 80%, protecting the lender if you default.</dd>
               </div>
 
               <div>
-                <dt className="font-bold text-gray-900">Offset Account:</dt>
-                <dd className="text-gray-700 ml-4">A transaction account linked to your mortgage that reduces the interest charged.</dd>
+                <dt className="font-bold text-foreground">Offset Account:</dt>
+                <dd className="text-muted-foreground ml-4">A transaction account linked to your mortgage that reduces the interest charged.</dd>
               </div>
             </dl>
 
@@ -192,30 +192,30 @@ export function MortgageCalculatorPage() {
           </article>
 
           {/* Related Calculators */}
-          <Card className="bg-blue-50 border-blue-200">
+          <Card className="bg-ocean/10 border-ocean/30">
             <div className="p-6 space-y-4">
-              <h3 className="text-xl font-semibold text-gray-900">Related Calculators</h3>
+              <h3 className="text-xl font-semibold text-foreground">Related Calculators</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Link
                   to="/calculators/stamp-duty"
                   className="p-4 bg-white rounded-lg hover:shadow-md transition-shadow"
                 >
-                  <h4 className="font-semibold text-blue-600 mb-1">Stamp Duty Calculator</h4>
-                  <p className="text-sm text-gray-600">Calculate stamp duty for all Australian states</p>
+                  <h4 className="font-semibold text-ocean mb-1">Stamp Duty Calculator</h4>
+                  <p className="text-sm text-muted-foreground">Calculate stamp duty for all Australian states</p>
                 </Link>
                 <Link
                   to="/calculators/equity"
                   className="p-4 bg-white rounded-lg hover:shadow-md transition-shadow"
                 >
-                  <h4 className="font-semibold text-blue-600 mb-1">Equity Calculator</h4>
-                  <p className="text-sm text-gray-600">Calculate usable equity for investment</p>
+                  <h4 className="font-semibold text-ocean mb-1">Equity Calculator</h4>
+                  <p className="text-sm text-muted-foreground">Calculate usable equity for investment</p>
                 </Link>
                 <Link
                   to="/calculators/rental-income"
                   className="p-4 bg-white rounded-lg hover:shadow-md transition-shadow"
                 >
-                  <h4 className="font-semibold text-blue-600 mb-1">Rental Income Calculator</h4>
-                  <p className="text-sm text-gray-600">Project rental income and expenses</p>
+                  <h4 className="font-semibold text-ocean mb-1">Rental Income Calculator</h4>
+                  <p className="text-sm text-muted-foreground">Project rental income and expenses</p>
                 </Link>
               </div>
             </div>

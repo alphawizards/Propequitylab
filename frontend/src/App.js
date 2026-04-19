@@ -26,8 +26,8 @@ const Register = lazy(() => import('./pages/Register'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const VerifyEmail = lazy(() => import('./pages/VerifyEmail'));
-const PrivacyPolicy = lazy(() => import('./pages/legal/PrivacyPolicy'));
-const TermsOfService = lazy(() => import('./pages/legal/TermsOfService'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
+const TermsOfService = lazy(() => import('./pages/TermsOfService'));
 const DashboardNew = lazy(() => import('./pages/DashboardNew'));
 const PropertiesPage = lazy(() => import('./pages/PropertiesPage'));
 const AssetsPage = lazy(() => import('./pages/AssetsPage'));
@@ -46,7 +46,7 @@ const WelcomeModal = lazy(() => import('./components/onboarding/WelcomeModal'));
 
 const PageSpinner = () => (
   <div className="flex items-center justify-center min-h-screen">
-    <div className="animate-spin h-8 w-8 border-4 border-emerald-500 border-t-transparent rounded-full" />
+    <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full" />
   </div>
 );
 
@@ -92,7 +92,7 @@ const RootRedirect = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">Loading...</p>
         </div>
       </div>
