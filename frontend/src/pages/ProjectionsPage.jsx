@@ -1,8 +1,3 @@
-/**
- * Projections Page
- * Displays property portfolio financial projections with charts and scenario controls
- */
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePortfolio } from '../context/PortfolioContext';
@@ -39,7 +34,6 @@ import {
     Home,
 } from 'lucide-react';
 
-
 const ProjectionsPage = () => {
     const { currentPortfolio } = usePortfolio();
     const navigate = useNavigate();
@@ -48,18 +42,14 @@ const ProjectionsPage = () => {
     const [projections, setProjections] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-
-    // Scenario controls
     const [years, setYears] = useState(10);
     const [interestRateOffset, setInterestRateOffset] = useState(0);
     const [expenseGrowthOverride, setExpenseGrowthOverride] = useState(null);
     const [assetGrowthOverride, setAssetGrowthOverride] = useState(null);
     const [showScenarioControls, setShowScenarioControls] = useState(false);
 
-    // Fetch properties for dropdown
     const fetchProperties = useCallback(async () => {
         if (!currentPortfolio?.id) return;
-
         try {
             const data = await api.getProperties(currentPortfolio.id);
             setProperties(data);
@@ -69,13 +59,10 @@ const ProjectionsPage = () => {
         }
     }, [currentPortfolio?.id]);
 
-    // Fetch projections
     const fetchProjections = useCallback(async () => {
         if (!currentPortfolio?.id) return;
-
         setLoading(true);
         setError(null);
-
         try {
             const options = {
                 years,
@@ -83,14 +70,9 @@ const ProjectionsPage = () => {
                 expenseGrowthOverride: expenseGrowthOverride || undefined,
                 assetGrowthOverride: assetGrowthOverride || undefined,
             };
-
-            let data;
-            if (selectedPropertyId === 'portfolio') {
-                data = await api.getPortfolioProjections(currentPortfolio.id, options);
-            } else {
-                data = await api.getPropertyProjections(selectedPropertyId, options);
-            }
-
+            const data = selectedPropertyId === 'portfolio'
+                ? await api.getPortfolioProjections(currentPortfolio.id, options)
+                : await api.getPropertyProjections(selectedPropertyId, options);
             setProjections(data);
         } catch (err) {
             console.error('Failed to fetch projections:', err);
@@ -100,27 +82,15 @@ const ProjectionsPage = () => {
         }
     }, [currentPortfolio?.id, selectedPropertyId, years, interestRateOffset, expenseGrowthOverride, assetGrowthOverride]);
 
-    useEffect(() => {
-        fetchProperties();
-    }, [fetchProperties]);
+    useEffect(() => { fetchProperties(); }, [fetchProperties]);
+    useEffect(() => { fetchProjections(); }, [fetchProjections]);
 
-    useEffect(() => {
-        fetchProjections();
-    }, [fetchProjections]);
-
-    // Get current year's data
     const getCurrentYearData = () => {
-        if (!projections) return null;
-
-        const data = projections.totals || projections.projections;
+        const data = projections?.totals || projections?.projections;
         return data?.[0] || null;
     };
-
-    // Get final year's data
     const getFinalYearData = () => {
-        if (!projections) return null;
-
-        const data = projections.totals || projections.projections;
+        const data = projections?.totals || projections?.projections;
         return data?.[data.length - 1] || null;
     };
 
@@ -132,8 +102,8 @@ const ProjectionsPage = () => {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
                 <div className="text-center">
-                    <Home className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500">Please create a portfolio first.</p>
+                    <Home className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground">Please create a portfolio first.</p>
                 </div>
             </div>
         );
@@ -141,74 +111,55 @@ const ProjectionsPage = () => {
 
     return (
         <div className="space-y-6 relative">
-            {/* Scenario Panel - Fixed Right Sidebar */}
+            {/* Scenario Panel */}
             <div className="hidden xl:block fixed right-4 top-24 w-72 z-10">
                 <ScenarioListPanel
                     portfolioId={currentPortfolio?.id}
-                    userTier="free" // TODO: wire to subscription plan from UserContext
-                    onSelectScenario={(scenario) => {
-                        navigate(`/scenarios/${scenario.id}/dashboard`);
-                    }}
-                    onCompareScenario={(scenario) => {
-                        navigate(`/scenarios/${scenario.id}/dashboard?compare=true`);
-                    }}
+                    userTier="free"
+                    onSelectScenario={(scenario) => navigate(`/scenarios/${scenario.id}/dashboard`)}
+                    onCompareScenario={(scenario) => navigate(`/scenarios/${scenario.id}/dashboard?compare=true`)}
                 />
             </div>
+
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-semibold text-[#111111] dark:text-white">Financial Projections</h1>
-                    <p className="text-[#6B7280] dark:text-gray-400">
-                        {years}-year forecast for your property portfolio
-                    </p>
+                    <h1 className="text-2xl font-semibold text-foreground">Financial Projections</h1>
+                    <p className="text-muted-foreground">{years}-year forecast for your property portfolio</p>
                 </div>
-                <Button
-                    onClick={fetchProjections}
-                    disabled={loading}
-                    className="bg-emerald-600 text-white hover:bg-emerald-700"
-                >
+                <Button onClick={fetchProjections} disabled={loading} className="bg-primary text-primary-foreground hover:bg-primary/90">
                     <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
                     Refresh
                 </Button>
             </div>
 
-            {/* Property Selector & Scenario Controls */}
+            {/* Controls */}
             <Card>
                 <CardContent className="p-4">
                     <div className="flex flex-wrap items-end gap-4">
-                        {/* Property Selector */}
                         <div className="flex-1 min-w-[200px]">
-                            <Label className="text-sm text-gray-500">View Projections For</Label>
+                            <Label className="text-sm text-muted-foreground">View Projections For</Label>
                             <Select value={selectedPropertyId} onValueChange={setSelectedPropertyId}>
                                 <SelectTrigger className="mt-1">
                                     <SelectValue placeholder="Select property" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="portfolio">
-                                        <div className="flex items-center gap-2">
-                                            <Building className="w-4 h-4" />
-                                            Entire Portfolio
-                                        </div>
+                                        <div className="flex items-center gap-2"><Building className="w-4 h-4" />Entire Portfolio</div>
                                     </SelectItem>
                                     {properties.map((prop) => (
                                         <SelectItem key={prop.id} value={prop.id}>
-                                            <div className="flex items-center gap-2">
-                                                <Home className="w-4 h-4" />
-                                                {prop.address}
-                                            </div>
+                                            <div className="flex items-center gap-2"><Home className="w-4 h-4" />{prop.address}</div>
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
                         </div>
 
-                        {/* Years Selector */}
                         <div className="w-32">
-                            <Label className="text-sm text-gray-500">Years</Label>
+                            <Label className="text-sm text-muted-foreground">Years</Label>
                             <Select value={String(years)} onValueChange={(v) => setYears(parseInt(v))}>
-                                <SelectTrigger className="mt-1">
-                                    <SelectValue />
-                                </SelectTrigger>
+                                <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="5">5 years</SelectItem>
                                     <SelectItem value="10">10 years</SelectItem>
@@ -218,75 +169,35 @@ const ProjectionsPage = () => {
                             </Select>
                         </div>
 
-                        {/* Scenario Toggle */}
-                        <Button
-                            variant="outline"
-                            onClick={() => setShowScenarioControls(!showScenarioControls)}
-                            className="gap-2"
-                        >
+                        <Button variant="outline" onClick={() => setShowScenarioControls(!showScenarioControls)} className="gap-2">
                             <AlertTriangle className="w-4 h-4" />
                             Scenarios
                             {showScenarioControls ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                         </Button>
                     </div>
 
-                    {/* Scenario Controls */}
                     {showScenarioControls && (
-                        <div className="mt-4 pt-4 border-t grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="mt-4 pt-4 border-t border-border grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
-                                <Label className="text-sm text-gray-500">
-                                    Interest Rate Adjustment (stress test)
-                                </Label>
+                                <Label className="text-sm text-muted-foreground">Interest Rate Adjustment (stress test)</Label>
                                 <div className="flex items-center gap-2 mt-1">
-                                    <Input
-                                        type="number"
-                                        value={interestRateOffset}
-                                        onChange={(e) => setInterestRateOffset(parseFloat(e.target.value) || 0)}
-                                        step="0.5"
-                                        min="-5"
-                                        max="10"
-                                        className="w-24"
-                                    />
-                                    <span className="text-gray-500">% points</span>
-                                    {interestRateOffset > 0 && (
-                                        <span className="text-amber-600 text-sm">+{interestRateOffset}% from current</span>
-                                    )}
+                                    <Input type="number" value={interestRateOffset} onChange={(e) => setInterestRateOffset(parseFloat(e.target.value) || 0)} step="0.5" min="-5" max="10" className="w-24" />
+                                    <span className="text-muted-foreground">% points</span>
+                                    {interestRateOffset > 0 && <span className="text-gold text-sm">+{interestRateOffset}% from current</span>}
                                 </div>
                             </div>
                             <div>
-                                <Label className="text-sm text-gray-500">
-                                    Expense Growth Override
-                                </Label>
+                                <Label className="text-sm text-muted-foreground">Expense Growth Override</Label>
                                 <div className="flex items-center gap-2 mt-1">
-                                    <Input
-                                        type="number"
-                                        value={expenseGrowthOverride || ''}
-                                        onChange={(e) => setExpenseGrowthOverride(parseFloat(e.target.value) || null)}
-                                        placeholder="Default"
-                                        step="0.5"
-                                        min="0"
-                                        max="15"
-                                        className="w-24"
-                                    />
-                                    <span className="text-gray-500">% per year</span>
+                                    <Input type="number" value={expenseGrowthOverride || ''} onChange={(e) => setExpenseGrowthOverride(parseFloat(e.target.value) || null)} placeholder="Default" step="0.5" min="0" max="15" className="w-24" />
+                                    <span className="text-muted-foreground">% per year</span>
                                 </div>
                             </div>
                             <div>
-                                <Label className="text-sm text-gray-500">
-                                    Asset Growth Rate Override
-                                </Label>
+                                <Label className="text-sm text-muted-foreground">Asset Growth Rate Override</Label>
                                 <div className="flex items-center gap-2 mt-1">
-                                    <Input
-                                        type="number"
-                                        value={assetGrowthOverride || ''}
-                                        onChange={(e) => setAssetGrowthOverride(parseFloat(e.target.value) || null)}
-                                        placeholder="Default"
-                                        step="0.5"
-                                        min="-10"
-                                        max="30"
-                                        className="w-24"
-                                    />
-                                    <span className="text-gray-500">% per year</span>
+                                    <Input type="number" value={assetGrowthOverride || ''} onChange={(e) => setAssetGrowthOverride(parseFloat(e.target.value) || null)} placeholder="Default" step="0.5" min="-10" max="30" className="w-24" />
+                                    <span className="text-muted-foreground">% per year</span>
                                 </div>
                             </div>
                         </div>
@@ -294,11 +205,11 @@ const ProjectionsPage = () => {
                 </CardContent>
             </Card>
 
-            {/* Error State */}
+            {/* Error */}
             {error && (
-                <Card className="border-red-200 bg-red-50">
+                <Card className="border-terra/30 bg-terra-soft">
                     <CardContent className="p-4">
-                        <p className="text-red-700">{error}</p>
+                        <p className="text-terra">{error}</p>
                     </CardContent>
                 </Card>
             )}
@@ -310,16 +221,12 @@ const ProjectionsPage = () => {
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-[#6B7280] dark:text-gray-400">Current Value</p>
-                                    <p className="text-2xl font-semibold tabular-nums text-[#111111] dark:text-white">
-                                        {formatCurrency(currentData.property_value)}
-                                    </p>
-                                    <p className="text-sm text-emerald-600">
-                                        → {formatCurrency(finalData.property_value)} in {years}y
-                                    </p>
+                                    <p className="text-sm text-muted-foreground">Current Value</p>
+                                    <p className="text-2xl font-semibold tabular-nums text-foreground">{formatCurrency(currentData.property_value)}</p>
+                                    <p className="text-sm text-sage">→ {formatCurrency(finalData.property_value)} in {years}y</p>
                                 </div>
-                                <div className="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center">
-                                    <TrendingUp className="w-6 h-6 text-green-600" />
+                                <div className="w-12 h-12 rounded-lg bg-sage-soft flex items-center justify-center">
+                                    <TrendingUp className="w-6 h-6 text-sage" />
                                 </div>
                             </div>
                         </CardContent>
@@ -329,16 +236,12 @@ const ProjectionsPage = () => {
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-[#6B7280]">Current Equity</p>
-                                    <p className="text-2xl font-semibold tabular-nums text-emerald-600">
-                                        {formatCurrency(currentData.equity)}
-                                    </p>
-                                    <p className="text-sm text-emerald-600">
-                                        → {formatCurrency(finalData.equity)} in {years}y
-                                    </p>
+                                    <p className="text-sm text-muted-foreground">Current Equity</p>
+                                    <p className="text-2xl font-semibold tabular-nums text-sage">{formatCurrency(currentData.equity)}</p>
+                                    <p className="text-sm text-sage">→ {formatCurrency(finalData.equity)} in {years}y</p>
                                 </div>
-                                <div className="w-12 h-12 rounded-lg bg-emerald-100 flex items-center justify-center">
-                                    <DollarSign className="w-6 h-6 text-emerald-600" />
+                                <div className="w-12 h-12 rounded-lg bg-sage-soft flex items-center justify-center">
+                                    <DollarSign className="w-6 h-6 text-sage" />
                                 </div>
                             </div>
                         </CardContent>
@@ -348,16 +251,12 @@ const ProjectionsPage = () => {
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-[#6B7280]">Current LVR</p>
-                                    <p className="text-2xl font-semibold tabular-nums text-purple-600">
-                                        {formatPercentage(currentData.lvr)}
-                                    </p>
-                                    <p className="text-sm text-emerald-600">
-                                        → {formatPercentage(finalData.lvr)} in {years}y
-                                    </p>
+                                    <p className="text-sm text-muted-foreground">Current LVR</p>
+                                    <p className="text-2xl font-semibold tabular-nums text-plum">{formatPercentage(currentData.lvr)}</p>
+                                    <p className="text-sm text-sage">→ {formatPercentage(finalData.lvr)} in {years}y</p>
                                 </div>
-                                <div className="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center">
-                                    <Percent className="w-6 h-6 text-purple-600" />
+                                <div className="w-12 h-12 rounded-lg bg-plum-soft flex items-center justify-center">
+                                    <Percent className="w-6 h-6 text-plum" />
                                 </div>
                             </div>
                         </CardContent>
@@ -367,14 +266,14 @@ const ProjectionsPage = () => {
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-[#6B7280] dark:text-gray-400">Net Cashflow (Year 1)</p>
-                                    <p className={`text-2xl font-semibold tabular-nums ${parseFloat(currentData.net_cashflow) >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+                                    <p className="text-sm text-muted-foreground">Net Cashflow (Year 1)</p>
+                                    <p className={`text-2xl font-semibold tabular-nums ${parseFloat(currentData.net_cashflow) >= 0 ? 'text-sage' : 'text-terra'}`}>
                                         {formatCurrency(currentData.net_cashflow)}
                                     </p>
-                                    <p className="text-sm text-[#6B7280] dark:text-gray-400">per year</p>
+                                    <p className="text-sm text-muted-foreground">per year</p>
                                 </div>
-                                <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${parseFloat(currentData.net_cashflow) >= 0 ? 'bg-green-100' : 'bg-red-100'}`}>
-                                    <Calendar className={`w-6 h-6 ${parseFloat(currentData.net_cashflow) >= 0 ? 'text-green-600' : 'text-red-600'}`} />
+                                <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${parseFloat(currentData.net_cashflow) >= 0 ? 'bg-sage-soft' : 'bg-terra-soft'}`}>
+                                    <Calendar className={`w-6 h-6 ${parseFloat(currentData.net_cashflow) >= 0 ? 'text-sage' : 'text-terra'}`} />
                                 </div>
                             </div>
                         </CardContent>
@@ -388,101 +287,55 @@ const ProjectionsPage = () => {
                     {[1, 2].map((i) => (
                         <Card key={i}>
                             <CardContent className="p-6">
-                                <div className="h-80 bg-gray-100 animate-pulse rounded-lg" />
+                                <div className="h-80 bg-muted animate-pulse rounded-lg" />
                             </CardContent>
                         </Card>
                     ))}
                 </div>
             ) : projectionData.length > 0 ? (
                 <div className="space-y-6">
-                    {/* Equity & Value Chart */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="text-lg">Property Value & Equity Growth</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <EquityValueChart data={projectionData} />
-                        </CardContent>
-                    </Card>
-
-                    {/* Cashflow Chart */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="text-lg">Annual Cashflow Breakdown</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <CashflowProjectionChart data={projectionData} />
-                        </CardContent>
-                    </Card>
-
-                    {/* LVR Chart */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="text-lg">Loan-to-Value Ratio</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <LVRChart data={projectionData} />
-                        </CardContent>
-                    </Card>
-
-                    {/* Summary Chart for Portfolio View */}
+                    <Card><CardHeader><CardTitle className="text-lg">Property Value & Equity Growth</CardTitle></CardHeader><CardContent><EquityValueChart data={projectionData} /></CardContent></Card>
+                    <Card><CardHeader><CardTitle className="text-lg">Annual Cashflow Breakdown</CardTitle></CardHeader><CardContent><CashflowProjectionChart data={projectionData} /></CardContent></Card>
+                    <Card><CardHeader><CardTitle className="text-lg">Loan-to-Value Ratio</CardTitle></CardHeader><CardContent><LVRChart data={projectionData} /></CardContent></Card>
                     {selectedPropertyId === 'portfolio' && (
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="text-lg">Portfolio Summary</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <PortfolioSummaryChart data={projectionData} />
-                            </CardContent>
-                        </Card>
+                        <Card><CardHeader><CardTitle className="text-lg">Portfolio Summary</CardTitle></CardHeader><CardContent><PortfolioSummaryChart data={projectionData} /></CardContent></Card>
                     )}
                 </div>
             ) : (
                 <Card className="p-12">
                     <div className="text-center">
-                        <TrendingUp className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                        <h3 className="text-lg font-semibold text-[#111111] dark:text-white mb-2">
-                            No projection data available
-                        </h3>
-                        <p className="text-[#6B7280] dark:text-gray-400">
-                            Add properties with loan and rental details to see projections
-                        </p>
+                        <TrendingUp className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                        <h3 className="text-lg font-semibold text-foreground mb-2">No projection data available</h3>
+                        <p className="text-muted-foreground">Add properties with loan and rental details to see projections</p>
                     </div>
                 </Card>
             )}
 
-            {/* Projection Data Table */}
+            {/* Year-by-Year table */}
             {projectionData.length > 0 && (
                 <Card>
-                    <CardHeader>
-                        <CardTitle className="text-lg">Year-by-Year Breakdown</CardTitle>
-                    </CardHeader>
+                    <CardHeader><CardTitle className="text-lg">Year-by-Year Breakdown</CardTitle></CardHeader>
                     <CardContent>
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm">
                                 <thead>
-                                    <tr className="border-b">
-                                        <th className="text-left py-3 px-2 text-[#6B7280] dark:text-gray-400">Year</th>
-                                        <th className="text-right py-3 px-2 text-[#6B7280] dark:text-gray-400">Value</th>
-                                        <th className="text-right py-3 px-2 text-[#6B7280] dark:text-gray-400">Debt</th>
-                                        <th className="text-right py-3 px-2 text-[#6B7280] dark:text-gray-400">Equity</th>
-                                        <th className="text-right py-3 px-2 text-[#6B7280] dark:text-gray-400">LVR</th>
-                                        <th className="text-right py-3 px-2 text-[#6B7280] dark:text-gray-400">Rent</th>
-                                        <th className="text-right py-3 px-2 text-[#6B7280] dark:text-gray-400">Expenses</th>
-                                        <th className="text-right py-3 px-2 text-[#6B7280] dark:text-gray-400">Cashflow</th>
+                                    <tr className="border-b border-border">
+                                        {['Year','Value','Debt','Equity','LVR','Rent','Expenses','Cashflow'].map(h => (
+                                            <th key={h} className={`py-3 px-2 text-muted-foreground font-medium ${h === 'Year' ? 'text-left' : 'text-right'}`}>{h}</th>
+                                        ))}
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {projectionData.map((row, index) => (
-                                        <tr key={row.year} className={index % 2 === 0 ? 'bg-slate-50 dark:bg-gray-800/50' : ''}>
-                                            <td className="py-2 px-2 font-medium dark:text-white">{row.year}</td>
-                                            <td className="py-2 px-2 text-right dark:text-gray-300">{formatCurrency(row.property_value)}</td>
-                                            <td className="py-2 px-2 text-right dark:text-gray-300">{formatCurrency(row.total_debt)}</td>
-                                            <td className="py-2 px-2 text-right text-emerald-600">{formatCurrency(row.equity)}</td>
-                                            <td className="py-2 px-2 text-right dark:text-gray-300">{formatPercentage(row.lvr)}</td>
-                                            <td className="py-2 px-2 text-right dark:text-gray-300">{formatCurrency(row.rental_income)}</td>
-                                            <td className="py-2 px-2 text-right dark:text-gray-300">{formatCurrency(row.expenses)}</td>
-                                            <td className={`py-2 px-2 text-right font-medium ${parseFloat(row.net_cashflow) >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+                                        <tr key={row.year} className={index % 2 === 0 ? 'bg-muted/40' : ''}>
+                                            <td className="py-2 px-2 font-medium text-foreground">{row.year}</td>
+                                            <td className="py-2 px-2 text-right text-foreground">{formatCurrency(row.property_value)}</td>
+                                            <td className="py-2 px-2 text-right text-foreground">{formatCurrency(row.total_debt)}</td>
+                                            <td className="py-2 px-2 text-right text-sage">{formatCurrency(row.equity)}</td>
+                                            <td className="py-2 px-2 text-right text-foreground">{formatPercentage(row.lvr)}</td>
+                                            <td className="py-2 px-2 text-right text-foreground">{formatCurrency(row.rental_income)}</td>
+                                            <td className="py-2 px-2 text-right text-foreground">{formatCurrency(row.expenses)}</td>
+                                            <td className={`py-2 px-2 text-right font-medium ${parseFloat(row.net_cashflow) >= 0 ? 'text-sage' : 'text-terra'}`}>
                                                 {formatCurrency(row.net_cashflow)}
                                             </td>
                                         </tr>

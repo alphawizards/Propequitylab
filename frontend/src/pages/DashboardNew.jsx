@@ -39,17 +39,16 @@ import {
   Loader2,
 } from 'lucide-react';
 
-// Skeleton loader component — avoids generic spinner
 const SkeletonLine = ({ className = '' }) => (
-  <div className={`animate-pulse bg-slate-200 rounded ${className}`} />
+  <div className={`animate-pulse bg-muted rounded ${className}`} />
 );
 
 const DashboardSkeleton = () => (
   <div className="space-y-8">
-    <div className="rounded-[1.5rem] bg-gradient-to-r from-slate-200 to-slate-100 h-32 animate-pulse" />
+    <div className="rounded-[1.5rem] bg-muted h-32 animate-pulse" />
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {[...Array(4)].map((_, i) => (
-        <div key={i} className="rounded-[1rem] border border-slate-200/50 p-6 space-y-3">
+        <div key={i} className="rounded-[1rem] border border-border p-6 space-y-3">
           <SkeletonLine className="h-4 w-24" />
           <SkeletonLine className="h-8 w-32" />
           <SkeletonLine className="h-3 w-20" />
@@ -57,10 +56,10 @@ const DashboardSkeleton = () => (
       ))}
     </div>
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div className="lg:col-span-2 rounded-[1rem] border border-slate-200/50 p-6 h-64">
+      <div className="lg:col-span-2 rounded-[1rem] border border-border p-6 h-64">
         <SkeletonLine className="h-full w-full" />
       </div>
-      <div className="rounded-[1rem] border border-slate-200/50 p-6 h-64">
+      <div className="rounded-[1rem] border border-border p-6 h-64">
         <SkeletonLine className="h-full w-full" />
       </div>
     </div>
@@ -126,9 +125,7 @@ const DashboardNew = () => {
       await api.loadDemoData();
       await fetchPortfolios();
       toast({ title: 'Demo data loaded!', description: 'Your portfolio has been populated with sample data.' });
-      // Increment trigger so the useEffect re-fires even if currentPortfolio?.id is unchanged
       setRefreshTrigger(v => v + 1);
-      // Note: fetchAllDashboardData will be called by the useEffect above
     } catch (error) {
       toast({
         title: 'Error',
@@ -162,22 +159,21 @@ const DashboardNew = () => {
     }
   }, [currentPortfolio?.id, refreshTrigger]);
 
-  // Show create portfolio prompt if no portfolio exists
   if (!currentPortfolio && !loading) {
     return (
       <>
         <div className="flex flex-col items-center justify-center min-h-[60vh]">
           <div className="text-center max-w-md">
-            <div className="w-20 h-20 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-6">
-              <Building className="w-10 h-10 text-emerald-600" />
+            <div className="w-20 h-20 rounded-full bg-sage-soft flex items-center justify-center mx-auto mb-6">
+              <Building className="w-10 h-10 text-sage" />
             </div>
-            <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-2 tracking-tight">Welcome to PropEquityLab</h2>
-            <p className="text-zinc-500 dark:text-zinc-400 mb-6 leading-relaxed">
+            <h2 className="text-2xl font-bold text-foreground mb-2 tracking-tight">Welcome to PropEquityLab</h2>
+            <p className="text-muted-foreground mb-6 leading-relaxed">
               Create your first portfolio to start tracking property investments and financial goals.
             </p>
             <Button
               onClick={() => setShowCreateDialog(true)}
-              className="bg-emerald-600 text-white hover:bg-emerald-700 transition-all duration-300 active:scale-[0.98]"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 active:scale-[0.98]"
             >
               <Plus className="w-4 h-4 mr-2" />
               Create Portfolio
@@ -204,77 +200,56 @@ const DashboardNew = () => {
     );
   }
 
-  // Loading state — skeleton, not spinner
-  if (loading) {
-    return <DashboardSkeleton />;
-  }
+  if (loading) return <DashboardSkeleton />;
 
   const data = dashboardData || {
-    net_worth: 0,
-    total_assets: 0,
-    total_liabilities: 0,
-    monthly_income: 0,
-    monthly_expenses: 0,
-    monthly_cashflow: 0,
-    savings_rate: 0,
-    properties_count: 0,
-    asset_breakdown: {},
-    liability_breakdown: {},
+    net_worth: 0, total_assets: 0, total_liabilities: 0,
+    monthly_income: 0, monthly_expenses: 0, monthly_cashflow: 0,
+    savings_rate: 0, properties_count: 0, asset_breakdown: {}, liability_breakdown: {},
   };
 
   const firstName = user?.name?.split(' ')[0] || 'there';
 
+  // Asset progress bar color mapping → Haven palette
+  const assetColors = {
+    properties: 'bg-ocean', super: 'bg-plum', shares: 'bg-sage',
+    etf: 'bg-sage', cash: 'bg-gold', other: 'bg-muted-foreground',
+  };
+  const liabilityColors = {
+    property_loans: 'bg-ocean', car_loans: 'bg-gold',
+    credit_cards: 'bg-terra', hecs: 'bg-plum', other: 'bg-muted-foreground',
+  };
+
   return (
     <div className="space-y-8">
-      {/* Welcome Banner — Asymmetric, not centered */}
-      <div className="rounded-[1.5rem] bg-gradient-to-br from-emerald-600 to-emerald-700 text-white p-8 lg:p-10 shadow-[0_8px_32px_rgba(0,0,0,0.08)]">
+      {/* Welcome Banner */}
+      <div className="rounded-[1.5rem] bg-primary text-primary-foreground p-8 lg:p-10 shadow-haven">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
           <div>
-            <p className="text-emerald-200 text-sm font-medium tracking-wide uppercase mb-2">Dashboard</p>
+            <p className="text-primary-foreground/70 text-sm font-medium tracking-wide uppercase mb-2">Dashboard</p>
             <h1 className="text-3xl lg:text-4xl font-semibold tracking-tight">Welcome back, {firstName}</h1>
-            <p className="text-emerald-100/80 mt-2 text-base">Here is your financial snapshot</p>
+            <p className="text-primary-foreground/80 mt-2 text-base">Here is your financial snapshot</p>
           </div>
           <div className="text-left lg:text-right">
-            <p className="text-emerald-200 text-xs font-medium tracking-wide uppercase mb-1">Net Worth</p>
+            <p className="text-primary-foreground/70 text-xs font-medium tracking-wide uppercase mb-1">Net Worth</p>
             <p className="text-4xl lg:text-5xl font-semibold tracking-tight tabular-nums">{formatCurrency(data.net_worth)}</p>
           </div>
         </div>
       </div>
 
-      {/* KPI Cards — Asymmetric 2+2 grid on large, stacked on mobile */}
+      {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <KPICard
-          title="Total Assets"
-          value={formatCurrency(data.total_assets)}
-          icon={PiggyBank}
-          variant="green"
-        />
-        <KPICard
-          title="Total Liabilities"
-          value={formatCurrency(data.total_liabilities)}
-          icon={CreditCard}
-          variant="purple"
-        />
-        <KPICard
-          title="Monthly Cashflow"
-          value={formatCurrency(data.monthly_cashflow)}
-          icon={DollarSign}
-          variant={data.monthly_cashflow >= 0 ? "blue" : "yellow"}
-        />
-        <KPICard
-          title="Properties"
-          value={data.properties_count.toString()}
-          icon={Home}
-          variant="blue"
-        />
+        <KPICard title="Total Assets"      value={formatCurrency(data.total_assets)}     icon={PiggyBank}  variant="green" />
+        <KPICard title="Total Liabilities" value={formatCurrency(data.total_liabilities)} icon={CreditCard} variant="purple" />
+        <KPICard title="Monthly Cashflow"  value={formatCurrency(data.monthly_cashflow)}  icon={DollarSign} variant={data.monthly_cashflow >= 0 ? 'blue' : 'yellow'} />
+        <KPICard title="Properties"        value={data.properties_count.toString()}       icon={Home}       variant="blue" />
       </div>
 
-      {/* Charts — Asymmetric layout: 2/3 + 1/3 */}
+      {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Net Worth Chart — Takes 2 columns */}
         <div className="lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-[#6B7280] dark:text-gray-400">Financial History</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Financial History</h3>
             <Button
               onClick={handleCreateSnapshot}
               disabled={snapshotLoading || !currentPortfolio?.id}
@@ -282,59 +257,46 @@ const DashboardNew = () => {
               size="sm"
               className="transition-all duration-300 active:scale-[0.98]"
             >
-              {snapshotLoading ? (
-                <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-              ) : (
-                <Camera className="w-4 h-4 mr-2" />
-              )}
+              {snapshotLoading ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <Camera className="w-4 h-4 mr-2" />}
               Snapshot
             </Button>
           </div>
-          <div className="rounded-xl border border-[#EAEAEA] dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-card">
+          <div className="rounded-xl border border-border bg-card p-6 shadow-card">
             <NetWorthChart data={netWorthHistory} loading={loading} />
           </div>
         </div>
 
-        {/* Asset Allocation — 1 column */}
-        <div className="rounded-xl border border-[#EAEAEA] dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-card">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-[#6B7280] mb-4">Asset Allocation</h3>
-          <AssetAllocationChart
-            key={`assets-${dataVersion}`}
-            breakdown={data.asset_breakdown}
-            loading={false}
-          />
+        <div className="rounded-xl border border-border bg-card p-6 shadow-card">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-4">Asset Allocation</h3>
+          <AssetAllocationChart key={`assets-${dataVersion}`} breakdown={data.asset_breakdown} loading={false} />
         </div>
       </div>
 
-      {/* Asset & Liability Breakdown — Side by side, using spacing not cards */}
+      {/* Asset & Liability Breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Assets */}
         <div>
           <div className="flex items-center gap-2 mb-4">
-            <TrendingUp className="w-5 h-5 text-emerald-600" />
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-[#6B7280] dark:text-gray-400">Assets</h3>
+            <TrendingUp className="w-5 h-5 text-sage" />
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Assets</h3>
           </div>
           <div className="space-y-3">
             {[
-              { label: 'Properties', value: Number(data.asset_breakdown?.properties) || 0, color: 'bg-blue-500' },
-              { label: 'Super', value: Number(data.asset_breakdown?.super) || 0, color: 'bg-violet-500' },
-              { label: 'Shares/ETFs', value: (Number(data.asset_breakdown?.shares) || 0) + (Number(data.asset_breakdown?.etf) || 0), color: 'bg-emerald-500' },
-              { label: 'Cash', value: Number(data.asset_breakdown?.cash) || 0, color: 'bg-amber-500' },
-              { label: 'Other', value: Number(data.asset_breakdown?.other) || 0, color: 'bg-zinc-400' },
-            ].filter(item => item.value > 0).map((item, idx) => {
+              { label: 'Properties',  key: 'properties',  value: Number(data.asset_breakdown?.properties) || 0 },
+              { label: 'Super',       key: 'super',       value: Number(data.asset_breakdown?.super) || 0 },
+              { label: 'Shares/ETFs', key: 'shares',      value: (Number(data.asset_breakdown?.shares) || 0) + (Number(data.asset_breakdown?.etf) || 0) },
+              { label: 'Cash',        key: 'cash',        value: Number(data.asset_breakdown?.cash) || 0 },
+              { label: 'Other',       key: 'other',       value: Number(data.asset_breakdown?.other) || 0 },
+            ].filter(item => item.value > 0).map((item) => {
               const total = Object.values(data.asset_breakdown || {}).reduce((s, v) => s + (Number(v) || 0), 0);
               const pct = total > 0 ? (item.value / total) * 100 : 0;
               return (
                 <div key={item.label} className="group">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-sm text-zinc-600 dark:text-zinc-400">{item.label}</span>
-                    <span className="text-sm font-medium text-zinc-900 dark:text-white tabular-nums">{formatCurrency(item.value)}</span>
+                    <span className="text-sm text-muted-foreground">{item.label}</span>
+                    <span className="text-sm font-medium text-foreground tabular-nums">{formatCurrency(item.value)}</span>
                   </div>
-                  <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className={`h-full ${item.color} rounded-full transition-all duration-700 ease-out`}
-                      style={{ width: `${pct}%` }}
-                    />
+                  <div className="h-2 bg-muted rounded-full overflow-hidden">
+                    <div className={`h-full ${assetColors[item.key] || 'bg-muted-foreground'} rounded-full transition-all duration-700 ease-out`} style={{ width: `${pct}%` }} />
                   </div>
                 </div>
               );
@@ -342,94 +304,86 @@ const DashboardNew = () => {
           </div>
         </div>
 
-        {/* Liabilities */}
         <div>
           <div className="flex items-center gap-2 mb-4">
-            <TrendingDown className="w-5 h-5 text-red-500" />
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-[#6B7280] dark:text-gray-400">Liabilities</h3>
+            <TrendingDown className="w-5 h-5 text-terra" />
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Liabilities</h3>
           </div>
           <div className="space-y-3">
             {[
-              { label: 'Property Loans', value: Number(data.liability_breakdown?.property_loans) || 0, color: 'bg-blue-500' },
-              { label: 'Car Loans', value: Number(data.liability_breakdown?.car_loans) || 0, color: 'bg-orange-500' },
-              { label: 'Credit Cards', value: Number(data.liability_breakdown?.credit_cards) || 0, color: 'bg-red-500' },
-              { label: 'HECS/HELP', value: Number(data.liability_breakdown?.hecs) || 0, color: 'bg-violet-500' },
-              { label: 'Other', value: Number(data.liability_breakdown?.other) || 0, color: 'bg-zinc-400' },
+              { label: 'Property Loans', key: 'property_loans', value: Number(data.liability_breakdown?.property_loans) || 0 },
+              { label: 'Car Loans',       key: 'car_loans',      value: Number(data.liability_breakdown?.car_loans) || 0 },
+              { label: 'Credit Cards',    key: 'credit_cards',   value: Number(data.liability_breakdown?.credit_cards) || 0 },
+              { label: 'HECS/HELP',       key: 'hecs',           value: Number(data.liability_breakdown?.hecs) || 0 },
+              { label: 'Other',           key: 'other',          value: Number(data.liability_breakdown?.other) || 0 },
             ].filter(item => item.value > 0).map((item) => {
               const total = Object.values(data.liability_breakdown || {}).reduce((s, v) => s + (Number(v) || 0), 0);
               const pct = total > 0 ? (item.value / total) * 100 : 0;
               return (
                 <div key={item.label} className="group">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-sm text-zinc-600 dark:text-zinc-400">{item.label}</span>
-                    <span className="text-sm font-medium text-zinc-900 dark:text-white tabular-nums">{formatCurrency(item.value)}</span>
+                    <span className="text-sm text-muted-foreground">{item.label}</span>
+                    <span className="text-sm font-medium text-foreground tabular-nums">{formatCurrency(item.value)}</span>
                   </div>
-                  <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className={`h-full ${item.color} rounded-full transition-all duration-700 ease-out`}
-                      style={{ width: `${pct}%` }}
-                    />
+                  <div className="h-2 bg-muted rounded-full overflow-hidden">
+                    <div className={`h-full ${liabilityColors[item.key] || 'bg-muted-foreground'} rounded-full transition-all duration-700 ease-out`} style={{ width: `${pct}%` }} />
                   </div>
                 </div>
               );
             })}
             {Object.values(data.liability_breakdown || {}).every(v => Number(v) === 0) && (
-              <p className="text-sm text-zinc-400 text-center py-6">No liabilities recorded</p>
+              <p className="text-sm text-muted-foreground text-center py-6">No liabilities recorded</p>
             )}
           </div>
         </div>
       </div>
 
-      {/* Bottom Widgets — Asymmetric 70/30 split */}
+      {/* Bottom Widgets */}
       <div className="grid grid-cols-1 lg:grid-cols-10 gap-6">
         <div className="lg:col-span-4">
-          <PortfolioSnapshotWidget
-            data={{
-              net_worth: data.net_worth,
-              liquid_assets: (Number(data.asset_breakdown?.cash) || 0) + (Number(data.asset_breakdown?.shares) || 0) + (Number(data.asset_breakdown?.etf) || 0),
-              property_equity: (Number(data.asset_breakdown?.properties) || 0) - (Number(data.liability_breakdown?.property_loans) || 0),
-              investments: (Number(data.asset_breakdown?.shares) || 0) + (Number(data.asset_breakdown?.etf) || 0),
-              super: Number(data.asset_breakdown?.super) || 0,
-            }}
-          />
+          <PortfolioSnapshotWidget data={{
+            net_worth: data.net_worth,
+            liquid_assets: (Number(data.asset_breakdown?.cash) || 0) + (Number(data.asset_breakdown?.shares) || 0) + (Number(data.asset_breakdown?.etf) || 0),
+            property_equity: (Number(data.asset_breakdown?.properties) || 0) - (Number(data.liability_breakdown?.property_loans) || 0),
+            investments: (Number(data.asset_breakdown?.shares) || 0) + (Number(data.asset_breakdown?.etf) || 0),
+            super: Number(data.asset_breakdown?.super) || 0,
+          }} />
         </div>
         <div className="lg:col-span-3">
           <PropertyCashflowsWidget properties={properties} />
         </div>
         <div className="lg:col-span-3">
-          <BorrowingWidget
-            data={{
-              lvr: data.total_assets > 0 ? ((Number(data.liability_breakdown?.property_loans) || 0) / (Number(data.asset_breakdown?.properties) || 1)) * 100 : 0,
-              used_capacity: Number(data.liability_breakdown?.property_loans) || 0,
-            }}
-          />
+          <BorrowingWidget data={{
+            lvr: data.total_assets > 0 ? ((Number(data.liability_breakdown?.property_loans) || 0) / (Number(data.asset_breakdown?.properties) || 1)) * 100 : 0,
+            used_capacity: Number(data.liability_breakdown?.property_loans) || 0,
+          }} />
         </div>
       </div>
 
-      {/* Quick Actions — Horizontal scroll on mobile, grid on desktop */}
+      {/* Quick Actions */}
       <div>
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-[#6B7280] mb-4">Quick Actions</h3>
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-4">Quick Actions</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
-            { label: 'Add Property', icon: Home, href: '/finances/properties' },
-            { label: 'Add Income', icon: DollarSign, href: '/finances/income' },
-            { label: 'Add Asset', icon: PiggyBank, href: '/finances/assets' },
-            { label: 'Create Plan', icon: TrendingUp, href: '/plans' },
+            { label: 'Add Property', icon: Home,      href: '/finances/properties' },
+            { label: 'Add Income',   icon: DollarSign, href: '/finances/income' },
+            { label: 'Add Asset',    icon: PiggyBank,  href: '/finances/assets' },
+            { label: 'Create Plan',  icon: TrendingUp, href: '/plans' },
           ].map((action) => (
             <button
               key={action.label}
               onClick={() => navigate(action.href)}
-              className="group flex items-center gap-3 p-4 rounded-lg border border-[#EAEAEA] dark:border-gray-700 bg-white dark:bg-gray-900 hover:bg-slate-50 dark:hover:bg-gray-800 hover:border-slate-300 transition-all duration-150 active:scale-[0.98] text-left"
+              className="group flex items-center gap-3 p-4 rounded-lg border border-border bg-card hover:bg-muted hover:border-border/80 transition-all duration-150 active:scale-[0.98] text-left"
             >
-              <action.icon className="w-5 h-5 text-[#6B7280] group-hover:text-emerald-600 transition-colors" />
-              <span className="text-sm font-medium text-[#111111] dark:text-white">{action.label}</span>
-              <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-emerald-500 ml-auto transition-all group-hover:translate-x-0.5" />
+              <action.icon className="w-5 h-5 text-muted-foreground group-hover:text-sage transition-colors" />
+              <span className="text-sm font-medium text-foreground">{action.label}</span>
+              <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-sage ml-auto transition-all group-hover:translate-x-0.5" />
             </button>
           ))}
         </div>
       </div>
 
-      {/* Confirmation dialog for destructive demo data load */}
+      {/* Demo data confirm dialog */}
       <AlertDialog open={showDemoConfirm} onOpenChange={setShowDemoConfirm}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -442,21 +396,18 @@ const DashboardNew = () => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={executeDemoLoad}
-              className="bg-red-600 hover:bg-red-700 text-white"
-            >
+            <AlertDialogAction onClick={executeDemoLoad} className="bg-terra hover:bg-terra/90 text-primary-foreground">
               Yes, replace with demo data
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Demo Data — subtle card at the bottom */}
-      <div className="rounded-xl border border-dashed border-[#EAEAEA] dark:border-gray-700 bg-slate-50/50 dark:bg-gray-900/50 p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+      {/* Demo Data card */}
+      <div className="rounded-xl border border-dashed border-border bg-muted/40 p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <div className="flex-1">
-          <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Load Sample Data</p>
-          <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-0.5">
+          <p className="text-sm font-medium text-foreground">Load Sample Data</p>
+          <p className="text-xs text-muted-foreground mt-0.5">
             Populate your portfolio with a demo property, car, ETF, super, liabilities, income, and expenses — great for exploring the app.
           </p>
         </div>
@@ -465,7 +416,7 @@ const DashboardNew = () => {
           disabled={demoLoading}
           variant="outline"
           size="sm"
-          className="shrink-0 border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-150 active:scale-[0.98]"
+          className="shrink-0 border-sage text-sage hover:bg-sage-soft hover:border-sage transition-all duration-150 active:scale-[0.98]"
         >
           {demoLoading ? (
             <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Loading...</>

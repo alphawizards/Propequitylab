@@ -42,7 +42,6 @@ const PropertiesPage = () => {
 
   const fetchProperties = useCallback(async () => {
     if (!currentPortfolio?.id) return;
-
     try {
       setLoading(true);
       setError(null);
@@ -56,31 +55,12 @@ const PropertiesPage = () => {
     }
   }, [currentPortfolio?.id]);
 
-  useEffect(() => {
-    fetchProperties();
-  }, [fetchProperties]);
+  useEffect(() => { fetchProperties(); }, [fetchProperties]);
 
-  const handleAddProperty = () => {
-    setSelectedProperty(null);
-    setEditMode(false);
-    setIsFormOpen(true);
-  };
-
-  const handleEditProperty = (property) => {
-    setSelectedProperty(property);
-    setEditMode(true);
-    setIsFormOpen(true);
-    setIsDetailsOpen(false);
-  };
-
-  const handleViewProperty = (property) => {
-    setSelectedProperty(property);
-    setIsDetailsOpen(true);
-  };
-
-  const handleDeleteProperty = (propertyId) => {
-    setDeleteConfirmId(propertyId);
-  };
+  const handleAddProperty    = () => { setSelectedProperty(null); setEditMode(false); setIsFormOpen(true); };
+  const handleEditProperty   = (p) => { setSelectedProperty(p); setEditMode(true); setIsFormOpen(true); setIsDetailsOpen(false); };
+  const handleViewProperty   = (p) => { setSelectedProperty(p); setIsDetailsOpen(true); };
+  const handleDeleteProperty = (id) => setDeleteConfirmId(id);
 
   const confirmDelete = async () => {
     if (!deleteConfirmId) return;
@@ -101,10 +81,7 @@ const PropertiesPage = () => {
         const updated = await api.updateProperty(selectedProperty.id, propertyData);
         setProperties(prev => prev.map(p => p.id === selectedProperty.id ? updated : p));
       } else {
-        const newProperty = await api.createProperty({
-          ...propertyData,
-          portfolio_id: currentPortfolio.id,
-        });
+        const newProperty = await api.createProperty({ ...propertyData, portfolio_id: currentPortfolio.id });
         setProperties(prev => [...prev, newProperty]);
       }
       setIsFormOpen(false);
@@ -114,12 +91,10 @@ const PropertiesPage = () => {
     }
   };
 
-  // Calculate portfolio totals
-  // Calculate portfolio totals
   const totals = properties.reduce((acc, prop) => ({
-    totalValue: acc.totalValue + Number(prop.current_value || 0),
-    totalDebt: acc.totalDebt + Number(prop.loan_details?.amount || 0),
-    totalEquity: acc.totalEquity + (Number(prop.current_value || 0) - Number(prop.loan_details?.amount || 0)),
+    totalValue:   acc.totalValue   + Number(prop.current_value || 0),
+    totalDebt:    acc.totalDebt    + Number(prop.loan_details?.amount || 0),
+    totalEquity:  acc.totalEquity  + (Number(prop.current_value || 0) - Number(prop.loan_details?.amount || 0)),
     annualRental: acc.annualRental + (Number(prop.rental_details?.income || 0) * (prop.rental_details?.frequency === 'weekly' ? 52 : prop.rental_details?.frequency === 'fortnightly' ? 26 : 12)),
   }), { totalValue: 0, totalDebt: 0, totalEquity: 0, annualRental: 0 });
 
@@ -131,7 +106,7 @@ const PropertiesPage = () => {
   if (!currentPortfolio) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <p className="text-gray-500">Please create a portfolio first.</p>
+        <p className="text-muted-foreground">Please create a portfolio first.</p>
       </div>
     );
   }
@@ -141,13 +116,10 @@ const PropertiesPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-[#111111] dark:text-white">Properties</h1>
-          <p className="text-[#6B7280] dark:text-gray-400">Manage your property portfolio</p>
+          <h1 className="text-2xl font-semibold text-foreground">Properties</h1>
+          <p className="text-muted-foreground">Manage your property portfolio</p>
         </div>
-        <Button
-          onClick={handleAddProperty}
-          className="bg-emerald-600 text-white hover:bg-emerald-700"
-        >
+        <Button onClick={handleAddProperty} className="bg-primary text-primary-foreground hover:bg-primary/90">
           <Plus className="w-4 h-4 mr-2" />
           Add Property
         </Button>
@@ -155,36 +127,16 @@ const PropertiesPage = () => {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-        <KPICard
-          title="Total Properties"
-          value={properties.length.toString()}
-          icon={Building}
-          variant="blue"
-        />
-        <KPICard
-          title="Portfolio Value"
-          value={`$${(totals.totalValue / 1000000).toFixed(2)}M`}
-          icon={Home}
-          variant="green"
-        />
-        <KPICard
-          title="Total Equity"
-          value={`$${(totals.totalEquity / 1000000).toFixed(2)}M`}
-          icon={TrendingUp}
-          variant="green"
-        />
-        <KPICard
-          title="Annual Rental"
-          value={`$${totals.annualRental.toLocaleString()}`}
-          icon={DollarSign}
-          variant="purple"
-        />
+        <KPICard title="Total Properties" value={properties.length.toString()}                         icon={Building}   variant="blue" />
+        <KPICard title="Portfolio Value"  value={`$${(totals.totalValue / 1000000).toFixed(2)}M`}      icon={Home}       variant="green" />
+        <KPICard title="Total Equity"     value={`$${(totals.totalEquity / 1000000).toFixed(2)}M`}     icon={TrendingUp} variant="green" />
+        <KPICard title="Annual Rental"    value={`$${totals.annualRental.toLocaleString()}`}            icon={DollarSign} variant="purple" />
       </div>
 
       {/* Search & Filter */}
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             type="text"
             placeholder="Search by address or suburb..."
@@ -201,7 +153,7 @@ const PropertiesPage = () => {
 
       {/* Error state */}
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+        <div className="p-4 bg-terra-soft border border-terra/30 rounded-lg text-terra text-sm">
           {error}
         </div>
       )}
@@ -210,28 +162,23 @@ const PropertiesPage = () => {
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3].map((i) => (
-            <Card key={i} className="h-64 animate-pulse bg-gray-100" />
+            <Card key={i} className="h-64 animate-pulse bg-muted" />
           ))}
         </div>
       ) : filteredProperties.length === 0 ? (
         <Card className="p-12">
           <div className="text-center">
-            <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
-              <Home className="w-8 h-8 text-gray-400" />
+            <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
+              <Home className="w-8 h-8 text-muted-foreground" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+            <h3 className="text-lg font-semibold text-foreground mb-2">
               {searchQuery ? 'No properties found' : 'No properties yet'}
             </h3>
-            <p className="text-gray-500 dark:text-gray-400 mb-6">
-              {searchQuery
-                ? 'Try adjusting your search'
-                : 'Add your first property to start tracking your portfolio'}
+            <p className="text-muted-foreground mb-6">
+              {searchQuery ? 'Try adjusting your search' : 'Add your first property to start tracking your portfolio'}
             </p>
             {!searchQuery && (
-              <Button
-                onClick={handleAddProperty}
-                className="bg-emerald-600 text-white hover:bg-emerald-700"
-              >
+              <Button onClick={handleAddProperty} className="bg-primary text-primary-foreground hover:bg-primary/90">
                 <Plus className="w-4 h-4 mr-2" />
                 Add Property
               </Button>
@@ -252,7 +199,6 @@ const PropertiesPage = () => {
         </div>
       )}
 
-      {/* Modals */}
       <PropertyFormModal
         isOpen={isFormOpen}
         onClose={() => setIsFormOpen(false)}
@@ -260,7 +206,6 @@ const PropertiesPage = () => {
         property={selectedProperty}
         editMode={editMode}
       />
-
       <PropertyDetailsModal
         isOpen={isDetailsOpen}
         onClose={() => setIsDetailsOpen(false)}
@@ -278,10 +223,7 @@ const PropertiesPage = () => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={confirmDelete}
-              className="bg-red-500 hover:bg-red-600 text-white"
-            >
+            <AlertDialogAction onClick={confirmDelete} className="bg-terra hover:bg-terra/90 text-primary-foreground">
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>
