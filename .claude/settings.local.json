@@ -48,7 +48,10 @@
       "Bash(railway variable:*)",
       "mcp__jcodemunch__resolve_repo",
       "mcp__jcodemunch__search_symbols",
-      "Bash(cmd //c \"backend\\\\venv\\\\Scripts\\\\python.exe -m pytest tests/backend_test.py -v --tb=short -q 2>&1\")"
+      "Bash(cmd //c \"backend\\\\venv\\\\Scripts\\\\python.exe -m pytest tests/backend_test.py -v --tb=short -q 2>&1\")",
+      "mcp__plugin_context-mode_context-mode__ctx_batch_execute",
+      "Bash(rtk git:*)",
+      "Bash(railway variables *)"
     ]
   }
 }
