@@ -15,7 +15,7 @@
  *   logout()      - calls Clerk signOut()
  */
 
-import { createContext, useContext, useEffect } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { useUser, useAuth as useClerkAuth, useClerk } from '@clerk/clerk-react';
 import { setClerkTokenGetter } from '../services/api';
 import { setUserContext } from '../utils/sentry';
@@ -26,12 +26,15 @@ export const AuthProvider = ({ children }) => {
   const { user: clerkUser, isLoaded, isSignedIn } = useUser();
   const { getToken } = useClerkAuth();
   const { signOut } = useClerk();
+  // True only after setClerkTokenGetter is wired — consumers gate fetches on this
+  const [isTokenReady, setIsTokenReady] = useState(false);
 
   // Wire Clerk's getToken into the api.js interceptor so every Axios request
   // automatically receives a valid Bearer token without touching localStorage.
   useEffect(() => {
     if (isLoaded && isSignedIn && getToken) {
       setClerkTokenGetter(() => getToken({ template: 'backend' }));
+      setIsTokenReady(true);
 
       // Set Sentry user context using the existing setUserContext utility
       if (clerkUser) {
@@ -43,6 +46,7 @@ export const AuthProvider = ({ children }) => {
       }
     } else if (isLoaded && !isSignedIn) {
       setClerkTokenGetter(null);
+      setIsTokenReady(false);
       setUserContext(null);
     }
   }, [isLoaded, isSignedIn, getToken, clerkUser]);
@@ -62,6 +66,7 @@ export const AuthProvider = ({ children }) => {
     user,
     isAuthenticated: !!isSignedIn,
     loading: !isLoaded,
+    isTokenReady,
     // login/register are handled by Clerk's hosted UI components.
     // Kept as no-ops so any legacy call sites do not throw.
     login: async () => {},

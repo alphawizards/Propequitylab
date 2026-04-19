@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { useAuth } from './AuthContext';
-import { useAuth as useClerkAuth } from '@clerk/clerk-react';
 import api from '../services/api';
 
 const PortfolioContext = createContext(null);
@@ -10,8 +9,7 @@ export const PortfolioProvider = ({ children }) => {
   const [currentPortfolio, setCurrentPortfolio] = useState(null);
   const [portfoliosLoading, setPortfoliosLoading] = useState(true);
   const [summary, setSummary] = useState(null);
-  const { loading: authLoading, isAuthenticated } = useAuth();
-  const { getToken } = useClerkAuth();
+  const { loading: authLoading, isAuthenticated, isTokenReady } = useAuth();
 
   // Fetch portfolios on mount
   const fetchPortfolios = useCallback(async () => {
@@ -31,15 +29,15 @@ export const PortfolioProvider = ({ children }) => {
     }
   }, []);
 
-  // Only fetch once auth is resolved, user is signed in, and Clerk's getToken
-  // is wired into the Axios interceptor (avoids the 401 race condition).
+  // Gate on isTokenReady (set by AuthContext after setClerkTokenGetter wired)
+  // to guarantee the Axios interceptor has a token before the first fetch fires.
   useEffect(() => {
-    if (!authLoading && isAuthenticated && getToken) {
+    if (!authLoading && isAuthenticated && isTokenReady) {
       fetchPortfolios();
     } else if (!authLoading && !isAuthenticated) {
       setPortfoliosLoading(false);
     }
-  }, [authLoading, isAuthenticated, getToken]);
+  }, [authLoading, isAuthenticated, isTokenReady, fetchPortfolios]);
 
   // Fetch summary when current portfolio changes
   useEffect(() => {
@@ -58,7 +56,7 @@ export const PortfolioProvider = ({ children }) => {
   }, [currentPortfolio?.id]);
 
   const createPortfolio = useCallback(async (name, type = 'actual') => {
-    if (!getToken) {
+    if (!isTokenReady) {
       throw new Error('Authentication not ready. Please try again.');
     }
     try {
@@ -70,19 +68,23 @@ export const PortfolioProvider = ({ children }) => {
       console.error('Failed to create portfolio:', error);
       throw error;
     }
-  }, [getToken]);
+  }, [isTokenReady]);
 
   const selectPortfolio = useCallback((portfolio) => {
     setCurrentPortfolio(portfolio);
   }, []);
 
   const refreshSummary = useCallback(async () => {
-    if (!getToken) return;
+    if (!isTokenReady) return;
     if (currentPortfolio?.id) {
-      const data = await api.getPortfolioSummary(currentPortfolio.id);
-      setSummary(data);
+      try {
+        const data = await api.getPortfolioSummary(currentPortfolio.id);
+        setSummary(data);
+      } catch (error) {
+        console.error('Failed to refresh portfolio summary:', error);
+      }
     }
-  }, [getToken, currentPortfolio?.id]);
+  }, [isTokenReady, currentPortfolio?.id]);
 
   const value = useMemo(() => ({
     portfolios,
