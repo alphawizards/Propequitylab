@@ -108,42 +108,6 @@ module.exports = {
 					'2':     'oklch(var(--line-2))',
 				},
 
-				// ── Legacy ramps — kept during transition (removed in Phase 8) ──────
-				emerald: {
-					DEFAULT: '#10B981',
-					50:  '#ECFDF5',
-					100: '#D1FAE5',
-					200: '#A7F3D0',
-					300: '#6EE7B7',
-					400: '#34D399',
-					500: '#10B981',
-					600: '#059669',
-					700: '#047857',
-					800: '#065F46',
-					900: '#064E3B',
-				},
-				mint: {
-					DEFAULT: '#6EE7B7',
-					50:  '#F0FDFA',
-					100: '#CCFBF1',
-					200: '#99F6E4',
-					300: '#5EEAD4',
-					400: '#2DD4BF',
-					500: '#14B8A6',
-				},
-				pastel: {
-					blue:   '#EBF5FF',
-					green:  '#F0FDF4',
-					purple: '#F3E8FF',
-					yellow: '#FEFCE8'
-				},
-				chartGradient: {
-					emeraldStart:   '#6EE7B7',
-					emeraldMid:     '#34D399',
-					emeraldEnd:     '#10B981',
-					liquidAssets:   '#22c55e',
-					propertyEquity: '#ef4444',
-				},
 			},
 			keyframes: {
 				'accordion-down': {
