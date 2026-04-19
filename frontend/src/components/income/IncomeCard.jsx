@@ -23,12 +23,12 @@ import {
 } from '../ui/dropdown-menu';
 
 const INCOME_TYPE_INFO = {
-  salary: { label: 'Salary', icon: Briefcase, color: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' },
-  rental: { label: 'Rental', icon: Home, color: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' },
-  dividend: { label: 'Dividend', icon: TrendingUp, color: 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300' },
-  business: { label: 'Business', icon: Building, color: 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300' },
-  pension: { label: 'Pension', icon: Wallet, color: 'bg-teal-100 text-teal-700 dark:bg-teal-900 dark:text-teal-300' },
-  other: { label: 'Other', icon: DollarSign, color: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300' },
+  salary: { label: 'Salary', icon: Briefcase, color: 'bg-ocean/10 text-ocean dark:bg-ocean/20 dark:text-ocean' },
+  rental: { label: 'Rental', icon: Home, color: 'bg-sage/10 text-sage dark:bg-sage/20 dark:text-sage' },
+  dividend: { label: 'Dividend', icon: TrendingUp, color: 'bg-plum/10 text-plum dark:bg-plum/20 dark:text-plum' },
+  business: { label: 'Business', icon: Building, color: 'bg-gold/10 text-gold dark:bg-gold/20 dark:text-gold' },
+  pension: { label: 'Pension', icon: Wallet, color: 'bg-sage/10 text-sage dark:bg-sage/20 dark:text-sage' },
+  other: { label: 'Other', icon: DollarSign, color: 'bg-muted text-muted-foreground' },
 };
 
 const OWNER_LABELS = {
@@ -91,7 +91,7 @@ const IncomeCard = ({ income, onEdit, onDelete, onView }) => {
               <DropdownMenuItem onClick={() => onEdit(income)}>
                 <Edit className="w-4 h-4 mr-2" /> Edit
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onDelete(income.id)} className="text-red-600">
+              <DropdownMenuItem onClick={() => onDelete(income.id)} className="text-destructive">
                 <Trash2 className="w-4 h-4 mr-2" /> Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -100,34 +100,34 @@ const IncomeCard = ({ income, onEdit, onDelete, onView }) => {
 
         <div className="space-y-3">
           <div className="flex justify-between items-center">
-            <span className="text-sm text-[#6B7280] dark:text-gray-400">Amount</span>
+            <span className="text-sm text-[#6B7280] dark:text-muted-foreground">Amount</span>
             <span className="font-semibold text-lg tabular-nums text-[#111111] dark:text-white">
               {formatCurrency(income.amount)}{formatFrequency(income.frequency)}
             </span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-sm text-[#6B7280] dark:text-gray-400">Monthly</span>
-            <span className="text-gray-700 dark:text-gray-300">
+            <span className="text-sm text-[#6B7280] dark:text-muted-foreground">Monthly</span>
+            <span className="text-foreground dark:text-foreground">
               {formatCurrency(monthlyAmount)}
             </span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-sm text-[#6B7280] dark:text-gray-400">Growth Rate</span>
-            <span className="text-emerald-600 dark:text-emerald-400 font-medium">
+            <span className="text-sm text-[#6B7280] dark:text-muted-foreground">Growth Rate</span>
+            <span className="text-sage font-medium">
               +{income.growth_rate}%/yr
             </span>
           </div>
           {income.end_age && (
             <div className="flex justify-between items-center">
-              <span className="text-sm text-[#6B7280] dark:text-gray-400">Until Age</span>
-              <span className="text-gray-700 dark:text-gray-300">{income.end_age}</span>
+              <span className="text-sm text-[#6B7280] dark:text-muted-foreground">Until Age</span>
+              <span className="text-foreground">{income.end_age}</span>
             </div>
           )}
         </div>
 
         {income.is_taxable && (
-          <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700">
-            <Badge variant="secondary" className="bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300">
+          <div className="mt-4 pt-3 border-t border-border">
+            <Badge variant="secondary" className="bg-gold/10 text-gold">
               Taxable Income
             </Badge>
           </div>

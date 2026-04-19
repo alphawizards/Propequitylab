@@ -11,19 +11,19 @@ const KPICard = ({
   trendValue
 }) => {
   const accentColors = {
-    blue: 'text-blue-600',
-    green: 'text-emerald-600',
-    purple: 'text-violet-600',
-    yellow: 'text-amber-600',
-    red: 'text-red-500',
+    blue: 'text-ocean',
+    green: 'text-sage',
+    purple: 'text-plum',
+    yellow: 'text-gold',
+    red: 'text-destructive',
   };
 
   const bgAccentColors = {
-    blue: 'bg-blue-50',
-    green: 'bg-emerald-50',
-    purple: 'bg-violet-50',
-    yellow: 'bg-amber-50',
-    red: 'bg-red-50',
+    blue: 'bg-ocean/10',
+    green: 'bg-sage/10',
+    purple: 'bg-plum/10',
+    yellow: 'bg-gold/10',
+    red: 'bg-destructive/10',
   };
 
   return (
@@ -38,7 +38,7 @@ const KPICard = ({
           {trend && trendValue && (
             <div className={cn(
               "flex items-center gap-1 mt-3 text-xs font-medium",
-              trend === 'up' ? 'text-emerald-600' : 'text-red-500'
+              trend === 'up' ? 'text-sage' : 'text-destructive'
             )}>
               <span>{trendValue}</span>
             </div>

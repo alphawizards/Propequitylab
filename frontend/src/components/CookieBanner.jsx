@@ -64,7 +64,7 @@ const CookieBanner = () => {
           <Button variant="outline" size="sm" onClick={handleDecline}>
             Decline
           </Button>
-          <Button size="sm" onClick={handleAccept} className="bg-emerald-600 text-white hover:bg-emerald-700">
+          <Button size="sm" onClick={handleAccept} className="bg-primary text-primary-foreground hover:bg-primary/90">
             Accept
           </Button>
         </div>

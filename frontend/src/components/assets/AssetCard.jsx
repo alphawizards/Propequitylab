@@ -43,24 +43,24 @@ const AssetCard = ({ asset, onView, onEdit, onDelete }) => {
   const getTaxBadgeColor = (env) => {
     switch (env) {
       case 'tax_deferred':
-        return 'bg-purple-100 text-purple-700';
+        return 'bg-plum/10 text-plum';
       case 'tax_free':
-        return 'bg-green-100 text-green-700';
+        return 'bg-sage/10 text-sage';
       default:
-        return 'bg-gray-100 text-gray-700';
+        return 'bg-muted text-muted-foreground';
     }
   };
 
   return (
     <Card className="overflow-hidden hover:shadow-card-hover transition-all duration-150 hover:-translate-y-px group">
       {/* Asset Header */}
-      <div className="h-32 bg-slate-50 relative border-b border-[#EAEAEA]">
+      <div className="h-32 bg-muted relative border-b border-border">
         <div className="absolute inset-0 flex items-center justify-center">
-          <TrendingUp className="w-12 h-12 text-slate-200" />
+          <TrendingUp className="w-12 h-12 text-muted-foreground/20" />
         </div>
 
         {/* Asset Type Badge */}
-        <Badge className="absolute top-3 left-3 bg-white text-gray-700">
+        <Badge className="absolute top-3 left-3 bg-card text-foreground">
           {getAssetLabel(asset.type)}
         </Badge>
 
@@ -91,7 +91,7 @@ const AssetCard = ({ asset, onView, onEdit, onDelete }) => {
               <Pencil className="w-4 h-4 mr-2" />
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={onDelete} className="text-red-600">
+            <DropdownMenuItem onClick={onDelete} className="text-destructive">
               <Trash2 className="w-4 h-4 mr-2" />
               Delete
             </DropdownMenuItem>
@@ -112,7 +112,7 @@ const AssetCard = ({ asset, onView, onEdit, onDelete }) => {
             {formatCurrency(asset.current_value)}
           </p>
           {asset.purchase_value > 0 && gain !== 0 && (
-            <div className={`flex items-center gap-1 text-sm ${gain >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+            <div className={`flex items-center gap-1 text-sm ${gain >= 0 ? 'text-sage' : 'text-terra'}`}>
               <ArrowUpRight className={`w-3 h-3 ${gain < 0 ? 'rotate-90' : ''}`} />
               <span>{gain >= 0 ? '+' : ''}{formatCurrency(gain)} ({gainPercent}%)</span>
             </div>
@@ -124,7 +124,7 @@ const AssetCard = ({ asset, onView, onEdit, onDelete }) => {
           <div>
             <p className="text-xs text-[#6B7280]">Expected Return</p>
             <p className="font-semibold text-[#111111] tabular-nums flex items-center gap-1">
-              <TrendingUp className="w-3 h-3 text-emerald-500" />
+              <TrendingUp className="w-3 h-3 text-sage" />
               {asset.expected_return}% p.a.
             </p>
           </div>
