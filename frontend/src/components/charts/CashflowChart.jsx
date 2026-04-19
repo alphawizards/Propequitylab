@@ -12,7 +12,7 @@ import {
 } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { formatCurrency } from '../../utils/formatCurrency';
-
+import { getChartColors } from '../../lib/chartColors';
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload || !payload.length) return null;
@@ -30,14 +30,12 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 const CashflowChart = ({ income = 0, expenses = 0, loading = false }) => {
-  // Create monthly data for the chart (simplified view)
+  const C = getChartColors();
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const currentMonth = new Date().getMonth();
 
-  // Generate last 6 months of data (using consistent variations)
   const chartData = Array.from({ length: 6 }, (_, i) => {
     const monthIndex = (currentMonth - 5 + i + 12) % 12;
-    // Use deterministic variations based on month index
     const incomeVariation = 0.95 + (monthIndex % 3) * 0.025;
     const expenseVariation = 0.9 + (monthIndex % 4) * 0.05;
     return {
@@ -47,12 +45,11 @@ const CashflowChart = ({ income = 0, expenses = 0, loading = false }) => {
     };
   });
 
-  // Use actual current month data
   if (chartData.length > 0) {
     chartData[chartData.length - 1] = {
       month: months[currentMonth],
-      income: income,
-      expenses: expenses,
+      income,
+      expenses,
     };
   }
 
@@ -64,7 +61,7 @@ const CashflowChart = ({ income = 0, expenses = 0, loading = false }) => {
         </CardHeader>
         <CardContent>
           <div className="h-80 flex items-center justify-center">
-            <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
           </div>
         </CardContent>
       </Card>
@@ -77,38 +74,38 @@ const CashflowChart = ({ income = 0, expenses = 0, loading = false }) => {
     <Card data-testid="cashflow-chart">
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>Monthly Cashflow</CardTitle>
-        <div className={`text-lg font-bold ${cashflow >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+        <div className={`text-lg font-bold ${cashflow >= 0 ? 'text-sage' : 'text-terra'}`}>
           {cashflow >= 0 ? '+' : ''}{formatCurrency(cashflow)}/mo
         </div>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={280}>
           <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+            <CartesianGrid strokeDasharray="3 3" stroke={C.line2} />
             <XAxis
               dataKey="month"
-              tick={{ fill: '#6b7280', fontSize: 12 }}
-              tickLine={{ stroke: '#e5e7eb' }}
+              tick={{ fill: C.ink3, fontSize: 12 }}
+              tickLine={{ stroke: C.line2 }}
             />
             <YAxis
-              tick={{ fill: '#6b7280', fontSize: 12 }}
-              tickLine={{ stroke: '#e5e7eb' }}
+              tick={{ fill: C.ink3, fontSize: 12 }}
+              tickLine={{ stroke: C.line2 }}
               tickFormatter={formatCurrency}
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend />
-            <ReferenceLine y={0} stroke="#9ca3af" />
+            <ReferenceLine y={0} stroke={C.ink3} />
             <Bar
               dataKey="income"
               name="Income"
-              fill="#22c55e"
+              fill={C.sage}
               radius={[4, 4, 0, 0]}
               animationDuration={800}
             />
             <Bar
               dataKey="expenses"
               name="Expenses"
-              fill="#ef4444"
+              fill={C.terra}
               radius={[4, 4, 0, 0]}
               animationDuration={800}
             />

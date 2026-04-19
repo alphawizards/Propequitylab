@@ -9,29 +9,29 @@ import {
 } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { formatCurrency } from '../../utils/formatCurrency';
+import { getChartColors } from '../../lib/chartColors';
 
-const COLORS = {
-  properties: '#3b82f6',
-  super: '#8b5cf6',
-  shares: '#22c55e',
-  etf: '#10b981',
-  crypto: '#f59e0b',
-  cash: '#eab308',
-  bonds: '#6366f1',
-  other: '#6b7280',
+const ASSET_COLOR_KEYS = {
+  properties: 'ocean',
+  super:      'plum',
+  shares:     'sage',
+  etf:        'sageSoft',
+  crypto:     'gold',
+  cash:       'goldSoft',
+  bonds:      'ocean',
+  other:      'ink3',
 };
 
 const LABELS = {
   properties: 'Properties',
-  super: 'Superannuation',
-  shares: 'Shares',
-  etf: 'ETFs',
-  crypto: 'Crypto',
-  cash: 'Cash',
-  bonds: 'Bonds',
-  other: 'Other',
+  super:      'Superannuation',
+  shares:     'Shares',
+  etf:        'ETFs',
+  crypto:     'Crypto',
+  cash:       'Cash',
+  bonds:      'Bonds',
+  other:      'Other',
 };
-
 
 const CustomTooltip = ({ active, payload }) => {
   if (!active || !payload || !payload.length) return null;
@@ -46,9 +46,8 @@ const CustomTooltip = ({ active, payload }) => {
   );
 };
 
-// Custom label component defined outside to avoid recreation
 const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
-  if (percent < 0.05) return null; // Don't show labels for small slices
+  if (percent < 0.05) return null;
 
   const RADIAN = Math.PI / 180;
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
@@ -71,7 +70,7 @@ const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent
 };
 
 const AssetAllocationChart = ({ breakdown = {}, loading = false }) => {
-  // Transform breakdown to chart data - ensure numeric values
+  const C = getChartColors();
   const total = Object.values(breakdown).reduce((sum, val) => sum + (Number(val) || 0), 0);
 
   const chartData = Object.entries(breakdown)
@@ -79,7 +78,7 @@ const AssetAllocationChart = ({ breakdown = {}, loading = false }) => {
     .map(([key, value]) => ({
       name: LABELS[key] || key,
       value: Number(value),
-      color: COLORS[key] || '#6b7280',
+      color: C[ASSET_COLOR_KEYS[key]] || C.ink3,
       percentage: total > 0 ? (Number(value) / total) * 100 : 0,
     }))
     .sort((a, b) => b.value - a.value);
@@ -92,7 +91,7 @@ const AssetAllocationChart = ({ breakdown = {}, loading = false }) => {
         </CardHeader>
         <CardContent>
           <div className="h-80 flex items-center justify-center">
-            <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
           </div>
         </CardContent>
       </Card>
@@ -130,7 +129,7 @@ const AssetAllocationChart = ({ breakdown = {}, loading = false }) => {
               label={renderCustomLabel}
               outerRadius={120}
               innerRadius={60}
-              fill="#8884d8"
+              fill={C.plum}
               dataKey="value"
               animationBegin={0}
               animationDuration={800}
@@ -141,8 +140,8 @@ const AssetAllocationChart = ({ breakdown = {}, loading = false }) => {
             </Pie>
             <Tooltip content={<CustomTooltip />} />
             <Legend
-              formatter={(value, entry) => (
-                <span style={{ color: 'hsl(var(--foreground))' }}>{value}</span>
+              formatter={(value) => (
+                <span style={{ color: C.ink }}>{value}</span>
               )}
             />
           </PieChart>

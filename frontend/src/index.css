@@ -5,7 +5,7 @@
 body {
     margin: 0;
     font-family:
-        'Plus Jakarta Sans',
+        'Inter',
         -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
         "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
         sans-serif;
@@ -14,93 +14,116 @@ body {
 }
 
 code {
-    font-family:
-        source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+    font-family: 'JetBrains Mono', source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
 @layer base {
     :root {
-        /* Premium Minimalist Theme — warm white base, emerald accent */
-        --background: 50 10% 98%;
-        /* #FAFAF9 — warm white */
-        --foreground: 0 0% 7%;
-        /* #111111 — off-black */
+        /* ── Haven raw palette ─────────────────────────────────────────────────
+           All vars are bare OKLCH triplets (L C H). Wrap with oklch() when
+           used in direct CSS; Tailwind config wraps them via oklch(var(--x)).  */
+        --bg:         0.975 0.008 80;
+        --bg-2:       0.955 0.012 78;
+        --ink:        0.22  0.02  60;
+        --ink-2:      0.42  0.02  60;
+        --ink-3:      0.60  0.02  60;
+        --line:       0.90  0.012 75;
+        --line-2:     0.94  0.010 75;
+        --sage:       0.68  0.08  155;
+        --sage-soft:  0.92  0.04  155;
+        --terra:      0.66  0.13  40;
+        --terra-soft: 0.93  0.05  45;
+        --gold:       0.78  0.09  85;
+        --gold-soft:  0.94  0.05  85;
+        --ocean:      0.58  0.08  235;
+        --ocean-soft: 0.93  0.03  235;
+        --plum:       0.52  0.08  335;
+        --plum-soft:  0.93  0.03  335;
 
-        --card: 0 0% 100%;
-        /* #FFFFFF */
-        --card-foreground: 0 0% 7%;
+        /* ── shadcn semantic tokens → Haven palette ────────────────────────── */
+        --background:          0.975 0.008 80;
+        --foreground:          0.22  0.02  60;
+        --card:                0.99  0.006 80;
+        --card-foreground:     0.22  0.02  60;
+        --popover:             0.99  0.006 80;
+        --popover-foreground:  0.22  0.02  60;
+        --primary:             0.68  0.08  155;
+        --primary-foreground:  0.99  0.006 80;
+        --secondary:           0.955 0.012 78;
+        --secondary-foreground: 0.22 0.02  60;
+        --muted:               0.955 0.012 78;
+        --muted-foreground:    0.60  0.02  60;
+        --accent:              0.68  0.08  155;
+        --accent-foreground:   0.99  0.006 80;
+        --destructive:         0.66  0.13  40;
+        --destructive-foreground: 0.99 0.006 80;
+        --border:              0.90  0.012 75;
+        --input:               0.90  0.012 75;
+        --ring:                0.68  0.08  155;
 
-        --popover: 0 0% 100%;
-        --popover-foreground: 0 0% 7%;
+        /* ── Chart tokens ──────────────────────────────────────────────────── */
+        --chart-1: 0.68  0.08  155;   /* sage   */
+        --chart-2: 0.58  0.08  235;   /* ocean  */
+        --chart-3: 0.78  0.09  85;    /* gold   */
+        --chart-4: 0.66  0.13  40;    /* terra  */
+        --chart-5: 0.52  0.08  335;   /* plum   */
 
-        /* Primary: Emerald 600 — deeper, more premium */
-        --primary: 158 64% 42%;
-        /* HSL(158 64% 42%) = emerald-600 #059669 */
-        --primary-foreground: 0 0% 100%;
-        /* White text on emerald */
-
-        --secondary: 210 40% 96.1%;
-        --secondary-foreground: 0 0% 7%;
-
-        --muted: 210 40% 96.1%;
-        --muted-foreground: 220 9% 46%;
-        /* #6B7280 — gray-500 */
-
-        --accent: 158 64% 42%;
-        /* Same as primary */
-        --accent-foreground: 0 0% 100%;
-
-        --destructive: 0 84.2% 60.2%;
-        --destructive-foreground: 210 40% 98%;
-
-        --border: 0 0% 91.8%;
-        /* #EAEAEA — crisp neutral */
-        --input: 0 0% 91.8%;
-        --ring: 158 64% 42%;
-        /* Emerald ring */
-
-        /* Chart Colors */
-        --chart-1: 158 64% 42%;
-        /* Emerald */
-        --chart-2: 173 58% 39%;
-        /* Teal */
-        --chart-3: 197 37% 24%;
-        /* Navy */
-        --chart-4: 43 74% 66%;
-        /* Yellow */
-        --chart-5: 27 87% 67%;
-        /* Orange */
-
-        --radius: 0.5rem;
+        /* ── Spacing / shadow ──────────────────────────────────────────────── */
+        --radius:    18px;
+        --radius-sm: 12px;
+        --radius-lg: 24px;
+        --shadow: 0 1px 2px rgba(60,40,20,.04), 0 8px 24px -12px rgba(60,40,20,.08);
     }
 
     .dark {
-        --background: 222 47% 8%;
-        --foreground: 0 0% 98%;
-        --card: 222 47% 11%;
-        --card-foreground: 0 0% 98%;
-        --popover: 0 0% 3.9%;
-        --popover-foreground: 0 0% 98%;
-        --primary: 158 64% 52%;
-        /* emerald-400 for dark mode — lighter for contrast */
-        --primary-foreground: 0 0% 9%;
-        --secondary: 222 30% 18%;
-        --secondary-foreground: 0 0% 98%;
-        --muted: 222 30% 18%;
-        --muted-foreground: 0 0% 63.9%;
-        --accent: 158 64% 52%;
-        /* emerald-400 in dark mode */
-        --accent-foreground: 0 0% 98%;
-        --destructive: 0 62.8% 30.6%;
-        --destructive-foreground: 0 0% 98%;
-        --border: 222 30% 20%;
-        --input: 222 30% 20%;
-        --ring: 158 64% 52%;
-        --chart-1: 220 70% 50%;
-        --chart-2: 160 60% 45%;
-        --chart-3: 30 80% 55%;
-        --chart-4: 280 65% 60%;
-        --chart-5: 340 75% 55%;
+        /* ── Haven dark palette ────────────────────────────────────────────── */
+        --bg:         0.18  0.012 70;
+        --bg-2:       0.22  0.012 70;
+        --ink:        0.96  0.008 80;
+        --ink-2:      0.78  0.012 75;
+        --ink-3:      0.60  0.012 70;
+        --line:       0.32  0.013 70;
+        --line-2:     0.28  0.013 70;
+        --sage:       0.78  0.10  155;
+        --sage-soft:  0.32  0.05  155;
+        --terra:      0.76  0.14  40;
+        --terra-soft: 0.32  0.06  40;
+        --gold:       0.84  0.11  85;
+        --gold-soft:  0.32  0.06  85;
+        --ocean:      0.72  0.10  235;
+        --ocean-soft: 0.30  0.04  235;
+        --plum:       0.72  0.10  335;
+        --plum-soft:  0.30  0.04  335;
+
+        /* ── shadcn semantic tokens — dark overrides ───────────────────────── */
+        --background:          0.18  0.012 70;
+        --foreground:          0.96  0.008 80;
+        --card:                0.235 0.013 70;
+        --card-foreground:     0.96  0.008 80;
+        --popover:             0.235 0.013 70;
+        --popover-foreground:  0.96  0.008 80;
+        --primary:             0.78  0.10  155;
+        --primary-foreground:  0.18  0.012 70;
+        --secondary:           0.22  0.012 70;
+        --secondary-foreground: 0.96 0.008 80;
+        --muted:               0.22  0.012 70;
+        --muted-foreground:    0.60  0.012 70;
+        --accent:              0.78  0.10  155;
+        --accent-foreground:   0.18  0.012 70;
+        --destructive:         0.76  0.14  40;
+        --destructive-foreground: 0.96 0.008 80;
+        --border:              0.32  0.013 70;
+        --input:               0.32  0.013 70;
+        --ring:                0.78  0.10  155;
+
+        /* ── Chart tokens — dark ───────────────────────────────────────────── */
+        --chart-1: 0.78  0.10  155;
+        --chart-2: 0.72  0.10  235;
+        --chart-3: 0.84  0.11  85;
+        --chart-4: 0.76  0.14  40;
+        --chart-5: 0.72  0.10  335;
+
+        --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
     }
 }
 

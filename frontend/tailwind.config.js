@@ -10,14 +10,18 @@ module.exports = {
 	theme: {
 		extend: {
 			fontFamily: {
-				sans: ['Plus Jakarta Sans', ...defaultTheme.fontFamily.sans],
+				sans:  ['Inter', ...defaultTheme.fontFamily.sans],
+				serif: ['Instrument Serif', ...defaultTheme.fontFamily.serif],
+				mono:  ['JetBrains Mono', ...defaultTheme.fontFamily.mono],
 			},
 			borderRadius: {
-				lg: 'var(--radius)',
-				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
+				lg:   'var(--radius)',
+				md:   'calc(var(--radius) - 2px)',
+				sm:   'var(--radius-sm)',
+				xl:   'var(--radius-lg)',
 			},
 			boxShadow: {
+				'haven':      'var(--shadow)',
 				'card':       '0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03)',
 				'card-hover': '0 2px 8px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.05)',
 				'modal':      '0 8px 32px rgba(0,0,0,0.08), 0 24px 64px rgba(0,0,0,0.06)',
@@ -27,53 +31,100 @@ module.exports = {
 				DEFAULT: '150ms',
 			},
 			colors: {
-				background: 'hsl(var(--background))',
-				foreground: 'hsl(var(--foreground))',
+				// ── shadcn semantic tokens (OKLCH-wrapped) ──────────────────────────
+				background: 'oklch(var(--background))',
+				foreground: 'oklch(var(--foreground))',
 				card: {
-					DEFAULT: 'hsl(var(--card))',
-					foreground: 'hsl(var(--card-foreground))'
+					DEFAULT:    'oklch(var(--card))',
+					foreground: 'oklch(var(--card-foreground))'
 				},
 				popover: {
-					DEFAULT: 'hsl(var(--popover))',
-					foreground: 'hsl(var(--popover-foreground))'
+					DEFAULT:    'oklch(var(--popover))',
+					foreground: 'oklch(var(--popover-foreground))'
 				},
 				primary: {
-					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
+					DEFAULT:    'oklch(var(--primary))',
+					foreground: 'oklch(var(--primary-foreground))'
 				},
 				secondary: {
-					DEFAULT: 'hsl(var(--secondary))',
-					foreground: 'hsl(var(--secondary-foreground))'
+					DEFAULT:    'oklch(var(--secondary))',
+					foreground: 'oklch(var(--secondary-foreground))'
 				},
 				muted: {
-					DEFAULT: 'hsl(var(--muted))',
-					foreground: 'hsl(var(--muted-foreground))'
+					DEFAULT:    'oklch(var(--muted))',
+					foreground: 'oklch(var(--muted-foreground))'
 				},
 				accent: {
-					DEFAULT: 'hsl(var(--accent))',
-					foreground: 'hsl(var(--accent-foreground))'
+					DEFAULT:    'oklch(var(--accent))',
+					foreground: 'oklch(var(--accent-foreground))'
 				},
 				destructive: {
-					DEFAULT: 'hsl(var(--destructive))',
-					foreground: 'hsl(var(--destructive-foreground))'
+					DEFAULT:    'oklch(var(--destructive))',
+					foreground: 'oklch(var(--destructive-foreground))'
 				},
-				// New "Emerald & Wealth" Theme Colors
+				border: 'oklch(var(--border))',
+				input:  'oklch(var(--input))',
+				ring:   'oklch(var(--ring))',
+				chart: {
+					'1': 'oklch(var(--chart-1))',
+					'2': 'oklch(var(--chart-2))',
+					'3': 'oklch(var(--chart-3))',
+					'4': 'oklch(var(--chart-4))',
+					'5': 'oklch(var(--chart-5))'
+				},
+
+				// ── Haven semantic palette (for page migration phases 3-7) ──────────
+				sage: {
+					DEFAULT: 'oklch(var(--sage))',
+					soft:    'oklch(var(--sage-soft))',
+				},
+				terra: {
+					DEFAULT: 'oklch(var(--terra))',
+					soft:    'oklch(var(--terra-soft))',
+				},
+				gold: {
+					DEFAULT: 'oklch(var(--gold))',
+					soft:    'oklch(var(--gold-soft))',
+				},
+				ocean: {
+					DEFAULT: 'oklch(var(--ocean))',
+					soft:    'oklch(var(--ocean-soft))',
+				},
+				plum: {
+					DEFAULT: 'oklch(var(--plum))',
+					soft:    'oklch(var(--plum-soft))',
+				},
+				ink: {
+					DEFAULT: 'oklch(var(--ink))',
+					'2':     'oklch(var(--ink-2))',
+					'3':     'oklch(var(--ink-3))',
+				},
+				'bg-surface': {
+					DEFAULT: 'oklch(var(--bg))',
+					'2':     'oklch(var(--bg-2))',
+				},
+				line: {
+					DEFAULT: 'oklch(var(--line))',
+					'2':     'oklch(var(--line-2))',
+				},
+
+				// ── Legacy ramps — kept during transition (removed in Phase 8) ──────
 				emerald: {
-					DEFAULT: '#10B981', // The main emerald brand color (from screenshot)
-					50: '#ECFDF5',
+					DEFAULT: '#10B981',
+					50:  '#ECFDF5',
 					100: '#D1FAE5',
 					200: '#A7F3D0',
 					300: '#6EE7B7',
 					400: '#34D399',
-					500: '#10B981', // Main brand color
+					500: '#10B981',
 					600: '#059669',
 					700: '#047857',
 					800: '#065F46',
 					900: '#064E3B',
 				},
 				mint: {
-					DEFAULT: '#6EE7B7', // Lighter mint/teal for accents
-					50: '#F0FDFA',
+					DEFAULT: '#6EE7B7',
+					50:  '#F0FDFA',
 					100: '#CCFBF1',
 					200: '#99F6E4',
 					300: '#5EEAD4',
@@ -81,51 +132,32 @@ module.exports = {
 					500: '#14B8A6',
 				},
 				pastel: {
-					blue: '#EBF5FF',
-					green: '#F0FDF4',
+					blue:   '#EBF5FF',
+					green:  '#F0FDF4',
 					purple: '#F3E8FF',
 					yellow: '#FEFCE8'
 				},
-				// Chart-specific gradient colors
 				chartGradient: {
-					emeraldStart: '#6EE7B7', // Light mint/teal
-					emeraldMid: '#34D399', // Medium emerald
-					emeraldEnd: '#10B981', // Deep emerald
-					liquidAssets: '#22c55e',
+					emeraldStart:   '#6EE7B7',
+					emeraldMid:     '#34D399',
+					emeraldEnd:     '#10B981',
+					liquidAssets:   '#22c55e',
 					propertyEquity: '#ef4444',
 				},
-				border: 'hsl(var(--border))',
-				input: 'hsl(var(--input))',
-				ring: 'hsl(var(--ring))',
-				chart: {
-					'1': 'hsl(var(--chart-1))',
-					'2': 'hsl(var(--chart-2))',
-					'3': 'hsl(var(--chart-3))',
-					'4': 'hsl(var(--chart-4))',
-					'5': 'hsl(var(--chart-5))'
-				}
 			},
 			keyframes: {
 				'accordion-down': {
-					from: {
-						height: '0'
-					},
-					to: {
-						height: 'var(--radix-accordion-content-height)'
-					}
+					from: { height: '0' },
+					to:   { height: 'var(--radix-accordion-content-height)' }
 				},
 				'accordion-up': {
-					from: {
-						height: 'var(--radix-accordion-content-height)'
-					},
-					to: {
-						height: '0'
-					}
+					from: { height: 'var(--radix-accordion-content-height)' },
+					to:   { height: '0' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up':   'accordion-up 0.2s ease-out'
 			}
 		}
 	},
