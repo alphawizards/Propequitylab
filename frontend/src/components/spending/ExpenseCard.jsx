@@ -29,18 +29,18 @@ import {
 } from '../ui/dropdown-menu';
 
 const CATEGORY_INFO = {
-  housing: { label: 'Housing', icon: Home, color: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' },
-  food: { label: 'Food', icon: Utensils, color: 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300' },
-  transport: { label: 'Transport', icon: Car, color: 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300' },
-  utilities: { label: 'Utilities', icon: Zap, color: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300' },
-  insurance: { label: 'Insurance', icon: Shield, color: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' },
-  entertainment: { label: 'Entertainment', icon: Film, color: 'bg-pink-100 text-pink-700 dark:bg-pink-900 dark:text-pink-300' },
-  health: { label: 'Health', icon: Heart, color: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300' },
-  education: { label: 'Education', icon: GraduationCap, color: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300' },
-  personal: { label: 'Personal', icon: User, color: 'bg-teal-100 text-teal-700 dark:bg-teal-900 dark:text-teal-300' },
-  subscriptions: { label: 'Subscriptions', icon: CreditCard, color: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900 dark:text-cyan-300' },
-  debt_repayment: { label: 'Debt', icon: Wallet, color: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300' },
-  other: { label: 'Other', icon: MoreHorizontal, color: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300' },
+  housing: { label: 'Housing', icon: Home, color: 'bg-ocean/10 text-ocean dark:bg-ocean/20 dark:text-ocean' },
+  food: { label: 'Food', icon: Utensils, color: 'bg-gold/10 text-gold dark:bg-gold/20 dark:text-gold' },
+  transport: { label: 'Transport', icon: Car, color: 'bg-plum/10 text-plum dark:bg-plum/20 dark:text-plum' },
+  utilities: { label: 'Utilities', icon: Zap, color: 'bg-gold/10 text-gold dark:bg-gold/20 dark:text-gold' },
+  insurance: { label: 'Insurance', icon: Shield, color: 'bg-sage/10 text-sage dark:bg-sage/20 dark:text-sage' },
+  entertainment: { label: 'Entertainment', icon: Film, color: 'bg-plum/10 text-plum dark:bg-plum/20 dark:text-plum' },
+  health: { label: 'Health', icon: Heart, color: 'bg-terra/10 text-terra dark:bg-terra/20 dark:text-terra' },
+  education: { label: 'Education', icon: GraduationCap, color: 'bg-ocean/10 text-ocean dark:bg-ocean/20 dark:text-ocean' },
+  personal: { label: 'Personal', icon: User, color: 'bg-sage/10 text-sage dark:bg-sage/20 dark:text-sage' },
+  subscriptions: { label: 'Subscriptions', icon: CreditCard, color: 'bg-ocean/10 text-ocean dark:bg-ocean/20 dark:text-ocean' },
+  debt_repayment: { label: 'Debt', icon: Wallet, color: 'bg-muted text-muted-foreground' },
+  other: { label: 'Other', icon: MoreHorizontal, color: 'bg-muted text-muted-foreground' },
 };
 
 
@@ -93,7 +93,7 @@ const ExpenseCard = ({ expense, onEdit, onDelete, onView }) => {
               <DropdownMenuItem onClick={() => onEdit(expense)}>
                 <Edit className="w-4 h-4 mr-2" /> Edit
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onDelete(expense.id)} className="text-red-600">
+              <DropdownMenuItem onClick={() => onDelete(expense.id)} className="text-destructive">
                 <Trash2 className="w-4 h-4 mr-2" /> Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -102,34 +102,34 @@ const ExpenseCard = ({ expense, onEdit, onDelete, onView }) => {
 
         <div className="space-y-3">
           <div className="flex justify-between items-center">
-            <span className="text-sm text-[#6B7280] dark:text-gray-400">Amount</span>
+            <span className="text-sm text-muted-foreground">Amount</span>
             <span className="font-semibold text-lg tabular-nums text-[#111111] dark:text-white">
               {formatCurrency(expense.amount)}{formatFrequency(expense.frequency)}
             </span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-sm text-[#6B7280] dark:text-gray-400">Monthly</span>
-            <span className="text-gray-700 dark:text-gray-300">
+            <span className="text-sm text-muted-foreground">Monthly</span>
+            <span className="text-foreground">
               {formatCurrency(monthlyAmount)}
             </span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-sm text-[#6B7280] dark:text-gray-400">In Retirement</span>
-            <span className="text-purple-600 dark:text-purple-400 font-medium">
+            <span className="text-sm text-muted-foreground">In Retirement</span>
+            <span className="text-plum font-medium">
               {formatCurrency(retirementAmount)} ({expense.retirement_percentage}%)
             </span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-sm text-[#6B7280] dark:text-gray-400">Inflation</span>
-            <span className="text-orange-600 dark:text-orange-400">
+            <span className="text-sm text-muted-foreground">Inflation</span>
+            <span className="text-gold">
               +{expense.inflation_rate}%/yr
             </span>
           </div>
         </div>
 
         {expense.is_tax_deductible && (
-          <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700">
-            <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
+          <div className="mt-4 pt-3 border-t border-border">
+            <Badge variant="secondary" className="bg-sage/10 text-sage dark:bg-sage/20 dark:text-sage">
               Tax Deductible
             </Badge>
           </div>

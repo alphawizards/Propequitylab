@@ -98,18 +98,18 @@ export default function ScenarioListPanel({
     // Free tier notice
     if (!isPro) {
         return (
-            <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
+            <Card className="bg-gradient-to-br from-plum/5 to-ocean/5 border-plum/20">
                 <CardHeader className="pb-2">
                     <CardTitle className="text-lg flex items-center gap-2">
-                        <Lock className="h-5 w-5 text-purple-600" />
+                        <Lock className="h-5 w-5 text-plum" />
                         Scenario Planning
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <p className="text-sm text-gray-600 mb-3">
+                    <p className="text-sm text-muted-foreground mb-3">
                         Create "what-if" scenarios to compare different investment strategies.
                     </p>
-                    <Button className="w-full bg-purple-600 hover:bg-purple-700">
+                    <Button className="w-full bg-plum text-white hover:bg-plum/90">
                         Upgrade to Pro
                     </Button>
                 </CardContent>
@@ -122,35 +122,35 @@ export default function ScenarioListPanel({
             <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                     <CardTitle className="text-lg flex items-center gap-2">
-                        <BarChart3 className="h-5 w-5 text-emerald-600" />
+                        <BarChart3 className="h-5 w-5 text-primary" />
                         Scenarios
                     </CardTitle>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-muted-foreground">
                         {scenarios.length}/{MAX_SCENARIOS}
                     </span>
                 </div>
             </CardHeader>
             <CardContent>
                 {error && (
-                    <div className="bg-red-50 text-red-700 text-sm p-2 rounded mb-3 flex items-center gap-2">
+                    <div className="bg-destructive/10 text-destructive text-sm p-2 rounded mb-3 flex items-center gap-2">
                         <AlertCircle className="h-4 w-4" />
                         {error}
                     </div>
                 )}
 
                 {loading ? (
-                    <div className="text-center py-4 text-gray-500">Loading...</div>
+                    <div className="text-center py-4 text-muted-foreground">Loading...</div>
                 ) : (
                     <div className="space-y-2">
                         {scenarios.map((scenario) => (
                             <div
                                 key={scenario.id}
-                                className="border rounded-lg p-3 hover:border-emerald-300 transition-colors"
+                                className="border border-border rounded-lg p-3 hover:border-primary/40 transition-colors"
                             >
                                 <div className="flex items-start justify-between mb-2">
                                     <div>
                                         <h4 className="font-medium text-sm">{scenario.scenario_name || 'Scenario'}</h4>
-                                        <p className="text-xs text-gray-500">
+                                        <p className="text-xs text-muted-foreground">
                                             Created {new Date(scenario.created_at).toLocaleDateString()}
                                         </p>
                                     </div>
@@ -167,7 +167,7 @@ export default function ScenarioListPanel({
                                         <Button
                                             variant="ghost"
                                             size="sm"
-                                            className="h-7 w-7 p-0 text-red-500 hover:text-red-700"
+                                            className="h-7 w-7 p-0 text-destructive hover:text-destructive/80"
                                             onClick={() => handleDeleteScenario(scenario.id)}
                                             title="Delete"
                                         >
@@ -179,14 +179,14 @@ export default function ScenarioListPanel({
                                 {/* Quick metrics */}
                                 <div className="grid grid-cols-2 gap-2 text-xs">
                                     <div>
-                                        <span className="text-gray-500">Value:</span>{' '}
+                                        <span className="text-muted-foreground">Value:</span>{' '}
                                         <span className="font-medium">
                                             {formatCurrency(parseFloat(scenario.total_property_value) + parseFloat(scenario.total_assets))}
                                         </span>
                                     </div>
                                     <div>
-                                        <span className="text-gray-500">Equity:</span>{' '}
-                                        <span className="font-medium text-emerald-600">
+                                        <span className="text-muted-foreground">Equity:</span>{' '}
+                                        <span className="font-medium text-primary">
                                             {formatCurrency(parseFloat(scenario.total_equity))}
                                         </span>
                                     </div>
@@ -204,7 +204,7 @@ export default function ScenarioListPanel({
                         ))}
 
                         {scenarios.length === 0 && (
-                            <p className="text-sm text-gray-500 text-center py-4">
+                            <p className="text-sm text-muted-foreground text-center py-4">
                                 No scenarios yet. Create one to explore "what-if" situations.
                             </p>
                         )}
@@ -213,7 +213,7 @@ export default function ScenarioListPanel({
 
                 {/* Create button or modal */}
                 {showCreateModal ? (
-                    <div className="mt-3 p-3 bg-gray-50 rounded-lg">
+                    <div className="mt-3 p-3 bg-muted rounded-lg">
                         <Label className="text-sm">Scenario Name</Label>
                         <Input
                             value={newScenarioName}
@@ -225,7 +225,7 @@ export default function ScenarioListPanel({
                         <div className="flex gap-2">
                             <Button
                                 size="sm"
-                                className="flex-1 bg-emerald-600 hover:bg-emerald-700"
+                                className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
                                 onClick={handleCreateScenario}
                                 disabled={creating || !newScenarioName.trim()}
                             >

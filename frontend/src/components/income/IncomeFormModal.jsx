@@ -101,7 +101,7 @@ const IncomeFormModal = ({ open, onOpenChange, income, onSubmit }) => {
       <DialogContent className="max-w-lg" data-testid="income-form-modal">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <DollarSign className="w-5 h-5 text-green-500" />
+            <DollarSign className="w-5 h-5 text-primary" />
             {income ? 'Edit Income Source' : 'Add Income Source'}
           </DialogTitle>
         </DialogHeader>
@@ -202,7 +202,7 @@ const IncomeFormModal = ({ open, onOpenChange, income, onSubmit }) => {
                   placeholder="3.0"
                   step="0.1"
                 />
-                <p className="text-xs text-gray-500">Expected annual increase in this income</p>
+                <p className="text-xs text-muted-foreground">Expected annual increase in this income</p>
               </div>
 
               <div className="space-y-2">
@@ -216,13 +216,13 @@ const IncomeFormModal = ({ open, onOpenChange, income, onSubmit }) => {
                   min="0"
                   max="120"
                 />
-                <p className="text-xs text-gray-500">Leave blank for ongoing income</p>
+                <p className="text-xs text-muted-foreground">Leave blank for ongoing income</p>
               </div>
 
               <div className="flex items-center justify-between py-2">
                 <div>
                   <Label>Taxable Income</Label>
-                  <p className="text-xs text-gray-500">Subject to income tax</p>
+                  <p className="text-xs text-muted-foreground">Subject to income tax</p>
                 </div>
                 <Switch
                   checked={formData.is_taxable}
@@ -238,7 +238,7 @@ const IncomeFormModal = ({ open, onOpenChange, income, onSubmit }) => {
             </Button>
             <Button
               type="submit"
-              className="bg-emerald-600 text-white hover:bg-emerald-700"
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
               data-testid="submit-income-btn"
             >
               {income ? 'Update Income' : 'Add Income'}

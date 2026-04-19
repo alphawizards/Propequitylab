@@ -35,7 +35,7 @@ const SummaryStep = ({ data, onComplete, isLoading, goToStep }) => {
     {
       title: 'Personal Details',
       icon: User,
-      color: 'bg-blue-100 text-blue-600',
+      color: 'bg-ocean/10 text-ocean',
       items: [
         { label: 'Name', value: data.name || 'Not set' },
         { label: 'Planning Type', value: data.planning_type === 'couple' ? 'Couple' : 'Individual' },
@@ -46,7 +46,7 @@ const SummaryStep = ({ data, onComplete, isLoading, goToStep }) => {
     {
       title: 'Income',
       icon: DollarSign,
-      color: 'bg-green-100 text-green-600',
+      color: 'bg-sage/10 text-sage',
       items: [
         { label: 'Income Sources', value: data.income_sources.length.toString() },
         { label: 'Annual Income', value: `$${totalAnnualIncome.toLocaleString()}` },
@@ -56,7 +56,7 @@ const SummaryStep = ({ data, onComplete, isLoading, goToStep }) => {
     {
       title: 'Spending',
       icon: CreditCard,
-      color: 'bg-red-100 text-red-600',
+      color: 'bg-terra/10 text-terra',
       items: [
         { label: 'Expense Categories', value: data.expenses.length.toString() },
         { label: 'Annual Expenses', value: `$${totalAnnualExpenses.toLocaleString()}` },
@@ -67,7 +67,7 @@ const SummaryStep = ({ data, onComplete, isLoading, goToStep }) => {
     {
       title: 'Assets',
       icon: PiggyBank,
-      color: 'bg-purple-100 text-purple-600',
+      color: 'bg-plum/10 text-plum',
       items: [
         { label: 'Asset Accounts', value: data.other_assets.length.toString() },
         { label: 'Total Value', value: `$${totalAssets.toLocaleString()}` },
@@ -77,7 +77,7 @@ const SummaryStep = ({ data, onComplete, isLoading, goToStep }) => {
     {
       title: 'Liabilities',
       icon: CreditCard,
-      color: 'bg-orange-100 text-orange-600',
+      color: 'bg-gold/10 text-gold',
       items: [
         { label: 'Debt Accounts', value: data.liabilities.length.toString() },
         { label: 'Total Debt', value: `$${totalLiabilities.toLocaleString()}` },
@@ -87,7 +87,7 @@ const SummaryStep = ({ data, onComplete, isLoading, goToStep }) => {
     {
       title: 'Goals',
       icon: Target,
-      color: 'bg-emerald-100 text-emerald-600',
+      color: 'bg-sage/10 text-sage',
       items: [
         { label: 'Retirement Age', value: data.retirement_age.toString() },
         { label: 'Target Net Worth', value: `$${(data.target_equity / 1000000).toFixed(1)}M` },
@@ -102,19 +102,19 @@ const SummaryStep = ({ data, onComplete, isLoading, goToStep }) => {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="text-center mb-8">
-        <div className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
-          <Rocket className="w-10 h-10 text-emerald-600" />
+        <div className="w-20 h-20 rounded-full bg-sage/10 flex items-center justify-center mx-auto mb-4">
+          <Rocket className="w-10 h-10 text-primary" />
         </div>
         <h1 className="text-3xl font-semibold text-[#111111] mb-2">You're All Set!</h1>
         <p className="text-[#6B7280]">Here's a summary of your financial profile.</p>
       </div>
       
       {/* Progress indicator */}
-      <Card className="mb-6 bg-gradient-to-r from-emerald-50 to-green-50 border-emerald-200">
+      <Card className="mb-6 bg-gradient-to-r from-sage/5 to-sage/10 border-sage/20">
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <CheckCircle className="w-6 h-6 text-emerald-600" />
+              <CheckCircle className="w-6 h-6 text-primary" />
               <span className="font-medium text-[#111111]">
                 {completedSections} of {sections.length} sections completed
               </span>
@@ -140,14 +140,14 @@ const SummaryStep = ({ data, onComplete, isLoading, goToStep }) => {
                     <h3 className="font-semibold text-[#111111]">{section.title}</h3>
                     <div className="flex items-center gap-2">
                       {section.complete ? (
-                        <CheckCircle className="w-5 h-5 text-green-500" />
+                        <CheckCircle className="w-5 h-5 text-primary" />
                       ) : (
-                        <AlertCircle className="w-5 h-5 text-amber-500" />
+                        <AlertCircle className="w-5 h-5 text-gold" />
                       )}
                       {goToStep && (
                         <button
                           onClick={() => goToStep(index + 1)}
-                          className="flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-700 font-medium"
+                          className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 font-medium"
                         >
                           <Pencil className="w-3 h-3" />
                           Edit
@@ -171,20 +171,20 @@ const SummaryStep = ({ data, onComplete, isLoading, goToStep }) => {
       </div>
       
       {/* Net Worth Preview */}
-      <Card className="mb-8 bg-gradient-to-br from-gray-900 to-gray-800 text-white border-0">
+      <Card className="mb-8 bg-gradient-to-br from-foreground/90 to-foreground/80 text-background border-0">
         <CardContent className="p-6">
-          <h3 className="text-sm text-gray-400 mb-2">Current Net Worth (estimated)</h3>
-          <p className="text-4xl font-semibold tabular-nums text-emerald-400">
+          <h3 className="text-sm text-background/60 mb-2">Current Net Worth (estimated)</h3>
+          <p className="text-4xl font-semibold tabular-nums text-primary">
             ${(totalAssets - totalLiabilities).toLocaleString()}
           </p>
-          <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-gray-700">
+          <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-background/20">
             <div>
-              <p className="text-sm text-gray-400">Assets</p>
-              <p className="text-xl font-semibold text-green-400">${totalAssets.toLocaleString()}</p>
+              <p className="text-sm text-background/60">Assets</p>
+              <p className="text-xl font-semibold text-sage">${totalAssets.toLocaleString()}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-400">Liabilities</p>
-              <p className="text-xl font-semibold text-red-400">${totalLiabilities.toLocaleString()}</p>
+              <p className="text-sm text-background/60">Liabilities</p>
+              <p className="text-xl font-semibold text-terra">${totalLiabilities.toLocaleString()}</p>
             </div>
           </div>
         </CardContent>
@@ -193,7 +193,7 @@ const SummaryStep = ({ data, onComplete, isLoading, goToStep }) => {
       <div className="flex justify-center">
         <Button 
           onClick={onComplete}
-          className="bg-emerald-600 text-white hover:bg-emerald-700 px-12 py-6 text-lg"
+          className="bg-primary text-primary-foreground hover:bg-primary/90 px-12 py-6 text-lg"
           disabled={isLoading}
         >
           {isLoading ? 'Completing...' : 'Complete Setup'}
