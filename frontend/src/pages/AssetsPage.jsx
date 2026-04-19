@@ -7,15 +7,7 @@ import { Input } from '../components/ui/input';
 import AssetCard from '../components/assets/AssetCard';
 import AssetFormModal from '../components/assets/AssetFormModal';
 import AssetDetailsModal from '../components/assets/AssetDetailsModal';
-import {
-  Plus,
-  Search,
-  Wallet,
-  TrendingUp,
-  PiggyBank,
-  BarChart3,
-  Filter,
-} from 'lucide-react';
+import { Plus, Search, Wallet, TrendingUp, PiggyBank, BarChart3, Filter } from 'lucide-react';
 
 const AssetsPage = () => {
   const { currentPortfolio, refreshSummary } = usePortfolio();
@@ -29,7 +21,6 @@ const AssetsPage = () => {
 
   const fetchAssets = useCallback(async () => {
     if (!currentPortfolio?.id) return;
-    
     try {
       setLoading(true);
       const data = await api.getAssets(currentPortfolio.id);
@@ -41,31 +32,14 @@ const AssetsPage = () => {
     }
   }, [currentPortfolio?.id]);
 
-  useEffect(() => {
-    fetchAssets();
-  }, [fetchAssets]);
+  useEffect(() => { fetchAssets(); }, [fetchAssets]);
 
-  const handleAddAsset = () => {
-    setSelectedAsset(null);
-    setEditMode(false);
-    setIsFormOpen(true);
-  };
-
-  const handleEditAsset = (asset) => {
-    setSelectedAsset(asset);
-    setEditMode(true);
-    setIsFormOpen(true);
-    setIsDetailsOpen(false);
-  };
-
-  const handleViewAsset = (asset) => {
-    setSelectedAsset(asset);
-    setIsDetailsOpen(true);
-  };
+  const handleAddAsset    = () => { setSelectedAsset(null); setEditMode(false); setIsFormOpen(true); };
+  const handleEditAsset   = (asset) => { setSelectedAsset(asset); setEditMode(true); setIsFormOpen(true); setIsDetailsOpen(false); };
+  const handleViewAsset   = (asset) => { setSelectedAsset(asset); setIsDetailsOpen(true); };
 
   const handleDeleteAsset = async (assetId) => {
     if (!window.confirm('Delete this asset?')) return;
-    
     try {
       await api.deleteAsset(assetId);
       setAssets(prev => prev.filter(a => a.id !== assetId));
@@ -81,10 +55,7 @@ const AssetsPage = () => {
         const updated = await api.updateAsset(selectedAsset.id, assetData);
         setAssets(prev => prev.map(a => a.id === selectedAsset.id ? updated : a));
       } else {
-        const newAsset = await api.createAsset({
-          ...assetData,
-          portfolio_id: currentPortfolio.id,
-        });
+        const newAsset = await api.createAsset({ ...assetData, portfolio_id: currentPortfolio.id });
         setAssets(prev => [...prev, newAsset]);
       }
       setIsFormOpen(false);
@@ -94,26 +65,17 @@ const AssetsPage = () => {
     }
   };
 
-  // Calculate totals with safe number conversion
   const totals = assets.reduce((acc, asset) => {
-    const currentValue = Number(asset.current_value) || 0;
+    const currentValue  = Number(asset.current_value) || 0;
     const purchaseValue = Number(asset.purchase_value) || 0;
     const expectedReturn = Number(asset.expected_return) || 0;
-    const contribAmount = Number(asset.contributions?.amount) || 0;
-    
-    const annualContrib = contribAmount * ({
-        weekly: 52,
-        fortnightly: 26,
-        monthly: 12,
-        quarterly: 4,
-        annual: 1,
-      }[asset.contributions?.frequency] || 12);
-    
+    const contribAmount  = Number(asset.contributions?.amount) || 0;
+    const annualContrib  = contribAmount * ({ weekly: 52, fortnightly: 26, monthly: 12, quarterly: 4, annual: 1 }[asset.contributions?.frequency] || 12);
     return {
-      totalValue: acc.totalValue + currentValue,
-      totalGain: acc.totalGain + (currentValue - purchaseValue),
+      totalValue:          acc.totalValue + currentValue,
+      totalGain:           acc.totalGain + (currentValue - purchaseValue),
       annualContributions: acc.annualContributions + annualContrib,
-      avgReturn: acc.avgReturn + expectedReturn,
+      avgReturn:           acc.avgReturn + expectedReturn,
     };
   }, { totalValue: 0, totalGain: 0, annualContributions: 0, avgReturn: 0 });
 
@@ -128,141 +90,90 @@ const AssetsPage = () => {
   if (!currentPortfolio) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <p className="text-[#6B7280]">Please create a portfolio first.</p>
+        <p className="text-muted-foreground">Please create a portfolio first.</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-[#111111]">Assets</h1>
-          <p className="text-[#6B7280]">Manage your investment assets</p>
+          <h1 className="text-2xl font-semibold text-foreground">Assets</h1>
+          <p className="text-muted-foreground">Manage your investment assets</p>
         </div>
-        <Button
-          onClick={handleAddAsset}
-          className="bg-emerald-600 text-white hover:bg-emerald-700"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Add Asset
+        <Button onClick={handleAddAsset} className="bg-primary text-primary-foreground hover:bg-primary/90">
+          <Plus className="w-4 h-4 mr-2" />Add Asset
         </Button>
       </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-[#6B7280]">Total Assets</p>
-                <p className="text-2xl font-semibold tabular-nums text-[#111111]">
-                  ${(totals.totalValue / 1000).toFixed(0)}K
-                </p>
-              </div>
-              <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
-                <Wallet className="w-5 h-5 text-emerald-600" />
-              </div>
+        <Card><CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-muted-foreground">Total Assets</p>
+              <p className="text-2xl font-semibold tabular-nums text-foreground">${(totals.totalValue / 1000).toFixed(0)}K</p>
             </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-[#6B7280]">Total Gain/Loss</p>
-                <p className={`text-2xl font-semibold tabular-nums ${totals.totalGain >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
-                  {totals.totalGain >= 0 ? '+' : ''}${(totals.totalGain / 1000).toFixed(0)}K
-                </p>
-              </div>
-              <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-emerald-600" />
-              </div>
+            <div className="w-10 h-10 rounded-lg bg-sage-soft flex items-center justify-center"><Wallet className="w-5 h-5 text-sage" /></div>
+          </div>
+        </CardContent></Card>
+        <Card><CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-muted-foreground">Total Gain/Loss</p>
+              <p className={`text-2xl font-semibold tabular-nums ${totals.totalGain >= 0 ? 'text-sage' : 'text-terra'}`}>
+                {totals.totalGain >= 0 ? '+' : ''}${(totals.totalGain / 1000).toFixed(0)}K
+              </p>
             </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-[#6B7280]">Annual Contributions</p>
-                <p className="text-2xl font-semibold tabular-nums text-[#111111]">
-                  ${totals.annualContributions.toLocaleString()}
-                </p>
-              </div>
-              <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                <PiggyBank className="w-5 h-5 text-blue-600" />
-              </div>
+            <div className="w-10 h-10 rounded-lg bg-sage-soft flex items-center justify-center"><TrendingUp className="w-5 h-5 text-sage" /></div>
+          </div>
+        </CardContent></Card>
+        <Card><CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-muted-foreground">Annual Contributions</p>
+              <p className="text-2xl font-semibold tabular-nums text-foreground">${totals.annualContributions.toLocaleString()}</p>
             </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-[#6B7280]">Avg Expected Return</p>
-                <p className="text-2xl font-semibold tabular-nums text-[#111111]">
-                  {avgExpectedReturn}%
-                </p>
-              </div>
-              <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-                <BarChart3 className="w-5 h-5 text-purple-600" />
-              </div>
+            <div className="w-10 h-10 rounded-lg bg-ocean-soft flex items-center justify-center"><PiggyBank className="w-5 h-5 text-ocean" /></div>
+          </div>
+        </CardContent></Card>
+        <Card><CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-muted-foreground">Avg Expected Return</p>
+              <p className="text-2xl font-semibold tabular-nums text-foreground">{avgExpectedReturn}%</p>
             </div>
-          </CardContent>
-        </Card>
+            <div className="w-10 h-10 rounded-lg bg-plum-soft flex items-center justify-center"><BarChart3 className="w-5 h-5 text-plum" /></div>
+          </div>
+        </CardContent></Card>
       </div>
 
-      {/* Search & Filter */}
+      {/* Search */}
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <Input
-            type="text"
-            placeholder="Search by name, type, or institution..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input type="text" placeholder="Search by name, type, or institution..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10" />
         </div>
-        <Button variant="outline" className="gap-2">
-          <Filter className="w-4 h-4" />
-          Filter
-        </Button>
+        <Button variant="outline" className="gap-2"><Filter className="w-4 h-4" />Filter</Button>
       </div>
 
       {/* Assets Grid */}
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3].map((i) => (
-            <Card key={i} className="h-64 animate-pulse bg-gray-100" />
-          ))}
+          {[1, 2, 3].map((i) => <Card key={i} className="h-64 animate-pulse bg-muted" />)}
         </div>
       ) : filteredAssets.length === 0 ? (
         <Card className="p-12">
           <div className="text-center">
-            <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
-              <Wallet className="w-8 h-8 text-gray-400" />
+            <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
+              <Wallet className="w-8 h-8 text-muted-foreground" />
             </div>
-            <h3 className="text-lg font-semibold text-[#111111] mb-2">
-              {searchQuery ? 'No assets found' : 'No assets yet'}
-            </h3>
-            <p className="text-[#6B7280] mb-6">
-              {searchQuery
-                ? 'Try adjusting your search'
-                : 'Add your first asset to start tracking your wealth'}
-            </p>
+            <h3 className="text-lg font-semibold text-foreground mb-2">{searchQuery ? 'No assets found' : 'No assets yet'}</h3>
+            <p className="text-muted-foreground mb-6">{searchQuery ? 'Try adjusting your search' : 'Add your first asset to start tracking your wealth'}</p>
             {!searchQuery && (
-              <Button
-                onClick={handleAddAsset}
-                className="bg-emerald-600 text-white hover:bg-emerald-700"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Add Asset
+              <Button onClick={handleAddAsset} className="bg-primary text-primary-foreground hover:bg-primary/90">
+                <Plus className="w-4 h-4 mr-2" />Add Asset
               </Button>
             )}
           </div>
@@ -270,32 +181,13 @@ const AssetsPage = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredAssets.map((asset) => (
-            <AssetCard
-              key={asset.id}
-              asset={asset}
-              onView={() => handleViewAsset(asset)}
-              onEdit={() => handleEditAsset(asset)}
-              onDelete={() => handleDeleteAsset(asset.id)}
-            />
+            <AssetCard key={asset.id} asset={asset} onView={() => handleViewAsset(asset)} onEdit={() => handleEditAsset(asset)} onDelete={() => handleDeleteAsset(asset.id)} />
           ))}
         </div>
       )}
 
-      {/* Modals */}
-      <AssetFormModal
-        isOpen={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
-        onSubmit={handleFormSubmit}
-        asset={selectedAsset}
-        editMode={editMode}
-      />
-
-      <AssetDetailsModal
-        isOpen={isDetailsOpen}
-        onClose={() => setIsDetailsOpen(false)}
-        asset={selectedAsset}
-        onEdit={() => handleEditAsset(selectedAsset)}
-      />
+      <AssetFormModal isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} onSubmit={handleFormSubmit} asset={selectedAsset} editMode={editMode} />
+      <AssetDetailsModal isOpen={isDetailsOpen} onClose={() => setIsDetailsOpen(false)} asset={selectedAsset} onEdit={() => handleEditAsset(selectedAsset)} />
     </div>
   );
 };

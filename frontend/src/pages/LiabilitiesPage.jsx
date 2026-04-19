@@ -7,15 +7,7 @@ import { Input } from '../components/ui/input';
 import LiabilityCard from '../components/liabilities/LiabilityCard';
 import LiabilityFormModal from '../components/liabilities/LiabilityFormModal';
 import LiabilityDetailsModal from '../components/liabilities/LiabilityDetailsModal';
-import {
-  Plus,
-  Search,
-  CreditCard,
-  TrendingDown,
-  Receipt,
-  Percent,
-  Filter,
-} from 'lucide-react';
+import { Plus, Search, CreditCard, TrendingDown, Receipt, Percent, Filter } from 'lucide-react';
 
 const LiabilitiesPage = () => {
   const { currentPortfolio, refreshSummary } = usePortfolio();
@@ -29,7 +21,6 @@ const LiabilitiesPage = () => {
 
   const fetchLiabilities = useCallback(async () => {
     if (!currentPortfolio?.id) return;
-    
     try {
       setLoading(true);
       const data = await api.getLiabilities(currentPortfolio.id);
@@ -41,31 +32,14 @@ const LiabilitiesPage = () => {
     }
   }, [currentPortfolio?.id]);
 
-  useEffect(() => {
-    fetchLiabilities();
-  }, [fetchLiabilities]);
+  useEffect(() => { fetchLiabilities(); }, [fetchLiabilities]);
 
-  const handleAddLiability = () => {
-    setSelectedLiability(null);
-    setEditMode(false);
-    setIsFormOpen(true);
-  };
-
-  const handleEditLiability = (liability) => {
-    setSelectedLiability(liability);
-    setEditMode(true);
-    setIsFormOpen(true);
-    setIsDetailsOpen(false);
-  };
-
-  const handleViewLiability = (liability) => {
-    setSelectedLiability(liability);
-    setIsDetailsOpen(true);
-  };
+  const handleAddLiability    = () => { setSelectedLiability(null); setEditMode(false); setIsFormOpen(true); };
+  const handleEditLiability   = (l) => { setSelectedLiability(l); setEditMode(true); setIsFormOpen(true); setIsDetailsOpen(false); };
+  const handleViewLiability   = (l) => { setSelectedLiability(l); setIsDetailsOpen(true); };
 
   const handleDeleteLiability = async (liabilityId) => {
     if (!window.confirm('Delete this liability?')) return;
-    
     try {
       await api.deleteLiability(liabilityId);
       setLiabilities(prev => prev.filter(l => l.id !== liabilityId));
@@ -81,10 +55,7 @@ const LiabilitiesPage = () => {
         const updated = await api.updateLiability(selectedLiability.id, liabilityData);
         setLiabilities(prev => prev.map(l => l.id === selectedLiability.id ? updated : l));
       } else {
-        const newLiability = await api.createLiability({
-          ...liabilityData,
-          portfolio_id: currentPortfolio.id,
-        });
+        const newLiability = await api.createLiability({ ...liabilityData, portfolio_id: currentPortfolio.id });
         setLiabilities(prev => [...prev, newLiability]);
       }
       setIsFormOpen(false);
@@ -94,28 +65,19 @@ const LiabilitiesPage = () => {
     }
   };
 
-  // Calculate totals with safe number conversion
   const totals = liabilities.reduce((acc, liability) => {
-    const currentBalance = Number(liability.current_balance) || 0;
-    const originalAmount = Number(liability.original_amount) || 0;
-    const interestRate = Number(liability.interest_rate) || 0;
-    const minimumPayment = Number(liability.minimum_payment) || 0;
-    const extraPayment = Number(liability.extra_payment) || 0;
-    
-    const monthlyPayment = (minimumPayment + extraPayment) * ({
-      weekly: 52/12,
-      fortnightly: 26/12,
-      monthly: 1,
-    }[liability.payment_frequency] || 1);
-    
-    const annualInterest = currentBalance * (interestRate / 100);
-    
+    const currentBalance  = Number(liability.current_balance) || 0;
+    const originalAmount  = Number(liability.original_amount) || 0;
+    const interestRate    = Number(liability.interest_rate) || 0;
+    const minimumPayment  = Number(liability.minimum_payment) || 0;
+    const extraPayment    = Number(liability.extra_payment) || 0;
+    const monthlyPayment  = (minimumPayment + extraPayment) * ({ weekly: 52/12, fortnightly: 26/12, monthly: 1 }[liability.payment_frequency] || 1);
     return {
-      totalBalance: acc.totalBalance + currentBalance,
-      totalOriginal: acc.totalOriginal + originalAmount,
+      totalBalance:    acc.totalBalance + currentBalance,
+      totalOriginal:   acc.totalOriginal + originalAmount,
       monthlyPayments: acc.monthlyPayments + monthlyPayment,
-      annualInterest: acc.annualInterest + annualInterest,
-      avgRate: acc.avgRate + interestRate,
+      annualInterest:  acc.annualInterest + currentBalance * (interestRate / 100),
+      avgRate:         acc.avgRate + interestRate,
     };
   }, { totalBalance: 0, totalOriginal: 0, monthlyPayments: 0, annualInterest: 0, avgRate: 0 });
 
@@ -131,141 +93,88 @@ const LiabilitiesPage = () => {
   if (!currentPortfolio) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <p className="text-[#6B7280]">Please create a portfolio first.</p>
+        <p className="text-muted-foreground">Please create a portfolio first.</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-[#111111]">Liabilities</h1>
-          <p className="text-[#6B7280]">Manage your debts and loans</p>
+          <h1 className="text-2xl font-semibold text-foreground">Liabilities</h1>
+          <p className="text-muted-foreground">Manage your debts and loans</p>
         </div>
-        <Button
-          onClick={handleAddLiability}
-          className="bg-emerald-600 text-white hover:bg-emerald-700"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Add Liability
+        <Button onClick={handleAddLiability} className="bg-primary text-primary-foreground hover:bg-primary/90">
+          <Plus className="w-4 h-4 mr-2" />Add Liability
         </Button>
       </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-[#6B7280]">Total Debt</p>
-                <p className="text-2xl font-semibold tabular-nums text-red-500">
-                  ${(totals.totalBalance / 1000).toFixed(0)}K
-                </p>
-              </div>
-              <div className="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
-                <CreditCard className="w-5 h-5 text-red-600" />
-              </div>
+        <Card><CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-muted-foreground">Total Debt</p>
+              <p className="text-2xl font-semibold tabular-nums text-terra">${(totals.totalBalance / 1000).toFixed(0)}K</p>
             </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-[#6B7280]">Total Paid Off</p>
-                <p className="text-2xl font-semibold tabular-nums text-emerald-600">
-                  ${(totalPaid / 1000).toFixed(0)}K
-                </p>
-              </div>
-              <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
-                <TrendingDown className="w-5 h-5 text-emerald-600" />
-              </div>
+            <div className="w-10 h-10 rounded-lg bg-terra-soft flex items-center justify-center"><CreditCard className="w-5 h-5 text-terra" /></div>
+          </div>
+        </CardContent></Card>
+        <Card><CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-muted-foreground">Total Paid Off</p>
+              <p className="text-2xl font-semibold tabular-nums text-sage">${(totalPaid / 1000).toFixed(0)}K</p>
             </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-[#6B7280]">Monthly Payments</p>
-                <p className="text-2xl font-semibold tabular-nums text-[#111111]">
-                  ${totals.monthlyPayments.toFixed(0)}
-                </p>
-              </div>
-              <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                <Receipt className="w-5 h-5 text-blue-600" />
-              </div>
+            <div className="w-10 h-10 rounded-lg bg-sage-soft flex items-center justify-center"><TrendingDown className="w-5 h-5 text-sage" /></div>
+          </div>
+        </CardContent></Card>
+        <Card><CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-muted-foreground">Monthly Payments</p>
+              <p className="text-2xl font-semibold tabular-nums text-foreground">${totals.monthlyPayments.toFixed(0)}</p>
             </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-[#6B7280]">Avg Interest Rate</p>
-                <p className="text-2xl font-semibold tabular-nums text-orange-600">
-                  {avgInterestRate}%
-                </p>
-              </div>
-              <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center">
-                <Percent className="w-5 h-5 text-orange-600" />
-              </div>
+            <div className="w-10 h-10 rounded-lg bg-ocean-soft flex items-center justify-center"><Receipt className="w-5 h-5 text-ocean" /></div>
+          </div>
+        </CardContent></Card>
+        <Card><CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-muted-foreground">Avg Interest Rate</p>
+              <p className="text-2xl font-semibold tabular-nums text-gold">{avgInterestRate}%</p>
             </div>
-          </CardContent>
-        </Card>
+            <div className="w-10 h-10 rounded-lg bg-gold-soft flex items-center justify-center"><Percent className="w-5 h-5 text-gold" /></div>
+          </div>
+        </CardContent></Card>
       </div>
 
-      {/* Search & Filter */}
+      {/* Search */}
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <Input
-            type="text"
-            placeholder="Search by name, type, or lender..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input type="text" placeholder="Search by name, type, or lender..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10" />
         </div>
-        <Button variant="outline" className="gap-2">
-          <Filter className="w-4 h-4" />
-          Filter
-        </Button>
+        <Button variant="outline" className="gap-2"><Filter className="w-4 h-4" />Filter</Button>
       </div>
 
       {/* Liabilities Grid */}
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3].map((i) => (
-            <Card key={i} className="h-64 animate-pulse bg-gray-100" />
-          ))}
+          {[1, 2, 3].map((i) => <Card key={i} className="h-64 animate-pulse bg-muted" />)}
         </div>
       ) : filteredLiabilities.length === 0 ? (
         <Card className="p-12">
           <div className="text-center">
-            <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
-              <CreditCard className="w-8 h-8 text-gray-400" />
+            <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
+              <CreditCard className="w-8 h-8 text-muted-foreground" />
             </div>
-            <h3 className="text-lg font-semibold text-[#111111] mb-2">
-              {searchQuery ? 'No liabilities found' : 'No liabilities yet'}
-            </h3>
-            <p className="text-[#6B7280] mb-6">
-              {searchQuery
-                ? 'Try adjusting your search'
-                : 'Track your debts to understand your full financial picture'}
-            </p>
+            <h3 className="text-lg font-semibold text-foreground mb-2">{searchQuery ? 'No liabilities found' : 'No liabilities yet'}</h3>
+            <p className="text-muted-foreground mb-6">{searchQuery ? 'Try adjusting your search' : 'Track your debts to understand your full financial picture'}</p>
             {!searchQuery && (
-              <Button
-                onClick={handleAddLiability}
-                className="bg-emerald-600 text-white hover:bg-emerald-700"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Add Liability
+              <Button onClick={handleAddLiability} className="bg-primary text-primary-foreground hover:bg-primary/90">
+                <Plus className="w-4 h-4 mr-2" />Add Liability
               </Button>
             )}
           </div>
@@ -273,32 +182,13 @@ const LiabilitiesPage = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredLiabilities.map((liability) => (
-            <LiabilityCard
-              key={liability.id}
-              liability={liability}
-              onView={() => handleViewLiability(liability)}
-              onEdit={() => handleEditLiability(liability)}
-              onDelete={() => handleDeleteLiability(liability.id)}
-            />
+            <LiabilityCard key={liability.id} liability={liability} onView={() => handleViewLiability(liability)} onEdit={() => handleEditLiability(liability)} onDelete={() => handleDeleteLiability(liability.id)} />
           ))}
         </div>
       )}
 
-      {/* Modals */}
-      <LiabilityFormModal
-        isOpen={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
-        onSubmit={handleFormSubmit}
-        liability={selectedLiability}
-        editMode={editMode}
-      />
-
-      <LiabilityDetailsModal
-        isOpen={isDetailsOpen}
-        onClose={() => setIsDetailsOpen(false)}
-        liability={selectedLiability}
-        onEdit={() => handleEditLiability(selectedLiability)}
-      />
+      <LiabilityFormModal isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} onSubmit={handleFormSubmit} liability={selectedLiability} editMode={editMode} />
+      <LiabilityDetailsModal isOpen={isDetailsOpen} onClose={() => setIsDetailsOpen(false)} liability={selectedLiability} onEdit={() => handleEditLiability(selectedLiability)} />
     </div>
   );
 };
