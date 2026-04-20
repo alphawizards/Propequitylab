@@ -79,7 +79,7 @@ const LiabilityDetailsModal = ({ isOpen, onClose, liability, onEdit }) => {
               <span className="text-3xl">{getLiabilityIcon(liability.type)}</span>
               <div>
                 <DialogTitle className="text-xl">{liability.name}</DialogTitle>
-                <p className="text-sm text-gray-500">{getLiabilityLabel(liability.type)}</p>
+                <p className="text-sm text-muted-foreground">{getLiabilityLabel(liability.type)}</p>
               </div>
             </div>
             <Button
@@ -98,32 +98,32 @@ const LiabilityDetailsModal = ({ isOpen, onClose, liability, onEdit }) => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Card>
               <CardContent className="p-4 text-center">
-                <p className="text-sm text-gray-500">Current Balance</p>
-                <p className="text-xl font-bold text-red-600">
+                <p className="text-sm text-muted-foreground">Current Balance</p>
+                <p className="text-xl font-bold text-destructive">
                   {formatCurrency(liability.current_balance)}
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4 text-center">
-                <p className="text-sm text-gray-500">Amount Paid</p>
-                <p className="text-xl font-bold text-green-600">
+                <p className="text-sm text-muted-foreground">Amount Paid</p>
+                <p className="text-xl font-bold text-sage">
                   {formatCurrency(paidOff)}
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4 text-center">
-                <p className="text-sm text-gray-500">Interest Rate</p>
-                <p className="text-xl font-bold text-orange-600">
+                <p className="text-sm text-muted-foreground">Interest Rate</p>
+                <p className="text-xl font-bold text-gold">
                   {liability.interest_rate}%
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4 text-center">
-                <p className="text-sm text-gray-500">Monthly Payment</p>
-                <p className="text-xl font-bold text-blue-600">
+                <p className="text-sm text-muted-foreground">Monthly Payment</p>
+                <p className="text-xl font-bold text-ocean">
                   {formatCurrency(monthlyPayment)}
                 </p>
               </CardContent>
@@ -138,13 +138,13 @@ const LiabilityDetailsModal = ({ isOpen, onClose, liability, onEdit }) => {
             <CardContent>
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">Progress</span>
-                  <span className="font-medium text-green-600">{paidPercent}% paid off</span>
+                  <span className="text-muted-foreground">Progress</span>
+                  <span className="font-medium text-sage">{paidPercent}% paid off</span>
                 </div>
                 <Progress value={parseFloat(paidPercent)} className="h-3" />
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">{formatCurrency(paidOff)} paid</span>
-                  <span className="text-gray-500">{formatCurrency(liability.current_balance)} remaining</span>
+                  <span className="text-muted-foreground">{formatCurrency(paidOff)} paid</span>
+                  <span className="text-muted-foreground">{formatCurrency(liability.current_balance)} remaining</span>
                 </div>
               </div>
             </CardContent>
@@ -160,34 +160,34 @@ const LiabilityDetailsModal = ({ isOpen, onClose, liability, onEdit }) => {
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-gray-500">Type</p>
+                <p className="text-sm text-muted-foreground">Type</p>
                 <p className="font-medium">{getLiabilityLabel(liability.type)}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Owner</p>
+                <p className="text-sm text-muted-foreground">Owner</p>
                 <p className="font-medium capitalize">
                   {liability.owner === 'you' ? 'You' : liability.owner === 'partner' ? 'Partner' : 'Joint'}
                 </p>
               </div>
               {liability.lender && (
                 <div>
-                  <p className="text-sm text-gray-500">Lender</p>
+                  <p className="text-sm text-muted-foreground">Lender</p>
                   <p className="font-medium">{liability.lender}</p>
                 </div>
               )}
               <div>
-                <p className="text-sm text-gray-500">Original Amount</p>
+                <p className="text-sm text-muted-foreground">Original Amount</p>
                 <p className="font-medium">{formatCurrency(liability.original_amount)}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Tax Deductible</p>
+                <p className="text-sm text-muted-foreground">Tax Deductible</p>
                 <Badge variant={liability.is_tax_deductible ? "default" : "outline"}>
                   {liability.is_tax_deductible ? 'Yes' : 'No'}
                 </Badge>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Annual Interest Cost</p>
-                <p className="font-medium text-orange-600">{formatCurrency(annualInterest)}</p>
+                <p className="text-sm text-muted-foreground">Annual Interest Cost</p>
+                <p className="font-medium text-gold">{formatCurrency(annualInterest)}</p>
               </div>
             </CardContent>
           </Card>
@@ -202,26 +202,26 @@ const LiabilityDetailsModal = ({ isOpen, onClose, liability, onEdit }) => {
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-gray-500">Minimum Payment</p>
+                <p className="text-sm text-muted-foreground">Minimum Payment</p>
                 <p className="font-medium">
                   {formatCurrency(liability.minimum_payment)} / {liability.payment_frequency}
                 </p>
               </div>
               {liability.extra_payment > 0 && (
                 <div>
-                  <p className="text-sm text-gray-500">Extra Payment</p>
-                  <p className="font-medium text-green-600">
+                  <p className="text-sm text-muted-foreground">Extra Payment</p>
+                  <p className="font-medium text-sage">
                     +{formatCurrency(liability.extra_payment)} / {liability.payment_frequency}
                   </p>
                 </div>
               )}
               <div>
-                <p className="text-sm text-gray-500">Strategy</p>
+                <p className="text-sm text-muted-foreground">Strategy</p>
                 <Badge variant="outline">{getStrategyLabel(liability.payoff_strategy)}</Badge>
               </div>
               {monthsToPayoff > 0 && (
                 <div>
-                  <p className="text-sm text-gray-500">Est. Payoff Time</p>
+                  <p className="text-sm text-muted-foreground">Est. Payoff Time</p>
                   <p className="font-medium">
                     {monthsToPayoff > 12
                       ? `${Math.floor(monthsToPayoff / 12)} years ${monthsToPayoff % 12} months`
@@ -232,7 +232,7 @@ const LiabilityDetailsModal = ({ isOpen, onClose, liability, onEdit }) => {
               )}
               {liability.target_payoff_date && (
                 <div>
-                  <p className="text-sm text-gray-500">Target Payoff Date</p>
+                  <p className="text-sm text-muted-foreground">Target Payoff Date</p>
                   <p className="font-medium">
                     {new Date(liability.target_payoff_date).toLocaleDateString('en-AU', {
                       day: 'numeric',
@@ -255,14 +255,14 @@ const LiabilityDetailsModal = ({ isOpen, onClose, liability, onEdit }) => {
               </CardHeader>
               <CardContent className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm text-gray-500">Indexed to Inflation</p>
+                  <p className="text-sm text-muted-foreground">Indexed to Inflation</p>
                   <Badge variant={liability.is_indexed ? "default" : "outline"}>
                     {liability.is_indexed ? 'Yes' : 'No'}
                   </Badge>
                 </div>
                 {liability.repayment_threshold > 0 && (
                   <div>
-                    <p className="text-sm text-gray-500">Repayment Threshold</p>
+                    <p className="text-sm text-muted-foreground">Repayment Threshold</p>
                     <p className="font-medium">{formatCurrency(liability.repayment_threshold)}</p>
                   </div>
                 )}
@@ -277,7 +277,7 @@ const LiabilityDetailsModal = ({ isOpen, onClose, liability, onEdit }) => {
                 <CardTitle className="text-sm font-medium">Notes</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 whitespace-pre-wrap">{liability.notes}</p>
+                <p className="text-muted-foreground whitespace-pre-wrap">{liability.notes}</p>
               </CardContent>
             </Card>
           )}

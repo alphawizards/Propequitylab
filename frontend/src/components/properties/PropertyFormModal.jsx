@@ -22,9 +22,9 @@ const LabelWithTooltip = ({ children, tooltip, className = '' }) => (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <HelpCircle className="w-3.5 h-3.5 text-gray-400 hover:text-gray-600 cursor-help" />
+          <HelpCircle className="w-3.5 h-3.5 text-muted-foreground hover:text-foreground cursor-help" />
         </TooltipTrigger>
-        <TooltipContent className="max-w-xs bg-gray-900 text-white">
+        <TooltipContent className="max-w-xs bg-popover text-popover-foreground">
           <p className="text-sm">{tooltip}</p>
         </TooltipContent>
       </Tooltip>
@@ -238,7 +238,7 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold flex items-center gap-2">
-            <Home className="w-5 h-5 text-emerald-600" />
+            <Home className="w-5 h-5 text-primary" />
             {editMode ? 'Edit Property' : 'Add New Property'}
           </DialogTitle>
         </DialogHeader>
@@ -276,9 +276,9 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
                   value={formData.address}
                   onChange={(e) => { handleChange('address', e.target.value); if (errors.address) setErrors(prev => ({ ...prev, address: undefined })); }}
                   placeholder="e.g., 42 Harbour Street"
-                  className={`mt-1 ${errors.address ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
+                  className={`mt-1 ${errors.address ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                 />
-                {errors.address && <p className="text-xs text-red-600 mt-1">{errors.address}</p>}
+                {errors.address && <p className="text-xs text-destructive mt-1">{errors.address}</p>}
               </div>
               
               <div className="grid grid-cols-3 gap-4">
@@ -399,9 +399,9 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
                   value={formData.purchase_price}
                   onChange={(e) => { handleChange('purchase_price', e.target.value); if (errors.purchase_price) setErrors(prev => ({ ...prev, purchase_price: undefined })); }}
                   placeholder="850000"
-                  className={`mt-1 ${errors.purchase_price ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
+                  className={`mt-1 ${errors.purchase_price ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                 />
-                {errors.purchase_price && <p className="text-xs text-red-600 mt-1">{errors.purchase_price}</p>}
+                {errors.purchase_price && <p className="text-xs text-destructive mt-1">{errors.purchase_price}</p>}
               </div>
               <div>
                 <Label>Purchase Date *</Label>
@@ -434,7 +434,7 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
               </div>
             </div>
             
-            <Card className="bg-emerald-50 border-emerald-200">
+            <Card className="bg-sage/5 border-sage/20">
               <CardHeader className="pb-2">
                 <CardTitle className="text-base">Current Valuation</CardTitle>
               </CardHeader>
@@ -448,7 +448,7 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
                     placeholder="Leave blank to use purchase price"
                     className="mt-1 bg-white"
                   />
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     Leave blank to use purchase price as current value
                   </p>
                 </div>
@@ -531,8 +531,8 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
             {formData.purchase_price && formData.loan_amount && (
               <Card className={`${
                 (parseFloat(formData.loan_amount) / parseFloat(formData.current_value || formData.purchase_price) * 100) > 80
-                  ? 'bg-red-50 border-red-200'
-                  : 'bg-green-50 border-green-200'
+                  ? 'bg-terra/5 border-terra/20'
+                  : 'bg-sage/5 border-sage/20'
               }`}>
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
@@ -544,9 +544,9 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <HelpCircle className="w-3.5 h-3.5 text-gray-500 cursor-help" />
+                          <HelpCircle className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
                         </TooltipTrigger>
-                        <TooltipContent className="max-w-xs bg-gray-900 text-white">
+                        <TooltipContent className="max-w-xs bg-popover text-popover-foreground">
                           <p className="text-sm">LVR = Loan Amount / Property Value. Below 80% is considered safe. Above 80% may require Lenders Mortgage Insurance (LMI).</p>
                         </TooltipContent>
                       </Tooltip>
@@ -559,10 +559,10 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
           
           {/* Rental Tab */}
           <TabsContent value="rental" className="space-y-4 mt-4">
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
               <div>
                 <Label>Is this property rented?</Label>
-                <p className="text-sm text-gray-500">Toggle on if the property has tenants</p>
+                <p className="text-sm text-muted-foreground">Toggle on if the property has tenants</p>
               </div>
               <Switch
                 checked={formData.is_rented}
@@ -609,7 +609,7 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
                   </div>
                 </div>
                 
-                <Card className="border-gray-200">
+                <Card className="border-border">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-base">Annual Expenses ($)</CardTitle>
                   </CardHeader>
@@ -714,7 +714,7 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
                       placeholder="5"
                       className="mt-1"
                     />
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       Historical average for Australian property is 5-7%
                     </p>
                   </div>
@@ -730,7 +730,7 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
                       placeholder="3"
                       className="mt-1"
                     />
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       Typically 2-4% annually
                     </p>
                   </div>
@@ -747,7 +747,7 @@ const PropertyFormModal = ({ isOpen, onClose, onSubmit, property, editMode }) =>
           </Button>
           <Button
             onClick={handleSubmit}
-            className="bg-emerald-600 text-white hover:bg-emerald-700"
+            className="bg-primary text-primary-foreground hover:bg-primary/90"
             disabled={isSubmitting}
           >
             {isSubmitting ? 'Saving...' : editMode ? 'Update Property' : 'Add Property'}

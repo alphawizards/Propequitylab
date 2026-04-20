@@ -77,7 +77,7 @@ const AssetDetailsModal = ({ isOpen, onClose, asset, onEdit }) => {
               <span className="text-3xl">{getAssetIcon(asset.type)}</span>
               <div>
                 <DialogTitle className="text-xl">{asset.name}</DialogTitle>
-                <p className="text-sm text-gray-500">{getAssetLabel(asset.type)}</p>
+                <p className="text-sm text-muted-foreground">{getAssetLabel(asset.type)}</p>
               </div>
             </div>
             <Button
@@ -96,32 +96,32 @@ const AssetDetailsModal = ({ isOpen, onClose, asset, onEdit }) => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Card>
               <CardContent className="p-4 text-center">
-                <p className="text-sm text-gray-500">Current Value</p>
-                <p className="text-xl font-bold text-gray-900">
+                <p className="text-sm text-muted-foreground">Current Value</p>
+                <p className="text-xl font-bold text-foreground">
                   {formatCurrency(asset.current_value)}
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4 text-center">
-                <p className="text-sm text-gray-500">Total Gain/Loss</p>
-                <p className={`text-xl font-bold ${gain >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                <p className="text-sm text-muted-foreground">Total Gain/Loss</p>
+                <p className={`text-xl font-bold ${gain >= 0 ? 'text-sage' : 'text-destructive'}`}>
                   {gain >= 0 ? '+' : ''}{formatCurrency(gain)}
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4 text-center">
-                <p className="text-sm text-gray-500">Return</p>
-                <p className={`text-xl font-bold ${gain >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                <p className="text-sm text-muted-foreground">Return</p>
+                <p className={`text-xl font-bold ${gain >= 0 ? 'text-sage' : 'text-destructive'}`}>
                   {gain >= 0 ? '+' : ''}{gainPercent}%
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4 text-center">
-                <p className="text-sm text-gray-500">Expected Return</p>
-                <p className="text-xl font-bold text-blue-600">
+                <p className="text-sm text-muted-foreground">Expected Return</p>
+                <p className="text-xl font-bold text-ocean">
                   {asset.expected_return}% p.a.
                 </p>
               </CardContent>
@@ -138,33 +138,33 @@ const AssetDetailsModal = ({ isOpen, onClose, asset, onEdit }) => {
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-gray-500">Type</p>
+                <p className="text-sm text-muted-foreground">Type</p>
                 <p className="font-medium">{getAssetLabel(asset.type)}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Owner</p>
+                <p className="text-sm text-muted-foreground">Owner</p>
                 <p className="font-medium capitalize">
                   {asset.owner === 'you' ? 'You' : asset.owner === 'partner' ? 'Partner' : 'Joint'}
                 </p>
               </div>
               {asset.institution && (
                 <div>
-                  <p className="text-sm text-gray-500">Institution</p>
+                  <p className="text-sm text-muted-foreground">Institution</p>
                   <p className="font-medium">{asset.institution}</p>
                 </div>
               )}
               <div>
-                <p className="text-sm text-gray-500">Tax Environment</p>
+                <p className="text-sm text-muted-foreground">Tax Environment</p>
                 <Badge variant="outline">{getTaxLabel(asset.tax_environment)}</Badge>
               </div>
               {asset.ticker && (
                 <>
                   <div>
-                    <p className="text-sm text-gray-500">Ticker</p>
+                    <p className="text-sm text-muted-foreground">Ticker</p>
                     <p className="font-medium font-mono">{asset.ticker}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Units Held</p>
+                    <p className="text-sm text-muted-foreground">Units Held</p>
                     <p className="font-medium">{asset.units?.toLocaleString()}</p>
                   </div>
                 </>
@@ -182,12 +182,12 @@ const AssetDetailsModal = ({ isOpen, onClose, asset, onEdit }) => {
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-gray-500">Purchase Value</p>
+                <p className="text-sm text-muted-foreground">Purchase Value</p>
                 <p className="font-medium">{formatCurrency(asset.purchase_value)}</p>
               </div>
               {asset.purchase_date && (
                 <div>
-                  <p className="text-sm text-gray-500">Purchase Date</p>
+                  <p className="text-sm text-muted-foreground">Purchase Date</p>
                   <p className="font-medium">
                     {new Date(asset.purchase_date).toLocaleDateString('en-AU', {
                       day: 'numeric',
@@ -211,25 +211,25 @@ const AssetDetailsModal = ({ isOpen, onClose, asset, onEdit }) => {
               </CardHeader>
               <CardContent className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm text-gray-500">Amount</p>
+                  <p className="text-sm text-muted-foreground">Amount</p>
                   <p className="font-medium">
                     {formatCurrency(asset.contributions.amount)} / {asset.contributions.frequency}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Annual Total</p>
+                  <p className="text-sm text-muted-foreground">Annual Total</p>
                   <p className="font-medium">{formatCurrency(annualContribution)}</p>
                 </div>
                 {asset.contributions.employer_contribution > 0 && (
                   <div>
-                    <p className="text-sm text-gray-500">Employer Contribution</p>
+                    <p className="text-sm text-muted-foreground">Employer Contribution</p>
                     <p className="font-medium">
                       {formatCurrency(asset.contributions.employer_contribution)} / {asset.contributions.frequency}
                     </p>
                   </div>
                 )}
                 <div>
-                  <p className="text-sm text-gray-500">Contribution Growth</p>
+                  <p className="text-sm text-muted-foreground">Contribution Growth</p>
                   <p className="font-medium">{asset.contributions.growth_rate}% p.a.</p>
                 </div>
               </CardContent>
@@ -243,7 +243,7 @@ const AssetDetailsModal = ({ isOpen, onClose, asset, onEdit }) => {
                 <CardTitle className="text-sm font-medium">Notes</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 whitespace-pre-wrap">{asset.notes}</p>
+                <p className="text-muted-foreground whitespace-pre-wrap">{asset.notes}</p>
               </CardContent>
             </Card>
           )}

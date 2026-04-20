@@ -20,12 +20,12 @@ import {
 } from 'lucide-react';
 
 const INCOME_TYPE_INFO = {
-  salary: { label: 'Salary', icon: Briefcase, color: 'bg-blue-100 text-blue-700' },
-  rental: { label: 'Rental', icon: Home, color: 'bg-green-100 text-green-700' },
-  dividend: { label: 'Dividend', icon: TrendingUp, color: 'bg-purple-100 text-purple-700' },
-  business: { label: 'Business', icon: Building, color: 'bg-orange-100 text-orange-700' },
-  pension: { label: 'Pension', icon: Wallet, color: 'bg-teal-100 text-teal-700' },
-  other: { label: 'Other', icon: DollarSign, color: 'bg-gray-100 text-gray-700' },
+  salary: { label: 'Salary', icon: Briefcase, color: 'bg-ocean/10 text-ocean' },
+  rental: { label: 'Rental', icon: Home, color: 'bg-sage/10 text-sage' },
+  dividend: { label: 'Dividend', icon: TrendingUp, color: 'bg-plum/10 text-plum' },
+  business: { label: 'Business', icon: Building, color: 'bg-gold/10 text-gold' },
+  pension: { label: 'Pension', icon: Wallet, color: 'bg-sage/10 text-sage' },
+  other: { label: 'Other', icon: DollarSign, color: 'bg-muted text-muted-foreground' },
 };
 
 
@@ -66,19 +66,19 @@ const IncomeDetailsModal = ({ open, onOpenChange, income }) => {
 
         <div className="space-y-6">
           {/* Current Income Overview */}
-          <Card className="bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-700 dark:to-emerald-700 text-white">
+          <Card className="bg-gradient-to-r from-sage to-primary dark:from-sage dark:to-primary text-white">
             <CardContent className="p-6">
               <div className="grid grid-cols-3 gap-6 text-center">
                 <div>
-                  <p className="text-green-100 dark:text-green-200 text-sm">Annual</p>
+                  <p className="text-white/80 text-sm">Annual</p>
                   <p className="text-3xl font-bold">{formatCurrency(annualAmount)}</p>
                 </div>
                 <div>
-                  <p className="text-green-100 dark:text-green-200 text-sm">Monthly</p>
+                  <p className="text-white/80 text-sm">Monthly</p>
                   <p className="text-3xl font-bold">{formatCurrency(monthlyAmount)}</p>
                 </div>
                 <div>
-                  <p className="text-green-100 dark:text-green-200 text-sm">Growth Rate</p>
+                  <p className="text-white/80 text-sm">Growth Rate</p>
                   <p className="text-3xl font-bold">+{income.growth_rate}%</p>
                 </div>
               </div>
@@ -90,37 +90,37 @@ const IncomeDetailsModal = ({ open, onOpenChange, income }) => {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <User className="w-4 h-4 text-gray-500" />
-                  <span className="text-sm text-gray-500">Owner</span>
+                  <User className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">Owner</span>
                 </div>
-                <p className="text-lg font-semibold capitalize dark:text-white">{income.owner}</p>
+                <p className="text-lg font-semibold capitalize text-foreground">{income.owner}</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <Calendar className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                  <span className="text-sm text-gray-500 dark:text-gray-400">Frequency</span>
+                  <Calendar className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">Frequency</span>
                 </div>
-                <p className="text-lg font-semibold capitalize dark:text-white">{income.frequency}</p>
+                <p className="text-lg font-semibold capitalize text-foreground">{income.frequency}</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <DollarSign className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                  <span className="text-sm text-gray-500 dark:text-gray-400">Taxable</span>
+                  <DollarSign className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">Taxable</span>
                 </div>
-                <p className="text-lg font-semibold dark:text-white">{income.is_taxable ? 'Yes' : 'No'}</p>
+                <p className="text-lg font-semibold text-foreground">{income.is_taxable ? 'Yes' : 'No'}</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <Calendar className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                  <span className="text-sm text-gray-500 dark:text-gray-400">Until Age</span>
+                  <Calendar className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">Until Age</span>
                 </div>
-                <p className="text-lg font-semibold dark:text-white">{income.end_age || 'Ongoing'}</p>
+                <p className="text-lg font-semibold text-foreground">{income.end_age || 'Ongoing'}</p>
               </CardContent>
             </Card>
           </div>
@@ -128,23 +128,23 @@ const IncomeDetailsModal = ({ open, onOpenChange, income }) => {
           {/* Future Projections */}
           <Card>
             <CardContent className="p-6">
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Future Projections</h3>
+              <h3 className="font-semibold text-foreground mb-4">Future Projections</h3>
               <div className="grid grid-cols-4 gap-4">
-                <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <p className="text-xs text-gray-500">5 Years</p>
-                  <p className="text-lg font-bold text-green-600">{formatCurrency(projectIncome(5))}</p>
+                <div className="text-center p-3 bg-muted rounded-lg">
+                  <p className="text-xs text-muted-foreground">5 Years</p>
+                  <p className="text-lg font-bold text-sage">{formatCurrency(projectIncome(5))}</p>
                 </div>
-                <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <p className="text-xs text-gray-500">10 Years</p>
-                  <p className="text-lg font-bold text-green-600">{formatCurrency(projectIncome(10))}</p>
+                <div className="text-center p-3 bg-muted rounded-lg">
+                  <p className="text-xs text-muted-foreground">10 Years</p>
+                  <p className="text-lg font-bold text-sage">{formatCurrency(projectIncome(10))}</p>
                 </div>
-                <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <p className="text-xs text-gray-500">15 Years</p>
-                  <p className="text-lg font-bold text-green-600">{formatCurrency(projectIncome(15))}</p>
+                <div className="text-center p-3 bg-muted rounded-lg">
+                  <p className="text-xs text-muted-foreground">15 Years</p>
+                  <p className="text-lg font-bold text-sage">{formatCurrency(projectIncome(15))}</p>
                 </div>
-                <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <p className="text-xs text-gray-500">20 Years</p>
-                  <p className="text-lg font-bold text-green-600">{formatCurrency(projectIncome(20))}</p>
+                <div className="text-center p-3 bg-muted rounded-lg">
+                  <p className="text-xs text-muted-foreground">20 Years</p>
+                  <p className="text-lg font-bold text-sage">{formatCurrency(projectIncome(20))}</p>
                 </div>
               </div>
             </CardContent>
