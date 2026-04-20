@@ -107,17 +107,17 @@ const LiabilityCard = ({ liability, onView, onEdit, onDelete }) => {
 
       <CardContent className="p-4">
         {/* Liability Name */}
-        <h3 className="font-semibold text-[#111111] truncate mb-1">{liability.name}</h3>
+        <h3 className="font-semibold text-foreground truncate mb-1">{liability.name}</h3>
         {liability.lender && (
-          <p className="text-sm text-[#6B7280] mb-3 truncate">{liability.lender}</p>
+          <p className="text-sm text-muted-foreground mb-3 truncate">{liability.lender}</p>
         )}
 
         {/* Current Balance */}
         <div className="mb-4">
-          <p className="text-2xl font-semibold tabular-nums text-red-500">
+          <p className="text-2xl font-semibold tabular-nums text-destructive">
             {formatCurrency(liability.current_balance)}
           </p>
-          <p className="text-sm text-[#6B7280]">
+          <p className="text-sm text-muted-foreground">
             of {formatCurrency(liability.original_amount)} original
           </p>
         </div>
@@ -125,7 +125,7 @@ const LiabilityCard = ({ liability, onView, onEdit, onDelete }) => {
         {/* Payoff Progress */}
         <div className="mb-4">
           <div className="flex justify-between text-sm mb-1">
-            <span className="text-[#6B7280]">Paid Off</span>
+            <span className="text-muted-foreground">Paid Off</span>
             <span className="font-medium text-primary">{paidPercent}%</span>
           </div>
           <Progress value={parseFloat(paidPercent)} className="h-2" />
@@ -134,26 +134,26 @@ const LiabilityCard = ({ liability, onView, onEdit, onDelete }) => {
         {/* Financials Grid */}
         <div className="grid grid-cols-2 gap-3 pt-3 border-t">
           <div>
-            <p className="text-xs text-[#6B7280]">Interest Rate</p>
-            <p className="font-semibold text-[#111111] tabular-nums flex items-center gap-1">
+            <p className="text-xs text-muted-foreground">Interest Rate</p>
+            <p className="font-semibold text-foreground tabular-nums flex items-center gap-1">
               <Percent className="w-3 h-3 text-gold" />
               {liability.interest_rate}%
             </p>
           </div>
           <div>
-            <p className="text-xs text-[#6B7280]">Monthly Payment</p>
-            <p className="font-semibold text-[#111111] tabular-nums">
+            <p className="text-xs text-muted-foreground">Monthly Payment</p>
+            <p className="font-semibold text-foreground tabular-nums">
               ${monthlyPayment.toFixed(0)}
             </p>
           </div>
           <div>
-            <p className="text-xs text-[#6B7280]">Owner</p>
-            <p className="font-semibold text-[#111111] capitalize">
+            <p className="text-xs text-muted-foreground">Owner</p>
+            <p className="font-semibold text-foreground capitalize">
               {liability.owner === 'you' ? 'You' : liability.owner === 'partner' ? 'Partner' : 'Joint'}
             </p>
           </div>
           <div>
-            <p className="text-xs text-[#6B7280]">Strategy</p>
+            <p className="text-xs text-muted-foreground">Strategy</p>
             <Badge className={`text-xs ${getStrategyBadgeColor(liability.payoff_strategy)}`}>
               {liability.payoff_strategy === 'aggressive' ? 'Aggressive' :
                 liability.payoff_strategy === 'custom' ? 'Custom' : 'Minimum'}

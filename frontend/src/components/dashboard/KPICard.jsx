@@ -27,13 +27,13 @@ const KPICard = ({
   };
 
   return (
-    <div className="bg-white rounded-xl border border-[#EAEAEA] shadow-card p-6 hover:shadow-card-hover transition-all duration-150 hover:-translate-y-px">
+    <div className="bg-card rounded-xl border border-border shadow-card p-6 hover:shadow-card-hover transition-all duration-150 hover:-translate-y-px">
       <div className="flex items-start justify-between">
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-medium text-[#6B7280] uppercase tracking-wide mb-2">{title}</p>
-          <p className="text-2xl font-semibold tabular-nums text-[#111111]">{value}</p>
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">{title}</p>
+          <p className="text-2xl font-semibold tabular-nums text-foreground">{value}</p>
           {subtext && (
-            <p className="text-xs text-[#6B7280] mt-1">{subtext}</p>
+            <p className="text-xs text-muted-foreground mt-1">{subtext}</p>
           )}
           {trend && trendValue && (
             <div className={cn(

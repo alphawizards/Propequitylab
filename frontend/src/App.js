@@ -54,8 +54,8 @@ const PageSpinner = () => (
 const PlaceholderPage = ({ title }) => (
   <div className="flex items-center justify-center min-h-[60vh]">
     <div className="text-center">
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">{title}</h2>
-      <p className="text-gray-500">Coming soon in the next phase</p>
+      <h2 className="text-2xl font-bold text-foreground mb-2">{title}</h2>
+      <p className="text-muted-foreground">Coming soon in the next phase</p>
     </div>
   </div>
 );
@@ -90,10 +90,10 @@ const RootRedirect = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
+          <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
     );

@@ -67,7 +67,7 @@ const IncomeCard = ({ income, onEdit, onDelete, onView }) => {
               <Icon className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-semibold text-[#111111] dark:text-white">{income.name}</h3>
+              <h3 className="font-semibold text-foreground dark:text-white">{income.name}</h3>
               <div className="flex items-center gap-2 mt-1">
                 <Badge variant="secondary" className={typeInfo.color}>
                   {typeInfo.label}
@@ -100,26 +100,26 @@ const IncomeCard = ({ income, onEdit, onDelete, onView }) => {
 
         <div className="space-y-3">
           <div className="flex justify-between items-center">
-            <span className="text-sm text-[#6B7280] dark:text-muted-foreground">Amount</span>
-            <span className="font-semibold text-lg tabular-nums text-[#111111] dark:text-white">
+            <span className="text-sm text-muted-foreground dark:text-muted-foreground">Amount</span>
+            <span className="font-semibold text-lg tabular-nums text-foreground dark:text-white">
               {formatCurrency(income.amount)}{formatFrequency(income.frequency)}
             </span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-sm text-[#6B7280] dark:text-muted-foreground">Monthly</span>
+            <span className="text-sm text-muted-foreground dark:text-muted-foreground">Monthly</span>
             <span className="text-foreground dark:text-foreground">
               {formatCurrency(monthlyAmount)}
             </span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-sm text-[#6B7280] dark:text-muted-foreground">Growth Rate</span>
+            <span className="text-sm text-muted-foreground dark:text-muted-foreground">Growth Rate</span>
             <span className="text-sage font-medium">
               +{income.growth_rate}%/yr
             </span>
           </div>
           {income.end_age && (
             <div className="flex justify-between items-center">
-              <span className="text-sm text-[#6B7280] dark:text-muted-foreground">Until Age</span>
+              <span className="text-sm text-muted-foreground dark:text-muted-foreground">Until Age</span>
               <span className="text-foreground">{income.end_age}</span>
             </div>
           )}

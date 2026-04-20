@@ -112,7 +112,7 @@ const ExpenseDetailsModal = ({ open, onOpenChange, expense }) => {
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between text-sm mb-2">
-                    <span className="text-gray-500">Retirement Percentage</span>
+                    <span className="text-muted-foreground">Retirement Percentage</span>
                     <span className="font-medium">{expense.retirement_percentage}%</span>
                   </div>
                   <Progress value={expense.retirement_percentage} className="h-2" />

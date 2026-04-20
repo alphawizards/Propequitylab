@@ -101,14 +101,14 @@ const AssetCard = ({ asset, onView, onEdit, onDelete }) => {
 
       <CardContent className="p-4">
         {/* Asset Name */}
-        <h3 className="font-semibold text-[#111111] truncate mb-1">{asset.name}</h3>
+        <h3 className="font-semibold text-foreground truncate mb-1">{asset.name}</h3>
         {asset.institution && (
-          <p className="text-sm text-[#6B7280] mb-3 truncate">{asset.institution}</p>
+          <p className="text-sm text-muted-foreground mb-3 truncate">{asset.institution}</p>
         )}
 
         {/* Current Value */}
         <div className="mb-4">
-          <p className="text-2xl font-semibold tabular-nums text-[#111111]">
+          <p className="text-2xl font-semibold tabular-nums text-foreground">
             {formatCurrency(asset.current_value)}
           </p>
           {asset.purchase_value > 0 && gain !== 0 && (
@@ -122,29 +122,29 @@ const AssetCard = ({ asset, onView, onEdit, onDelete }) => {
         {/* Financials Grid */}
         <div className="grid grid-cols-2 gap-3 pt-3 border-t">
           <div>
-            <p className="text-xs text-[#6B7280]">Expected Return</p>
-            <p className="font-semibold text-[#111111] tabular-nums flex items-center gap-1">
+            <p className="text-xs text-muted-foreground">Expected Return</p>
+            <p className="font-semibold text-foreground tabular-nums flex items-center gap-1">
               <TrendingUp className="w-3 h-3 text-sage" />
               {asset.expected_return}% p.a.
             </p>
           </div>
           <div>
-            <p className="text-xs text-[#6B7280]">Owner</p>
-            <p className="font-semibold text-[#111111] capitalize">
+            <p className="text-xs text-muted-foreground">Owner</p>
+            <p className="font-semibold text-foreground capitalize">
               {asset.owner === 'you' ? 'You' : asset.owner === 'partner' ? 'Partner' : 'Joint'}
             </p>
           </div>
           {asset.contributions?.amount > 0 && (
             <>
               <div>
-                <p className="text-xs text-[#6B7280]">Contribution</p>
-                <p className="font-semibold text-[#111111] tabular-nums">
+                <p className="text-xs text-muted-foreground">Contribution</p>
+                <p className="font-semibold text-foreground tabular-nums">
                   ${asset.contributions.amount.toLocaleString()}
                 </p>
               </div>
               <div>
-                <p className="text-xs text-[#6B7280]">Frequency</p>
-                <p className="font-semibold text-[#111111] capitalize">
+                <p className="text-xs text-muted-foreground">Frequency</p>
+                <p className="font-semibold text-foreground capitalize">
                   {asset.contributions.frequency}
                 </p>
               </div>
@@ -152,8 +152,8 @@ const AssetCard = ({ asset, onView, onEdit, onDelete }) => {
           )}
           {asset.ticker && (
             <div className="col-span-2">
-              <p className="text-xs text-[#6B7280]">Ticker / Units</p>
-              <p className="font-semibold text-[#111111]">
+              <p className="text-xs text-muted-foreground">Ticker / Units</p>
+              <p className="font-semibold text-foreground">
                 {asset.ticker} • {asset.units} units
               </p>
             </div>
