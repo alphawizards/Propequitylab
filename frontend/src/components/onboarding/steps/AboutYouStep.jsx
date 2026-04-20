@@ -73,16 +73,16 @@ const AboutYouStep = ({ data, updateData, onNext, isLoading }) => {
                 htmlFor="individual"
                 className={`flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${
                   data.planning_type === 'individual'
-                    ? 'border-emerald-500 bg-emerald-50'
-                    : 'border-gray-200 hover:border-gray-300'
+                    ? 'border-primary bg-primary/5'
+                    : 'border-border hover:border-border/80'
                 }`}
               >
                 <RadioGroupItem value="individual" id="individual" className="sr-only" />
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                  data.planning_type === 'individual' ? 'bg-emerald-600' : 'bg-gray-100'
+                  data.planning_type === 'individual' ? 'bg-primary' : 'bg-muted'
                 }`}>
                   <User className={`w-6 h-6 ${
-                    data.planning_type === 'individual' ? 'text-white' : 'text-[#6B7280]'
+                    data.planning_type === 'individual' ? 'text-white' : 'text-muted-foreground'
                   }`} />
                 </div>
                 <div>
@@ -95,16 +95,16 @@ const AboutYouStep = ({ data, updateData, onNext, isLoading }) => {
                 htmlFor="couple"
                 className={`flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${
                   data.planning_type === 'couple'
-                    ? 'border-emerald-500 bg-emerald-50'
-                    : 'border-gray-200 hover:border-gray-300'
+                    ? 'border-primary bg-primary/5'
+                    : 'border-border hover:border-border/80'
                 }`}
               >
                 <RadioGroupItem value="couple" id="couple" className="sr-only" />
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                  data.planning_type === 'couple' ? 'bg-emerald-600' : 'bg-gray-100'
+                  data.planning_type === 'couple' ? 'bg-primary' : 'bg-muted'
                 }`}>
                   <Users className={`w-6 h-6 ${
-                    data.planning_type === 'couple' ? 'text-white' : 'text-[#6B7280]'
+                    data.planning_type === 'couple' ? 'text-white' : 'text-muted-foreground'
                   }`} />
                 </div>
                 <div>
@@ -129,10 +129,10 @@ const AboutYouStep = ({ data, updateData, onNext, isLoading }) => {
                   value={data.name}
                   onChange={(e) => updateData({ name: e.target.value })}
                   placeholder="Enter your name"
-                  className={`mt-1 ${errors.name ? 'border-red-500' : ''}`}
+                  className={`mt-1 ${errors.name ? 'border-terra' : ''}`}
                   required
                 />
-                {errors.name && <p className="text-xs text-red-600 mt-1">{errors.name}</p>}
+                {errors.name && <p className="text-xs text-destructive mt-1">{errors.name}</p>}
               </div>
               <div>
                 <Label htmlFor="dob">Date of Birth</Label>
@@ -141,10 +141,10 @@ const AboutYouStep = ({ data, updateData, onNext, isLoading }) => {
                   type="date"
                   value={data.date_of_birth}
                   onChange={(e) => updateData({ date_of_birth: e.target.value })}
-                  className={`mt-1 ${errors.date_of_birth ? 'border-red-500' : ''}`}
+                  className={`mt-1 ${errors.date_of_birth ? 'border-terra' : ''}`}
                   required
                 />
-                {errors.date_of_birth && <p className="text-xs text-red-600 mt-1">{errors.date_of_birth}</p>}
+                {errors.date_of_birth && <p className="text-xs text-destructive mt-1">{errors.date_of_birth}</p>}
               </div>
             </div>
             
@@ -157,10 +157,10 @@ const AboutYouStep = ({ data, updateData, onNext, isLoading }) => {
                     value={data.partner_name}
                     onChange={(e) => updateData({ partner_name: e.target.value })}
                     placeholder="Enter partner's name"
-                    className={`mt-1 ${errors.partner_name ? 'border-red-500' : ''}`}
+                    className={`mt-1 ${errors.partner_name ? 'border-terra' : ''}`}
                     required
                   />
-                  {errors.partner_name && <p className="text-xs text-red-600 mt-1">{errors.partner_name}</p>}
+                  {errors.partner_name && <p className="text-xs text-destructive mt-1">{errors.partner_name}</p>}
                 </div>
                 <div>
                   <Label htmlFor="partner_dob">Partner's Date of Birth</Label>
@@ -169,10 +169,10 @@ const AboutYouStep = ({ data, updateData, onNext, isLoading }) => {
                     type="date"
                     value={data.partner_dob}
                     onChange={(e) => updateData({ partner_dob: e.target.value })}
-                    className={`mt-1 ${errors.partner_dob ? 'border-red-500' : ''}`}
+                    className={`mt-1 ${errors.partner_dob ? 'border-terra' : ''}`}
                     required
                   />
-                  {errors.partner_dob && <p className="text-xs text-red-600 mt-1">{errors.partner_dob}</p>}
+                  {errors.partner_dob && <p className="text-xs text-destructive mt-1">{errors.partner_dob}</p>}
                 </div>
               </div>
             )}
@@ -218,7 +218,7 @@ const AboutYouStep = ({ data, updateData, onNext, isLoading }) => {
         <div className="flex justify-end">
           <Button 
             type="submit" 
-            className="bg-emerald-600 text-white hover:bg-emerald-700 px-8"
+            className="bg-primary text-white hover:bg-primary/90 px-8"
             disabled={isLoading}
           >
             {isLoading ? 'Saving...' : 'Continue'}

@@ -63,17 +63,17 @@ const IncomeStep = ({ data, updateData, onNext, isLoading }) => {
       </div>
       
       {/* Income Summary */}
-      <Card className="mb-6 bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
+      <Card className="mb-6 bg-gradient-to-r from-sage/5 to-primary/5 border-sage/20">
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-[#6B7280]">Total Annual Income</p>
-              <p className="text-3xl font-semibold tabular-nums text-[#111111]">
+              <p className="text-sm text-muted-foreground">Total Annual Income</p>
+              <p className="text-3xl font-semibold tabular-nums text-foreground">
                 ${totalAnnualIncome.toLocaleString()}
               </p>
             </div>
-            <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
-              <DollarSign className="w-8 h-8 text-green-600" />
+            <div className="w-16 h-16 rounded-full bg-sage/10 flex items-center justify-center">
+              <DollarSign className="w-8 h-8 text-sage" />
             </div>
           </div>
         </CardContent>
@@ -88,8 +88,8 @@ const IncomeStep = ({ data, updateData, onNext, isLoading }) => {
               <Card key={income.id}>
                 <CardContent className="p-4 flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
-                      <TypeIcon className="w-5 h-5 text-[#6B7280]" />
+                    <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+                      <TypeIcon className="w-5 h-5 text-muted-foreground" />
                     </div>
                     <div>
                       <p className="font-medium text-[#111111]">{income.name}</p>
@@ -106,7 +106,7 @@ const IncomeStep = ({ data, updateData, onNext, isLoading }) => {
                       variant="ghost"
                       size="icon"
                       onClick={() => removeIncome(income.id)}
-                      className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                      className="text-terra hover:text-destructive hover:bg-terra/5"
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
@@ -197,11 +197,11 @@ const IncomeStep = ({ data, updateData, onNext, isLoading }) => {
             </div>
           </div>
           
-          {addError && <p className="text-xs text-red-600">{addError}</p>}
+          {addError && <p className="text-xs text-destructive">{addError}</p>}
           <Button
             onClick={addIncome}
             variant="outline"
-            className="w-full hover:bg-emerald-50 hover:border-emerald-500"
+            className="w-full hover:bg-primary/5 hover:border-primary"
           >
             <Plus className="w-4 h-4 mr-2" />
             Add Income
@@ -215,7 +215,7 @@ const IncomeStep = ({ data, updateData, onNext, isLoading }) => {
         </Button>
         <Button 
           onClick={onNext}
-          className="bg-emerald-600 text-white hover:bg-emerald-700 px-8"
+          className="bg-primary text-white hover:bg-primary/90 px-8"
           disabled={isLoading}
         >
           {isLoading ? 'Saving...' : 'Continue'}

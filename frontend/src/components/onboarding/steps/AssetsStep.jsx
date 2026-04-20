@@ -65,7 +65,7 @@ const AssetsStep = ({ data, updateData, onNext, isLoading }) => {
       </div>
       
       {/* Assets Summary */}
-      <Card className="mb-6 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+      <Card className="mb-6 bg-gradient-to-r from-ocean/5 to-plum/5 border-ocean/20">
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -74,17 +74,17 @@ const AssetsStep = ({ data, updateData, onNext, isLoading }) => {
                 ${totalAssets.toLocaleString()}
               </p>
             </div>
-            <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center">
-              <PiggyBank className="w-8 h-8 text-blue-600" />
+            <div className="w-16 h-16 rounded-full bg-ocean/10 flex items-center justify-center">
+              <PiggyBank className="w-8 h-8 text-ocean" />
             </div>
           </div>
         </CardContent>
       </Card>
       
       {/* Info about properties */}
-      <Card className="mb-6 border-emerald-200 bg-emerald-50">
+      <Card className="mb-6 border-primary/20 bg-primary/5">
         <CardContent className="p-4">
-          <p className="text-sm text-gray-700">
+          <p className="text-sm text-foreground">
             <strong>Note:</strong> Properties can be added later from the dashboard. 
             This section is for non-property assets like superannuation, shares, and savings.
           </p>
@@ -100,8 +100,8 @@ const AssetsStep = ({ data, updateData, onNext, isLoading }) => {
               <Card key={asset.id}>
                 <CardContent className="p-4 flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                      <TypeIcon className="w-5 h-5 text-blue-600" />
+                    <div className="w-10 h-10 rounded-lg bg-ocean/10 flex items-center justify-center">
+                      <TypeIcon className="w-5 h-5 text-ocean" />
                     </div>
                     <div>
                       <p className="font-medium text-[#111111]">{asset.name}</p>
@@ -121,7 +121,7 @@ const AssetsStep = ({ data, updateData, onNext, isLoading }) => {
                       variant="ghost"
                       size="icon"
                       onClick={() => removeAsset(asset.id)}
-                      className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                      className="text-terra hover:text-destructive hover:bg-terra/5"
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
@@ -225,11 +225,11 @@ const AssetsStep = ({ data, updateData, onNext, isLoading }) => {
             </div>
           </div>
           
-          {addError && <p className="text-xs text-red-600">{addError}</p>}
+          {addError && <p className="text-xs text-destructive">{addError}</p>}
           <Button
             onClick={addAsset}
             variant="outline"
-            className="w-full hover:bg-emerald-50 hover:border-emerald-500"
+            className="w-full hover:bg-primary/5 hover:border-primary"
           >
             <Plus className="w-4 h-4 mr-2" />
             Add Asset
@@ -243,7 +243,7 @@ const AssetsStep = ({ data, updateData, onNext, isLoading }) => {
         </Button>
         <Button 
           onClick={onNext}
-          className="bg-emerald-600 text-white hover:bg-emerald-700 px-8"
+          className="bg-primary text-white hover:bg-primary/90 px-8"
           disabled={isLoading}
         >
           {isLoading ? 'Saving...' : 'Continue'}

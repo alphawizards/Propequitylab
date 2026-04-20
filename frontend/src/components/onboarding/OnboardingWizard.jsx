@@ -209,7 +209,7 @@ const OnboardingWizard = () => {
                 <span
                   key={step.id}
                   className={`text-xs ${
-                    index + 1 <= currentStep ? 'text-emerald-600 font-medium' : 'text-muted-foreground'
+                    index + 1 <= currentStep ? 'text-primary font-medium' : 'text-muted-foreground'
                   }`}
                 >
                   {step.name}

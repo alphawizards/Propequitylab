@@ -23,7 +23,7 @@ const GoalsStep = ({ data, updateData, onNext, isLoading }) => {
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-emerald-600" />
+            <Calendar className="w-5 h-5 text-primary" />
             Target Retirement Age
           </CardTitle>
         </CardHeader>
@@ -35,7 +35,7 @@ const GoalsStep = ({ data, updateData, onNext, isLoading }) => {
                 <p className="text-sm text-[#6B7280]">years old</p>
               </div>
               <div className="text-right">
-                <p className="text-2xl font-semibold text-emerald-600">{retirementYear}</p>
+                <p className="text-2xl font-semibold text-primary">{retirementYear}</p>
                 <p className="text-sm text-[#6B7280]">{data.retirement_age - currentAge} years away</p>
               </div>
             </div>
@@ -49,7 +49,7 @@ const GoalsStep = ({ data, updateData, onNext, isLoading }) => {
               className="w-full"
             />
             
-            <div className="flex justify-between text-xs text-gray-400">
+            <div className="flex justify-between text-xs text-muted-foreground">
               <span>40</span>
               <span>50</span>
               <span>60</span>
@@ -64,7 +64,7 @@ const GoalsStep = ({ data, updateData, onNext, isLoading }) => {
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
-            <Target className="w-5 h-5 text-emerald-600" />
+            <Target className="w-5 h-5 text-primary" />
             Target Net Worth
           </CardTitle>
         </CardHeader>
@@ -75,7 +75,7 @@ const GoalsStep = ({ data, updateData, onNext, isLoading }) => {
             </p>
             
             <div className="relative">
-              <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <Input
                 type="number"
                 value={data.target_equity}
@@ -95,8 +95,8 @@ const GoalsStep = ({ data, updateData, onNext, isLoading }) => {
                   onClick={() => updateData({ target_equity: amount })}
                   className={`${
                     data.target_equity === amount
-                      ? 'border-emerald-500 bg-emerald-50'
-                      : 'hover:border-emerald-500 hover:bg-emerald-50'
+                      ? 'border-primary bg-primary/5'
+                      : 'hover:border-primary hover:bg-primary/5'
                   }`}
                 >
                   ${(amount / 1000000).toFixed(0)}M
@@ -111,7 +111,7 @@ const GoalsStep = ({ data, updateData, onNext, isLoading }) => {
       <Card className="mb-8">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-emerald-600" />
+            <TrendingUp className="w-5 h-5 text-primary" />
             Target Passive Income
           </CardTitle>
         </CardHeader>
@@ -122,7 +122,7 @@ const GoalsStep = ({ data, updateData, onNext, isLoading }) => {
             </p>
             
             <div className="relative">
-              <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <Input
                 type="number"
                 value={data.target_passive_income}
@@ -142,8 +142,8 @@ const GoalsStep = ({ data, updateData, onNext, isLoading }) => {
                   onClick={() => updateData({ target_passive_income: amount })}
                   className={`${
                     data.target_passive_income === amount
-                      ? 'border-emerald-500 bg-emerald-50'
-                      : 'hover:border-emerald-500 hover:bg-emerald-50'
+                      ? 'border-primary bg-primary/5'
+                      : 'hover:border-primary hover:bg-primary/5'
                   }`}
                 >
                   ${(amount / 1000).toFixed(0)}K/year
@@ -152,7 +152,7 @@ const GoalsStep = ({ data, updateData, onNext, isLoading }) => {
             </div>
             
             {/* Calculated monthly */}
-            <div className="p-3 bg-gray-50 rounded-lg">
+            <div className="p-3 bg-muted rounded-lg">
               <p className="text-sm text-[#6B7280]">
                 That's <span className="font-semibold text-[#111111]">
                   ${Math.round(data.target_passive_income / 12).toLocaleString()}
@@ -164,21 +164,21 @@ const GoalsStep = ({ data, updateData, onNext, isLoading }) => {
       </Card>
       
       {/* Summary Card */}
-      <Card className="mb-8 bg-gradient-to-br from-gray-900 to-gray-800 text-white border-0">
+      <Card className="mb-8 bg-gradient-to-br from-foreground/90 to-foreground/80 text-background border-0">
         <CardContent className="p-6">
-          <h3 className="font-semibold text-emerald-400 mb-4">Your FIRE Goal Summary</h3>
+          <h3 className="font-semibold text-primary mb-4">Your FIRE Goal Summary</h3>
           <div className="grid grid-cols-3 gap-4">
             <div>
               <p className="text-2xl font-bold">{data.retirement_age}</p>
-              <p className="text-sm text-gray-400">Retirement Age</p>
+              <p className="text-sm text-muted-foreground">Retirement Age</p>
             </div>
             <div>
               <p className="text-2xl font-bold">${(data.target_equity / 1000000).toFixed(1)}M</p>
-              <p className="text-sm text-gray-400">Target Net Worth</p>
+              <p className="text-sm text-muted-foreground">Target Net Worth</p>
             </div>
             <div>
               <p className="text-2xl font-bold">${(data.target_passive_income / 1000).toFixed(0)}K</p>
-              <p className="text-sm text-gray-400">Annual Income</p>
+              <p className="text-sm text-muted-foreground">Annual Income</p>
             </div>
           </div>
         </CardContent>
@@ -187,7 +187,7 @@ const GoalsStep = ({ data, updateData, onNext, isLoading }) => {
       <div className="flex justify-end">
         <Button 
           onClick={onNext}
-          className="bg-emerald-600 text-white hover:bg-emerald-700 px-8"
+          className="bg-primary text-white hover:bg-primary/90 px-8"
           disabled={isLoading}
         >
           {isLoading ? 'Saving...' : 'Continue'}
