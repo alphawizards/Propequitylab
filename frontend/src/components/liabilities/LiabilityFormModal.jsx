@@ -242,7 +242,7 @@ const LiabilityFormModal = ({ isOpen, onClose, onSubmit, liability, editMode }) 
                   placeholder="0"
                 />
                 {isHecs && (
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     HECS is indexed to CPI, not interest rate
                   </p>
                 )}
@@ -274,7 +274,7 @@ const LiabilityFormModal = ({ isOpen, onClose, onSubmit, liability, editMode }) 
                       onChange={(e) => handleChange('repayment_threshold', e.target.value)}
                       placeholder="54435"
                     />
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       Income threshold for compulsory repayments (2024: $54,435)
                     </p>
                   </div>
@@ -323,7 +323,7 @@ const LiabilityFormModal = ({ isOpen, onClose, onSubmit, liability, editMode }) 
                   onChange={(e) => handleChange('extra_payment', e.target.value)}
                   placeholder="0"
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   Additional amount above minimum payment
                 </p>
               </div>
@@ -359,7 +359,7 @@ const LiabilityFormModal = ({ isOpen, onClose, onSubmit, liability, editMode }) 
               <div className="col-span-2">
                 <Label>Notes</Label>
                 <textarea
-                  className="w-full min-h-[100px] px-3 py-2 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full min-h-[100px] px-3 py-2 rounded-md border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   value={formData.notes}
                   onChange={(e) => handleChange('notes', e.target.value)}
                   placeholder="Any additional notes about this liability..."
@@ -377,7 +377,7 @@ const LiabilityFormModal = ({ isOpen, onClose, onSubmit, liability, editMode }) 
           <Button 
             onClick={handleSubmit}
             disabled={isSubmitting || !formData.name || !formData.current_balance}
-            className="bg-emerald-600 text-white hover:bg-emerald-700"
+            className="bg-primary text-primary-foreground hover:bg-primary/90"
           >
             {isSubmitting ? 'Saving...' : (editMode ? 'Update Liability' : 'Add Liability')}
           </Button>

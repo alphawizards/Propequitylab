@@ -297,7 +297,7 @@ const AddPropertyModal = ({ isOpen, onClose, onAdd }) => {
           </Button>
           <Button
             onClick={handleSubmit}
-            className="bg-emerald-600 text-white hover:bg-emerald-700"
+            className="bg-sage-600 text-white hover:bg-sage-700"
           >
             Add Property
           </Button>
