@@ -152,7 +152,7 @@ const FIRECalculator = ({ open, onOpenChange, dashboardData }) => {
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto" data-testid="fire-calculator-modal">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Flame className="w-6 h-6 text-orange-500" />
+            <Flame className="w-6 h-6 text-gold" />
             FIRE Calculator
           </DialogTitle>
         </DialogHeader>
@@ -333,7 +333,7 @@ const FIRECalculator = ({ open, onOpenChange, dashboardData }) => {
                   </div>
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <Flame className="w-4 h-4 text-orange-500" />
+                      <Flame className="w-4 h-4 text-gold" />
                       <span className="text-sm text-muted-foreground">FIRE Age</span>
                     </div>
                     <p className="text-2xl font-bold text-gold">

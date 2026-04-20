@@ -5,7 +5,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-[#FAFAF9] border-t border-[#EAEAEA] mt-auto">
+    <footer className="bg-background border-t border-border mt-auto">
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand Column */}
@@ -15,34 +15,34 @@ const Footer = () => {
                 <path d="M8 8L20 20L8 32" stroke="#059669" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
                 <path d="M32 8L20 20L32 32" stroke="#111111" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-              <span className="text-[#111111] text-xl font-semibold">PropEquityLab</span>
+              <span className="text-foreground text-xl font-semibold">PropEquityLab</span>
             </div>
-            <p className="text-sm text-[#6B7280]">
+            <p className="text-sm text-muted-foreground">
               Track your property portfolio, plan your financial future, and achieve FIRE.
             </p>
           </div>
 
           {/* Product Column */}
           <div>
-            <h3 className="text-[#111111] font-semibold mb-4">Product</h3>
+            <h3 className="text-foreground font-semibold mb-4">Product</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/dashboard" className="text-sm text-[#6B7280] hover:text-primary transition-colors duration-150">
+                <Link to="/dashboard" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-150">
                   Dashboard
                 </Link>
               </li>
               <li>
-                <Link to="/finances/properties" className="text-sm text-[#6B7280] hover:text-primary transition-colors duration-150">
+                <Link to="/finances/properties" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-150">
                   Properties
                 </Link>
               </li>
               <li>
-                <Link to="/progress" className="text-sm text-[#6B7280] hover:text-primary transition-colors duration-150">
+                <Link to="/progress" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-150">
                   Progress
                 </Link>
               </li>
               <li>
-                <Link to="/plans" className="text-sm text-[#6B7280] hover:text-primary transition-colors duration-150">
+                <Link to="/plans" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-150">
                   Plans
                 </Link>
               </li>
@@ -51,20 +51,20 @@ const Footer = () => {
 
           {/* Support Column */}
           <div>
-            <h3 className="text-[#111111] font-semibold mb-4">Support</h3>
+            <h3 className="text-foreground font-semibold mb-4">Support</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/help" className="text-sm text-[#6B7280] hover:text-primary transition-colors duration-150">
+                <Link to="/help" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-150">
                   Help Center
                 </Link>
               </li>
               <li>
-                <a href="mailto:support@propequitylab.com" className="text-sm text-[#6B7280] hover:text-primary transition-colors duration-150">
+                <a href="mailto:support@propequitylab.com" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-150">
                   Contact Support
                 </a>
               </li>
               <li>
-                <Link to="/settings" className="text-sm text-[#6B7280] hover:text-primary transition-colors duration-150">
+                <Link to="/settings" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-150">
                   Account Settings
                 </Link>
               </li>
@@ -73,20 +73,20 @@ const Footer = () => {
 
           {/* Legal Column */}
           <div>
-            <h3 className="text-[#111111] font-semibold mb-4">Legal</h3>
+            <h3 className="text-foreground font-semibold mb-4">Legal</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/legal/privacy" className="text-sm text-[#6B7280] hover:text-primary transition-colors duration-150">
+                <Link to="/legal/privacy" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-150">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link to="/legal/terms" className="text-sm text-[#6B7280] hover:text-primary transition-colors duration-150">
+                <Link to="/legal/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-150">
                   Terms of Service
                 </Link>
               </li>
               <li>
-                <a href="mailto:privacy@propequitylab.com" className="text-sm text-[#6B7280] hover:text-primary transition-colors duration-150">
+                <a href="mailto:privacy@propequitylab.com" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-150">
                   Data Protection
                 </a>
               </li>
@@ -95,8 +95,8 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-[#EAEAEA] mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm text-[#6B7280]">
+        <div className="border-t border-border mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+          <p className="text-sm text-muted-foreground">
             © {currentYear} PropEquityLab. All rights reserved.
           </p>
 
@@ -105,7 +105,7 @@ const Footer = () => {
               href="https://twitter.com/propequitylab"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#6B7280] hover:text-primary transition-colors duration-150"
+              className="text-muted-foreground hover:text-primary transition-colors duration-150"
               aria-label="Twitter"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -117,7 +117,7 @@ const Footer = () => {
               href="https://linkedin.com/company/propequitylab"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#6B7280] hover:text-primary transition-colors duration-150"
+              className="text-muted-foreground hover:text-primary transition-colors duration-150"
               aria-label="LinkedIn"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -129,7 +129,7 @@ const Footer = () => {
               href="https://github.com/alphawizards"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#6B7280] hover:text-primary transition-colors duration-150"
+              className="text-muted-foreground hover:text-primary transition-colors duration-150"
               aria-label="GitHub"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
