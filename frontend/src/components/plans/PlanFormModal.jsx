@@ -136,7 +136,7 @@ const PlanFormModal = ({ open, onOpenChange, plan, onSubmit }) => {
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" data-testid="plan-form-modal">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Flame className="w-5 h-5 text-orange-500" />
+            <Flame className="w-5 h-5 text-gold-500" />
             {plan ? 'Edit Plan' : 'Create New Plan'}
           </DialogTitle>
         </DialogHeader>
@@ -213,7 +213,7 @@ const PlanFormModal = ({ open, onOpenChange, plan, onSubmit }) => {
                     step={1}
                     className="mt-2"
                   />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <div className="flex justify-between text-xs text-muted-foreground mt-1">
                     <span>30</span>
                     <span>75</span>
                   </div>
@@ -229,7 +229,7 @@ const PlanFormModal = ({ open, onOpenChange, plan, onSubmit }) => {
                     step={1}
                     className="mt-2"
                   />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <div className="flex justify-between text-xs text-muted-foreground mt-1">
                     <span>70</span>
                     <span>110</span>
                   </div>
@@ -248,7 +248,7 @@ const PlanFormModal = ({ open, onOpenChange, plan, onSubmit }) => {
                   onChange={(e) => updateField('target_equity', parseFloat(e.target.value) || 0)}
                   placeholder="2000000"
                 />
-                <p className="text-xs text-gray-500">Your target net worth at retirement</p>
+                <p className="text-xs text-muted-foreground">Your target net worth at retirement</p>
               </div>
 
               <div className="space-y-2">
@@ -260,7 +260,7 @@ const PlanFormModal = ({ open, onOpenChange, plan, onSubmit }) => {
                   onChange={(e) => updateField('target_passive_income', parseFloat(e.target.value) || 0)}
                   placeholder="80000"
                 />
-                <p className="text-xs text-gray-500">Annual income you need in retirement</p>
+                <p className="text-xs text-muted-foreground">Annual income you need in retirement</p>
               </div>
 
               <div className="space-y-2">
@@ -273,7 +273,7 @@ const PlanFormModal = ({ open, onOpenChange, plan, onSubmit }) => {
                   onChange={(e) => updateField('target_withdrawal_rate', parseFloat(e.target.value) || 4.0)}
                   placeholder="4.0"
                 />
-                <p className="text-xs text-gray-500">The 4% rule is a common starting point</p>
+                <p className="text-xs text-muted-foreground">The 4% rule is a common starting point</p>
               </div>
             </TabsContent>
 
@@ -299,7 +299,7 @@ const PlanFormModal = ({ open, onOpenChange, plan, onSubmit }) => {
               <div className="flex items-center justify-between">
                 <div>
                   <Label>Adjust for Inflation</Label>
-                  <p className="text-xs text-gray-500">Increase withdrawals with inflation</p>
+                  <p className="text-xs text-muted-foreground">Increase withdrawals with inflation</p>
                 </div>
                 <Switch
                   checked={formData.withdrawal_strategy.adjust_for_inflation}
@@ -315,7 +315,7 @@ const PlanFormModal = ({ open, onOpenChange, plan, onSubmit }) => {
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <Label>Include Age Pension</Label>
-                    <p className="text-xs text-gray-500">Factor in government pension</p>
+                    <p className="text-xs text-muted-foreground">Factor in government pension</p>
                   </div>
                   <Switch
                     checked={formData.social_security.include_age_pension}
@@ -378,7 +378,7 @@ const PlanFormModal = ({ open, onOpenChange, plan, onSubmit }) => {
               <div className="flex items-center justify-between">
                 <div>
                   <Label>Monte Carlo Simulation</Label>
-                  <p className="text-xs text-gray-500">Run probability-based projections</p>
+                  <p className="text-xs text-muted-foreground">Run probability-based projections</p>
                 </div>
                 <Switch
                   checked={formData.use_monte_carlo}
@@ -394,7 +394,7 @@ const PlanFormModal = ({ open, onOpenChange, plan, onSubmit }) => {
             </Button>
             <Button
               type="submit"
-              className="bg-emerald-600 text-white hover:bg-emerald-700"
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
               data-testid="submit-plan-btn"
             >
               {plan ? 'Update Plan' : 'Create Plan'}

@@ -60,8 +60,8 @@ const WelcomeModal = ({ isOpen, onClose, onComplete }) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader className="text-center sm:text-left">
-          <div className="mx-auto sm:mx-0 mb-4 w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center">
-            <Sparkles className="w-8 h-8 text-emerald-600" />
+          <div className="mx-auto sm:mx-0 mb-4 w-16 h-16 bg-sage-50 rounded-full flex items-center justify-center">
+            <Sparkles className="w-8 h-8 text-sage-600" />
           </div>
           <DialogTitle className="text-2xl font-semibold text-[#111111]">
             Welcome to PropEquityLab!
@@ -79,12 +79,12 @@ const WelcomeModal = ({ isOpen, onClose, onComplete }) => {
 
           {/* Quick Start Option */}
           <div
-            className="p-4 border border-emerald-200 rounded-xl bg-emerald-50 hover:border-emerald-400 transition-colors duration-150 cursor-pointer"
+            className="p-4 border border-sage-200 rounded-xl bg-sage-50 hover:border-sage-400 transition-colors duration-150 cursor-pointer"
             onClick={!isLoading ? handleLoadDemoData : undefined}
           >
             <div className="flex items-start gap-4">
-              <div className="p-2 bg-emerald-100 rounded-lg">
-                <Rocket className="w-6 h-6 text-emerald-700" />
+              <div className="p-2 bg-sage-100 rounded-lg">
+                <Rocket className="w-6 h-6 text-sage-700" />
               </div>
               <div className="flex-1">
                 <h3 className="font-semibold text-[#111111]">Quick Start with Demo Data</h3>
@@ -97,12 +97,12 @@ const WelcomeModal = ({ isOpen, onClose, onComplete }) => {
 
           {/* Start Fresh Option */}
           <div
-            className="p-4 border border-[#EAEAEA] rounded-xl hover:border-slate-300 transition-colors duration-150 cursor-pointer"
+            className="p-4 border border-border rounded-xl hover:border-border/80 transition-colors duration-150 cursor-pointer"
             onClick={!isLoading ? handleStartFresh : undefined}
           >
             <div className="flex items-start gap-4">
-              <div className="p-2 bg-slate-100 rounded-lg">
-                <FileSpreadsheet className="w-6 h-6 text-slate-600" />
+              <div className="p-2 bg-muted rounded-lg">
+                <FileSpreadsheet className="w-6 h-6 text-muted-foreground" />
               </div>
               <div className="flex-1">
                 <h3 className="font-semibold text-[#111111]">Start Fresh</h3>
@@ -119,7 +119,7 @@ const WelcomeModal = ({ isOpen, onClose, onComplete }) => {
             variant="outline"
             onClick={handleStartFresh}
             disabled={isLoading}
-            className="w-full sm:w-auto border-[#EAEAEA] hover:bg-slate-50"
+            className="w-full sm:w-auto border-border hover:bg-muted"
           >
             <FileSpreadsheet className="w-4 h-4 mr-2" />
             Start Fresh
@@ -127,7 +127,7 @@ const WelcomeModal = ({ isOpen, onClose, onComplete }) => {
           <Button
             onClick={handleLoadDemoData}
             disabled={isLoading}
-            className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white active:scale-[0.98] transition-all duration-150"
+            className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground active:scale-[0.98] transition-all duration-150"
           >
             {isLoading ? (
               <>

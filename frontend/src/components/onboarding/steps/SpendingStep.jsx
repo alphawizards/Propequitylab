@@ -84,7 +84,7 @@ const SpendingStep = ({ data, updateData, onNext, isLoading }) => {
       </div>
       
       {/* Spending Summary */}
-      <Card className="mb-6 bg-gradient-to-r from-red-50 to-orange-50 border-red-200">
+      <Card className="mb-6 bg-gradient-to-r from-terra-50 to-gold-50 border-terra-200">
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -93,8 +93,8 @@ const SpendingStep = ({ data, updateData, onNext, isLoading }) => {
                 ${totalAnnualExpenses.toLocaleString()}
               </p>
             </div>
-            <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
-              <CreditCard className="w-8 h-8 text-red-600" />
+            <div className="w-16 h-16 rounded-full bg-terra-100 flex items-center justify-center">
+              <CreditCard className="w-8 h-8 text-terra-600" />
             </div>
           </div>
         </CardContent>
@@ -112,7 +112,7 @@ const SpendingStep = ({ data, updateData, onNext, isLoading }) => {
                 <Button
                   key={preset.name}
                   variant="outline"
-                  className="justify-start h-auto py-3 hover:bg-emerald-50 hover:border-emerald-500"
+                  className="justify-start h-auto py-3 hover:bg-sage-50 hover:border-sage-500"
                   onClick={() => handleQuickAdd(preset)}
                 >
                   <Plus className="w-4 h-4 mr-2" />
@@ -136,7 +136,7 @@ const SpendingStep = ({ data, updateData, onNext, isLoading }) => {
               <Card key={expense.id}>
                 <CardContent className="p-4 flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
                       <CategoryIcon className="w-5 h-5 text-[#6B7280]" />
                     </div>
                     <div>
@@ -154,7 +154,7 @@ const SpendingStep = ({ data, updateData, onNext, isLoading }) => {
                       variant="ghost"
                       size="icon"
                       onClick={() => removeExpense(expense.id)}
-                      className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                      className="text-terra-500 hover:text-terra-700 hover:bg-terra-50"
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
@@ -235,11 +235,11 @@ const SpendingStep = ({ data, updateData, onNext, isLoading }) => {
             </div>
           </div>
           
-          {addError && <p className="text-xs text-red-600">{addError}</p>}
+          {addError && <p className="text-xs text-terra-600">{addError}</p>}
           <Button
             onClick={addExpense}
             variant="outline"
-            className="w-full hover:bg-emerald-50 hover:border-emerald-500"
+            className="w-full hover:bg-sage-50 hover:border-sage-500"
           >
             <Plus className="w-4 h-4 mr-2" />
             Add Expense
@@ -251,9 +251,9 @@ const SpendingStep = ({ data, updateData, onNext, isLoading }) => {
         <Button variant="ghost" onClick={() => onNext()} className="text-[#6B7280]">
           Skip for now
         </Button>
-        <Button 
+        <Button
           onClick={onNext}
-          className="bg-emerald-600 text-white hover:bg-emerald-700 px-8"
+          className="bg-primary text-primary-foreground hover:bg-primary/90 px-8"
           disabled={isLoading}
         >
           {isLoading ? 'Saving...' : 'Continue'}

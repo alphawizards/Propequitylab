@@ -66,7 +66,7 @@ const LiabilitiesStep = ({ data, updateData, onNext, isLoading }) => {
       </div>
       
       {/* Liabilities Summary */}
-      <Card className="mb-6 bg-gradient-to-r from-red-50 to-pink-50 border-red-200">
+      <Card className="mb-6 bg-gradient-to-r from-terra-50 to-terra-50 border-terra-200">
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -75,17 +75,17 @@ const LiabilitiesStep = ({ data, updateData, onNext, isLoading }) => {
                 ${totalLiabilities.toLocaleString()}
               </p>
             </div>
-            <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
-              <CreditCard className="w-8 h-8 text-red-600" />
+            <div className="w-16 h-16 rounded-full bg-terra-100 flex items-center justify-center">
+              <CreditCard className="w-8 h-8 text-terra-600" />
             </div>
           </div>
         </CardContent>
       </Card>
-      
+
       {/* Info about property loans */}
-      <Card className="mb-6 border-blue-200 bg-blue-50">
+      <Card className="mb-6 border-ocean-200 bg-ocean-50">
         <CardContent className="p-4">
-          <p className="text-sm text-gray-700">
+          <p className="text-sm text-foreground">
             <strong>Note:</strong> Investment property loans are linked to each property and will be captured when you add properties from the dashboard.
           </p>
         </CardContent>
@@ -93,10 +93,10 @@ const LiabilitiesStep = ({ data, updateData, onNext, isLoading }) => {
       
       {/* No debt message */}
       {data.liabilities.length === 0 && (
-        <Card className="mb-6 border-green-200 bg-green-50">
+        <Card className="mb-6 border-sage-200 bg-sage-50">
           <CardContent className="p-6 text-center">
-            <p className="text-green-700 font-medium">No debts? That's great!</p>
-            <p className="text-sm text-green-600 mt-1">You can skip this step if you have no non-property debts.</p>
+            <p className="text-sage-700 font-medium">No debts? That's great!</p>
+            <p className="text-sm text-sage-600 mt-1">You can skip this step if you have no non-property debts.</p>
           </CardContent>
         </Card>
       )}
@@ -110,8 +110,8 @@ const LiabilitiesStep = ({ data, updateData, onNext, isLoading }) => {
               <Card key={liability.id}>
                 <CardContent className="p-4 flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
-                      <TypeIcon className="w-5 h-5 text-red-600" />
+                    <div className="w-10 h-10 rounded-lg bg-terra-100 flex items-center justify-center">
+                      <TypeIcon className="w-5 h-5 text-terra-600" />
                     </div>
                     <div>
                       <p className="font-medium text-[#111111]">{liability.name}</p>
@@ -124,14 +124,14 @@ const LiabilitiesStep = ({ data, updateData, onNext, isLoading }) => {
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <p className="font-semibold text-red-600">
+                    <p className="font-semibold text-terra-600">
                       ${liability.current_balance.toLocaleString()}
                     </p>
                     <Button
                       variant="ghost"
                       size="icon"
                       onClick={() => removeLiability(liability.id)}
-                      className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                      className="text-terra-500 hover:text-terra-700 hover:bg-terra-50"
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
@@ -235,11 +235,11 @@ const LiabilitiesStep = ({ data, updateData, onNext, isLoading }) => {
             </div>
           </div>
           
-          {addError && <p className="text-xs text-red-600">{addError}</p>}
+          {addError && <p className="text-xs text-terra-600">{addError}</p>}
           <Button
             onClick={addLiability}
             variant="outline"
-            className="w-full hover:bg-emerald-50 hover:border-emerald-500"
+            className="w-full hover:bg-sage-50 hover:border-sage-500"
           >
             <Plus className="w-4 h-4 mr-2" />
             Add Liability
@@ -251,9 +251,9 @@ const LiabilitiesStep = ({ data, updateData, onNext, isLoading }) => {
         <Button variant="ghost" onClick={() => onNext()} className="text-[#6B7280]">
           Skip for now
         </Button>
-        <Button 
+        <Button
           onClick={onNext}
-          className="bg-emerald-600 text-white hover:bg-emerald-700 px-8"
+          className="bg-primary text-primary-foreground hover:bg-primary/90 px-8"
           disabled={isLoading}
         >
           {isLoading ? 'Saving...' : 'Continue'}
