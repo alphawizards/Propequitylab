@@ -33,13 +33,13 @@ import {
 } from 'recharts';
 
 const PLAN_TYPE_INFO = {
-  fire: { label: 'FIRE', color: 'bg-orange-100 text-orange-700' },
-  lean_fire: { label: 'Lean FIRE', color: 'bg-green-100 text-green-700' },
-  fat_fire: { label: 'Fat FIRE', color: 'bg-purple-100 text-purple-700' },
-  coast_fire: { label: 'Coast FIRE', color: 'bg-blue-100 text-blue-700' },
-  barista_fire: { label: 'Barista FIRE', color: 'bg-yellow-100 text-yellow-700' },
-  traditional: { label: 'Traditional', color: 'bg-gray-100 text-gray-700' },
-  custom: { label: 'Custom', color: 'bg-emerald-100 text-emerald-700' },
+  fire: { label: 'FIRE', color: 'bg-gold/10 text-gold' },
+  lean_fire: { label: 'Lean FIRE', color: 'bg-primary/10 text-primary' },
+  fat_fire: { label: 'Fat FIRE', color: 'bg-plum/10 text-plum' },
+  coast_fire: { label: 'Coast FIRE', color: 'bg-ocean/10 text-ocean' },
+  barista_fire: { label: 'Barista FIRE', color: 'bg-gold/10 text-gold' },
+  traditional: { label: 'Traditional', color: 'bg-muted text-muted-foreground' },
+  custom: { label: 'Custom', color: 'bg-primary/10 text-primary' },
 };
 
 const PlanDetailsModal = ({ open, onOpenChange, plan, dashboardData }) => {
@@ -127,8 +127,8 @@ const PlanDetailsModal = ({ open, onOpenChange, plan, dashboardData }) => {
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto" data-testid="plan-details-modal">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center">
-              <Flame className="w-5 h-5 text-orange-600" />
+            <div className="w-10 h-10 rounded-lg bg-gold/10 flex items-center justify-center">
+              <Flame className="w-5 h-5 text-gold" />
             </div>
             <div>
               <span>{plan.name}</span>
@@ -140,17 +140,17 @@ const PlanDetailsModal = ({ open, onOpenChange, plan, dashboardData }) => {
         <div className="space-y-6">
           {/* Progress Overview */}
           {projections && (
-            <Card className="bg-gradient-to-r from-gray-900 to-gray-800 text-white">
+            <Card className="bg-gradient-to-r from-foreground/90 to-foreground/80 text-background">
               <CardContent className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div>
-                    <p className="text-gray-400 text-sm">Current Net Worth</p>
-                    <p className="text-2xl font-bold text-emerald-400">
+                    <p className="text-background/60 text-sm">Current Net Worth</p>
+                    <p className="text-2xl font-bold text-primary">
                       {formatCurrency(projections.currentNetWorth)}
                     </p>
                   </div>
                   <div>
-                    <p className="text-gray-400 text-sm">Target Net Worth</p>
+                    <p className="text-background/60 text-sm">Target Net Worth</p>
                     <p className="text-2xl font-bold">
                       {projections.targetNetWorth > 0
                         ? formatCurrency(projections.targetNetWorth)
@@ -158,8 +158,8 @@ const PlanDetailsModal = ({ open, onOpenChange, plan, dashboardData }) => {
                     </p>
                   </div>
                   <div>
-                    <p className="text-gray-400 text-sm">Years to FIRE</p>
-                    <p className="text-2xl font-bold text-orange-400">
+                    <p className="text-background/60 text-sm">Years to FIRE</p>
+                    <p className="text-2xl font-bold text-gold">
                       {projections.yearsToFire !== null
                         ? `${projections.yearsToFire} years (age ${projections.fireAge})`
                         : 'N/A'}
@@ -170,8 +170,8 @@ const PlanDetailsModal = ({ open, onOpenChange, plan, dashboardData }) => {
                 {projections.targetNetWorth > 0 && (
                   <div className="mt-6">
                     <div className="flex justify-between text-sm mb-2">
-                      <span className="text-gray-400">Progress to FIRE</span>
-                      <span className="text-white font-medium">
+                      <span className="text-background/60">Progress to FIRE</span>
+                      <span className="text-background font-medium">
                         {projections.progressPercent.toFixed(1)}%
                       </span>
                     </div>
@@ -187,28 +187,28 @@ const PlanDetailsModal = ({ open, onOpenChange, plan, dashboardData }) => {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <Calendar className="w-4 h-4 text-gray-500" />
-                  <span className="text-sm text-gray-500">Retirement Age</span>
+                  <Calendar className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">Retirement Age</span>
                 </div>
-                <p className="text-2xl font-bold text-gray-900">{plan.retirement_age}</p>
+                <p className="text-2xl font-bold text-foreground">{plan.retirement_age}</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <TrendingUp className="w-4 h-4 text-gray-500" />
-                  <span className="text-sm text-gray-500">Withdrawal Rate</span>
+                  <TrendingUp className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">Withdrawal Rate</span>
                 </div>
-                <p className="text-2xl font-bold text-gray-900">{plan.target_withdrawal_rate || 4}%</p>
+                <p className="text-2xl font-bold text-foreground">{plan.target_withdrawal_rate || 4}%</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <DollarSign className="w-4 h-4 text-gray-500" />
-                  <span className="text-sm text-gray-500">Monthly Savings</span>
+                  <DollarSign className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">Monthly Savings</span>
                 </div>
-                <p className="text-2xl font-bold text-green-600">
+                <p className="text-2xl font-bold text-primary">
                   {formatCurrency(projections?.monthlySavings || 0)}
                 </p>
               </CardContent>
@@ -216,10 +216,10 @@ const PlanDetailsModal = ({ open, onOpenChange, plan, dashboardData }) => {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <Clock className="w-4 h-4 text-gray-500" />
-                  <span className="text-sm text-gray-500">Life Expectancy</span>
+                  <Clock className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">Life Expectancy</span>
                 </div>
-                <p className="text-2xl font-bold text-gray-900">{plan.life_expectancy}</p>
+                <p className="text-2xl font-bold text-foreground">{plan.life_expectancy}</p>
               </CardContent>
             </Card>
           </div>
@@ -228,7 +228,7 @@ const PlanDetailsModal = ({ open, onOpenChange, plan, dashboardData }) => {
           {projections && projections.data.length > 0 && (
             <Card>
               <CardContent className="p-6">
-                <h3 className="font-semibold text-gray-900 mb-4">Net Worth Projection</h3>
+                <h3 className="font-semibold text-foreground mb-4">Net Worth Projection</h3>
                 <ResponsiveContainer width="100%" height={300}>
                   <ComposedChart data={projections.data}>
                     <defs>
@@ -283,27 +283,27 @@ const PlanDetailsModal = ({ open, onOpenChange, plan, dashboardData }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card>
               <CardContent className="p-6">
-                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
                   <Target className="w-4 h-4" /> Withdrawal Strategy
                 </h3>
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Strategy Type</span>
+                    <span className="text-muted-foreground">Strategy Type</span>
                     <span className="font-medium capitalize">
                       {plan.withdrawal_strategy?.type || 'Percentage'}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Rate</span>
+                    <span className="text-muted-foreground">Rate</span>
                     <span className="font-medium">{plan.withdrawal_strategy?.rate || 4}%</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Adjust for Inflation</span>
+                    <span className="text-muted-foreground">Adjust for Inflation</span>
                     <span>
                       {plan.withdrawal_strategy?.adjust_for_inflation ? (
-                        <CheckCircle2 className="w-5 h-5 text-green-500" />
+                        <CheckCircle2 className="w-5 h-5 text-primary" />
                       ) : (
-                        <AlertCircle className="w-5 h-5 text-gray-400" />
+                        <AlertCircle className="w-5 h-5 text-muted-foreground" />
                       )}
                     </span>
                   </div>
@@ -313,28 +313,28 @@ const PlanDetailsModal = ({ open, onOpenChange, plan, dashboardData }) => {
 
             <Card>
               <CardContent className="p-6">
-                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
                   <DollarSign className="w-4 h-4" /> Age Pension (Australia)
                 </h3>
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Include Pension</span>
+                    <span className="text-muted-foreground">Include Pension</span>
                     <span>
                       {plan.social_security?.include_age_pension ? (
-                        <CheckCircle2 className="w-5 h-5 text-green-500" />
+                        <CheckCircle2 className="w-5 h-5 text-primary" />
                       ) : (
-                        <AlertCircle className="w-5 h-5 text-gray-400" />
+                        <AlertCircle className="w-5 h-5 text-muted-foreground" />
                       )}
                     </span>
                   </div>
                   {plan.social_security?.include_age_pension && (
                     <>
                       <div className="flex justify-between">
-                        <span className="text-gray-500">Start Age</span>
+                        <span className="text-muted-foreground">Start Age</span>
                         <span className="font-medium">{plan.social_security.start_age}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-500">Est. Annual Amount</span>
+                        <span className="text-muted-foreground">Est. Annual Amount</span>
                         <span className="font-medium">
                           {formatCurrency(plan.social_security.estimated_amount)}
                         </span>
@@ -349,8 +349,8 @@ const PlanDetailsModal = ({ open, onOpenChange, plan, dashboardData }) => {
           {plan.description && (
             <Card>
               <CardContent className="p-6">
-                <h3 className="font-semibold text-gray-900 mb-2">Description</h3>
-                <p className="text-gray-600">{plan.description}</p>
+                <h3 className="font-semibold text-foreground mb-2">Description</h3>
+                <p className="text-muted-foreground">{plan.description}</p>
               </CardContent>
             </Card>
           )}

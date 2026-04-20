@@ -174,7 +174,7 @@ const FIRECalculator = ({ open, onOpenChange, dashboardData }) => {
           <TabsContent value="inputs" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
-                <h3 className="font-semibold text-gray-900">Personal Info</h3>
+                <h3 className="font-semibold text-foreground">Personal Info</h3>
 
                 <div className="space-y-2">
                   <Label>Current Age: {inputs.currentAge}</Label>
@@ -210,7 +210,7 @@ const FIRECalculator = ({ open, onOpenChange, dashboardData }) => {
               </div>
 
               <div className="space-y-4">
-                <h3 className="font-semibold text-gray-900">Income & Expenses</h3>
+                <h3 className="font-semibold text-foreground">Income & Expenses</h3>
 
                 <div className="space-y-2">
                   <Label htmlFor="annualIncome">Annual Income ($)</Label>
@@ -273,14 +273,14 @@ const FIRECalculator = ({ open, onOpenChange, dashboardData }) => {
           {/* Results Tab */}
           <TabsContent value="results" className="space-y-6">
             {/* Main FIRE Number */}
-            <Card className="bg-gradient-to-r from-orange-500 to-red-500 text-white">
+            <Card className="bg-gradient-to-r from-gold to-destructive text-white">
               <CardContent className="p-6">
                 <div className="text-center">
-                  <p className="text-orange-100 mb-2">Your FIRE Number</p>
+                  <p className="text-white/70 mb-2">Your FIRE Number</p>
                   <p className="text-5xl font-bold mb-2">
                     {formatCurrency(calculations.fireNumber)}
                   </p>
-                  <p className="text-orange-100">
+                  <p className="text-white/70">
                     Based on {inputs.withdrawalRate}% withdrawal rate
                   </p>
                 </div>
@@ -291,29 +291,29 @@ const FIRECalculator = ({ open, onOpenChange, dashboardData }) => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Card>
                 <CardContent className="p-4 text-center">
-                  <p className="text-sm text-gray-500 mb-1">Lean FIRE</p>
-                  <p className="text-2xl font-bold text-green-600">
+                  <p className="text-sm text-muted-foreground mb-1">Lean FIRE</p>
+                  <p className="text-2xl font-bold text-primary">
                     {formatCurrency(calculations.leanFireNumber)}
                   </p>
-                  <p className="text-xs text-gray-400">50% expenses</p>
+                  <p className="text-xs text-muted-foreground">50% expenses</p>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-4 text-center">
-                  <p className="text-sm text-gray-500 mb-1">Coast FIRE</p>
-                  <p className="text-2xl font-bold text-blue-600">
+                  <p className="text-sm text-muted-foreground mb-1">Coast FIRE</p>
+                  <p className="text-2xl font-bold text-ocean">
                     {formatCurrency(calculations.coastFireNumber)}
                   </p>
-                  <p className="text-xs text-gray-400">Stop saving, let grow</p>
+                  <p className="text-xs text-muted-foreground">Stop saving, let grow</p>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-4 text-center">
-                  <p className="text-sm text-gray-500 mb-1">Fat FIRE</p>
-                  <p className="text-2xl font-bold text-purple-600">
+                  <p className="text-sm text-muted-foreground mb-1">Fat FIRE</p>
+                  <p className="text-2xl font-bold text-plum">
                     {formatCurrency(calculations.fatFireNumber)}
                   </p>
-                  <p className="text-xs text-gray-400">150% expenses</p>
+                  <p className="text-xs text-muted-foreground">150% expenses</p>
                 </CardContent>
               </Card>
             </div>
@@ -324,37 +324,37 @@ const FIRECalculator = ({ open, onOpenChange, dashboardData }) => {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <Calendar className="w-4 h-4 text-gray-500" />
-                      <span className="text-sm text-gray-500">Years to FIRE</span>
+                      <Calendar className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">Years to FIRE</span>
                     </div>
-                    <p className="text-2xl font-bold text-gray-900">
+                    <p className="text-2xl font-bold text-foreground">
                       {calculations.yearsToFire !== null ? calculations.yearsToFire : 'N/A'}
                     </p>
                   </div>
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <Flame className="w-4 h-4 text-orange-500" />
-                      <span className="text-sm text-gray-500">FIRE Age</span>
+                      <span className="text-sm text-muted-foreground">FIRE Age</span>
                     </div>
-                    <p className="text-2xl font-bold text-orange-600">
+                    <p className="text-2xl font-bold text-gold">
                       {calculations.fireAge !== null ? calculations.fireAge : 'N/A'}
                     </p>
                   </div>
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <TrendingUp className="w-4 h-4 text-green-500" />
-                      <span className="text-sm text-gray-500">Savings Rate</span>
+                      <TrendingUp className="w-4 h-4 text-primary" />
+                      <span className="text-sm text-muted-foreground">Savings Rate</span>
                     </div>
-                    <p className="text-2xl font-bold text-green-600">
+                    <p className="text-2xl font-bold text-primary">
                       {calculations.savingsRate.toFixed(0)}%
                     </p>
                   </div>
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <Target className="w-4 h-4 text-emerald-500" />
-                      <span className="text-sm text-gray-500">Progress</span>
+                      <Target className="w-4 h-4 text-primary" />
+                      <span className="text-sm text-muted-foreground">Progress</span>
                     </div>
-                    <p className="text-2xl font-bold text-emerald-600">
+                    <p className="text-2xl font-bold text-primary">
                       {calculations.progressPercent.toFixed(0)}%
                     </p>
                   </div>
@@ -365,23 +365,23 @@ const FIRECalculator = ({ open, onOpenChange, dashboardData }) => {
             {/* Monthly Breakdown */}
             <Card>
               <CardContent className="p-6">
-                <h3 className="font-semibold text-gray-900 mb-4">Monthly Breakdown</h3>
+                <h3 className="font-semibold text-foreground mb-4">Monthly Breakdown</h3>
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <p className="text-sm text-gray-500">Monthly Savings</p>
-                    <p className="text-xl font-bold text-green-600">
+                    <p className="text-sm text-muted-foreground">Monthly Savings</p>
+                    <p className="text-xl font-bold text-primary">
                       {formatCurrency(calculations.monthlySavings)}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Monthly Expenses</p>
-                    <p className="text-xl font-bold text-red-500">
+                    <p className="text-sm text-muted-foreground">Monthly Expenses</p>
+                    <p className="text-xl font-bold text-destructive">
                       {formatCurrency(calculations.monthlyExpenses)}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Passive Income (Current)</p>
-                    <p className="text-xl font-bold text-blue-600">
+                    <p className="text-sm text-muted-foreground">Passive Income (Current)</p>
+                    <p className="text-xl font-bold text-ocean">
                       {formatCurrency(calculations.monthlyPassiveIncome)}
                     </p>
                   </div>
@@ -394,7 +394,7 @@ const FIRECalculator = ({ open, onOpenChange, dashboardData }) => {
           <TabsContent value="projection">
             <Card>
               <CardContent className="p-6">
-                <h3 className="font-semibold text-gray-900 mb-4">Wealth Projection to FIRE</h3>
+                <h3 className="font-semibold text-foreground mb-4">Wealth Projection to FIRE</h3>
                 <ResponsiveContainer width="100%" height={400}>
                   <AreaChart data={calculations.projectionData}>
                     <defs>

@@ -29,18 +29,18 @@ import {
 } from 'lucide-react';
 
 const CATEGORY_INFO = {
-  housing: { label: 'Housing', icon: Home, color: 'bg-blue-100 text-blue-700' },
-  food: { label: 'Food', icon: Utensils, color: 'bg-orange-100 text-orange-700' },
-  transport: { label: 'Transport', icon: Car, color: 'bg-purple-100 text-purple-700' },
-  utilities: { label: 'Utilities', icon: Zap, color: 'bg-yellow-100 text-yellow-700' },
-  insurance: { label: 'Insurance', icon: Shield, color: 'bg-green-100 text-green-700' },
-  entertainment: { label: 'Entertainment', icon: Film, color: 'bg-pink-100 text-pink-700' },
-  health: { label: 'Health', icon: Heart, color: 'bg-red-100 text-red-700' },
-  education: { label: 'Education', icon: GraduationCap, color: 'bg-indigo-100 text-indigo-700' },
-  personal: { label: 'Personal', icon: User, color: 'bg-teal-100 text-teal-700' },
-  subscriptions: { label: 'Subscriptions', icon: CreditCard, color: 'bg-cyan-100 text-cyan-700' },
-  debt_repayment: { label: 'Debt', icon: Wallet, color: 'bg-gray-100 text-gray-700' },
-  other: { label: 'Other', icon: MoreHorizontal, color: 'bg-gray-100 text-gray-700' },
+  housing: { label: 'Housing', icon: Home, color: 'bg-ocean/10 text-ocean' },
+  food: { label: 'Food', icon: Utensils, color: 'bg-gold/10 text-gold' },
+  transport: { label: 'Transport', icon: Car, color: 'bg-plum/10 text-plum' },
+  utilities: { label: 'Utilities', icon: Zap, color: 'bg-gold/10 text-gold' },
+  insurance: { label: 'Insurance', icon: Shield, color: 'bg-primary/10 text-primary' },
+  entertainment: { label: 'Entertainment', icon: Film, color: 'bg-plum/10 text-plum' },
+  health: { label: 'Health', icon: Heart, color: 'bg-destructive/10 text-destructive' },
+  education: { label: 'Education', icon: GraduationCap, color: 'bg-ocean/10 text-ocean' },
+  personal: { label: 'Personal', icon: User, color: 'bg-primary/10 text-primary' },
+  subscriptions: { label: 'Subscriptions', icon: CreditCard, color: 'bg-ocean/10 text-ocean' },
+  debt_repayment: { label: 'Debt', icon: Wallet, color: 'bg-muted text-muted-foreground' },
+  other: { label: 'Other', icon: MoreHorizontal, color: 'bg-muted text-muted-foreground' },
 };
 
 
@@ -83,19 +83,19 @@ const ExpenseDetailsModal = ({ open, onOpenChange, expense }) => {
 
         <div className="space-y-6">
           {/* Current Expense Overview */}
-          <Card className="bg-gradient-to-r from-red-600 to-orange-600 dark:from-red-700 dark:to-orange-700 text-white">
+          <Card className="bg-gradient-to-r from-destructive to-gold text-white">
             <CardContent className="p-6">
               <div className="grid grid-cols-3 gap-6 text-center">
                 <div>
-                  <p className="text-red-100 dark:text-red-200 text-sm">Annual</p>
+                  <p className="text-white/70 text-sm">Annual</p>
                   <p className="text-3xl font-bold">{formatCurrency(annualAmount)}</p>
                 </div>
                 <div>
-                  <p className="text-red-100 dark:text-red-200 text-sm">Monthly</p>
+                  <p className="text-white/70 text-sm">Monthly</p>
                   <p className="text-3xl font-bold">{formatCurrency(monthlyAmount)}</p>
                 </div>
                 <div>
-                  <p className="text-red-100 dark:text-red-200 text-sm">Inflation</p>
+                  <p className="text-white/70 text-sm">Inflation</p>
                   <p className="text-3xl font-bold">+{expense.inflation_rate}%</p>
                 </div>
               </div>
@@ -105,8 +105,8 @@ const ExpenseDetailsModal = ({ open, onOpenChange, expense }) => {
           {/* Retirement Planning */}
           <Card>
             <CardContent className="p-6">
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                <PiggyBank className="w-5 h-5 text-purple-500" />
+              <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+                <PiggyBank className="w-5 h-5 text-plum" />
                 Retirement Planning
               </h3>
               <div className="space-y-4">
@@ -118,15 +118,15 @@ const ExpenseDetailsModal = ({ open, onOpenChange, expense }) => {
                   <Progress value={expense.retirement_percentage} className="h-2" />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="p-3 bg-purple-50 dark:bg-purple-900/30 rounded-lg">
-                    <p className="text-xs text-gray-500">Retirement Monthly</p>
-                    <p className="text-xl font-bold text-purple-600 dark:text-purple-400">
+                  <div className="p-3 bg-plum/10 rounded-lg">
+                    <p className="text-xs text-muted-foreground">Retirement Monthly</p>
+                    <p className="text-xl font-bold text-plum">
                       {formatCurrency(retirementMonthly)}
                     </p>
                   </div>
-                  <div className="p-3 bg-purple-50 dark:bg-purple-900/30 rounded-lg">
-                    <p className="text-xs text-gray-500">Retirement Annual</p>
-                    <p className="text-xl font-bold text-purple-600 dark:text-purple-400">
+                  <div className="p-3 bg-plum/10 rounded-lg">
+                    <p className="text-xs text-muted-foreground">Retirement Annual</p>
+                    <p className="text-xl font-bold text-plum">
                       {formatCurrency(retirementAnnual)}
                     </p>
                   </div>
@@ -140,19 +140,19 @@ const ExpenseDetailsModal = ({ open, onOpenChange, expense }) => {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <Calendar className="w-4 h-4 text-gray-500" />
-                  <span className="text-sm text-gray-500">Frequency</span>
+                  <Calendar className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">Frequency</span>
                 </div>
-                <p className="text-lg font-semibold capitalize dark:text-white">{expense.frequency}</p>
+                <p className="text-lg font-semibold capitalize text-foreground">{expense.frequency}</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <Receipt className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                  <span className="text-sm text-gray-500 dark:text-gray-400">Tax Deductible</span>
+                  <Receipt className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">Tax Deductible</span>
                 </div>
-                <p className="text-lg font-semibold dark:text-white">{expense.is_tax_deductible ? 'Yes' : 'No'}</p>
+                <p className="text-lg font-semibold text-foreground">{expense.is_tax_deductible ? 'Yes' : 'No'}</p>
               </CardContent>
             </Card>
           </div>
@@ -160,26 +160,26 @@ const ExpenseDetailsModal = ({ open, onOpenChange, expense }) => {
           {/* Future Projections */}
           <Card>
             <CardContent className="p-6">
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-orange-500" />
+              <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-gold" />
                 Future Projections (with {expense.inflation_rate}% inflation)
               </h3>
               <div className="grid grid-cols-4 gap-4">
-                <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <p className="text-xs text-gray-500">5 Years</p>
-                  <p className="text-lg font-bold text-orange-600">{formatCurrency(projectExpense(5))}</p>
+                <div className="text-center p-3 bg-muted rounded-lg">
+                  <p className="text-xs text-muted-foreground">5 Years</p>
+                  <p className="text-lg font-bold text-gold">{formatCurrency(projectExpense(5))}</p>
                 </div>
-                <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <p className="text-xs text-gray-500">10 Years</p>
-                  <p className="text-lg font-bold text-orange-600">{formatCurrency(projectExpense(10))}</p>
+                <div className="text-center p-3 bg-muted rounded-lg">
+                  <p className="text-xs text-muted-foreground">10 Years</p>
+                  <p className="text-lg font-bold text-gold">{formatCurrency(projectExpense(10))}</p>
                 </div>
-                <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <p className="text-xs text-gray-500">15 Years</p>
-                  <p className="text-lg font-bold text-orange-600">{formatCurrency(projectExpense(15))}</p>
+                <div className="text-center p-3 bg-muted rounded-lg">
+                  <p className="text-xs text-muted-foreground">15 Years</p>
+                  <p className="text-lg font-bold text-gold">{formatCurrency(projectExpense(15))}</p>
                 </div>
-                <div className="text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <p className="text-xs text-gray-500">20 Years</p>
-                  <p className="text-lg font-bold text-orange-600">{formatCurrency(projectExpense(20))}</p>
+                <div className="text-center p-3 bg-muted rounded-lg">
+                  <p className="text-xs text-muted-foreground">20 Years</p>
+                  <p className="text-lg font-bold text-gold">{formatCurrency(projectExpense(20))}</p>
                 </div>
               </div>
             </CardContent>

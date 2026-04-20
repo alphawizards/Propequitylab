@@ -53,14 +53,14 @@ const LoanCard = ({ loan, onEdit, onDelete, onExtraRepayment, onLumpSum }) => {
             <CardContent className="p-4">
                 <div className="flex items-start justify-between mb-4">
                     <div>
-                        <h3 className="font-semibold text-lg text-gray-900">{loan.lender_name}</h3>
-                        <p className="text-sm text-gray-500">{loan.loan_type}</p>
+                        <h3 className="font-semibold text-lg text-foreground">{loan.lender_name}</h3>
+                        <p className="text-sm text-muted-foreground">{loan.loan_type}</p>
                     </div>
                     <div className="flex gap-2">
                         <Button variant="ghost" size="sm" onClick={() => onEdit(loan)}>
                             <Edit2 className="w-4 h-4" />
                         </Button>
-                        <Button variant="ghost" size="sm" onClick={() => onDelete(loan.id)} className="text-red-600 hover:text-red-700">
+                        <Button variant="ghost" size="sm" onClick={() => onDelete(loan.id)} className="text-destructive hover:text-destructive/80">
                             <Trash2 className="w-4 h-4" />
                         </Button>
                     </div>
@@ -68,34 +68,34 @@ const LoanCard = ({ loan, onEdit, onDelete, onExtraRepayment, onLumpSum }) => {
 
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <p className="text-sm text-gray-500">Current Balance</p>
-                        <p className="text-xl font-bold text-gray-900">{formatCurrency(loan.current_amount)}</p>
+                        <p className="text-sm text-muted-foreground">Current Balance</p>
+                        <p className="text-xl font-bold text-foreground">{formatCurrency(loan.current_amount)}</p>
                     </div>
                     <div>
-                        <p className="text-sm text-gray-500">Interest Rate</p>
-                        <p className="text-xl font-bold text-purple-600">{loan.interest_rate}%</p>
+                        <p className="text-sm text-muted-foreground">Interest Rate</p>
+                        <p className="text-xl font-bold text-plum">{loan.interest_rate}%</p>
                     </div>
                     <div>
-                        <p className="text-sm text-gray-500">Structure</p>
-                        <p className="text-sm font-medium text-gray-700">
+                        <p className="text-sm text-muted-foreground">Structure</p>
+                        <p className="text-sm font-medium text-foreground">
                             {loan.loan_structure === 'InterestOnly' ? 'Interest Only' : 'P&I'}
                         </p>
                     </div>
                     <div>
-                        <p className="text-sm text-gray-500">Term Remaining</p>
-                        <p className="text-sm font-medium text-gray-700">{loan.remaining_term_years} years</p>
+                        <p className="text-sm text-muted-foreground">Term Remaining</p>
+                        <p className="text-sm font-medium text-foreground">{loan.remaining_term_years} years</p>
                     </div>
                 </div>
 
                 <div className="mt-4 pt-4 border-t">
                     <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-500">Est. Monthly Repayment</span>
-                        <span className="font-semibold text-green-600">{formatCurrency(monthlyRepayment)}</span>
+                        <span className="text-sm text-muted-foreground">Est. Monthly Repayment</span>
+                        <span className="font-semibold text-primary">{formatCurrency(monthlyRepayment)}</span>
                     </div>
                     {loan.offset_balance > 0 && (
                         <div className="flex items-center justify-between mt-1">
-                            <span className="text-sm text-gray-500">Offset Balance</span>
-                            <span className="font-semibold text-blue-600">{formatCurrency(loan.offset_balance)}</span>
+                            <span className="text-sm text-muted-foreground">Offset Balance</span>
+                            <span className="font-semibold text-ocean">{formatCurrency(loan.offset_balance)}</span>
                         </div>
                     )}
                 </div>
@@ -105,7 +105,7 @@ const LoanCard = ({ loan, onEdit, onDelete, onExtraRepayment, onLumpSum }) => {
                     <Button
                         variant="outline"
                         size="sm"
-                        className="flex-1 text-green-700 border-green-300 hover:bg-green-50"
+                        className="flex-1 text-primary border-primary/30 hover:bg-primary/10"
                         onClick={() => onExtraRepayment?.(loan)}
                     >
                         <TrendingDown className="w-4 h-4 mr-1" />
@@ -114,7 +114,7 @@ const LoanCard = ({ loan, onEdit, onDelete, onExtraRepayment, onLumpSum }) => {
                     <Button
                         variant="outline"
                         size="sm"
-                        className="flex-1 text-blue-700 border-blue-300 hover:bg-blue-50"
+                        className="flex-1 text-ocean border-ocean/30 hover:bg-ocean/10"
                         onClick={() => onLumpSum?.(loan)}
                     >
                         <Banknote className="w-4 h-4 mr-1" />
@@ -312,7 +312,7 @@ const LoanFormModal = ({ isOpen, onClose, onSubmit, loan, propertyId }) => {
                         <Button type="button" variant="outline" onClick={onClose}>
                             Cancel
                         </Button>
-                        <Button type="submit" disabled={submitting} className="bg-emerald-600 text-white hover:bg-emerald-700">
+                        <Button type="submit" disabled={submitting} className="bg-primary text-primary-foreground hover:bg-primary/90">
                             {submitting ? 'Saving...' : loan ? 'Update Loan' : 'Add Loan'}
                         </Button>
                     </DialogFooter>
@@ -368,7 +368,7 @@ const ExtraRepaymentModal = ({ isOpen, onClose, loanId, loanName, onSuccess }) =
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
-                        <TrendingDown className="w-5 h-5 text-green-600" />
+                        <TrendingDown className="w-5 h-5 text-primary" />
                         Add Extra Repayment
                     </DialogTitle>
                     <DialogDescription>
@@ -433,7 +433,7 @@ const ExtraRepaymentModal = ({ isOpen, onClose, loanId, loanName, onSuccess }) =
                         <Button type="button" variant="outline" onClick={onClose}>
                             Cancel
                         </Button>
-                        <Button type="submit" disabled={submitting} className="bg-green-600 text-white hover:bg-green-700">
+                        <Button type="submit" disabled={submitting} className="bg-primary text-primary-foreground hover:bg-primary/90">
                             {submitting ? 'Adding...' : 'Add Extra Repayment'}
                         </Button>
                     </DialogFooter>
@@ -487,7 +487,7 @@ const LumpSumModal = ({ isOpen, onClose, loanId, loanName, onSuccess }) => {
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
-                        <Banknote className="w-5 h-5 text-blue-600" />
+                        <Banknote className="w-5 h-5 text-ocean" />
                         Add Lump Sum Payment
                     </DialogTitle>
                     <DialogDescription>
@@ -535,7 +535,7 @@ const LumpSumModal = ({ isOpen, onClose, loanId, loanName, onSuccess }) => {
                         <Button type="button" variant="outline" onClick={onClose}>
                             Cancel
                         </Button>
-                        <Button type="submit" disabled={submitting} className="bg-blue-600 text-white hover:bg-blue-700">
+                        <Button type="submit" disabled={submitting} className="bg-ocean text-white hover:bg-ocean/90">
                             {submitting ? 'Adding...' : 'Add Lump Sum'}
                         </Button>
                     </DialogFooter>
@@ -620,12 +620,12 @@ const LoanManager = ({ propertyId, propertyAddress }) => {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-xl font-bold text-gray-900">Loans</h2>
-                    <p className="text-gray-500">{propertyAddress}</p>
+                    <h2 className="text-xl font-bold text-foreground">Loans</h2>
+                    <p className="text-muted-foreground">{propertyAddress}</p>
                 </div>
                 <Button
                     onClick={handleAddLoan}
-                    className="bg-emerald-600 text-white hover:bg-emerald-700"
+                    className="bg-primary text-primary-foreground hover:bg-primary/90"
                 >
                     <Plus className="w-4 h-4 mr-2" />
                     Add Loan
@@ -637,12 +637,12 @@ const LoanManager = ({ propertyId, propertyAddress }) => {
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
-                                <CreditCard className="w-5 h-5 text-red-600" />
+                            <div className="w-10 h-10 rounded-lg bg-destructive/10 flex items-center justify-center">
+                                <CreditCard className="w-5 h-5 text-destructive" />
                             </div>
                             <div>
-                                <p className="text-sm text-gray-500">Total Debt</p>
-                                <p className="text-xl font-bold text-gray-900">{formatCurrency(totalDebt)}</p>
+                                <p className="text-sm text-muted-foreground">Total Debt</p>
+                                <p className="text-xl font-bold text-foreground">{formatCurrency(totalDebt)}</p>
                             </div>
                         </div>
                     </CardContent>
@@ -651,12 +651,12 @@ const LoanManager = ({ propertyId, propertyAddress }) => {
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                                <DollarSign className="w-5 h-5 text-blue-600" />
+                            <div className="w-10 h-10 rounded-lg bg-ocean/10 flex items-center justify-center">
+                                <DollarSign className="w-5 h-5 text-ocean" />
                             </div>
                             <div>
-                                <p className="text-sm text-gray-500">Total Offset</p>
-                                <p className="text-xl font-bold text-blue-600">{formatCurrency(totalOffset)}</p>
+                                <p className="text-sm text-muted-foreground">Total Offset</p>
+                                <p className="text-xl font-bold text-ocean">{formatCurrency(totalOffset)}</p>
                             </div>
                         </div>
                     </CardContent>
@@ -665,12 +665,12 @@ const LoanManager = ({ propertyId, propertyAddress }) => {
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                                <Percent className="w-5 h-5 text-green-600" />
+                            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <Percent className="w-5 h-5 text-primary" />
                             </div>
                             <div>
-                                <p className="text-sm text-gray-500">Effective Debt</p>
-                                <p className="text-xl font-bold text-green-600">{formatCurrency(effectiveDebt)}</p>
+                                <p className="text-sm text-muted-foreground">Effective Debt</p>
+                                <p className="text-xl font-bold text-primary">{formatCurrency(effectiveDebt)}</p>
                             </div>
                         </div>
                     </CardContent>
@@ -681,18 +681,18 @@ const LoanManager = ({ propertyId, propertyAddress }) => {
             {loading ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {[1, 2].map((i) => (
-                        <Card key={i} className="h-48 animate-pulse bg-gray-100" />
+                        <Card key={i} className="h-48 animate-pulse bg-muted" />
                     ))}
                 </div>
             ) : loans.length === 0 ? (
                 <Card className="p-8">
                     <div className="text-center">
-                        <CreditCard className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">No loans yet</h3>
-                        <p className="text-gray-500 mb-4">Add your first loan to start tracking</p>
+                        <CreditCard className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" />
+                        <h3 className="text-lg font-semibold text-foreground mb-2">No loans yet</h3>
+                        <p className="text-muted-foreground mb-4">Add your first loan to start tracking</p>
                         <Button
                             onClick={handleAddLoan}
-                            className="bg-emerald-600 text-white hover:bg-emerald-700"
+                            className="bg-primary text-primary-foreground hover:bg-primary/90"
                         >
                             <Plus className="w-4 h-4 mr-2" />
                             Add Loan
