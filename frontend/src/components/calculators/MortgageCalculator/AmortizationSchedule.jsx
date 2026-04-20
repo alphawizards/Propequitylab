@@ -23,7 +23,7 @@ export function AmortizationSchedule({ schedule }) {
 
   if (!schedule || schedule.length === 0) {
     return (
-      <div className="text-center py-12 text-gray-500">
+      <div className="text-center py-12 text-muted-foreground">
         <p>No amortization schedule available for interest-only loans</p>
       </div>
     );
@@ -79,7 +79,7 @@ export function AmortizationSchedule({ schedule }) {
       {/* Header Controls */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <h3 className="font-semibold text-gray-900">Amortization Schedule</h3>
+          <h3 className="font-semibold text-foreground">Amortization Schedule</h3>
           <Badge variant="outline">
             {schedule.length} months
           </Badge>
@@ -114,7 +114,7 @@ export function AmortizationSchedule({ schedule }) {
       {/* Table */}
       <ScrollArea className="h-[500px] rounded-md border">
         <Table>
-          <TableHeader className="sticky top-0 bg-white z-10">
+          <TableHeader className="sticky top-0 bg-card z-10">
             <TableRow>
               <TableHead className="w-16">{displayMode === 'yearly' ? 'Year' : 'Month'}</TableHead>
               <TableHead className="text-right">Opening Balance</TableHead>
@@ -132,10 +132,10 @@ export function AmortizationSchedule({ schedule }) {
                   <TableCell className="text-right font-mono text-sm">
                     {formatCurrency(Math.round(row.openingBalance))}
                   </TableCell>
-                  <TableCell className="text-right font-mono text-sm text-green-600">
+                  <TableCell className="text-right font-mono text-sm text-sage-600">
                     {formatCurrency(Math.round(row.principalPaid))}
                   </TableCell>
-                  <TableCell className="text-right font-mono text-sm text-red-600">
+                  <TableCell className="text-right font-mono text-sm text-terra-600">
                     {formatCurrency(Math.round(row.interestPaid))}
                   </TableCell>
                   <TableCell className="text-right font-mono text-sm font-semibold">
@@ -153,10 +153,10 @@ export function AmortizationSchedule({ schedule }) {
                   <TableCell className="text-right font-mono text-sm">
                     {formatCurrency(row.openingBalance)}
                   </TableCell>
-                  <TableCell className="text-right font-mono text-sm text-green-600">
+                  <TableCell className="text-right font-mono text-sm text-sage-600">
                     {formatCurrency(row.principalPaid)}
                   </TableCell>
-                  <TableCell className="text-right font-mono text-sm text-red-600">
+                  <TableCell className="text-right font-mono text-sm text-terra-600">
                     {formatCurrency(row.interestPaid)}
                   </TableCell>
                   <TableCell className="text-right font-mono text-sm font-semibold">
@@ -175,19 +175,19 @@ export function AmortizationSchedule({ schedule }) {
       {/* Summary Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t">
         <div>
-          <p className="text-sm text-gray-600">Total Principal</p>
-          <p className="text-lg font-semibold text-green-600">
+          <p className="text-sm text-muted-foreground">Total Principal</p>
+          <p className="text-lg font-semibold text-sage-600">
             {formatCurrency(schedule[schedule.length - 1]?.cumulativePrincipal || 0)}
           </p>
         </div>
         <div>
-          <p className="text-sm text-gray-600">Total Interest</p>
-          <p className="text-lg font-semibold text-red-600">
+          <p className="text-sm text-muted-foreground">Total Interest</p>
+          <p className="text-lg font-semibold text-terra-600">
             {formatCurrency(schedule[schedule.length - 1]?.cumulativeInterest || 0)}
           </p>
         </div>
         <div>
-          <p className="text-sm text-gray-600">Total Paid</p>
+          <p className="text-sm text-muted-foreground">Total Paid</p>
           <p className="text-lg font-semibold">
             {formatCurrency(
               (schedule[schedule.length - 1]?.cumulativePrincipal || 0) +
@@ -196,7 +196,7 @@ export function AmortizationSchedule({ schedule }) {
           </p>
         </div>
         <div>
-          <p className="text-sm text-gray-600">Payments Made</p>
+          <p className="text-sm text-muted-foreground">Payments Made</p>
           <p className="text-lg font-semibold">
             {schedule.length} months
           </p>

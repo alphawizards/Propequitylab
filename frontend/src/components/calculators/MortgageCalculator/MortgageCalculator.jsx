@@ -20,10 +20,10 @@ export function MortgageCalculator() {
     <div className="w-full max-w-7xl mx-auto space-y-6">
       {/* Hero Section */}
       <div className="text-center space-y-2">
-        <h1 className="text-4xl font-bold text-gray-900">
+        <h1 className="text-4xl font-bold text-foreground">
           Mortgage Calculator
         </h1>
-        <p className="text-lg text-gray-600">
+        <p className="text-lg text-muted-foreground">
           Calculate your monthly repayments, total interest, and view detailed amortization schedules
         </p>
       </div>
@@ -34,7 +34,7 @@ export function MortgageCalculator() {
         <Card>
           <CardHeader>
             <div className="flex items-center space-x-2">
-              <Calculator className="w-5 h-5 text-blue-600" />
+              <Calculator className="w-5 h-5 text-ocean-600" />
               <CardTitle>Loan Details</CardTitle>
             </div>
             <CardDescription>
@@ -50,7 +50,7 @@ export function MortgageCalculator() {
         <Card>
           <CardHeader>
             <div className="flex items-center space-x-2">
-              <TrendingUp className="w-5 h-5 text-green-600" />
+              <TrendingUp className="w-5 h-5 text-sage-600" />
               <CardTitle>Repayment Summary</CardTitle>
             </div>
             <CardDescription>

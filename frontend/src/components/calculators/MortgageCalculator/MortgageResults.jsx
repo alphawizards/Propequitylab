@@ -13,9 +13,9 @@ import { formatCurrency, formatPercentage } from '@/lib/calculators/core/decimal
 export function MortgageResults({ results, isValid }) {
   if (!isValid) {
     return (
-      <Alert className="border-yellow-200 bg-yellow-50">
-        <AlertCircle className="h-4 w-4 text-yellow-600" />
-        <AlertDescription className="text-yellow-800">
+      <Alert className="border-gold-200 bg-gold-50">
+        <AlertCircle className="h-4 w-4 text-gold-600" />
+        <AlertDescription className="text-gold-800">
           Please enter valid loan details to see your repayment estimate
         </AlertDescription>
       </Alert>
@@ -24,7 +24,7 @@ export function MortgageResults({ results, isValid }) {
 
   if (!results) {
     return (
-      <div className="flex items-center justify-center h-48 text-gray-500">
+      <div className="flex items-center justify-center h-48 text-muted-foreground">
         <CalcIcon className="w-8 h-8 mr-3" />
         <p>Enter loan details to calculate</p>
       </div>
@@ -46,10 +46,10 @@ export function MortgageResults({ results, isValid }) {
   return (
     <div className="space-y-6">
       {/* Monthly Repayment - Hero */}
-      <div className="text-center p-6 bg-blue-50 rounded-lg border border-blue-200">
-        <p className="text-sm text-blue-600 font-medium mb-1">Monthly Repayment</p>
-        <p className="text-4xl font-bold text-blue-900">{formatCurrency(monthlyRepayment)}</p>
-        <div className="flex items-center justify-center gap-4 mt-3 text-sm text-blue-700">
+      <div className="text-center p-6 bg-ocean-50 rounded-lg border border-ocean-200">
+        <p className="text-sm text-ocean-600 font-medium mb-1">Monthly Repayment</p>
+        <p className="text-4xl font-bold text-ocean-900">{formatCurrency(monthlyRepayment)}</p>
+        <div className="flex items-center justify-center gap-4 mt-3 text-sm text-ocean-700">
           <div className="flex items-center">
             <TrendingDown className="w-4 h-4 mr-1" />
             <span>Principal: {formatCurrency(principalPortion)}</span>
@@ -63,16 +63,16 @@ export function MortgageResults({ results, isValid }) {
 
       {/* Loan Summary */}
       <div className="space-y-3">
-        <h3 className="font-semibold text-gray-900">Loan Summary</h3>
+        <h3 className="font-semibold text-foreground">Loan Summary</h3>
 
         <div className="space-y-2">
           <div className="flex justify-between items-center">
-            <span className="text-gray-600">Loan Amount</span>
+            <span className="text-muted-foreground">Loan Amount</span>
             <span className="font-semibold">{formatCurrency(loanAmount)}</span>
           </div>
 
           <div className="flex justify-between items-center">
-            <span className="text-gray-600">Loan-to-Value Ratio (LVR)</span>
+            <span className="text-muted-foreground">Loan-to-Value Ratio (LVR)</span>
             <div className="flex items-center gap-2">
               <span className="font-semibold">{lvr.toFixed(2)}%</span>
               {lvr > 80 && (
@@ -81,7 +81,7 @@ export function MortgageResults({ results, isValid }) {
                 </Badge>
               )}
               {lvr <= 80 && (
-                <Badge variant="outline" className="text-xs border-green-600 text-green-600">
+                <Badge variant="outline" className="text-xs border-sage-600 text-sage-600">
                   Good LVR
                 </Badge>
               )}
@@ -91,9 +91,9 @@ export function MortgageResults({ results, isValid }) {
           {requiresLMI && estimatedLMI && (
             <>
               <Separator />
-              <Alert className="border-orange-200 bg-orange-50">
-                <AlertCircle className="h-4 w-4 text-orange-600" />
-                <AlertDescription className="text-orange-800 text-sm">
+              <Alert className="border-gold-200 bg-gold-50">
+                <AlertCircle className="h-4 w-4 text-gold-600" />
+                <AlertDescription className="text-gold-800 text-sm">
                   <div className="space-y-1">
                     <p className="font-semibold">Lenders Mortgage Insurance (LMI) Required</p>
                     <p>Estimated LMI: {formatCurrency(estimatedLMI)}</p>
@@ -113,20 +113,20 @@ export function MortgageResults({ results, isValid }) {
 
       {/* Total Cost Over Loan Term */}
       <div className="space-y-3">
-        <h3 className="font-semibold text-gray-900">Total Cost Over Loan Term</h3>
+        <h3 className="font-semibold text-foreground">Total Cost Over Loan Term</h3>
 
         <div className="space-y-2">
           <div className="flex justify-between items-center">
-            <span className="text-gray-600">Total Interest</span>
-            <span className="font-semibold text-red-600">{formatCurrency(totalInterest)}</span>
+            <span className="text-muted-foreground">Total Interest</span>
+            <span className="font-semibold text-terra-600">{formatCurrency(totalInterest)}</span>
           </div>
 
           <div className="flex justify-between items-center">
-            <span className="text-gray-600">Total Repayments</span>
+            <span className="text-muted-foreground">Total Repayments</span>
             <span className="font-semibold">{formatCurrency(totalRepayments)}</span>
           </div>
 
-          <div className="flex justify-between items-center text-sm text-gray-500">
+          <div className="flex justify-between items-center text-sm text-muted-foreground">
             <span>Interest as % of loan</span>
             <span>{((totalInterest / loanAmount) * 100).toFixed(1)}%</span>
           </div>
@@ -136,9 +136,9 @@ export function MortgageResults({ results, isValid }) {
       <Separator />
 
       {/* Quick Tips */}
-      <div className="bg-gray-50 rounded-lg p-4 space-y-2">
-        <h4 className="text-sm font-semibold text-gray-900">Ways to Reduce Your Repayments</h4>
-        <ul className="text-sm text-gray-600 space-y-1">
+      <div className="bg-muted rounded-lg p-4 space-y-2">
+        <h4 className="text-sm font-semibold text-foreground">Ways to Reduce Your Repayments</h4>
+        <ul className="text-sm text-muted-foreground space-y-1">
           <li className="flex items-start">
             <span className="mr-2">•</span>
             <span>Increase your deposit to lower your LVR and avoid LMI</span>

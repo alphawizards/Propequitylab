@@ -107,7 +107,7 @@ export function MortgageInputs({ calculator }) {
       <div className="space-y-2">
         <Label htmlFor="purchasePrice">Purchase Price</Label>
         <div className="relative">
-          <DollarSign className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
+          <DollarSign className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
             id="purchasePrice"
             type="text"
@@ -119,7 +119,7 @@ export function MortgageInputs({ calculator }) {
           />
         </div>
         {errors.purchasePrice && (
-          <p className="text-sm text-red-600">{errors.purchasePrice}</p>
+          <p className="text-sm text-terra-600">{errors.purchasePrice}</p>
         )}
       </div>
 
@@ -127,12 +127,12 @@ export function MortgageInputs({ calculator }) {
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <Label htmlFor="deposit">Deposit</Label>
-          <span className="text-sm text-gray-600">
+          <span className="text-sm text-muted-foreground">
             {lvr.toFixed(1)}% LVR
           </span>
         </div>
         <div className="relative">
-          <DollarSign className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
+          <DollarSign className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
             id="deposit"
             type="text"
@@ -144,7 +144,7 @@ export function MortgageInputs({ calculator }) {
           />
         </div>
         {errors.deposit && (
-          <p className="text-sm text-red-600">{errors.deposit}</p>
+          <p className="text-sm text-terra-600">{errors.deposit}</p>
         )}
 
         {/* Deposit Slider */}
@@ -160,7 +160,7 @@ export function MortgageInputs({ calculator }) {
             step={dollarsToCents(5000)}
             className="w-full"
           />
-          <div className="flex justify-between text-xs text-gray-500 mt-1">
+          <div className="flex justify-between text-xs text-muted-foreground mt-1">
             <span>$0</span>
             <span>{formatCurrency(inputs.purchasePrice)}</span>
           </div>
@@ -171,7 +171,7 @@ export function MortgageInputs({ calculator }) {
       <div className="space-y-2">
         <Label htmlFor="interestRate">Interest Rate (% p.a.)</Label>
         <div className="relative">
-          <Percent className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
+          <Percent className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
             id="interestRate"
             type="text"
@@ -183,7 +183,7 @@ export function MortgageInputs({ calculator }) {
           />
         </div>
         {errors.interestRate && (
-          <p className="text-sm text-red-600">{errors.interestRate}</p>
+          <p className="text-sm text-terra-600">{errors.interestRate}</p>
         )}
       </div>
 
@@ -201,12 +201,12 @@ export function MortgageInputs({ calculator }) {
           step={1}
           className="w-full"
         />
-        <div className="flex justify-between text-xs text-gray-500">
+        <div className="flex justify-between text-xs text-muted-foreground">
           <span>1 year</span>
           <span>40 years</span>
         </div>
         {errors.loanTermYears && (
-          <p className="text-sm text-red-600">{errors.loanTermYears}</p>
+          <p className="text-sm text-terra-600">{errors.loanTermYears}</p>
         )}
       </div>
 
@@ -264,12 +264,12 @@ export function MortgageInputs({ calculator }) {
                 step={1}
                 className="w-full"
               />
-              <div className="flex justify-between text-xs text-gray-500">
+              <div className="flex justify-between text-xs text-muted-foreground">
                 <span>0 years</span>
                 <span>{inputs.loanTermYears} years</span>
               </div>
               {errors.interestOnlyPeriodYears && (
-                <p className="text-sm text-red-600">{errors.interestOnlyPeriodYears}</p>
+                <p className="text-sm text-terra-600">{errors.interestOnlyPeriodYears}</p>
               )}
             </div>
           )}
@@ -278,7 +278,7 @@ export function MortgageInputs({ calculator }) {
           <div className="space-y-2">
             <Label htmlFor="offset">Offset Account Balance</Label>
             <div className="relative">
-              <DollarSign className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
+              <DollarSign className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 id="offset"
                 type="text"
@@ -289,7 +289,7 @@ export function MortgageInputs({ calculator }) {
                 placeholder="0"
               />
             </div>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-muted-foreground">
               Offset accounts reduce the interest charged on your loan
             </p>
           </div>
