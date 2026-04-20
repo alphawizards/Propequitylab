@@ -99,7 +99,7 @@ const ExpenseFormModal = ({ open, onOpenChange, expense, onSubmit }) => {
       <DialogContent className="max-w-lg" data-testid="expense-form-modal">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Receipt className="w-5 h-5 text-red-500" />
+            <Receipt className="w-5 h-5 text-terra" />
             {expense ? 'Edit Expense' : 'Add Expense'}
           </DialogTitle>
         </DialogHeader>
@@ -178,7 +178,7 @@ const ExpenseFormModal = ({ open, onOpenChange, expense, onSubmit }) => {
               <div className="space-y-4">
                 <div>
                   <Label>Retirement Percentage: {formData.retirement_percentage}%</Label>
-                  <p className="text-xs text-gray-500 mb-2">How much of this expense will remain in retirement?</p>
+                  <p className="text-xs text-muted-foreground mb-2">How much of this expense will remain in retirement?</p>
                   <Slider
                     value={[formData.retirement_percentage]}
                     onValueChange={([value]) => updateField('retirement_percentage', value)}
@@ -186,7 +186,7 @@ const ExpenseFormModal = ({ open, onOpenChange, expense, onSubmit }) => {
                     max={150}
                     step={5}
                   />
-                  <div className="flex justify-between text-xs text-gray-400 mt-1">
+                  <div className="flex justify-between text-xs text-muted-foreground/60 mt-1">
                     <span>0% (Gone)</span>
                     <span>100% (Same)</span>
                     <span>150% (More)</span>
@@ -204,13 +204,13 @@ const ExpenseFormModal = ({ open, onOpenChange, expense, onSubmit }) => {
                   placeholder="2.5"
                   step="0.1"
                 />
-                <p className="text-xs text-gray-500">Expected annual increase due to inflation</p>
+                <p className="text-xs text-muted-foreground">Expected annual increase due to inflation</p>
               </div>
 
               <div className="flex items-center justify-between py-2">
                 <div>
                   <Label>Tax Deductible</Label>
-                  <p className="text-xs text-gray-500">Can claim as a tax deduction</p>
+                  <p className="text-xs text-muted-foreground">Can claim as a tax deduction</p>
                 </div>
                 <Switch
                   checked={formData.is_tax_deductible}
@@ -226,7 +226,7 @@ const ExpenseFormModal = ({ open, onOpenChange, expense, onSubmit }) => {
             </Button>
             <Button
               type="submit"
-              className="bg-emerald-600 text-white hover:bg-emerald-700"
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
               data-testid="submit-expense-btn"
             >
               {expense ? 'Update Expense' : 'Add Expense'}

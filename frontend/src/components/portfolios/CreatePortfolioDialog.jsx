@@ -91,7 +91,7 @@ const CreatePortfolioDialog = ({ open, onOpenChange, onSubmit, onError }) => {
             <Button
               onClick={handleSubmit}
               disabled={!name.trim() || submitting}
-              className="bg-emerald-600 text-white hover:bg-emerald-700"
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
             >
               {submitting ? (
                 <>

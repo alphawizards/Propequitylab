@@ -38,13 +38,13 @@ const PropertyCard = ({ property, onView, onEdit, onDelete }) => {
   return (
     <Card className="overflow-hidden hover:shadow-card-hover transition-all duration-150 hover:-translate-y-px group">
       {/* Property Image Placeholder */}
-      <div className="h-40 bg-slate-50 relative border-b border-[#EAEAEA]">
+      <div className="h-40 bg-muted relative border-b border-[#EAEAEA]">
         <div className="absolute inset-0 flex items-center justify-center">
-          <Home className="w-12 h-12 text-slate-200" />
+          <Home className="w-12 h-12 text-muted-foreground/30" />
         </div>
-        
+
         {/* Property Type Badge */}
-        <Badge className="absolute top-3 left-3 bg-white text-gray-700 capitalize">
+        <Badge className="absolute top-3 left-3 bg-white text-foreground capitalize">
           {property.property_type}
         </Badge>
         
@@ -68,7 +68,7 @@ const PropertyCard = ({ property, onView, onEdit, onDelete }) => {
               <Pencil className="w-4 h-4 mr-2" />
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={onDelete} className="text-red-600">
+            <DropdownMenuItem onClick={onDelete} className="text-destructive">
               <Trash2 className="w-4 h-4 mr-2" />
               Delete
             </DropdownMenuItem>
@@ -110,20 +110,20 @@ const PropertyCard = ({ property, onView, onEdit, onDelete }) => {
           </div>
           <div>
             <p className="text-xs text-[#6B7280]">Equity</p>
-            <p className="font-semibold text-emerald-600 tabular-nums">
+            <p className="font-semibold text-primary tabular-nums">
               ${(equity / 1000).toFixed(0)}K
             </p>
           </div>
           <div>
             <p className="text-xs text-[#6B7280]">LVR</p>
-            <p className={`font-semibold tabular-nums ${ltv > 80 ? 'text-red-500' : 'text-[#111111]'}`}>
+            <p className={`font-semibold tabular-nums ${ltv > 80 ? 'text-destructive' : 'text-[#111111]'}`}>
               {ltv}%
             </p>
           </div>
           <div>
             <p className="text-xs text-[#6B7280]">Yield</p>
             <p className="font-semibold text-[#111111] tabular-nums flex items-center gap-1">
-              <TrendingUp className="w-3 h-3 text-green-500" />
+              <TrendingUp className="w-3 h-3 text-sage" />
               {grossYield}%
             </p>
           </div>
