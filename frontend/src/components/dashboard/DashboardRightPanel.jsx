@@ -19,7 +19,7 @@ const DashboardRightPanel = ({ onScenarioChange, onSettingsChange, onExport }) =
       {/* Export Button */}
       <Button
         onClick={onExport}
-        className="w-full bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900"
+        className="w-full bg-foreground hover:bg-foreground/90 text-background"
       >
         <Download className="w-4 h-4 mr-2" />
         Export PDF Report

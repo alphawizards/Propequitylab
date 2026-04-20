@@ -14,7 +14,7 @@ const PropertyCashflowsWidget = ({ properties = [] }) => {
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg">Property Cashflows</CardTitle>
           {properties.length > 0 && (
-            <Badge className={isSelfServicing ? "bg-green-100 text-green-700 hover:bg-green-200" : "bg-red-100 text-red-700 hover:bg-red-200"}>
+            <Badge className={isSelfServicing ? "bg-sage/10 text-sage hover:bg-sage/20" : "bg-terra/10 text-terra hover:bg-terra/20"}>
               {isSelfServicing ? 'Self-Servicing' : 'Negative'}
             </Badge>
           )}
@@ -29,8 +29,7 @@ const PropertyCashflowsWidget = ({ properties = [] }) => {
                   <span className="text-sm text-muted-foreground truncate max-w-[60%]">
                     {property.address || property.name || `Property ${idx + 1}`}
                   </span>
-                  <span className={`text-sm font-semibold ${property.cashflow >= 0 ? 'text-green-600' : 'text-red-500'
-                    }`}>
+                  <span className={`text-sm font-semibold ${property.cashflow >= 0 ? 'text-sage' : 'text-terra'}`}>
                     {property.cashflow >= 0 ? '+' : '-'}{formatCurrency(Math.abs(property.cashflow))}/mo
                   </span>
                 </div>
@@ -40,10 +39,9 @@ const PropertyCashflowsWidget = ({ properties = [] }) => {
                   +{properties.length - 4} more properties
                 </p>
               )}
-              <div className="pt-3 border-t border-gray-200 flex items-center justify-between">
+              <div className="pt-3 border-t border-border flex items-center justify-between">
                 <span className="text-sm font-medium text-foreground">Total Monthly</span>
-                <span className={`text-lg font-bold ${totalCashflow >= 0 ? 'text-green-600' : 'text-red-500'
-                  }`}>
+                <span className={`text-lg font-bold ${totalCashflow >= 0 ? 'text-sage' : 'text-terra'}`}>
                   {totalCashflow >= 0 ? '+' : '-'}{formatCurrency(Math.abs(totalCashflow))}
                 </span>
               </div>

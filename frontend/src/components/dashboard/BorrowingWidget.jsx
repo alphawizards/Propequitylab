@@ -10,9 +10,9 @@ const BorrowingWidget = ({ data }) => {
 
   // Determine LVR risk level
   const getLVRRiskLevel = (lvr) => {
-    if (lvr > 80) return { text: 'High risk', color: 'text-red-600' };
-    if (lvr > 60) return { text: 'Moderate', color: 'text-yellow-600' };
-    return { text: 'Low risk', color: 'text-green-600' };
+    if (lvr > 80) return { text: 'High risk', color: 'text-terra' };
+    if (lvr > 60) return { text: 'Moderate', color: 'text-gold' };
+    return { text: 'Low risk', color: 'text-sage' };
   };
 
   const riskLevel = getLVRRiskLevel(lvr);
@@ -33,7 +33,7 @@ const BorrowingWidget = ({ data }) => {
             <Progress
               value={Math.min(lvr, 100)}
               className="h-2"
-              indicatorClassName={lvr > 80 ? "bg-red-500" : lvr > 60 ? "bg-yellow-500" : "bg-green-500"}
+              indicatorClassName={lvr > 80 ? "bg-terra" : lvr > 60 ? "bg-gold" : "bg-sage"}
             />
             <p className={`text-xs mt-1 ${riskLevel.color}`}>
               {riskLevel.text}
@@ -41,7 +41,7 @@ const BorrowingWidget = ({ data }) => {
           </div>
 
           {/* Capacity Section */}
-          <div className="pt-3 border-t border-gray-200">
+          <div className="pt-3 border-t border-border">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-muted-foreground">Borrowing Capacity</span>
             </div>
