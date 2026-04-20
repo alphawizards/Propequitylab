@@ -74,7 +74,7 @@ const ExpenseCard = ({ expense, onEdit, onDelete, onView }) => {
               <Icon className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-semibold text-[#111111] dark:text-white">{expense.name}</h3>
+              <h3 className="font-semibold text-foreground">{expense.name}</h3>
               <Badge variant="secondary" className={`mt-1 ${categoryInfo.color}`}>
                 {categoryInfo.label}
               </Badge>
@@ -103,7 +103,7 @@ const ExpenseCard = ({ expense, onEdit, onDelete, onView }) => {
         <div className="space-y-3">
           <div className="flex justify-between items-center">
             <span className="text-sm text-muted-foreground">Amount</span>
-            <span className="font-semibold text-lg tabular-nums text-[#111111] dark:text-white">
+            <span className="font-semibold text-lg tabular-nums text-foreground">
               {formatCurrency(expense.amount)}{formatFrequency(expense.frequency)}
             </span>
           </div>

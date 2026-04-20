@@ -54,8 +54,8 @@ const AboutYouStep = ({ data, updateData, onNext, isLoading }) => {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-semibold text-[#111111] mb-2">Let's get to know you</h1>
-        <p className="text-[#6B7280]">Tell us a bit about yourself to personalize your experience.</p>
+        <h1 className="text-3xl font-semibold text-foreground mb-2">Let's get to know you</h1>
+        <p className="text-muted-foreground">Tell us a bit about yourself to personalize your experience.</p>
       </div>
       
       <form onSubmit={handleSubmit}>
@@ -86,8 +86,8 @@ const AboutYouStep = ({ data, updateData, onNext, isLoading }) => {
                   }`} />
                 </div>
                 <div>
-                  <p className="font-semibold text-[#111111]">Individual</p>
-                  <p className="text-sm text-[#6B7280]">Planning for yourself</p>
+                  <p className="font-semibold text-foreground">Individual</p>
+                  <p className="text-sm text-muted-foreground">Planning for yourself</p>
                 </div>
               </Label>
               
@@ -108,8 +108,8 @@ const AboutYouStep = ({ data, updateData, onNext, isLoading }) => {
                   }`} />
                 </div>
                 <div>
-                  <p className="font-semibold text-[#111111]">Couple</p>
-                  <p className="text-sm text-[#6B7280]">Planning together</p>
+                  <p className="font-semibold text-foreground">Couple</p>
+                  <p className="text-sm text-muted-foreground">Planning together</p>
                 </div>
               </Label>
             </RadioGroup>

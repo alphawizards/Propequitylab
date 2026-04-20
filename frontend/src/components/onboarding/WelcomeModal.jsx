@@ -63,17 +63,17 @@ const WelcomeModal = ({ isOpen, onClose, onComplete }) => {
           <div className="mx-auto sm:mx-0 mb-4 w-16 h-16 bg-sage-50 rounded-full flex items-center justify-center">
             <Sparkles className="w-8 h-8 text-sage-600" />
           </div>
-          <DialogTitle className="text-2xl font-semibold text-[#111111]">
+          <DialogTitle className="text-2xl font-semibold text-foreground">
             Welcome to PropEquityLab!
           </DialogTitle>
-          <DialogDescription className="text-base mt-2 text-[#6B7280]">
+          <DialogDescription className="text-base mt-2 text-muted-foreground">
             Your journey to financial independence starts here. Track your property portfolio,
             plan your FIRE strategy, and visualize your path to wealth.
           </DialogDescription>
         </DialogHeader>
 
         <div className="py-6 space-y-4">
-          <p className="text-sm text-[#6B7280]">
+          <p className="text-sm text-muted-foreground">
             How would you like to get started?
           </p>
 
@@ -87,8 +87,8 @@ const WelcomeModal = ({ isOpen, onClose, onComplete }) => {
                 <Rocket className="w-6 h-6 text-sage-700" />
               </div>
               <div className="flex-1">
-                <h3 className="font-semibold text-[#111111]">Quick Start with Demo Data</h3>
-                <p className="text-sm text-[#6B7280] mt-1">
+                <h3 className="font-semibold text-foreground">Quick Start with Demo Data</h3>
+                <p className="text-sm text-muted-foreground mt-1">
                   Load sample properties, income, and expenses to explore the platform instantly.
                 </p>
               </div>
@@ -105,8 +105,8 @@ const WelcomeModal = ({ isOpen, onClose, onComplete }) => {
                 <FileSpreadsheet className="w-6 h-6 text-muted-foreground" />
               </div>
               <div className="flex-1">
-                <h3 className="font-semibold text-[#111111]">Start Fresh</h3>
-                <p className="text-sm text-[#6B7280] mt-1">
+                <h3 className="font-semibold text-foreground">Start Fresh</h3>
+                <p className="text-sm text-muted-foreground mt-1">
                   Begin with an empty portfolio and enter your own financial data.
                 </p>
               </div>

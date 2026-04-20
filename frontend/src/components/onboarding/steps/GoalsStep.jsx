@@ -15,8 +15,8 @@ const GoalsStep = ({ data, updateData, onNext, isLoading }) => {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-semibold text-[#111111] mb-2">Set Your Goals</h1>
-        <p className="text-[#6B7280]">Define your financial independence targets.</p>
+        <h1 className="text-3xl font-semibold text-foreground mb-2">Set Your Goals</h1>
+        <p className="text-muted-foreground">Define your financial independence targets.</p>
       </div>
       
       {/* Retirement Age */}
@@ -31,12 +31,12 @@ const GoalsStep = ({ data, updateData, onNext, isLoading }) => {
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-4xl font-bold text-[#111111]">{data.retirement_age}</p>
-                <p className="text-sm text-[#6B7280]">years old</p>
+                <p className="text-4xl font-bold text-foreground">{data.retirement_age}</p>
+                <p className="text-sm text-muted-foreground">years old</p>
               </div>
               <div className="text-right">
                 <p className="text-2xl font-semibold text-primary">{retirementYear}</p>
-                <p className="text-sm text-[#6B7280]">{data.retirement_age - currentAge} years away</p>
+                <p className="text-sm text-muted-foreground">{data.retirement_age - currentAge} years away</p>
               </div>
             </div>
             
@@ -70,7 +70,7 @@ const GoalsStep = ({ data, updateData, onNext, isLoading }) => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <p className="text-sm text-[#6B7280]">
+            <p className="text-sm text-muted-foreground">
               What net worth do you want to achieve by retirement?
             </p>
             
@@ -117,7 +117,7 @@ const GoalsStep = ({ data, updateData, onNext, isLoading }) => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <p className="text-sm text-[#6B7280]">
+            <p className="text-sm text-muted-foreground">
               How much annual passive income do you want in retirement?
             </p>
             
@@ -153,8 +153,8 @@ const GoalsStep = ({ data, updateData, onNext, isLoading }) => {
             
             {/* Calculated monthly */}
             <div className="p-3 bg-muted rounded-lg">
-              <p className="text-sm text-[#6B7280]">
-                That's <span className="font-semibold text-[#111111]">
+              <p className="text-sm text-muted-foreground">
+                That's <span className="font-semibold text-foreground">
                   ${Math.round(data.target_passive_income / 12).toLocaleString()}
                 </span> per month
               </p>

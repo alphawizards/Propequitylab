@@ -26,7 +26,7 @@ const WelcomeStep = ({ onNext, onSkip }) => {
       <h1 className="text-4xl font-semibold text-foreground mb-4">
         Let's build your financial future
       </h1>
-      <p className="text-lg text-[#6B7280] mb-12 max-w-xl mx-auto">
+      <p className="text-lg text-muted-foreground mb-12 max-w-xl mx-auto">
         We'll help you create accurate projections for your wealth journey by setting up your property portfolio and goals.
       </p>
 
@@ -34,7 +34,7 @@ const WelcomeStep = ({ onNext, onSkip }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
         {/* Guided Setup Card */}
         <Card
-          className="cursor-pointer transition-all duration-150 bg-white border border-[#EAEAEA] shadow-card hover:shadow-card-hover hover:-translate-y-px dark:bg-card dark:border-border"
+          className="cursor-pointer transition-all duration-150 bg-white border border-border shadow-card hover:shadow-card-hover hover:-translate-y-px dark:bg-card dark:border-border"
           onClick={onNext}
         >
           <CardContent className="p-8 text-center">
@@ -42,10 +42,10 @@ const WelcomeStep = ({ onNext, onSkip }) => {
               <Play className="w-8 h-8 text-white fill-white" />
             </div>
             <h3 className="text-xl font-semibold text-primary mb-2">Guided Setup</h3>
-            <p className="text-[#6B7280] mb-4">
+            <p className="text-muted-foreground mb-4">
               Step-by-step walkthrough to set up your complete financial profile.
             </p>
-            <div className="flex items-center justify-center gap-2 text-sm text-[#6B7280]">
+            <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
               <Clock className="w-4 h-4" />
               <span>5-10 minutes</span>
             </div>
@@ -54,18 +54,18 @@ const WelcomeStep = ({ onNext, onSkip }) => {
 
         {/* Quick Start Card */}
         <Card
-          className="cursor-pointer transition-all duration-150 bg-white border border-[#EAEAEA] shadow-card hover:shadow-card-hover hover:-translate-y-px dark:bg-card dark:border-border"
+          className="cursor-pointer transition-all duration-150 bg-white border border-border shadow-card hover:shadow-card-hover hover:-translate-y-px dark:bg-card dark:border-border"
           onClick={onSkip}
         >
           <CardContent className="p-8 text-center">
             <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
               <Rocket className="w-8 h-8 text-muted-foreground" />
             </div>
-            <h3 className="text-xl font-semibold text-[#111111] mb-2">Quick Start</h3>
-            <p className="text-[#6B7280] mb-4">
+            <h3 className="text-xl font-semibold text-foreground mb-2">Quick Start</h3>
+            <p className="text-muted-foreground mb-4">
               Jump straight to the dashboard and add details later.
             </p>
-            <div className="flex items-center justify-center gap-2 text-sm text-[#6B7280]">
+            <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
               <Clock className="w-4 h-4" />
               <span>Instant</span>
             </div>
@@ -84,12 +84,12 @@ const WelcomeStep = ({ onNext, onSkip }) => {
                 }`}>
                   <step.icon className="w-5 h-5" />
                 </div>
-                <span className={`text-sm ${step.active ? 'text-[#111111] font-medium' : 'text-[#6B7280]'}`}>
+                <span className={`text-sm ${step.active ? 'text-foreground font-medium' : 'text-muted-foreground'}`}>
                   {step.label}
                 </span>
               </div>
               {index < steps.length - 1 && (
-                <div className="w-12 h-px bg-[#EAEAEA] mb-6" />
+                <div className="w-12 h-px bg-border mb-6" />
               )}
             </React.Fragment>
           ))}

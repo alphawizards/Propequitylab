@@ -61,8 +61,8 @@ const LiabilitiesStep = ({ data, updateData, onNext, isLoading }) => {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-semibold text-[#111111] mb-2">Your Liabilities</h1>
-        <p className="text-[#6B7280]">Add your personal debts. Investment property loans will be linked when you add properties.</p>
+        <h1 className="text-3xl font-semibold text-foreground mb-2">Your Liabilities</h1>
+        <p className="text-muted-foreground">Add your personal debts. Investment property loans will be linked when you add properties.</p>
       </div>
       
       {/* Liabilities Summary */}
@@ -70,8 +70,8 @@ const LiabilitiesStep = ({ data, updateData, onNext, isLoading }) => {
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-[#6B7280]">Total Other Liabilities</p>
-              <p className="text-3xl font-semibold tabular-nums text-[#111111]">
+              <p className="text-sm text-muted-foreground">Total Other Liabilities</p>
+              <p className="text-3xl font-semibold tabular-nums text-foreground">
                 ${totalLiabilities.toLocaleString()}
               </p>
             </div>
@@ -114,8 +114,8 @@ const LiabilitiesStep = ({ data, updateData, onNext, isLoading }) => {
                       <TypeIcon className="w-5 h-5 text-terra-600" />
                     </div>
                     <div>
-                      <p className="font-medium text-[#111111]">{liability.name}</p>
-                      <p className="text-sm text-[#6B7280]">
+                      <p className="font-medium text-foreground">{liability.name}</p>
+                      <p className="text-sm text-muted-foreground">
                         {LIABILITY_TYPES.find(t => t.value === liability.type)?.label || liability.type}
                         {liability.interest_rate > 0 && (
                           <> • {liability.interest_rate}% interest</>
@@ -248,7 +248,7 @@ const LiabilitiesStep = ({ data, updateData, onNext, isLoading }) => {
       </Card>
       
       <div className="flex justify-between">
-        <Button variant="ghost" onClick={() => onNext()} className="text-[#6B7280]">
+        <Button variant="ghost" onClick={() => onNext()} className="text-muted-foreground">
           Skip for now
         </Button>
         <Button

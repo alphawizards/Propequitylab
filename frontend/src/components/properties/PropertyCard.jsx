@@ -38,7 +38,7 @@ const PropertyCard = ({ property, onView, onEdit, onDelete }) => {
   return (
     <Card className="overflow-hidden hover:shadow-card-hover transition-all duration-150 hover:-translate-y-px group">
       {/* Property Image Placeholder */}
-      <div className="h-40 bg-muted relative border-b border-[#EAEAEA]">
+      <div className="h-40 bg-muted relative border-b border-border">
         <div className="absolute inset-0 flex items-center justify-center">
           <Home className="w-12 h-12 text-muted-foreground/30" />
         </div>
@@ -78,14 +78,14 @@ const PropertyCard = ({ property, onView, onEdit, onDelete }) => {
       
       <CardContent className="p-4">
         {/* Address */}
-        <h3 className="font-semibold text-[#111111] truncate">{property.address}</h3>
-        <div className="flex items-center gap-1 text-sm text-[#6B7280] mb-3">
+        <h3 className="font-semibold text-foreground truncate">{property.address}</h3>
+        <div className="flex items-center gap-1 text-sm text-muted-foreground mb-3">
           <MapPin className="w-3 h-3" />
           <span>{property.suburb}, {property.state} {property.postcode}</span>
         </div>
         
         {/* Features */}
-        <div className="flex items-center gap-4 text-sm text-[#6B7280] mb-4">
+        <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
           <div className="flex items-center gap-1">
             <Bed className="w-4 h-4" />
             <span>{property.bedrooms}</span>
@@ -103,26 +103,26 @@ const PropertyCard = ({ property, onView, onEdit, onDelete }) => {
         {/* Financials */}
         <div className="grid grid-cols-2 gap-3 pt-3 border-t">
           <div>
-            <p className="text-xs text-[#6B7280]">Value</p>
-            <p className="font-semibold text-[#111111] tabular-nums">
+            <p className="text-xs text-muted-foreground">Value</p>
+            <p className="font-semibold text-foreground tabular-nums">
               ${(property.current_value / 1000).toFixed(0)}K
             </p>
           </div>
           <div>
-            <p className="text-xs text-[#6B7280]">Equity</p>
+            <p className="text-xs text-muted-foreground">Equity</p>
             <p className="font-semibold text-primary tabular-nums">
               ${(equity / 1000).toFixed(0)}K
             </p>
           </div>
           <div>
-            <p className="text-xs text-[#6B7280]">LVR</p>
-            <p className={`font-semibold tabular-nums ${ltv > 80 ? 'text-destructive' : 'text-[#111111]'}`}>
+            <p className="text-xs text-muted-foreground">LVR</p>
+            <p className={`font-semibold tabular-nums ${ltv > 80 ? 'text-destructive' : 'text-foreground'}`}>
               {ltv}%
             </p>
           </div>
           <div>
-            <p className="text-xs text-[#6B7280]">Yield</p>
-            <p className="font-semibold text-[#111111] tabular-nums flex items-center gap-1">
+            <p className="text-xs text-muted-foreground">Yield</p>
+            <p className="font-semibold text-foreground tabular-nums flex items-center gap-1">
               <TrendingUp className="w-3 h-3 text-sage" />
               {grossYield}%
             </p>

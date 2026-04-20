@@ -58,8 +58,8 @@ const IncomeStep = ({ data, updateData, onNext, isLoading }) => {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-semibold text-[#111111] mb-2">Your Income</h1>
-        <p className="text-[#6B7280]">Add all your income sources to get accurate projections.</p>
+        <h1 className="text-3xl font-semibold text-foreground mb-2">Your Income</h1>
+        <p className="text-muted-foreground">Add all your income sources to get accurate projections.</p>
       </div>
       
       {/* Income Summary */}
@@ -92,14 +92,14 @@ const IncomeStep = ({ data, updateData, onNext, isLoading }) => {
                       <TypeIcon className="w-5 h-5 text-muted-foreground" />
                     </div>
                     <div>
-                      <p className="font-medium text-[#111111]">{income.name}</p>
-                      <p className="text-sm text-[#6B7280] capitalize">
+                      <p className="font-medium text-foreground">{income.name}</p>
+                      <p className="text-sm text-muted-foreground capitalize">
                         {income.type} • {income.frequency}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <p className="font-semibold text-[#111111]">
+                    <p className="font-semibold text-foreground">
                       ${income.amount.toLocaleString()}
                     </p>
                     <Button
@@ -210,7 +210,7 @@ const IncomeStep = ({ data, updateData, onNext, isLoading }) => {
       </Card>
       
       <div className="flex justify-between">
-        <Button variant="ghost" onClick={() => onNext()} className="text-[#6B7280]">
+        <Button variant="ghost" onClick={() => onNext()} className="text-muted-foreground">
           Skip for now
         </Button>
         <Button 

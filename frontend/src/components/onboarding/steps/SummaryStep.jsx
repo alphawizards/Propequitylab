@@ -105,8 +105,8 @@ const SummaryStep = ({ data, onComplete, isLoading, goToStep }) => {
         <div className="w-20 h-20 rounded-full bg-sage/10 flex items-center justify-center mx-auto mb-4">
           <Rocket className="w-10 h-10 text-primary" />
         </div>
-        <h1 className="text-3xl font-semibold text-[#111111] mb-2">You're All Set!</h1>
-        <p className="text-[#6B7280]">Here's a summary of your financial profile.</p>
+        <h1 className="text-3xl font-semibold text-foreground mb-2">You're All Set!</h1>
+        <p className="text-muted-foreground">Here's a summary of your financial profile.</p>
       </div>
       
       {/* Progress indicator */}
@@ -115,11 +115,11 @@ const SummaryStep = ({ data, onComplete, isLoading, goToStep }) => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <CheckCircle className="w-6 h-6 text-primary" />
-              <span className="font-medium text-[#111111]">
+              <span className="font-medium text-foreground">
                 {completedSections} of {sections.length} sections completed
               </span>
             </div>
-            <span className="text-sm text-[#6B7280]">
+            <span className="text-sm text-muted-foreground">
               You can always add more later
             </span>
           </div>
@@ -137,7 +137,7 @@ const SummaryStep = ({ data, onComplete, isLoading, goToStep }) => {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-semibold text-[#111111]">{section.title}</h3>
+                    <h3 className="font-semibold text-foreground">{section.title}</h3>
                     <div className="flex items-center gap-2">
                       {section.complete ? (
                         <CheckCircle className="w-5 h-5 text-primary" />
@@ -158,8 +158,8 @@ const SummaryStep = ({ data, onComplete, isLoading, goToStep }) => {
                   <div className="grid grid-cols-2 gap-2">
                     {section.items.map((item) => (
                       <div key={item.label}>
-                        <p className="text-xs text-[#6B7280]">{item.label}</p>
-                        <p className="text-sm font-medium text-[#111111]">{item.value}</p>
+                        <p className="text-xs text-muted-foreground">{item.label}</p>
+                        <p className="text-sm font-medium text-foreground">{item.value}</p>
                       </div>
                     ))}
                   </div>
