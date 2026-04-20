@@ -42,11 +42,11 @@ const LiabilityCard = ({ liability, onView, onEdit, onDelete }) => {
   const getStrategyBadgeColor = (strategy) => {
     switch (strategy) {
       case 'aggressive':
-        return 'bg-red-100 text-red-700';
+        return 'bg-terra/10 text-terra';
       case 'custom':
-        return 'bg-purple-100 text-purple-700';
+        return 'bg-plum/10 text-plum';
       default:
-        return 'bg-gray-100 text-gray-700';
+        return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -60,19 +60,19 @@ const LiabilityCard = ({ liability, onView, onEdit, onDelete }) => {
   return (
     <Card className="overflow-hidden hover:shadow-card-hover transition-all duration-150 hover:-translate-y-px group">
       {/* Liability Header */}
-      <div className="h-32 bg-slate-50 relative border-b border-[#EAEAEA]">
+      <div className="h-32 bg-muted/50 relative border-b border-border">
         <div className="absolute inset-0 flex items-center justify-center">
-          <CreditCard className="w-12 h-12 text-slate-200" />
+          <CreditCard className="w-12 h-12 text-muted-foreground/20" />
         </div>
 
         {/* Liability Type Badge */}
-        <Badge className="absolute top-3 left-3 bg-white text-gray-700">
+        <Badge className="absolute top-3 left-3 bg-card text-foreground">
           {getLiabilityLabel(liability.type)}
         </Badge>
 
         {/* Tax Deductible Badge */}
         {liability.is_tax_deductible && (
-          <Badge className="absolute top-3 right-12 bg-green-100 text-green-700">
+          <Badge className="absolute top-3 right-12 bg-sage/10 text-sage">
             Tax Deductible
           </Badge>
         )}
@@ -97,7 +97,7 @@ const LiabilityCard = ({ liability, onView, onEdit, onDelete }) => {
               <Pencil className="w-4 h-4 mr-2" />
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={onDelete} className="text-red-600">
+            <DropdownMenuItem onClick={onDelete} className="text-destructive">
               <Trash2 className="w-4 h-4 mr-2" />
               Delete
             </DropdownMenuItem>
@@ -126,7 +126,7 @@ const LiabilityCard = ({ liability, onView, onEdit, onDelete }) => {
         <div className="mb-4">
           <div className="flex justify-between text-sm mb-1">
             <span className="text-[#6B7280]">Paid Off</span>
-            <span className="font-medium text-emerald-600">{paidPercent}%</span>
+            <span className="font-medium text-primary">{paidPercent}%</span>
           </div>
           <Progress value={parseFloat(paidPercent)} className="h-2" />
         </div>
@@ -136,7 +136,7 @@ const LiabilityCard = ({ liability, onView, onEdit, onDelete }) => {
           <div>
             <p className="text-xs text-[#6B7280]">Interest Rate</p>
             <p className="font-semibold text-[#111111] tabular-nums flex items-center gap-1">
-              <Percent className="w-3 h-3 text-orange-500" />
+              <Percent className="w-3 h-3 text-gold" />
               {liability.interest_rate}%
             </p>
           </div>

@@ -27,10 +27,10 @@ const QuickSettings = ({ onSettingsChange }) => {
           {/* Inflation Slider */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <Label htmlFor="inflation" className="text-sm font-medium text-gray-700">
+              <Label htmlFor="inflation" className="text-sm font-medium text-muted-foreground">
                 Annual Inflation
               </Label>
-              <span className="text-sm font-semibold text-gray-900">{inflation.toFixed(1)}%</span>
+              <span className="text-sm font-semibold text-foreground">{inflation.toFixed(1)}%</span>
             </div>
             <Slider
               id="inflation"
@@ -42,18 +42,18 @@ const QuickSettings = ({ onSettingsChange }) => {
               className="w-full"
             />
             <div className="flex justify-between mt-1">
-              <span className="text-xs text-gray-500">0%</span>
-              <span className="text-xs text-gray-500">10%</span>
+              <span className="text-xs text-muted-foreground">0%</span>
+              <span className="text-xs text-muted-foreground">10%</span>
             </div>
           </div>
 
           {/* Property Growth Slider */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <Label htmlFor="property-growth" className="text-sm font-medium text-gray-700">
+              <Label htmlFor="property-growth" className="text-sm font-medium text-muted-foreground">
                 Property Growth Rate
               </Label>
-              <span className="text-sm font-semibold text-gray-900">{propertyGrowth.toFixed(1)}%</span>
+              <span className="text-sm font-semibold text-foreground">{propertyGrowth.toFixed(1)}%</span>
             </div>
             <Slider
               id="property-growth"
@@ -65,8 +65,8 @@ const QuickSettings = ({ onSettingsChange }) => {
               className="w-full"
             />
             <div className="flex justify-between mt-1">
-              <span className="text-xs text-gray-500">0%</span>
-              <span className="text-xs text-gray-500">15%</span>
+              <span className="text-xs text-muted-foreground">0%</span>
+              <span className="text-xs text-muted-foreground">15%</span>
             </div>
           </div>
         </div>

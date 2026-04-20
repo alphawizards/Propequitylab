@@ -10,22 +10,22 @@ const Header = ({ title, subtitle }) => {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <header className="h-16 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-6">
+    <header className="h-16 bg-card border-b border-border flex items-center justify-between px-6">
       {/* Page Title */}
       <div>
-        <h1 className="text-xl font-semibold text-gray-900 dark:text-white">{title}</h1>
-        {subtitle && <p className="text-sm text-gray-500 dark:text-gray-400">{subtitle}</p>}
+        <h1 className="text-xl font-semibold text-foreground">{title}</h1>
+        {subtitle && <p className="text-sm text-muted-foreground">{subtitle}</p>}
       </div>
 
       {/* Right Side */}
       <div className="flex items-center gap-4">
         {/* Search */}
         <div className="relative hidden md:block">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             type="text"
             placeholder="Search..."
-            className="pl-10 w-64 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-600"
+            className="pl-10 w-64 bg-muted border-border"
           />
         </div>
 
@@ -34,7 +34,7 @@ const Header = ({ title, subtitle }) => {
           variant="ghost"
           size="icon"
           onClick={toggleTheme}
-          className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+          className="text-muted-foreground hover:text-foreground"
           data-testid="theme-toggle-btn"
         >
           {theme === 'dark' ? (
@@ -46,24 +46,24 @@ const Header = ({ title, subtitle }) => {
 
         {/* Notifications */}
         <Button variant="ghost" size="icon" className="relative">
-          <Bell className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-emerald-500 rounded-full"></span>
+          <Bell className="w-5 h-5 text-muted-foreground" />
+          <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full"></span>
         </Button>
 
         {/* User Profile */}
         <div className="flex items-center gap-3">
           <div className="text-right hidden sm:block">
-            <p className="text-sm font-medium text-gray-900 dark:text-white">{user?.name}</p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">{user?.email}</p>
+            <p className="text-sm font-medium text-foreground">{user?.name}</p>
+            <p className="text-xs text-muted-foreground">{user?.email}</p>
           </div>
-          <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center border-2 border-emerald-200">
-            <User className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center border-2 border-primary/20">
+            <User className="w-5 h-5 text-primary" />
           </div>
           <Button
             variant="ghost"
             size="icon"
             onClick={logout}
-            className="ml-2 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400"
+            className="ml-2 text-muted-foreground hover:text-destructive"
             title="Logout"
           >
             <LogOut className="w-5 h-5" />

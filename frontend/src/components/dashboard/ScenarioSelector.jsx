@@ -47,17 +47,17 @@ const ScenarioSelector = ({ onScenarioChange }) => {
                 key={scenario.id}
                 className={`
                   relative flex items-start space-x-3 rounded-lg border-2 p-4 cursor-pointer
-                  transition-all hover:bg-gray-50
+                  transition-all hover:bg-muted
                   ${selectedScenario === scenario.id
-                    ? 'border-emerald-400 bg-emerald-50'
-                    : 'border-gray-200'
+                    ? 'border-primary bg-primary/5'
+                    : 'border-border'
                   }
                 `}
               >
                 <RadioGroupItem value={scenario.id} id={scenario.id} className="mt-0.5" />
                 <Label htmlFor={scenario.id} className="flex-1 cursor-pointer">
-                  <div className="font-medium text-gray-900">{scenario.label}</div>
-                  <div className="text-sm text-gray-500 mt-0.5">{scenario.description}</div>
+                  <div className="font-medium text-foreground">{scenario.label}</div>
+                  <div className="text-sm text-muted-foreground mt-0.5">{scenario.description}</div>
                 </Label>
               </div>
             ))}
