@@ -33,8 +33,7 @@ from models.subscription import Subscription
 # Import the app and dependency
 from backend.server import app
 from utils.database_sql import get_session
-from utils.clerk_auth import get_current_user
-from utils.auth import create_access_token
+from utils.auth import get_current_user, create_access_token
 
 
 # ============================================================================
